@@ -435,6 +435,48 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
       this.actor.reloadWeapon(li.dataset.itemId);
     });
 
+    //increase AP
+    html.on('mousedown', '.armor-ap', ev => {
+      const li = ev.currentTarget.closest(".item");
+      //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId))
+      var item;
+      if (game.release.generation >= 12) {
+        item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
+      } else {
+        item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
+      }
+      let amount = item.system.armorPoints;
+      if (event.button == 0) {
+          item.system.armorPoints = Number(amount) + 1;
+      } else if (event.button == 2) {
+        if (amount > 0) {
+          item.system.armorPoints = Number(amount) - 1;
+        }
+      }
+      this.actor.updateEmbeddedDocuments('Item', [item]);
+    });
+
+    //increase DR
+    html.on('mousedown', '.armor-dr', ev => {
+      const li = ev.currentTarget.closest(".item");
+      //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId))
+      var item;
+      if (game.release.generation >= 12) {
+        item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
+      } else {
+        item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
+      }
+      let amount = item.system.damageReduction;
+      if (event.button == 0) {
+          item.system.damageReduction = Number(amount) + 1;
+      } else if (event.button == 2) {
+        if (amount > 0) {
+          item.system.damageReduction = Number(amount) - 1;
+        }
+      }
+      this.actor.updateEmbeddedDocuments('Item', [item]);
+    });
+
     //increase oxygen
     html.on('mousedown', '.armor-oxy', ev => {
       const li = ev.currentTarget.closest(".item");
@@ -557,12 +599,24 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
     let d = new foundry.applications.api.DialogV2({
 		  window: {title: `New Skill`},
       classes: ["macro-popup-dialog"],
-      content: "<h2> Name </h2>\
-                <input type='text' id='name' name='name' value='New Skill'>\
-                <h2> Rank </h2> <select style='margin-bottom:10px;'name='rank' id='rank'>\
-                <option value='Trained'>Trained</option>\
-                <option value='Expert'>Expert</option>\
-                <option value='Master'>Master</option></select> <br/>",
+      content: `
+        <div class="macro_window">
+          <div class="macro_desc" style="padding-left: 8px; padding-bottom: 0px;">
+            <h4> Name </h4>
+          </div>  
+          <input type="text" id="name" name="name" value="New Skill">
+        </div>
+        <div class="macro_window">
+          <div class="macro_desc" style="padding-left: 8px; padding-bottom: 0px;">
+            <h4> Rank </h4>
+          </div>
+          <select name="rank" id="rank">
+            <option value="Trained">Trained</option>
+            <option value="Expert">Expert</option>
+            <option value="Master">Master</option>
+          </select>
+        </div>
+      `,
       buttons: [
         {
           icon: 'fas fa-check',
