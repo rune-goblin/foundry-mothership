@@ -556,6 +556,7 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
 
     let d = new foundry.applications.api.DialogV2({
 		  window: {title: `New Skill`},
+      classes: ["macro-popup-dialog"],
       content: "<h2> Name </h2>\
                 <input type='text' id='name' name='name' value='New Skill'>\
                 <h2> Rank </h2> <select style='margin-bottom:10px;'name='rank' id='rank'>\
@@ -564,7 +565,7 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
                 <option value='Master'>Master</option></select> <br/>",
       buttons: [
         {
-          icon: '<i class="fas fa-check"></i>',
+          icon: 'fas fa-check',
           action: "create",
           label: "Create",
           callback: (event, button, dialog) => {
@@ -582,7 +583,7 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
           }
         },
         {
-          icon: '<i class="fas fa-times"></i>',
+          icon: 'fas fa-times',
           action: "cancel",
           label: "Cancel",
           callback: () => { }

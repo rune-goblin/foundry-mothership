@@ -288,20 +288,6 @@ Hooks.on("preCreateActor", (document, createData, options, userId) => {
   }
 })
 
-Hooks.on('renderSidebarTab', async (app, html) => {
-  console.log(app);
-  console.log(app.options.id);
-  if (app.options.id == "actors" || app.title == "Actors Directory") {
-    console.log("testing~");
-    let button = $(`<button class="import-json"><i class="fas fa-file-import"></i> Import JSON</button>`);
-    button.click(function () {
-      d.render({force: true});
-    });
-    html.find(".directory-footer").append(button);
-  }
-});
-
-
 
 /* -------------------------------------------- */
 /*  Hotbar Macros                               */
@@ -576,13 +562,14 @@ async function noCharSelected() {
     //create final dialog data
     const dialogData = {
       window: {title: `Macro Issue`},
+      classes: ["macro-popup-dialog"],
       content: errorMessage,
       buttons: [
         {
           label: `Ok`,
           action: 'action_ok',
           callback: () => { },
-          icon: '<i class="fas fa-check"></i>'
+          icon: 'fas fa-check'
         }
       ]
     };
@@ -608,13 +595,14 @@ async function noShipSelected() {
     //create final dialog data
     const dialogData = {
       window: {title: `Macro Issue`},
+      classes: ["macro-popup-dialog"],
       content: errorMessage,
       buttons: [
         {
           label: `Ok`,
           action: 'action_ok',
           callback: () => { },
-          icon: '<i class="fas fa-check"></i>'
+          icon: 'fas fa-check'
         }
       ]
     };

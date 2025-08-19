@@ -261,10 +261,11 @@ export class MothershipClassSheet extends MothershipItemSheet {
 
       let d = new foundry.applications.api.DialogV2({
 		    window: {title: `Select Stat`},
+        classes: ["macro-popup-dialog"],
         content: DialogContent,
         buttons: [
           {
-            icon: '<i class="fas fa-check"></i>',
+            icon: 'fas fa-check',
             action: "create",
             label: "Create",
             callback: (event, button, dialog) => {
@@ -305,7 +306,7 @@ export class MothershipClassSheet extends MothershipItemSheet {
             }
           },
           {
-            icon: '<i class="fas fa-times"></i>',
+            icon: 'fas fa-times',
             action: "cancel",
             label: "Cancel",
             callback: () => { }

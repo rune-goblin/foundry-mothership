@@ -900,6 +900,7 @@ export class MothershipActor extends Actor {
       //create final dialog data
       const dialogData = {
         window: {title: game.i18n.localize("Mosh.ChooseAStat")},
+        classes: ["macro-popup-dialog"],
         position: {width: 600,height: 500},
         content: dialogDesc + buttonDesc,
         buttons: []
@@ -918,7 +919,7 @@ export class MothershipActor extends Actor {
               resolve([rollString, aimFor, attribute]);
               console.log(`User left the chooseAttribute dialog with: rollString:${rollString}, aimFor:${aimFor}, attribute:${attribute}`);
             },
-            icon: `<i class="fas fa-angle-double-up"></i>`
+            icon: `fas fa-angle-double-up`
           },
           {
             label: game.i18n.localize("Mosh.Normal"),
@@ -930,7 +931,7 @@ export class MothershipActor extends Actor {
               resolve([rollString, aimFor, attribute]);
               console.log(`User left the chooseAttribute dialog with: rollString:${rollString}, aimFor:${aimFor}, attribute:${attribute}`);
             },
-            icon: `<i class="fas fa-minus"></i>`
+            icon: `fas fa-minus`
           },
           {
             label: game.i18n.localize("Mosh.Disadvantage"),
@@ -942,7 +943,7 @@ export class MothershipActor extends Actor {
               resolve([rollString, aimFor, attribute]);
               console.log(`User left the chooseAttribute dialog with: rollString:${rollString}, aimFor:${aimFor}, attribute:${attribute}`);
             },
-            icon: `<i class="fas fa-angle-double-down"></i>`
+            icon: `fas fa-angle-double-down`
           }
         ]
       //add a next button if we dont need a rollString
@@ -957,7 +958,7 @@ export class MothershipActor extends Actor {
               resolve([rollString, aimFor, attribute]);
               console.log(`User left the chooseAttribute dialog with: rollString:${rollString}, aimFor:${aimFor}, attribute:${attribute}`);
             },
-            icon: `<i class="fas fa-chevron-circle-right"></i>`
+            icon: `fas fa-chevron-circle-right`
           }
         ]
       }
@@ -981,8 +982,8 @@ export class MothershipActor extends Actor {
         //skill template
         let skillRow = `
         <label for="[RADIO_ID]">
-        <div class ="macro_window" style="margin-bottom : 7px; vertical-align: middle; padding-left: 3px;">
-          <div class="grid grid-4col" style="grid-template-columns: 20px 60px 45px auto">
+        <div class ="macro_window" style="vertical-align: middle; padding-left: 3px;">
+          <div class="grid grid-4col" style="align-items: center; grid-template-columns: 20px 60px 45px auto">
             <input type="radio" id="[RADIO_ID]" name="skill" value="[RADIO_VALUE]">
             <div class="macro_img" style="padding-top: 5px; padding-left: 0px; padding-right: 0px; padding-bottom: 5px;"><img src="[RADIO_IMG]" style="border:none"/></div>
             <div class="macro_desc" style="display: table;">
@@ -1040,14 +1041,15 @@ export class MothershipActor extends Actor {
           }
         //create button header if needed
         if (!rollString) {
-          buttonDesc = `<h4>` + game.i18n.localize("Mosh.SelectYourRollType") + `:</h4>`;
+          buttonDesc = `<div class="macro_prompt">` + game.i18n.localize("Mosh.SelectYourRollType") + `:</div>`;
         } else {
           buttonDesc = ``;
         }
       //create final dialog data
       const dialogData = {
         window: {title: dlgTitle},
-        position: {width: 600,height: dialogHeight},
+        classes: ["macro-popup-dialog"],
+        position: {width: 600},
         content: skillHeader + skillList + buttonDesc,
         buttons: []
       };
@@ -1065,7 +1067,7 @@ export class MothershipActor extends Actor {
               resolve([rollString, skill, skillValue]);
               console.log(`User left the chooseSkill dialog with: rollString:${rollString}, skill:${skill}, skillValue:${skillValue}`);
             },
-            icon: `<i class="fas fa-angle-double-up"></i>`
+            icon: `fas fa-angle-double-up`
           },
           {
             label: game.i18n.localize("Mosh.Normal"),
@@ -1077,7 +1079,7 @@ export class MothershipActor extends Actor {
               resolve([rollString, skill, skillValue]);
               console.log(`User left the chooseSkill dialog with: rollString:${rollString}, skill:${skill}, skillValue:${skillValue}`);
             },
-            icon: `<i class="fas fa-minus"></i>`
+            icon: `fas fa-minus`
           },
           {
             label: game.i18n.localize("Mosh.Disadvantage"),
@@ -1089,7 +1091,7 @@ export class MothershipActor extends Actor {
               resolve([rollString, skill, skillValue]);
               console.log(`User left the chooseSkill dialog with: rollString:${rollString}, skill:${skill}, skillValue:${skillValue}`);
             },
-            icon: `<i class="fas fa-angle-double-down"></i>`
+            icon: `fas fa-angle-double-down`
           }
         ]
       //add a next button if we dont need a rollString
@@ -1104,7 +1106,7 @@ export class MothershipActor extends Actor {
               resolve([rollString, skill, skillValue]);
               console.log(`User left the chooseSkill dialog with: rollString:${rollString}, skill:${skill}, skillValue:${skillValue}`);
             },
-            icon: `<i class="fas fa-chevron-circle-right"></i>`
+            icon: `fas fa-chevron-circle-right`
           }
         ]
       }
@@ -1125,7 +1127,8 @@ export class MothershipActor extends Actor {
       //create final dialog data
       const dialogData = {
         window: {title: dlgTitle},
-        position: {width: 600,height: 105},
+      classes: ["macro-popup-dialog"],
+        position: {width: 600},
         content: `<h4>` + game.i18n.localize("Mosh.SelectYourRollType") + `:</h4>`,
         buttons: [
           {
@@ -1136,7 +1139,7 @@ export class MothershipActor extends Actor {
               resolve([rollString]);
               console.log(`User left the chooseAdvantage dialog with: rollString:${rollString}`);
             },
-            icon: `<i class="fas fa-angle-double-up"></i>`
+            icon: `fas fa-angle-double-up`
           },
           {
             label: game.i18n.localize("Mosh.Normal"),
@@ -1146,7 +1149,7 @@ export class MothershipActor extends Actor {
               resolve([rollString]);
               console.log(`User left the chooseAdvantage dialog with: rollString:${rollString}`);
             },
-            icon: `<i class="fas fa-minus"></i>`
+            icon: `fas fa-minus`
           },
           {
             label: game.i18n.localize("Mosh.Disadvantage"),
@@ -1156,7 +1159,7 @@ export class MothershipActor extends Actor {
               resolve([rollString]);
               console.log(`User left the chooseAdvantage dialog with: rollString:${rollString}`);
             },
-            icon: `<i class="fas fa-angle-double-down"></i>`
+            icon: `fas fa-angle-double-down`
           }
         ]
       };
@@ -2262,19 +2265,20 @@ export class MothershipActor extends Actor {
       //create final dialog data
       const dialogData = {
         title: game.i18n.localize("Mosh.WeaponIssue"),
+        classes: ["macro-popup-dialog"],
         content: `<h4>` + game.i18n.localize("Mosh.OutOfAmmoNeedReload") + `</h4><br/>`,
         buttons: [
           {
             label: game.i18n.localize("Mosh.Reload"),
 			      action: `action_reload`,
             callback: () => this.reloadWeapon(itemId),
-            icon: `<i class="fas fa-check"></i>`
+            icon: `fas fa-check`
           },
           {
             label: `Cancel`,
 			      action: `action_cancel`,
             callback: () => {},
-            icon: `<i class="fas fa-times"></i>`
+            icon: `fas fa-times`
           }
         ]
       };
@@ -2292,13 +2296,14 @@ export class MothershipActor extends Actor {
       //create final dialog data
       const dialogData = {
         title: game.i18n.localize("Mosh.WeaponIssue"),
+        classes: ["macro-popup-dialog"],
         content: `<h4>` + game.i18n.localize("Mosh.OutOfAmmo") + `</h4><br/>`,
         buttons: [
           {
             label: game.i18n.localize("Mosh.OK"),
 			      action: `action_okay`,
             callback: () => {},
-            icon: '<i class="fas fa-check"></i>'
+            icon: 'fas fa-check'
           }
         ]
       };
@@ -2591,7 +2596,8 @@ export class MothershipActor extends Actor {
       //create final dialog data
       const dialogData = {
         window: {title: game.i18n.localize("Mosh.Cover")},
-        position: {width: 600,height: 580},
+        classes: ["macro-popup-dialog"],
+        position: {width: 600},
         content: msgContent,
         buttons: [
           {
@@ -2603,7 +2609,7 @@ export class MothershipActor extends Actor {
               });
               console.log(`User's cover is now:${button.form.querySelector("input[name='cover']:checked")?.getAttribute("value")}`);
             },
-            icon: '<i class="fas fa-check"></i>'
+            icon: 'fas fa-check'
           }
         ]
       };
@@ -2624,6 +2630,7 @@ export class MothershipActor extends Actor {
       //create final dialog data
       const dialogData = {
         window: {title: game.i18n.localize("Mosh.DistressSignal")},
+        classes: ["macro-popup-dialog"],
         position: {width: 600,height: 265},
         content: msgContent,
         buttons: [
@@ -2631,19 +2638,19 @@ export class MothershipActor extends Actor {
             label: game.i18n.localize("Mosh.Advantage"),
 			      action: `action_advantage`,
             callback: () => this.rollTable(game.settings.get('mosh', 'table1eDistressSignal'), `1d10 [+]`, `low`, true, false, null, null),
-            icon: `<i class="fas fa-angle-double-up"></i>`
+            icon: `fas fa-angle-double-up`
           },
           {
             label: game.i18n.localize("Mosh.Normal"),
 			      action: `action_normal`,
             callback: () => this.rollTable(game.settings.get('mosh', 'table1eDistressSignal'), `1d10`, `low`, true, false, null, null),
-            icon: `<i class="fas fa-minus"></i>`
+            icon: `fas fa-minus`
           },
           {
             label: game.i18n.localize("Mosh.Disadvantage"),
 			      action: `action_disadvantage`,
             callback: () => this.rollTable(game.settings.get('mosh', 'table1eDistressSignal'), `1d10 [-]`, `low`, true, false, null, null),
-            icon: `<i class="fas fa-angle-double-down"></i>`
+            icon: `fas fa-angle-double-down`
           }
         ]
       };
@@ -2665,6 +2672,7 @@ export class MothershipActor extends Actor {
       //create final dialog data
       const dialogData = {
         window: {title: game.i18n.localize("Mosh.MaintenanceCheck")},
+        classes: ["macro-popup-dialog"],
         position: {width: 600,height: 265},
         content: msgContent,
         buttons: [
@@ -2672,19 +2680,19 @@ export class MothershipActor extends Actor {
             label: game.i18n.localize("Mosh.Advantage"),
 			      action: `action_advantage`,
             callback: () => this.rollTable(`maintenanceCheck`, `1d100 [+]`, `low`, null, null, null, null),
-            icon: `<i class="fas fa-angle-double-up"></i>`
+            icon: `fas fa-angle-double-up`
           },
           {
             label: game.i18n.localize("Mosh.Normal"),
 			      action: `action_normal`,
             callback: () => this.rollTable(`maintenanceCheck`, `1d100`, `low`, null, null, null, null),
-            icon: `<i class="fas fa-minus"></i>`
+            icon: `fas fa-minus`
           },
           {
             label: game.i18n.localize("Mosh.Disadvantage"),
 			      action: `action_disadvantage`,
             callback: () => this.rollTable(`maintenanceCheck`, `1d100 [-]`, `low`, null, null, null, null),
-            icon: `<i class="fas fa-angle-double-down"></i>`
+            icon: `fas fa-angle-double-down`
           }
         ]
       };
@@ -2706,6 +2714,7 @@ export class MothershipActor extends Actor {
       //create final dialog data
       const dialogData = {
         window: {title: game.i18n.localize("Mosh.BankrupcySave")},
+        classes: ["macro-popup-dialog"],
         position: {width: 600,height: 265},
         content: msgContent,
         buttons: [
@@ -2713,19 +2722,19 @@ export class MothershipActor extends Actor {
             label: game.i18n.localize("Mosh.Advantage"),
 			      action: `action_advantage`,
             callback: () => this.rollCheck(`1d100 [+]`, `low`, `bankruptcySave`, null, null, null),
-            icon: `<i class="fas fa-angle-double-up"></i>`
+            icon: `fas fa-angle-double-up`
           },
           {
             label: game.i18n.localize("Mosh.Normal"),
 			      action: `action_normal`,
             callback: () => this.rollCheck(`1d100`, `low`, `bankruptcySave`, null, null, null),
-            icon: `<i class="fas fa-minus"></i>`
+            icon: `fas fa-minus`
           },
           {
             label: game.i18n.localize("Mosh.Disadvantage"),
 			      action: `action_disadvantage`,
             callback: () => this.rollCheck(`1d100 [-]`, `low`, `bankruptcySave`, null, null, null),
-            icon: `<i class="fas fa-angle-double-down"></i>`
+            icon: `fas fa-angle-double-down`
           }
         ]
       };
@@ -2782,6 +2791,7 @@ export class MothershipActor extends Actor {
       //create final dialog data
       const dialogData = {
         window: {title: `Morale Check`},
+        classes: ["macro-popup-dialog"],
         position: {width: 600,height: 265},
         content: msgContent,
         buttons: [
@@ -2789,19 +2799,19 @@ export class MothershipActor extends Actor {
             label: game.i18n.localize("Mosh.Advantage"),
 			      action: `action_advantage`,
             callback: () => this.rollCheck(`1d10 [+]`, `high-equal`, `moraleCheck`, null, null, null),
-            icon: `<i class="fas fa-angle-double-up"></i>`
+            icon: `fas fa-angle-double-up`
           },
           {
             label: game.i18n.localize("Mosh.Normal"),
 			      action: `action_normal`,
             callback: () => this.rollCheck(`1d10`, `high-equal`, `moraleCheck`, null, null, null),
-            icon: `<i class="fas fa-minus"></i>`
+            icon: `fas fa-minus`
           },
           {
             label: game.i18n.localize("Mosh.Disadvantage"),
 			      action: `action_disadvantage`,
             callback: () => this.rollCheck(`1d10 [-]`, `high-equal`, `moraleCheck`, null, null, null),
-            icon: `<i class="fas fa-angle-double-down"></i>`
+            icon: `fas fa-angle-double-down`
           }
         ]
       };

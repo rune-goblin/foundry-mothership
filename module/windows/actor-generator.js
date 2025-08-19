@@ -196,7 +196,7 @@ export class DLActorGenerator extends FormApplication {
          let buttons_options = [];
          for (let j = 0; j < skillPopupOptions.length; j++) {
             buttons_options.push({
-               icon: '<i class="fas fa-check"></i>',
+               icon: 'fas fa-check',
 			      action: skillPopupOptions[j].name,
                label: skillPopupOptions[j].name,
                callback: () => resolve(skillPopupOptions[j].uuid),
@@ -204,6 +204,7 @@ export class DLActorGenerator extends FormApplication {
          }
          let d = new foundry.applications.api.DialogV2({
 		      window: {title: game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupTitle")},
+            classes: ["macro-popup-dialog"],
             content: `<p>${game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupText")}</p>`,
             buttons: buttons_options,
             default: "1",
@@ -327,10 +328,11 @@ export class DLActorGenerator extends FormApplication {
       return new Promise((resolve) => {
          let d = new foundry.applications.api.DialogV2({
 		      window: {title: game.i18n.localize("Mosh.CharacterGenerator.SkillOption.PopupTitle")},
+            classes: ["macro-popup-dialog"],
             content: popUpContent,
             buttons: [
                {
-                  icon: '<i class="fas fa-check"></i>',
+                  icon: 'fas fa-check',
 			         action: `action_save`,
                   label: "Save",
                   callback: (event, button, dialog) => {
@@ -370,7 +372,7 @@ export class DLActorGenerator extends FormApplication {
          let buttonsData = [];
          for (let i=0;i<list_option_skills_or.length;i++){
             buttonsData.push({
-               icon: '<i class="fas fa-check"></i>',
+               icon: 'fas fa-check',
 			      action: list_option_skills_or[i].name,
                label: list_option_skills_or[i].name,//game.i18n.localize("Mosh.CharacterGenerator.SkillOption.ChoiceWord") + ` ${i}`,
                callback: () => {
@@ -380,6 +382,7 @@ export class DLActorGenerator extends FormApplication {
          }
          let d = new foundry.applications.api.DialogV2({
 		      window: {title: game.i18n.localize("Mosh.CharacterGenerator.SkillOption.PopupTitle")},
+            classes: ["macro-popup-dialog"],
             content: popUpContent,
             window:{width: 500},
             buttons: buttonsData,
@@ -482,7 +485,7 @@ export class DLActorGenerator extends FormApplication {
             for (let j = 0; j < option_stats_and_saves.stats.length; j++) {
                let prev_bonus = this._element.find(`input[name="system.stats.${option_stats_and_saves.stats[j]}.bonus"]`).prop("value");
                buttons_options.push({
-                  icon: '<i class="fas fa-check"></i>',
+                  icon: 'fas fa-check',
 			         action: option_stats_and_saves.stats[j],
                   label: option_stats_and_saves.stats[j],//.replace(/\.bonus/i,"").replace(/(.*)\.+/i,""),
                   callback: () => this._element.find(`input[name="system.stats.${option_stats_and_saves.stats[j]}.bonus"]`).prop("value", (parseInt(option_stats_and_saves.modification) + parseInt(prev_bonus)))
@@ -490,6 +493,7 @@ export class DLActorGenerator extends FormApplication {
             }
             let d = new foundry.applications.api.DialogV2({
 		         window: {title: game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupTitle")},
+               classes: ["macro-popup-dialog"],
                content: `<p>${game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupText")} (${option_stats_and_saves.modification})</p>`,
                buttons: buttons_options,
                default: "1",

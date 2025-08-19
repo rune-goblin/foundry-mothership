@@ -1748,7 +1748,169 @@ p {
   text-align: center;
 }
 
-/*# sourceMappingURL=styles.css.map */
+/* Dialog V2 - Macro Pop Ups */
 
+/* Base dialog styling */
+.application.dialog.macro-popup-dialog {
+	background: rgb(255,255,255);
+	font-family: "Roboto", sans-serif;
+	color: #1A1915;
+}
 
-/*# sourceMappingURL=styles.css.map */
+/* Adjust dialog content gap */
+.macro-popup-dialog .dialog-content.standard-form {
+  gap: .5rem;
+}
+
+/* Adjust dialog form gap */
+.macro-popup-dialog .dialog-form.standard-form {
+  gap: .5rem;
+}
+
+/* MPD window header */
+.macro-popup-dialog .window-header {
+  background: rgb(25,25,25);
+}
+
+/* MPD window content */
+.macro-popup-dialog .window-content {
+  padding: 10px;
+}
+
+/* MPD macro window */
+.macro-popup-dialog .macro_window {
+  background: rgb(230,230,230);
+  border-radius: 9px;
+}
+
+/* MPD macro image */
+.macro-popup-dialog .macro_img {
+	
+}
+
+/* MPD macro desc */
+.macro-popup-dialog .macro_desc {
+  font-family: "Roboto", sans-serif;
+  font-size: 10.5pt;
+  font-weight: 400;
+  padding-top: 8px;
+  padding-left: 0px;
+  padding-right: 8px;
+  padding-bottom: 8px;
+}
+
+/* MPD macro desc — title styling */
+.macro-popup-dialog .macro_desc h4 {
+  font-family: "Roboto", sans-serif;
+  font-size: 14pt;
+  font-weight: 400;
+  color: #1A1915;
+  border-bottom: 1px solid darkred;
+  margin-bottom: 8px;
+}
+
+/* MPD macro prompt */
+.macro-popup-dialog .macro_prompt {
+	
+}
+
+/* MPD grid layouts */
+.macro-popup-dialog .grid-1col {
+  grid-column: span 1 / span 1;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.macro-popup-dialog .grid-2col {
+  display: grid;
+  grid-column: span 2 / span 2;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px;
+  padding: 0;
+}
+
+.macro-popup-dialog .grid-3col {
+  grid-column: span 3 / span 3;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* update buttons to look more old school */
+.macro-popup-dialog .form-footer button {
+  background: rgb(230,230,230);
+  color: #1A1915;
+  border: 1px solid #222;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 11pt;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.macro-popup-dialog .form-footer button:hover {
+  background: #444;
+  color: #fff;
+  border-color: #111;
+}
+
+/* Custom radio: kill native + theme accents */
+.macro-popup-dialog input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  accent-color: initial;             /* ignore theme accent */
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #777;            /* medium grey ring */
+  border-radius: 50%;
+  background: #fff;                  /* white center when unchecked */
+  display: inline-flex;              /* center the pseudo-dot */
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  margin: 0 8px 0 2px;
+  vertical-align: middle;
+
+  /* nuke any theme glow/orange */
+  box-shadow: none !important;
+  outline: none;
+}
+
+/* The inner dot (hidden until checked) */
+.macro-popup-dialog input[type="radio"]::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #111;                  /* dot color */
+  transform: scale(0);
+  transition: transform 120ms ease-in-out;
+}
+
+/* Checked = show the dot */
+.macro-popup-dialog input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
+/* Checked = show the dot */
+.macro-popup-dialog input[type="radio"]:checked::after {
+  color: none !important;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transform: scale(0);
+  background: #ffffff;    
+}
+
+/* Hover/focus states (accessible, non-orange) */
+.macro-popup-dialog input[type="radio"]:hover { border-color: #5c5c5c; }
+.macro-popup-dialog input[type="radio"]:focus-visible {
+  outline: 2px solid #9a9a9a;
+  outline-offset: 2px;
+}
+
+/* If your theme highlights the whole row via :has(input:checked), strip it here */
+.macro-popup-dialog label:has(input[type="radio"]:checked) {
+  background: inherit !important;
+  box-shadow: none !important;
+}
