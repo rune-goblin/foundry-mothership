@@ -62,6 +62,13 @@
   background: none;
 }
 
+#pause figcaption {
+  font-family: "Roboto", sans-serif;
+  color: #ffffff;
+  opacity: .3;
+  padding-left: 6px;
+}
+
 /* Paragraph */
 p {
   margin: 0em 0;
@@ -1783,11 +1790,6 @@ p {
   border-radius: 9px;
 }
 
-/* MPD macro image */
-.macro-popup-dialog .macro_img {
-	
-}
-
 /* MPD macro desc */
 .macro-popup-dialog .macro_desc {
   font-family: "Roboto", sans-serif;
@@ -1809,10 +1811,6 @@ p {
   margin-bottom: 8px;
 }
 
-/* MPD macro prompt */
-.macro-popup-dialog .macro_prompt {
-	
-}
 
 /* MPD grid layouts */
 .macro-popup-dialog .grid-1col {
@@ -1857,14 +1855,14 @@ p {
 .macro-popup-dialog input[type="radio"] {
   appearance: none;
   -webkit-appearance: none;
-  accent-color: initial;             /* ignore theme accent */
+  accent-color: initial;
   box-sizing: border-box;
   width: 16px;
   height: 16px;
-  border: 2px solid #777;            /* medium grey ring */
+  border: 2px solid #777;
   border-radius: 50%;
-  background: #fff;                  /* white center when unchecked */
-  display: inline-flex;              /* center the pseudo-dot */
+  background: #fff;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   line-height: 0;
@@ -1882,7 +1880,7 @@ p {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #111;                  /* dot color */
+  background: #111;
   transform: scale(0);
   transition: transform 120ms ease-in-out;
 }
