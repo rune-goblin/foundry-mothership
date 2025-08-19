@@ -111,7 +111,7 @@ export class DLActorGenerator extends FormApplication {
          let resultText = "";
          let resultUuid = [];
          for (var i = 0; i < tableResult.results.length; i++) {
-            if (tableResult.results[i].type == "pack") {
+            if (tableResult.results[i].type == "pack" || tableResult.results[i].type == "document") {
                if (type == "ul") {
                   this._element.find(`ul[id="${id}.text"]`).append(`<li>${tableResult.results[i].text}</li>`);
                } else {
@@ -323,7 +323,7 @@ export class DLActorGenerator extends FormApplication {
          }
       }
 
-      let popUpContent = await renderTemplate(template, skillPopupData);
+      let popUpContent = await foundry.applications.handlebars.renderTemplate(template, skillPopupData);
 
       return new Promise((resolve) => {
          let d = new foundry.applications.api.DialogV2({
@@ -336,7 +336,7 @@ export class DLActorGenerator extends FormApplication {
 			         action: `action_save`,
                   label: "Save",
                   callback: (event, button, dialog) => {
-                     let form = button.form.querySelector('form');
+                     let form = button.form;
                      let formData = new FormData(form);
                      let new_skills = [];
                      formData.forEach((value, key) => {
@@ -365,7 +365,7 @@ export class DLActorGenerator extends FormApplication {
    async showOptionsDialog(list_option_skills_or) {
       let popupData = {options:list_option_skills_or};
 
-      let popUpContent = await renderTemplate("systems/mosh/templates/dialogs/actor-generator/actor-generator-skill-option-choice-dialog.html", popupData);
+      let popUpContent = await foundry.applications.handlebars.renderTemplate("systems/mosh/templates/dialogs/actor-generator/actor-generator-skill-option-choice-dialog.html", popupData);
       
       return new Promise((resolve) => {
          
