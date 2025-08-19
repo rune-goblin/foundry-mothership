@@ -434,6 +434,43 @@ export class DLActorGenerator extends FormApplication {
    }
 
    /**
+    * Ask the user for the stat options, and apply the bonuses to the form.
+    * @param {Array} list_option_stats_and_saves
+    * @returns 
+    */
+   async statOptions(list_option_stats_and_saves){
+      return new Promise((resolve) => {
+         for(let i =0;i<list_option_stats_and_saves.length;i++){
+            let option_stats_and_saves = list_option_stats_and_saves[i];
+            if (option_stats_and_saves.modification) {
+               let buttons_options = [];
+               for (let j = 0; j < option_stats_and_saves.stats.length; j++) {
+                  let prev_bonus = this._element.find(`input[name="system.stats.${option_stats_and_saves.stats[j]}.bonus"]`).prop("value");
+                  buttons_options.push({
+                     icon: 'fas fa-check',
+                     action: option_stats_and_saves.stats[j],
+                     label: option_stats_and_saves.stats[j],//.replace(/\.bonus/i,"").replace(/(.*)\.+/i,""),
+                     callback: () => {this._element.find(`input[name="system.stats.${option_stats_and_saves.stats[j]}.bonus"]`).prop("value", (parseInt(option_stats_and_saves.modification) + parseInt(prev_bonus)));
+                        resolve();
+                     }
+                  });
+               }
+               let d = new foundry.applications.api.DialogV2({
+                  window: {title: game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupTitle")},
+                  classes: ["macro-popup-dialog"],
+                  content: `<p>${game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupText")} (${option_stats_and_saves.modification})</p>`,
+                  buttons: buttons_options,
+                  default: "1",
+                  //render: html => console.log("Register interactivity in the rendered dialog"),
+                  //close: html => console.log("This always is logged no matter which option is chosen")
+               });
+               d.render({force: true});
+            }
+         }
+      });
+   }
+
+   /**
     * Apply the changed or dropped class into the generator, stats, skills and table configuration.
     * @param {uuid} classUuid 
     * @param {Boolean} randomCharacter 
@@ -477,37 +514,11 @@ export class DLActorGenerator extends FormApplication {
        * Stats
        */
       //stats options
-      let list_option_stats_and_saves = droppedObject.system.selected_adjustment.choose_stat;
-      for(let i =0;i<list_option_stats_and_saves.length;i++){
-         let option_stats_and_saves = list_option_stats_and_saves[i];
-         if (option_stats_and_saves.modification) {
-            let buttons_options = [];
-            for (let j = 0; j < option_stats_and_saves.stats.length; j++) {
-               let prev_bonus = this._element.find(`input[name="system.stats.${option_stats_and_saves.stats[j]}.bonus"]`).prop("value");
-               buttons_options.push({
-                  icon: 'fas fa-check',
-			         action: option_stats_and_saves.stats[j],
-                  label: option_stats_and_saves.stats[j],//.replace(/\.bonus/i,"").replace(/(.*)\.+/i,""),
-                  callback: () => this._element.find(`input[name="system.stats.${option_stats_and_saves.stats[j]}.bonus"]`).prop("value", (parseInt(option_stats_and_saves.modification) + parseInt(prev_bonus)))
-               });
-            }
-            let d = new foundry.applications.api.DialogV2({
-		         window: {title: game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupTitle")},
-               classes: ["macro-popup-dialog"],
-               content: `<p>${game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupText")} (${option_stats_and_saves.modification})</p>`,
-               buttons: buttons_options,
-               default: "1",
-               //render: html => console.log("Register interactivity in the rendered dialog"),
-               //close: html => console.log("This always is logged no matter which option is chosen")
-            });
-            d.render({force: true});
-         }
-      }
+      await this.statOptions(droppedObject.system.selected_adjustment.choose_stat)
 
       /**
        *  Skills
        * */
-
       await this.applyClassSkills(this._element);
 
      
