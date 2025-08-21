@@ -28,7 +28,7 @@
                     </option>
 
                     {{#each skills.trained as |skill id|}}
-                    <option hidden value="{{skill.uuid}}" data-uuid="{{skill.uuid}}" {{skill.disabled}}
+                    <option value="{{skill.uuid}}" data-uuid="{{skill.uuid}}" {{skill.disabled}}
                         data-prerequisite_ids='[{{#each skill.system.prerequisite_ids as |id|}}"{{id}}"{{#unless @last}},{{/unless}}{{/each}}]'>
                         {{skill.name}}</option>
                     {{/each}}
@@ -38,28 +38,3 @@
         </div>
     </form>
 </div>
-<script>
-
-    function updateDropdownExpert() {
-        // Logic to update dropdownTrained based on the selection of dropdownExpert
-
-        let dropdownExpert = document.getElementById('dropdownExpert');
-        let dropdownTrained = document.getElementById('dropdownTrained');
-        let selectedValue = dropdownExpert.options[dropdownExpert.selectedIndex].getAttribute('data-uuid');
-
-        let prerequisiteIds = JSON.parse(dropdownExpert.options[dropdownExpert.selectedIndex].getAttribute('data-prerequisite_ids'));
-
-        for (let i = 0; i < dropdownTrained.options.length; i++) {
-            let option = dropdownTrained.options[i];
-            let optionUuid = option.getAttribute('data-uuid');
-            if (prerequisiteIds.includes(optionUuid)) {
-                option.hidden = false;
-            } else {
-                option.hidden = true;
-                if (dropdownTrained.options[dropdownTrained.selectedIndex].getAttribute('data-uuid') == optionUuid) {
-                    dropdownTrained.selectedIndex = 0;
-                }
-            }
-        }
-    }
-</script>
