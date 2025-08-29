@@ -113,15 +113,15 @@ export class DLActorGenerator extends FormApplication {
          for (var i = 0; i < tableResult.results.length; i++) {
             if (tableResult.results[i].type == "pack" || tableResult.results[i].type == "document") {
                if (type == "ul") {
-                  this._element.find(`ul[id="${id}.description"]`).append(`<li>${tableResult.results[i].description}</li>`);
+                  this._element.find(`ul[id="${id}.text"]`).append(`<li>${tableResult.results[i].name}</li>`);
                } else {
-                  resultText += tableResult.results[i].description + "; ";
+                  resultText += tableResult.results[i].name + "; ";
                }
-               resultUuid.push(tableResult.results[i].documentId);
+               resultUuid.push(tableResult.results[i].documentUuid);
             } else if (tableResult.results[i].type == "text") {
                let tableTextmatch = tableResult.results[i].description.match(/(.*)(@UUID.*)/i);
                if (type == "ul") {
-                  this._element.find(`ul[id="${id}.description"]`).append(`<li>${await foundry.applications.ux.TextEditor.implementation.enrichHTML(tableTextmatch[2].replace(/(\<br\s\/>)+/i, ""), { async: true })}</li>`);
+                  this._element.find(`ul[id="${id}.text"]`).append(`<li>${await foundry.applications.ux.TextEditor.implementation.enrichHTML(tableTextmatch[2].replace(/(\<br\s\/>)+/i, ""), { async: true })}</li>`);
                }
                else {
                   resultText += tableTextmatch[1].replace(/(\<br\s\/>)+/i, "");
@@ -134,8 +134,8 @@ export class DLActorGenerator extends FormApplication {
          html.find(`img[id="` + id + `.value"]`).prop('hidden', true);
          html.find(`input[id="` + id + `.value"]`).prop('hidden', false);
          html.find(`input[id="` + id + `.value"]`).prop('value', tableRoll);
-         html.find(`input[id="` + id + `.description"]`).prop('hidden', false);
-         html.find(`input[id="` + id + `.description"]`).prop('value', resultText);
+         html.find(`input[id="` + id + `.text"]`).prop('hidden', false);
+         html.find(`input[id="` + id + `.text"]`).prop('value', resultText);
          html.find(`input[id="` + id + `.uuid"]`).prop('value', resultUuid);
 
       }
@@ -146,6 +146,7 @@ export class DLActorGenerator extends FormApplication {
    async rollPatch(html) {
       if (!this.patchTable) {
          ui.notifications.error(game.i18n.localize("Mosh.CharacterGenerator.Error.NoClass"));
+         return;
       }
       await this.rollTable(html, "system.class.patch", this.patchTable);
 
@@ -153,6 +154,7 @@ export class DLActorGenerator extends FormApplication {
    async rollTrinket(html) {
       if (!this.trinketTable) {
          ui.notifications.error(game.i18n.localize("Mosh.CharacterGenerator.Error.NoClass"));
+         return;
       }
       await this.rollTable(html, "system.class.trinket", this.trinketTable);
 
@@ -193,6 +195,10 @@ export class DLActorGenerator extends FormApplication {
     */
    async fixedSkillOptionPopup(html, skillPopupOptions) {
       return new Promise((resolve) => {
+         if(skillPopupOptions.length == 0){
+            resolve(null);
+            return;
+         }
          let buttons_options = [];
          for (let j = 0; j < skillPopupOptions.length; j++) {
             buttons_options.push({
@@ -367,7 +373,10 @@ export class DLActorGenerator extends FormApplication {
       let popUpContent = await foundry.applications.handlebars.renderTemplate("systems/mosh/templates/dialogs/actor-generator/actor-generator-skill-option-choice-dialog.html", popupData);
       
       return new Promise((resolve) => {
-         
+         if(list_option_skills_or.length == 0){
+            resolve(null);
+            return;
+         }
          let buttonsData = [];
          for (let i=0;i<list_option_skills_or.length;i++){
             buttonsData.push({
@@ -398,6 +407,7 @@ export class DLActorGenerator extends FormApplication {
       let class_uuid = html.find(`input[id="system.class.uuid"]`).prop("value");
       if (class_uuid == "") {
          ui.notifications.error(game.i18n.localize("Mosh.CharacterGenerator.SkillOption.Classerror"));
+         return;
       }
       let classObject = await fromUuid(class_uuid);
       //empty previously existing skills
@@ -439,6 +449,11 @@ export class DLActorGenerator extends FormApplication {
     */
    async statOptions(list_option_stats_and_saves){
       return new Promise((resolve) => {
+         if(list_option_stats_and_saves.length == 0){
+            resolve();
+            return;
+         }
+
          for(let i =0;i<list_option_stats_and_saves.length;i++){
             let option_stats_and_saves = list_option_stats_and_saves[i];
             if (option_stats_and_saves.modification) {
