@@ -49,11 +49,8 @@ export class MothershipCreatureSheet extends foundry.appv1.sheets.ActorSheet {
     async _updateObject(event, formData) {
         const actor = this.object;
         var updateData;
-        if (game.release.generation >= 12) {
-          updateData = foundry.utils.expandObject(formData);
-        } else {
-          updateData = expandObject(formData);
-        }
+        updateData = foundry.utils.expandObject(formData);
+        
     
 
         await actor.update(updateData, {
@@ -179,11 +176,7 @@ export class MothershipCreatureSheet extends foundry.appv1.sheets.ActorSheet {
         html.find('.weapon-roll').click(ev => {
             const li = ev.currentTarget.closest(".item");
             var item;
-            if (game.release.generation >= 12) {
-                item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            } else {
-                item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            }
+            item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
             let swarm_damage_roll_string =null;
             if (this.actor.system.swarm && this.actor.system.swarm.enabled){
                 //replace the roll damage for swarm actors
@@ -197,11 +190,7 @@ export class MothershipCreatureSheet extends foundry.appv1.sheets.ActorSheet {
         html.find('.dmg-roll').click(ev => {
             const li = ev.currentTarget.closest(".item");
             var item;
-            if (game.release.generation >= 12) {
-                item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            } else {
-                item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            }
+            item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
             let swarm_damage_roll_string =null;
             if (this.actor.system.swarm && this.actor.system.swarm.enabled){
                 //replace the roll damage for swarm actors
@@ -216,11 +205,7 @@ export class MothershipCreatureSheet extends foundry.appv1.sheets.ActorSheet {
             //dupe item to work on
             const li = ev.currentTarget.closest(".item");
             var item;
-            if (game.release.generation >= 12) {
-                item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            } else {
-                item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            }
+            item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
             let amount = item.system.ammo;
             //increase ammo
             if (event.button == 0) {
@@ -240,11 +225,7 @@ export class MothershipCreatureSheet extends foundry.appv1.sheets.ActorSheet {
         html.on('mousedown', '.weapon-shots', ev => {
             const li = ev.currentTarget.closest(".item");
             var item;
-            if (game.release.generation >= 12) {
-                item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            } else {
-                item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            }
+            item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
             if (event.button == 0) {
                 if (item.system.curShots >= 0 && item.system.curShots < item.system.shots && item.system.ammo > 0) {
                     item.system.curShots = Number(item.system.curShots) + 1;
@@ -320,11 +301,7 @@ export class MothershipCreatureSheet extends foundry.appv1.sheets.ActorSheet {
         const type = header.dataset.type;
         // Grab any data associated with this control.
         var data;
-        if (game.release.generation >= 12) {
-            data = foundry.utils.duplicate(header.dataset);
-        } else {
-            data = duplicate(header.dataset);
-        }
+        data = foundry.utils.duplicate(header.dataset);
         // Initialize a default name.
         const name = `New ${type.capitalize()}`;
         // Prepare the item object.

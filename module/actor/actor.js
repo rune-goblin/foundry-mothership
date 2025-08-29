@@ -544,7 +544,7 @@ export class MothershipActor extends Actor {
     let tableResultType = ``;
     let tableResultEdited = ``;
     let tableResultFooter = ``;
-    let chatId = (game.release.generation >= 12 ? foundry.utils.randomID() : randomID())
+    let chatId = foundry.utils.randomID();
     let rollTarget = null;
     let valueAddress = [];
     let specialRoll = null;
@@ -778,9 +778,9 @@ export class MothershipActor extends Actor {
       //panic check #19 customiziation
       if (tableName === 'Panic Check' && tableResultNumber === 19) {
         if (this.system.class.value.toLowerCase() === 'android') {
-        tableResultEdited = tableResult[0].text.replace(game.i18n.localize("Mosh.HEARTATTACKSHORTCIRCUITANDROIDS"), game.i18n.localize("Mosh.SHORTCIRCUIT"));
+        tableResultEdited = tableResult[0].description.replace(game.i18n.localize("Mosh.HEARTATTACKSHORTCIRCUITANDROIDS"), game.i18n.localize("Mosh.SHORTCIRCUIT"));
         } else {
-        tableResultEdited = tableResult[0].text.replace(game.i18n.localize("Mosh.HEARTATTACKSHORTCIRCUITANDROIDS"), game.i18n.localize("Mosh.HEARTATTACK"));
+        tableResultEdited = tableResult[0].description.replace(game.i18n.localize("Mosh.HEARTATTACKSHORTCIRCUITANDROIDS"), game.i18n.localize("Mosh.HEARTATTACK"));
         }
       }
     //assign message description text
@@ -849,7 +849,7 @@ export class MothershipActor extends Actor {
       //prepare template
       messageTemplate = 'systems/mosh/templates/chat/rollTable.html';
       //render template
-      messageContent = await renderTemplate(messageTemplate, messageData);
+      messageContent = await foundry.applications.handlebars.renderTemplate(messageTemplate, messageData);
       //make message
       let macroMsg = await rollResult.toMessage({
         id: chatId,
@@ -890,10 +890,10 @@ export class MothershipActor extends Actor {
       let buttonDesc = ``;
       //create HTML for this window
         //header
-      let dialogDesc = await renderTemplate('systems/mosh/templates/dialogs/skill-check-stat-selection-dialog.html');
+      let dialogDesc = await foundry.applications.handlebars.renderTemplate('systems/mosh/templates/dialogs/skill-check-stat-selection-dialog.html');
         //create button header if needed
         if (!rollString) {
-        buttonDesc = `<h4>` + game.i18n.localize("Mosh.SelectYourRollType") + `:</h4>`;
+        buttonDesc = `<div class="macro_prompt">` + game.i18n.localize("Mosh.SelectYourRollType") + `</div>`;
         } else {
           buttonDesc = ``;
         }
@@ -901,7 +901,7 @@ export class MothershipActor extends Actor {
       const dialogData = {
         window: {title: game.i18n.localize("Mosh.ChooseAStat")},
         classes: ["macro-popup-dialog"],
-        position: {width: 600,height: 500},
+        position: {width: 600},
         content: dialogDesc + buttonDesc,
         buttons: []
       };
@@ -978,7 +978,7 @@ export class MothershipActor extends Actor {
       let buttonDesc = ``;
       //create HTML for this window
         //header
-        let skillHeader = await renderTemplate('systems/mosh/templates/dialogs/choose-skill-dialog-header.html');
+        let skillHeader = await foundry.applications.handlebars.renderTemplate('systems/mosh/templates/dialogs/choose-skill-dialog-header.html');
         //skill template
         let skillRow = `
         <label for="[RADIO_ID]">
@@ -1192,7 +1192,7 @@ export class MothershipActor extends Actor {
     let woundEffect = ``;
     let msgHeader = ``;
     let msgImgPath = ``;
-    let chatId = (game.release.generation >= 12 ? foundry.utils.randomID() : randomID());
+    let chatId = foundry.utils.randomID();
     let firstEdition = game.settings.get('mosh', 'firstEdition');
     let useCalm = game.settings.get('mosh', 'useCalm');
     //customize this roll if its a unique use-case
@@ -1393,11 +1393,11 @@ export class MothershipActor extends Actor {
             alias: this.name
           }
         };
-        let template = 'systems/mosh/templates/chat/rollCheck.html';
-        renderTemplate(template, messageData).then(content => {
-          chatData.content = content;
-          ChatMessage.create(chatData);
-        });
+        //create message
+        const template = 'systems/mosh/templates/chat/rollCheck.html';
+        const content = await foundry.applications.handlebars.renderTemplate(template, templateData);
+        chatData.content = content;
+        await ChatMessage.create(chatData);
       //log what was done
       console.log(`Rolled damage on:${weapon.name}`);
       //return messageData
@@ -1665,19 +1665,19 @@ export class MothershipActor extends Actor {
           //prep text for success
           if (parsedRollResult.success && parsedRollResult.critical) {
             //flavor text
-            flavorText = tableData.getResultsForRoll(0)[0].text;
+            flavorText = tableData.getResultsForRoll(0)[0].description;
           //prep text for critical success
           } else if (parsedRollResult.success && !parsedRollResult.critical) {
             //flavor text
-            flavorText = tableData.getResultsForRoll(1)[0].text;
+            flavorText = tableData.getResultsForRoll(1)[0].description;
           //prep text for failure
           } else if (!parsedRollResult.success && !parsedRollResult.critical) {
             //flavor text
-            flavorText = tableData.getResultsForRoll(2)[0].text;
+            flavorText = tableData.getResultsForRoll(2)[0].description;
           //prep text for critical failure
           } else if (!parsedRollResult.success && parsedRollResult.critical) {
             //flavor text
-            flavorText = tableData.getResultsForRoll(3)[0].text;
+            flavorText = tableData.getResultsForRoll(3)[0].description;
           }
         }
         //morale check
@@ -1775,7 +1775,7 @@ export class MothershipActor extends Actor {
       //prepare template
       messageTemplate = 'systems/mosh/templates/chat/rollCheck.html';
       //render template
-      messageContent = await renderTemplate(messageTemplate, messageData);
+      messageContent = await foundry.applications.handlebars.renderTemplate(messageTemplate, messageData);
       //make message
       let macroMsg = await rollResult.toMessage({
         id: chatId,
@@ -1825,7 +1825,7 @@ export class MothershipActor extends Actor {
     let msgFlavor = ``;
     let msgOutcome = ``;
     let msgChange = ``;
-    let chatId = (game.release.generation >= 12 ? foundry.utils.randomID() : randomID())
+    let chatId = foundry.utils.randomID();
     let halfDamage = false;
     let firstEdition = game.settings.get('mosh', 'firstEdition');
     let useCalm = game.settings.get('mosh', 'useCalm');
@@ -1975,7 +1975,7 @@ export class MothershipActor extends Actor {
             //prepare template
             messageTemplate = 'systems/mosh/templates/chat/modifyActor.html';
             //render template
-            messageContent = await renderTemplate(messageTemplate, messageData);
+            messageContent = await foundry.applications.handlebars.renderTemplate(messageTemplate, messageData);
             //push message
             ChatMessage.create({
               id: chatId,
@@ -2116,7 +2116,7 @@ export class MothershipActor extends Actor {
                 //prepare template
                 messageTemplate = 'systems/mosh/templates/chat/modifyActor.html';
                 //render template
-                messageContent = await renderTemplate(messageTemplate, messageData);
+                messageContent = await foundry.applications.handlebars.renderTemplate(messageTemplate, messageData);
                 //make message
                 let macroMsg = await rollResult.toMessage({
                   id: chatId,
@@ -2156,7 +2156,7 @@ export class MothershipActor extends Actor {
     let oldValue = 0;
     let newValue = 0;
     let flavorText = ``;
-    let chatId = (game.release.generation >= 12 ? foundry.utils.randomID(): randomID())
+    let chatId = foundry.utils.randomID();
     //get item data
     let itemData = await fromIdUuid(itemId,{type:"Item"});
     //add or increase the count of the item, depending on type, if the actor has it
@@ -2240,7 +2240,7 @@ export class MothershipActor extends Actor {
       //prepare template
       messageTemplate = 'systems/mosh/templates/chat/modifyItem.html';
       //render template
-      messageContent = await renderTemplate(messageTemplate, messageData);
+      messageContent = await foundry.applications.handlebars.renderTemplate(messageTemplate, messageData);
       //make message
       ChatMessage.create({
         id: chatId,
@@ -2264,9 +2264,11 @@ export class MothershipActor extends Actor {
     return new Promise(async (resolve) => {
       //create final dialog data
       const dialogData = {
-        title: game.i18n.localize("Mosh.WeaponIssue"),
+        window: {
+          title: game.i18n.localize("Mosh.WeaponIssue")
+        },
         classes: ["macro-popup-dialog"],
-        content: `<h4>` + game.i18n.localize("Mosh.OutOfAmmoNeedReload") + `</h4><br/>`,
+        content: `<div class="macro_prompt">` + game.i18n.localize("Mosh.OutOfAmmoNeedReload") + `</div>`,
         buttons: [
           {
             label: game.i18n.localize("Mosh.Reload"),
@@ -2295,9 +2297,11 @@ export class MothershipActor extends Actor {
     return new Promise(async (resolve) => {
       //create final dialog data
       const dialogData = {
-        title: game.i18n.localize("Mosh.WeaponIssue"),
+        window: {
+          title: game.i18n.localize("Mosh.WeaponIssue")
+        },
         classes: ["macro-popup-dialog"],
-        content: `<h4>` + game.i18n.localize("Mosh.OutOfAmmo") + `</h4><br/>`,
+        content: `<div class="macro_prompt">` + game.i18n.localize("Mosh.OutOfAmmo") + `</div>`,
         buttons: [
           {
             label: game.i18n.localize("Mosh.OK"),
@@ -2320,15 +2324,10 @@ export class MothershipActor extends Actor {
     let messageTemplate = ``;
     let messageContent = ``;
     let msgBody = ``;
-    let chatId = (game.release.generation >= 12 ? foundry.utils.randomID() : randomID())
+    let chatId = foundry.utils.randomID();
     //dupe item to work with
     var item;
-    if (game.release.generation >= 12) {
-      item = foundry.utils.duplicate(this.getEmbeddedDocument('Item', itemId));
-    } else {
-      item = duplicate(this.getEmbeddedDocument('Item', itemId));
-    }
-
+    item = foundry.utils.duplicate(this.getEmbeddedDocument('Item', itemId));
     //reload
     if (!item.system.useAmmo) {
       //exit function (it should not be possible to get here)
@@ -2378,7 +2377,7 @@ export class MothershipActor extends Actor {
       //prepare template
       messageTemplate = 'systems/mosh/templates/chat/reload.html';
       //render template
-      messageContent = await renderTemplate(messageTemplate, messageData);
+      messageContent = await foundry.applications.handlebars.renderTemplate(messageTemplate, messageData);
       //push message
       ChatMessage.create({
         id: chatId,
@@ -2399,7 +2398,7 @@ export class MothershipActor extends Actor {
   //make the player take bleeding damage
   async takeBleedingDamage() {
     //init vars
-    let chatId = (game.release.generation >= 12 ? foundry.utils.randomID() : randomID())
+    let chatId = foundry.utils.randomID();
     //determine bleeding amount
     let healthLost = this.items.getName("Bleeding").system.severity * -1;
     //run the function for the player's 'Selected Character'
@@ -2446,7 +2445,7 @@ export class MothershipActor extends Actor {
   //make the player take radiation damage
   async takeRadiationDamage() {
     //init vars
-    let chatId = (game.release.generation >= 12 ? foundry.utils.randomID() : randomID())
+    let chatId = foundry.utils.randomID();
     //reduce all stats and saves by 1
     this.modifyActor('system.stats.strength.value', -1, null, false);
     this.modifyActor('system.stats.speed.value', -1, null, false);
@@ -2499,7 +2498,7 @@ export class MothershipActor extends Actor {
   //make the player take radiation damage
   async takeCryoDamage(rollString) {
     //init vars
-    let chatId = (game.release.generation >= 12 ? foundry.utils.randomID() : randomID())
+    let chatId = foundry.utils.randomID();
     //roll the dice
       //parse the roll string
     let parsedRollString = this.parseRollString(rollString, 'low');
@@ -2583,7 +2582,7 @@ export class MothershipActor extends Actor {
       }  
 
       //create pop-up HTML
-      let msgContent = await renderTemplate('systems/mosh/templates/dialogs/choose-cover-dialog.html', {
+      let msgContent = await foundry.applications.handlebars.renderTemplate('systems/mosh/templates/dialogs/choose-cover-dialog.html', {
           curDR:curDR, 
           curAP:curAP, 
           none_checked: none_checked,
@@ -2625,7 +2624,7 @@ export class MothershipActor extends Actor {
     //wrap the whole thing in a promise, so that it waits for the form to be interacted with
     return new Promise(async (resolve) => {
       //create pop-up HTML
-      let msgContent = await renderTemplate('systems/mosh/templates/dialogs/distres-signal-dialog.html');
+      let msgContent = await foundry.applications.handlebars.renderTemplate('systems/mosh/templates/dialogs/distres-signal-dialog.html');
       
       //create final dialog data
       const dialogData = {
@@ -2823,75 +2822,63 @@ export class MothershipActor extends Actor {
   }
 
   // print description
-  printDescription(itemId, options = {
-    event: null
-  }) {
+  printDescription(itemId, options = {event: null}) {
     var item;
-    if (game.release.generation >= 12) {
-      item = foundry.utils.duplicate(this.getEmbeddedDocument('Item', itemId));
-    } else {
-      item = duplicate(this.getEmbeddedDocument('Item', itemId));
-    }
+    item = foundry.utils.duplicate(this.getEmbeddedDocument('Item', itemId));
     this.chatDesc(item);
   }
 
   // Print the item description into the chat.
-  chatDesc(item) {
+  async chatDesc(item) {
     let swapNameDesc = false;
     let swapName = '';
     let itemName = item.name?.charAt(0).toUpperCase() + item.name?.toLowerCase().slice(1);
     if (!item.name && isNaN(itemName)) {
       itemName = item.charAt(0)?.toUpperCase() + item.toLowerCase().slice(1);
     }
-    var rollInsert = '';
+
+    let rollInsert = '';
     if (item.system.roll) {
-      let r = new Roll(item.system.roll, {});
-      r.evaluate({
-        async: false
-      });
-      rollInsert = '\
-        <div class="rollh2" style="text-transform: lowercase;">' + item.system.roll + '</div>\
-        <div class="roll-grid">\
-          <div class="roll-result">' + r._total + '</div>\
-        </div>';
+      const r = new Roll(item.system.roll, {});
+      await r.evaluate();
+      rollInsert = `
+        <div class="rollh2" style="text-transform: lowercase;">${item.system.roll}</div>
+        <div class="roll-grid">
+          <div class="roll-result">${r.total}</div>
+        </div>`;
     }
 
-    //add flag to swap name and description, if desc contains trinket or patch
-    if (item.system.description === '<p>Patch</p>' || item.system.description === '<p>Trinket</p>' || item.system.description === '<p>Maintenance Issue</p>') {
+    // add flag to swap name and description, if desc contains trinket or patch
+    if (["<p>Patch</p>", "<p>Trinket</p>", "<p>Maintenance Issue</p>"].includes(item.system.description)) {
       swapNameDesc = true;
       swapName = item.system.description.replaceAll('<p>', '').replaceAll('</p>', '');
     }
 
-    var templateData = {
+    const templateData = {
       actor: this,
-      stat: {
-        name: itemName.toUpperCase()
-      },
-      item: item,
+      stat: { name: itemName.toUpperCase() },
+      item,
       insert: rollInsert,
       onlyDesc: true,
-      swapNameDesc: swapNameDesc,
-      swapName: swapName
+      swapNameDesc,
+      swapName
     };
 
-    let chatData = {
+    const chatData = {
       user: game.user.id,
-      speaker: {
-        actor: this.id,
-        token: this.token,
-        alias: this.name
-      }
+      speaker: { actor: this.id, token: this.token, alias: this.name }
     };
 
-    let rollMode = game.settings.get("core", "rollMode");
-    if (["gmroll", "blindroll"].includes(rollMode)) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM");
+    const rollMode = game.settings.get("core", "rollMode");
+    if (["gmroll", "blindroll"].includes(rollMode)) {
+      chatData.whisper = ChatMessage.getWhisperRecipients("GM");
+    }
 
-    let template = 'systems/mosh/templates/chat/itemRoll.html';
-    renderTemplate(template, templateData).then(content => {
-      chatData.content = content;
-      ChatMessage.create(chatData);
-    });
-    //log what was done
+    const template = 'systems/mosh/templates/chat/itemRoll.html';
+    const content = await foundry.applications.handlebars.renderTemplate(template, templateData);
+    chatData.content = content;
+    await ChatMessage.create(chatData);
+
     console.log(`Created chat message with details on ${item.name}`);
   }
 

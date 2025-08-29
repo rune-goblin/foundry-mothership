@@ -210,11 +210,8 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
       const li = ev.currentTarget.closest(".item");
       //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId))
       var item;
-      if (game.release.generation >= 12) {
-        item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      } else {
-        item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      }
+      item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
+      
 
       let amount = item.system.treatment.value;
 
@@ -237,11 +234,7 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
       const li = ev.currentTarget.closest(".item");
       //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId))
       var item;
-      if (game.release.generation >= 12) {
-        item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      } else {
-        item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      }
+      item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
 
       item.system.equipped = !item.system.equipped;
       this.actor.updateEmbeddedDocuments('Item', [item]);
@@ -262,11 +255,8 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
       const li = ev.currentTarget.closest(".item");
       //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId))
       var item;
-      if (game.release.generation >= 12) {
-        item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      } else {
-        item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      }
+      item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
+      
       let amount = item.system.quantity;
 
       if (event.button == 0) {
@@ -282,11 +272,8 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
     html.on('mousedown', '.severity', ev => {
       const li = ev.currentTarget.closest(".item");
       var item;
-      if (game.release.generation >= 12) {
-        item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      } else {
-        item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      }
+      item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
+      
 
       let amount = item.system.severity;
 
@@ -340,11 +327,8 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
       const li = event.currentTarget.closest(".item");
       //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
       var item;
-      if (game.release.generation >= 12) {
-        item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      } else {
-        item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      }
+      item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
+      
       this.actor.rollCheck(null, null, null, item.name, item.system.bonus, null);
     });
 
@@ -353,11 +337,7 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
       const li = ev.currentTarget.closest(".item");
       //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
       var item;
-      if (game.release.generation >= 12) {
-        item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      } else {
-        item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      }
+      item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
       this.actor.rollCheck(null, 'low', 'combat', null, null, item);
     });
 
@@ -366,11 +346,7 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
       const li = ev.currentTarget.closest(".item");
       //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
       var item;
-      if (game.release.generation >= 12) {
-        item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      } else {
-        item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      }
+      item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
       this.actor.rollCheck(null, null, 'damage', null, null, item);
     });
 
@@ -387,11 +363,7 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
       const li = ev.currentTarget.closest(".item");
       //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId))
       var item;
-      if (game.release.generation >= 12) {
-        item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      } else {
-        item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      }
+      item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
       let amount = item.system.ammo;
       if (event.button == 0) {
         if (amount >= 0) {
@@ -410,11 +382,7 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
       const li = ev.currentTarget.closest(".item");
       //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId))
       var item;
-      if (game.release.generation >= 12) {
-        item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      } else {
-        item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      }
+      item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
       if (event.button == 0) {
         if (item.system.curShots >= 0 && item.system.curShots < item.system.shots && item.system.ammo > 0) {
           item.system.curShots = Number(item.system.curShots) + 1;
@@ -440,11 +408,7 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
       const li = ev.currentTarget.closest(".item");
       //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId))
       var item;
-      if (game.release.generation >= 12) {
-        item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      } else {
-        item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      }
+      item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
       let amount = item.system.armorPoints;
       if (event.button == 0) {
           item.system.armorPoints = Number(amount) + 1;
@@ -461,11 +425,7 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
       const li = ev.currentTarget.closest(".item");
       //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId))
       var item;
-      if (game.release.generation >= 12) {
-        item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      } else {
-        item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      }
+      item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
       let amount = item.system.damageReduction;
       if (event.button == 0) {
           item.system.damageReduction = Number(amount) + 1;
@@ -482,11 +442,7 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
       const li = ev.currentTarget.closest(".item");
       //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId))
       var item;
-      if (game.release.generation >= 12) {
-        item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      } else {
-        item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-      }
+      item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
       let amount = item.system.oxygenCurrent;
       if (event.button == 0) {
         if (amount < item.system.oxygenMax) {
@@ -546,11 +502,7 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
     const type = header.dataset.type;
     // Grab any data associated with this control.
     var data;
-    if (game.release.generation >= 12) {
-      data = foundry.utils.duplicate(header.dataset);
-    } else {
-      data = duplicate(header.dataset);
-    }
+    data = foundry.utils.duplicate(header.dataset);
 
     // Initialize a default name.
     const name = `New ${type.capitalize()}`;
@@ -581,11 +533,7 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
     const type = header.dataset.type;
     // Grab any data associated with this control.
     var data;
-    if (game.release.generation >= 12) {
-      data = foundry.utils.duplicate(header.dataset);
-    } else {
-      data = duplicate(header.dataset);
-    }
+    data = foundry.utils.duplicate(header.dataset);
     //const data = duplicate(header.dataset);
     // Initialize a default name.
     const name = `New Skill`;
@@ -677,11 +625,7 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
     const actor = this.object;
 
     var updateData;
-    if (game.release.generation >= 12) {
-      updateData = foundry.utils.expandObject(formData);
-    } else {
-      updateData = expandObject(formData);
-    }
+    updateData = foundry.utils.expandObject(formData);
 
     await actor.update(updateData, {
       diff: false

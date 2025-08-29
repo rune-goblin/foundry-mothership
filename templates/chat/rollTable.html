@@ -32,7 +32,7 @@
                 {{#each tableResult}}
                 <li class="table-result flexrow" data-result-id="{{{this._id}}}">
                     <img class="result-image" src="{{{this.img}}}">
-                    <div class="result-text"><a class="content-link broken" draggable="true" data-type="Item" data-uuid="undefined"><i class="fas fa-unlink"></i>{{{this.text}}}</a></div>
+                    <div class="result-text"><a class="content-link broken" draggable="true" data-type="Item" data-uuid="undefined"><i class="fas fa-unlink"></i>{{{this.description}}}</a></div>
                 </li>
                 {{/each}}
                 </ol>
@@ -41,7 +41,7 @@
                 {{#if tableResultEdited}}
                     <div class="description" style="margin-bottom : 20px;">{{{tableResultEdited}}}{{{tableResultFooter}}}</div>
                 {{else}}
-                    <div class="description" style="margin-bottom : 20px;">{{{tableResult.[0].text}}}{{{tableResultFooter}}}</div>
+                    <div class="description" style="margin-bottom : 20px;">{{{tableResult.[0].description}}}{{{tableResultFooter}}}</div>
                 {{/if}}
             {{/if}}
             {{#if (compare 'str' specialRoll '===' 'maintenanceCheck')}}

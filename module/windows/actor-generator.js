@@ -113,15 +113,15 @@ export class DLActorGenerator extends FormApplication {
          for (var i = 0; i < tableResult.results.length; i++) {
             if (tableResult.results[i].type == "pack" || tableResult.results[i].type == "document") {
                if (type == "ul") {
-                  this._element.find(`ul[id="${id}.text"]`).append(`<li>${tableResult.results[i].text}</li>`);
+                  this._element.find(`ul[id="${id}.description"]`).append(`<li>${tableResult.results[i].description}</li>`);
                } else {
-                  resultText += tableResult.results[i].text + "; ";
+                  resultText += tableResult.results[i].description + "; ";
                }
                resultUuid.push(tableResult.results[i].documentId);
             } else if (tableResult.results[i].type == "text") {
-               let tableTextmatch = tableResult.results[i].text.match(/(.*)(@UUID.*)/i);
+               let tableTextmatch = tableResult.results[i].description.match(/(.*)(@UUID.*)/i);
                if (type == "ul") {
-                  this._element.find(`ul[id="${id}.text"]`).append(`<li>${await foundry.applications.ux.TextEditor.implementation.enrichHTML(tableTextmatch[2].replace(/(\<br\s\/>)+/i, ""), { async: true })}</li>`);
+                  this._element.find(`ul[id="${id}.description"]`).append(`<li>${await foundry.applications.ux.TextEditor.implementation.enrichHTML(tableTextmatch[2].replace(/(\<br\s\/>)+/i, ""), { async: true })}</li>`);
                }
                else {
                   resultText += tableTextmatch[1].replace(/(\<br\s\/>)+/i, "");
@@ -134,8 +134,8 @@ export class DLActorGenerator extends FormApplication {
          html.find(`img[id="` + id + `.value"]`).prop('hidden', true);
          html.find(`input[id="` + id + `.value"]`).prop('hidden', false);
          html.find(`input[id="` + id + `.value"]`).prop('value', tableRoll);
-         html.find(`input[id="` + id + `.text"]`).prop('hidden', false);
-         html.find(`input[id="` + id + `.text"]`).prop('value', resultText);
+         html.find(`input[id="` + id + `.description"]`).prop('hidden', false);
+         html.find(`input[id="` + id + `.description"]`).prop('value', resultText);
          html.find(`input[id="` + id + `.uuid"]`).prop('value', resultUuid);
 
       }
@@ -222,7 +222,6 @@ export class DLActorGenerator extends FormApplication {
     * @returns 
     */
    async updateSkillHtmlUl(html, skillsUuid) {
-      //html.find(`ul[id="system.class.skils.text"]`).empty();
       let new_skills =  await html.find(`input[id="system.class.skills.uuid"]`).prop("value").split(",").filter(Boolean);
       for (let i = 0; i < skillsUuid.length; i++) {
          let skill = null;

@@ -310,11 +310,8 @@ async function createMothershipMacro(data, slot) {
   var actor = game.actors.get(itemUUID[1]);
   var item;
 
-  if (game.release.generation >= 12) {
     item = foundry.utils.duplicate(actor.getEmbeddedDocument('Item',itemUUID[3]));
-  } else {
-    item = duplicate(actor.getEmbeddedDocument('Item',itemUUID[3]));
-  }
+
   console.log(item);
 
   if (!item) return ui.notifications.warn("You can only create macro buttons for owned Items");
@@ -358,11 +355,7 @@ function rollItemMacro(itemName) {
         //get item id
         itemId = game.user.character.items.getName(itemName)._id;
         //get item
-        if (game.release.generation >= 12) {
-          item = foundry.utils.duplicate(game.user.character.getEmbeddedDocument("Item", itemId));
-        } else {
-          item = duplicate(game.user.character.getEmbeddedDocument("Item", itemId));
-        }
+        item = foundry.utils.duplicate(game.user.character.getEmbeddedDocument("Item", itemId));
         //warn if no item
         if (!item) return ui.notifications.warn(`Your controlled Actor does not have an item named ${itemName}`);
         //roll action
@@ -385,11 +378,7 @@ function rollItemMacro(itemName) {
         //get item id
         itemId = token.actor.items.getName(itemName)._id;
         //get item
-        if (game.release.generation >= 12) {
-          item = foundry.utils.duplicate(token.actor.getEmbeddedDocument("Item", itemId));
-        } else {
-          item = duplicate(token.actor.getEmbeddedDocument("Item", itemId));
-        }
+        item = foundry.utils.duplicate(token.actor.getEmbeddedDocument("Item", itemId));
         //warn if no item
         if (!item) return ui.notifications.warn(`Your controlled Actor does not have an item named ${itemName}`);
         //roll action

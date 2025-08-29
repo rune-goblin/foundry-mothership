@@ -127,11 +127,8 @@ export class MothershipShipSheet extends foundry.appv1.sheets.ActorSheet {
         html.on('mousedown', '.item-quantity', ev => {
             const li = ev.currentTarget.closest(".item");
             var item;
-            if (game.release.generation >= 12) {
-                item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            } else {
-                item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            }
+            item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
+            
             let amount = item.system.quantity;
 
             if (event.button == 0) {
@@ -167,22 +164,16 @@ export class MothershipShipSheet extends foundry.appv1.sheets.ActorSheet {
         html.find('.weapon-roll').click(ev => {
             const li = ev.currentTarget.closest(".item");
             var item;
-            if (game.release.generation >= 12) {
-                item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            } else {
-                item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            }
+            item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
+            
             this.actor.rollCheck(null, 'low', 'combat', null, null, item);
         });
 
         html.on('mousedown', '.weapon-ammo', ev => {
             const li = ev.currentTarget.closest(".item");
             var item;
-            if (game.release.generation >= 12) {
-                item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            } else {
-                item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            }
+            item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
+            
             let amount = item.system.ammo;
 
             if (event.button == 0) {
@@ -239,11 +230,8 @@ export class MothershipShipSheet extends foundry.appv1.sheets.ActorSheet {
         const type = header.dataset.type;
         // Grab any data associated with this control.
         var data;
-        if (game.release.generation >= 12) {
-            data = foundry.utils.duplicate(header.dataset);
-        } else {
-            data = duplicate(header.dataset);
-        }
+        data = foundry.utils.duplicate(header.dataset);
+        
 
         // Initialize a default name.
         const name = `New ${type.capitalize()}`;

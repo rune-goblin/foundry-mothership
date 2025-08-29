@@ -15,11 +15,8 @@ export class MothershipClassSheet extends MothershipItemSheet {
     };
     options.dragDrop = [{dragSelector: null, dropSelector: ".dropitem"}];
 
-    if (game.release.generation >= 12) {
-      return foundry.utils.mergeObject(super.defaultOptions, options);
-    } else {
-      return mergeObject(super.defaultOptions, options);
-    }
+    return foundry.utils.mergeObject(super.defaultOptions, options);
+    
   }
 
 
@@ -320,20 +317,6 @@ export class MothershipClassSheet extends MothershipItemSheet {
       // Finally, create the item!
       return;
     }
-  /****
-  async _updateObject(event, formData) {
-    const item = this.object;
-
-    var updateData;
-    if (game.release.generation >= 12) {
-      updateData = foundry.utils.expandObject(formData);
-    } else {
-      updateData = expandObject(formData);
-    }
-
-    await item.update(updateData, {
-      diff: false
-    });
-  }*/
+  
 }
 

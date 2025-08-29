@@ -534,11 +534,12 @@ p {
 .mosh .roll-image {
   -webkit-box-flex: 0;
   flex: 0 24px;
-  margin-top: -1px;
-  margin-right: -9px;
-  width: 48px;
+  margin-top: -3px;
+  margin-left: 11px;
+  margin-right: 0px;
+  width: 50px;
   border-radius: 0 0 0 16px;
-  /* margin-right: 5px; */
+  border: 1px solid #000;
 }
 
 .mosh .items-list .item img {
@@ -1593,9 +1594,9 @@ p {
 
 .mosh .rollweaponh1 {
   height: 32px;
-  margin-top: 0;
-  margin-left: -9px;
-  margin-right: -9px;
+  margin-top: -15px;
+  margin-left: -8px;
+  margin-right: -11px;
   font-size: 1.0rem;
   font-weight: bold;
   text-transform: uppercase;
@@ -1790,6 +1791,11 @@ p {
   border-radius: 9px;
 }
 
+/* MPD macro image */
+.macro-popup-dialog .macro_img {
+	
+}
+
 /* MPD macro desc */
 .macro-popup-dialog .macro_desc {
   font-family: "Roboto", sans-serif;
@@ -1811,6 +1817,10 @@ p {
   margin-bottom: 8px;
 }
 
+/* MPD macro prompt */
+.macro-popup-dialog .macro_prompt {
+	
+}
 
 /* MPD grid layouts */
 .macro-popup-dialog .grid-1col {
@@ -1855,14 +1865,14 @@ p {
 .macro-popup-dialog input[type="radio"] {
   appearance: none;
   -webkit-appearance: none;
-  accent-color: initial;
+  accent-color: initial;             /* ignore theme accent */
   box-sizing: border-box;
   width: 16px;
   height: 16px;
-  border: 2px solid #777;
+  border: 2px solid #777;            /* medium grey ring */
   border-radius: 50%;
-  background: #fff;
-  display: inline-flex;
+  background: #fff;                  /* white center when unchecked */
+  display: inline-flex;              /* center the pseudo-dot */
   align-items: center;
   justify-content: center;
   line-height: 0;
@@ -1880,7 +1890,7 @@ p {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #111;
+  background: #111;                  /* dot color */
   transform: scale(0);
   transition: transform 120ms ease-in-out;
 }

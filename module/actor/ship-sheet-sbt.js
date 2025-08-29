@@ -193,17 +193,16 @@ export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
             if (index != 0 && actorData.megadamage.hits.includes(index)) {
                 // megadamageHTML += `<i class="fa-solid fa-wrench megadamage-button rollable" data-key="${index}"></i> &nbsp`;
                 megadamageHTML += `<i class="fas fa-circle megadamage-button rollable" data-key="${index}"></i> &nbsp`;
-                megadamageHTML += `<b>${index} |</b> ${entry[1].text} <br/> <br/>`;
+                megadamageHTML += `<b>${index} |</b> ${entry[1].description} <br/> <br/>`;
             } else if (index != 0) {
                 // megadamageHTML += `<i class="fa-solid fa-wrench megadamage-button rollable" data-key="${index}"></i> &nbsp`;
                 megadamageHTML += `<div class="grey"><i class="far fa-circle megadamage-button rollable grey" data-key="${index}"></i> &nbsp`;
-                megadamageHTML += `<b>${index} |</b> ${entry[1].text} <br/> <br/></div>`;
+                megadamageHTML += `<b>${index} |</b> ${entry[1].description} <br/> <br/></div>`;
             }
             index++;
         }
         // } else {
 
-        // megadamageHTML += entries[0][1].text + "<br/> <br/>";
         // }
 
         await this.object.update({
@@ -284,11 +283,7 @@ export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
             const li = ev.currentTarget.closest(".item");
             //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId))
             var item;
-            if (game.release.generation >= 12) {
-                item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            } else {
-                item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            }
+            item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
             let amount = item.system.quantity;
 
             if (event.button == 0) {
@@ -391,11 +386,7 @@ export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
         html.on('mousedown', '.weapon-ammo', ev => {
             const li = ev.currentTarget.closest(".item");
             var item;
-            if (game.release.generation >= 12) {
-                item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            } else {
-                item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            }
+            item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
             //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId))
             let amount = item.system.ammo;
 
@@ -458,11 +449,8 @@ export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
 
         // Grab any data associated with this control.
         var data;
-        if (game.release.generation >= 12) {
-            data = foundry.utils.duplicate(header.dataset);
-        } else {
-            data = duplicate(header.dataset);
-        }
+        data = foundry.utils.duplicate(header.dataset);
+        
 
         // Initialize a default name.
         const name = `New ${type.capitalize()}`;
