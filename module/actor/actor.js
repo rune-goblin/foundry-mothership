@@ -479,9 +479,10 @@ export class MothershipActor extends Actor {
           }
           //prepare dice block
             //loop through rolls
-    enrichedRollResult.dice.forEach(function (roll) {
+            enrichedRollResult.dice.forEach(function (roll) {
               //add header for this roll
               diceBlock = diceBlock + `
+              <div class="wrapper">
                 <section class="tooltip-part">
                   <div class="dice">
               `;
@@ -544,14 +545,15 @@ export class MothershipActor extends Actor {
                     </ol>
                   </div>
                 </section>
+              </div>
               `;
             });
         //set final roll variables in to template
         rollHtml = `
-          <div class="dice-roll" style="margin-bottom: 10px;">
+          <div class="dice-roll" style="margin-bottom: 10px;" data-action="expandRoll">
             <div class="dice-result">
               <div class="dice-formula">${diceFormula}</div>
-              <div class="dice-tooltip" style="display: none;">
+              <div class="dice-tooltip" hidden>
                 ${diceBlock}
               </div>
               <h4 class="dice-total">${enrichedRollResult.total}</h4>
