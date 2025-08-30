@@ -570,7 +570,7 @@ export class DLActorGenerator extends FormApplication {
       for (const [class_key, class_value] of class_options.entries()) {
 
          html.find(`datalist[id="class_options"]`).append(
-            `<option class="class_option" data-uuid="${class_value.uuid}" value="${class_value.name}">world.Item</option>`
+            `<option class="class_option" data-uuid="${class_value.uuid}" value="${class_value.name}" label="${class_value.name} - world.Item">world.Item</option>`
          );
       }
 
