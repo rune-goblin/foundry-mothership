@@ -579,8 +579,9 @@ export class DLActorGenerator extends FormApplication {
       for (const [compendium_key, compendium_value] of compendiums.entries()) {
          let classes = await compendium_value.getDocuments({ type: "class" });
          for (const [class_key, class_value] of classes.entries()) {
+            let source = class_value.pack.replace(/\..*$/, "");
             html.find(`datalist[id="class_options"]`).append(
-               `<option class="class_option" data-uuid="${class_value.uuid}" value="${class_value.name}">${class_value.pack}</option>`
+               `<option class="class_option" data-uuid="${class_value.uuid}" value="${class_value.name}" label="${class_value.name} - ${source}"></option>`
             );
          }
       }
