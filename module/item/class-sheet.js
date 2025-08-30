@@ -245,7 +245,7 @@ export class MothershipClassSheet extends MothershipItemSheet {
       let choose_stat = this.object.system.selected_adjustment.choose_stat;
 
       let DialogContent = `
-        <h2>${game.i18n.localize("Mosh.CharacterGenerator.StatOption")}</h2>\
+        <div class="macro_desc" style="margin-bottom : -5px;"><h4>${game.i18n.localize("Mosh.CharacterGenerator.StatOption")}</h4></div>\
         <div> <input type="number" id='modification' placeholder="${game.i18n.localize("Mosh.Value")}" /></label></div>\
         <div> <input type="checkbox" id='strength' />${game.i18n.localize("Mosh.Strength")}</label></div>\
         <div> <input type="checkbox" id='speed' />${game.i18n.localize("Mosh.Speed")}</label></div>\

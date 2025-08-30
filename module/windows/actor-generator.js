@@ -212,7 +212,7 @@ export class DLActorGenerator extends FormApplication {
          let d = new foundry.applications.api.DialogV2({
 		      window: {title: game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupTitle")},
             classes: ["macro-popup-dialog"],
-            content: `<p>${game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupText")}</p>`,
+            content: `<div class="macro_desc"><h4>${game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupText")}</h4></div>`,
             buttons: buttons_options,
             default: "1",
             //render: html => console.log("Register interactivity in the rendered dialog"),
@@ -473,7 +473,7 @@ export class DLActorGenerator extends FormApplication {
                let d = new foundry.applications.api.DialogV2({
                   window: {title: game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupTitle")},
                   classes: ["macro-popup-dialog"],
-                  content: `<p>${game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupText")} (${option_stats_and_saves.modification})</p>`,
+                  content: `<div class="macro_desc"><h4>${game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupText")} (${option_stats_and_saves.modification})</h4></div>`,
                   buttons: buttons_options,
                   default: "1",
                   //render: html => console.log("Register interactivity in the rendered dialog"),
