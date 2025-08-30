@@ -486,7 +486,7 @@ async function noCharSelected() {
       ]
     };
     //render dialog
-    const dialog = foundry.applications.api.DialogV2(dialogData).render({force: true});
+    const dialog = new foundry.applications.api.DialogV2(dialogData).render({force: true});
     //log what was done
     console.log(`Told the user that no character was selected.`);
   });
