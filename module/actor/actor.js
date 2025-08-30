@@ -45,6 +45,17 @@ export class MothershipActor extends Actor {
       //set values
       system.netHP.value = ((Number(system.hits.max ?? 0)-Number(system.hits.value ?? 0)-1) * Number(system.health.max ?? 0)) + Number(system.health.value ?? 0);
       system.netHP.max = Number(system.health.max ?? 0) * Number(system.hits.max ?? 0);
+    //bleeding
+      //init vars
+      let bleedingValue = 0;
+      //count values
+      for (const condition of this.items.filter(i => i.type === "condition")) {
+        if (condition.name === 'Bleeding') {
+          bleedingValue += Number(condition.system.severity ?? 0);
+        }
+      }
+      //set values
+      system.bleeding.value = Number(bleedingValue ?? 0);
   }
 
   // Prepare Creature type specific data
@@ -66,9 +77,6 @@ export class MothershipActor extends Actor {
       system.stats.armor.total = armorPoints + Number(system.stats.armor.value ?? 0);
       system.stats.armor.damageReduction = damageReduction;
     //net hp
-      //init vars
-      let netHPvalue = 0;
-      let netHPmax = 0;
       //check if actor has netHP
       system.netHP ??= { value: 0, min: 0, max: 0, label: "Net HP"};
       //set values
@@ -77,7 +85,17 @@ export class MothershipActor extends Actor {
     //notes
       //check if actor has notes
       system.notes ??= "";
-
+    //bleeding
+      //init vars
+      let bleedingValue = 0;
+      //count values
+      for (const condition of this.items.filter(i => i.type === "condition")) {
+        if (condition.name === 'Bleeding') {
+          bleedingValue += Number(condition.system.severity ?? 0);
+        }
+      }
+      //set values
+      system.bleeding.value = Number(bleedingValue ?? 0);
   }
 
   // Prepare Ship type specific data

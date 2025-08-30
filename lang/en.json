@@ -1128,6 +1128,13 @@
     "Bankrupcy": "Bankrupcy",
     "BankrupcySave": "Bankrupcy Save",
     "RestSave": "Rest Save",
-    "Job": "Occupation"
+    "Job": "Occupation",
+    "Class": "Class",
+    "Type": "Type",
+    "Owed": "Owed",
+    "Hull": "Hull",
+    "Modules": "Modules",
+    "DeckPlan": "Deck Plan",
+    "Stock": "Stock"
   }
 }

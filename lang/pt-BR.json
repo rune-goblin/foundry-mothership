@@ -1128,6 +1128,13 @@
           "Bankrupcy": "Falência",
           "BankrupcySave": "Salvaguarda de Falência",
           "RestSave": "Salvaguarda de Descanso",
-          "Job": "Ocupação"
+          "Job": "Ocupação",
+          "Class": "Classe",
+          "Type": "Tipo",
+          "Owed": "Devida",
+          "Hull": "Casco",
+          "Modules": "módulos",
+          "DeckPlan": "Planta do Convés",
+          "Stock": "Stock"
     }
 }
