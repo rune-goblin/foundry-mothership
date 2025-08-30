@@ -5,6 +5,7 @@ export class DLActorGenerator extends FormApplication {
       options.classes = ["mosh", "sheet", "actor", "character"];
       options.template = 'systems/mosh/templates/dialogs/actor-generator-dialog.html';
       options.width = 800;
+      options.height = "auto";
       options.dragDrop = [{ dragSelector: null, dropSelector: ".dropitem" }];
       return options;
    }
