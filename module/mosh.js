@@ -121,87 +121,6 @@ Hooks.once("ready", async function () {
     }
   });
   
-    //Calm & 1e/0e character updates
-    // if the user has calm enabled at the start, 
-    if (game.settings.get('mosh','useCalm')) {
-      //get list of actors
-      let actorList = game.actors;
-      let actorName = '';
-      let minStart = null;
-      let valueStart = null;
-      let maxStart = null;
-      let labelStart = '';
-      let minEnd = null;
-      let valueEnd = null;
-      let maxEnd = null;
-      let labelEnd = '';
-      //loop through all actors and update their stress values
-      actorList.forEach(function(actor){ 
-        //loop through each result
-        if (actor.type === 'character') {
-          //set character name
-          actorName = actor.name;
-          //set current values
-          minStart = actor.system.other.stress.min;
-          valueStart = actor.system.other.stress.value;
-          maxStart = actor.system.other.stress.max;
-          labelStart = actor.system.other.stress.label;
-          //if the label does not say Calm
-          if (actor.system.other.stress.label != 'Calm') {
-            //change it to calm
-            actor.update({'system.other.stress.label': 'Calm'});
-            //log
-            labelEnd = 'Calm';
-          }
-          //if the MIN value is not 0, this is an old character
-          if (actor.system.other.stress.min != 0) {
-            //put this value as the maximum
-              //change it to calm
-              actor.update({'system.other.stress.max': actor.system.other.stress.min});
-              //log
-              maxEnd = actor.system.other.stress.min;
-            //set the minimum to zero
-              //change it to calm
-              actor.update({'system.other.stress.min': 0});
-              //log
-              minEnd = 0;
-          }
-          //log change
-          console.log(actorName + " stress.min changed from " + minStart + " to " + minEnd);
-          console.log(actorName + " stress.max changed from " + maxStart + " to " + maxEnd);
-          console.log(actorName + " stress.label changed from " + labelStart + " to " + labelEnd);
-          //rerender this sheet
-          actor.render();
-        }
-      });
-    //user does not have calm enabled
-    } else {
-      //if the user has Zero edition enabled
-      if (!game.settings.get('mosh','firstEdition')) {
-        //loop through all actors and update their stress values
-        actorList.forEach(function(actor){ 
-          //loop through each result
-          if (actor.type === 'character') {
-            //set character name
-            actorName = actor.name;
-            //set current values
-            maxStart = actor.system.other.stress.max;
-            //if the max value, this is an old character
-            if (actor.system.other.stress.max != 999) {
-              //put this value as the maximum
-                //change it to calm
-                actor.update({'system.other.stress.max': 999});
-                //log
-                maxEnd = 999;
-            }
-            //log change
-            console.log(actorName + " stress.max changed from " + maxStart + " to " + maxEnd);
-            //rerender this sheet
-            actor.render();
-          }
-        });
-      }
-    }
 });
 
 //add custom damage dice for MOSH
@@ -255,38 +174,42 @@ Hooks.once('diceSoNiceReady', (dice3d) => {
   )
 })
 
-//Hooks.on("preCreateActor", (createData) => {
-/**
- * Set default values for new actors' tokens
- */
+//set initial things when creating an actor
 Hooks.on("preCreateActor", (document, createData, options, userId) => {
-  let disposition = CONST.TOKEN_DISPOSITIONS.NEUTRAL;
+  console.log("preCreateActor fired for:", createData?.name, createData?.type);
 
-  if (createData.type == "creature") {
-    disposition = CONST.TOKEN_DISPOSITIONS.HOSTILE
+  const disposition =
+    createData.type === "creature"
+      ? CONST.TOKEN_DISPOSITIONS.HOSTILE
+      : CONST.TOKEN_DISPOSITIONS.NEUTRAL;
+
+  // Apply prototype token defaults (v12+)
+  document.updateSource({
+    "prototypeToken.bar1.attribute": "system.health", // <-- use full system path
+    "prototypeToken.bar2.attribute": "system.hits",   // adjust to your schema
+    "prototypeToken.displayName": CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,
+    "prototypeToken.displayBars": CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,
+    "prototypeToken.disposition": disposition,
+    "prototypeToken.name": createData.name
+  });
+
+  if (createData.type === "character") {
+    document.updateSource({
+      "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+      "prototypeToken.actorLink": true,
+      "prototypeToken.vision": true
+    });
+
+    if (game.settings.get("mosh", "useCalm")) {
+      document.updateSource({
+        "system.other.stress.min": 0,
+        "system.other.stress.value": 85,
+        "system.other.stress.max": 85,
+        "system.other.stress.label": "Calm"
+      });
+    }
   }
-
-  // Set wounds, advantage, and display name visibility
-  foundry.utils.mergeObject(createData,
-    {
-      "token.bar1": { "attribute": "health" },        // Default Bar 1 to Health 
-      "token.bar2": { "attribute": "hits" },      // Default Bar 2 to Insanity
-      "token.displayName": CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,     // Default display name to be on owner hover
-      "token.displayBars": CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,     // Default display bars to be on owner hover
-      "token.disposition": disposition,                               // Default disposition to neutral
-      "token.name": createData.name                                   // Set token name to actor name
-    })
-
-    console.log(createData);
-    console.log("Created!");
-
-  if (createData.type == "character") {
-    console.log("Got here");
-    const prototypeToken = { disposition: 1, actorLink: true, vision: true}; // Set disposition to "Friendly"
-    document.updateSource({ prototypeToken });
-    
-  }
-})
+});
 
 
 /* -------------------------------------------- */

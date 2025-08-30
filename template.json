@@ -19,6 +19,12 @@
           "max" : 2,
           "label" : "Wounds"
         },
+        "netHP": {
+          "value": 20,
+          "min": 0,
+          "max" : 20,
+          "label" : "Net HP"
+        },
         "bleeding": {
           "value": 0,
           "min": 0,
@@ -35,9 +41,6 @@
       "weight" : {
         "current" : 0,
         "capacity" : 0
-      },
-      "settings" : {
-        "useCalm" : false
       },
       "class": {
         "value": ""

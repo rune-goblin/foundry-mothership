@@ -6,51 +6,79 @@ import { fromIdUuid } from "../mosh.js";
  */
 export class MothershipActor extends Actor {
 
-  //Augment the basic actor data with additional dynamic data.
-  prepareData() {
-    //console.log(game.release.generation);
-    super.prepareData();
+  // augment the basic actor data with additional dynamic data
+  prepareDerivedData() {
 
-    const actorData = this;
-    const data = actorData.system;
-    const flags = actorData.flags;
+    super.prepareDerivedData();
+    const system = this.system;
 
-    // Make separate methods for each Actor type (character, npc, etc.) to keep
-    // things organized.
-    if (actorData.type === 'character') this._prepareCharacterData(actorData);
-    else if (actorData.type === 'creature') this._prepareCreatureData(actorData);
-    else if (actorData.type === 'ship') this._prepareShipData(actorData);
-
+    // ----- per-type derived -----
+    if (this.type === "character") this._deriveCharacter();
+    else if (this.type === "creature") this._deriveCreature();
+    else if (this.type === "ship") this._deriveShip();
   }
 
-  //Prepare Character type specific data
-  _prepareCharacterData(actorData) {
-    const data = actorData.system;
-
-    let armorPoints = 0;
-    let damageReduction = 0;
-    const armors = this.getEmbeddedCollection("Item").filter(e => "armor" === e.type);
-    
-    for (let armor of armors) {
-      if (armor.system.equipped) {
-        armorPoints += armor.system.armorPoints;
-        damageReduction += armor.system.damageReduction;
+  // Prepare Character type specific data
+  _deriveCharacter() {
+    const system = this.system;
+    //armor points + damage reduction
+      //init vars
+      let armorPoints = 0;
+      let damageReduction = 0;
+      //count values
+      for (const armor of this.items.filter(i => i.type === "armor")) {
+        if (armor.system?.equipped) {
+          armorPoints += Number(armor.system.armorPoints ?? 0);
+          damageReduction += Number(armor.system.damageReduction ?? 0);
+        }
       }
-    }
-
-    data.stats.armor.mod = armorPoints;
-    data.stats.armor.total = armorPoints + data.stats.armor.value;
-    data.stats.armor.damageReduction = damageReduction;
+      //set values
+      system.stats.armor.mod = armorPoints;
+      system.stats.armor.total = armorPoints + Number(system.stats.armor.value ?? 0);
+      system.stats.armor.damageReduction = damageReduction;
+    //net hp
+      //init vars
+      let netHPvalue = 0;
+      let netHPmax = 0;
+      //check if actor has netHP
+      system.netHP ??= { value: 0, min: 0, max: 0, label: "Net HP"};
+      //set values
+      system.netHP.value = ((Number(system.hits.max ?? 0)-Number(system.hits.value ?? 0)-1) * Number(system.health.max ?? 0)) + Number(system.health.value ?? 0);
+      system.netHP.max = Number(system.health.max ?? 0) * Number(system.hits.max ?? 0);
   }
 
-  //Prepare Creature type specific data
-  _prepareCreatureData(actorData) {
-    const data = actorData;
+  // Prepare Creature type specific data
+  _deriveCreature() {
+    const system = this.system;
+    //armor points + damage reduction
+      //init vars
+      let armorPoints = 0;
+      let damageReduction = 0;
+      //count values
+      for (const armor of this.items.filter(i => i.type === "armor")) {
+        if (armor.system?.equipped) {
+          armorPoints += Number(armor.system.armorPoints ?? 0);
+          damageReduction += Number(armor.system.damageReduction ?? 0);
+        }
+      }
+      //set values
+      system.stats.armor.mod = armorPoints;
+      system.stats.armor.total = armorPoints + Number(system.stats.armor.value ?? 0);
+      system.stats.armor.damageReduction = damageReduction;
+    //net hp
+      //init vars
+      let netHPvalue = 0;
+      let netHPmax = 0;
+      //check if actor has netHP
+      system.netHP ??= { value: 0, min: 0, max: 0, label: "Net HP"};
+      //set values
+      system.netHP.value = ((Number(system.hits.max ?? 0)-Number(system.hits.value ?? 0)-1) * Number(system.health.max ?? 0)) + Number(system.health.value ?? 0);
+      system.netHP.max = Number(system.health.max ?? 0) * Number(system.hits.max ?? 0);
   }
 
-  //Prepare Ship type specific data
-  _prepareShipData(actorData) {
-    const data = actorData;
+  // Prepare Ship type specific data
+  _deriveShip() {
+    //nothing needed yet
   }
 
   //central flavor text library for all chat messages
@@ -1494,18 +1522,27 @@ export class MothershipActor extends Actor {
           if (firstEdition) {
             //if calm not enabled
             if (!useCalm) {
-            if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
                 //increase stress by 1 and retrieve the flavor text from the result
-              let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
+                let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
                 flavorText = addStress[1];
               }
-              //if critical failure, make sure to ask for panic check
-              if (parsedRollResult.critical === true) {
+                //if critical failure, make sure to ask for panic check
+                if (parsedRollResult.critical === true) {
                 //set crit fail
                 critFail = true;
               }
             } else {
-              flavorText = game.i18n.localize("Mosh.YouSenseTheWeightOfYourSetbacks");
+              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                //increase stress by 1 and retrieve the flavor text from the result
+                let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
+                flavorText = removeCalm[1];
+              }
+                //if critical failure, make sure to ask for panic check
+                if (parsedRollResult.critical === true) {
+                //set crit fail
+                critFail = true;
+              }
             }
           //if 0e
           } else {
@@ -1513,20 +1550,31 @@ export class MothershipActor extends Actor {
             if (!useCalm) {
               //on Save failure
               if (attribute === 'sanity' || attribute === 'fear' || attribute === 'body' || attribute === 'armor') {
-              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
                   //gain 1 stress
-                let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
+                  let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
                   flavorText = addStress[1];
                 }
-                //if critical failure, make sure to ask for panic check
-                if (parsedRollResult.critical === true) {
+                  //if critical failure, make sure to ask for panic check
+                  if (parsedRollResult.critical === true) {
                   //set crit fail
                   critFail = true;
                 }
               }
             } else {
-              //output standard failure
-              flavorText = game.i18n.localize("Mosh.YouSenseTheWeightOfYourSetbacks");
+              //on Save failure
+              if (attribute === 'sanity' || attribute === 'fear' || attribute === 'body' || attribute === 'armor') {
+                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                  //gain 1 stress
+                  let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
+                  flavorText = removeCalm[1];
+                }
+                  //if critical failure, make sure to ask for panic check
+                  if (parsedRollResult.critical === true) {
+                  //set crit fail
+                  critFail = true;
+                }
+              }
             }
           }
         }
@@ -1572,8 +1620,16 @@ export class MothershipActor extends Actor {
             if (useCalm) {
               //prep text based on success or failure
               if (parsedRollResult.success === false && this.type === 'character') {
-                //set fail text
-                flavorText = game.i18n.localize("Mosh.YouSenseTheWeightOfYourSetbacks");
+                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                  //increase stress by 1 and retrieve the flavor text from the result
+                  let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
+                  flavorText = removeCalm[1];
+                }
+                  //if critical failure, make sure to ask for panic check
+                  if (parsedRollResult.critical === true) {
+                  //set crit fail
+                  critFail = true;
+                }
               } else if (parsedRollResult.success === true && this.type === 'character') {
                 //calculate stress reduction
               let onesValue = Number(String(parsedRollResult.total).charAt(String(parsedRollResult.total).length - 1));
@@ -1585,13 +1641,13 @@ export class MothershipActor extends Actor {
             } else {
               //prep text based on success or failure
               if (parsedRollResult.success === false && this.type === 'character') {
-              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
                   //increase stress by 1 and retrieve the flavor text from the result
-                let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
+                  let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
                   flavorText = addStress[1];
                 }
-                //if critical failure, make sure to ask for panic check
-                if (parsedRollResult.critical === true) {
+                  //if critical failure, make sure to ask for panic check
+                  if (parsedRollResult.critical === true) {
                   //set crit fail
                   critFail = true;
                 }
@@ -1609,8 +1665,16 @@ export class MothershipActor extends Actor {
             if (useCalm) {
               //prep text based on success or failure
               if (parsedRollResult.success === false && this.type === 'character') {
-                //set fail text
-                flavorText = game.i18n.localize("Mosh.YouSenseTheWeightOfYourSetbacks");
+                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                  //increase stress by 1 and retrieve the flavor text from the result
+                  let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
+                  flavorText = removeCalm[1];
+                }
+                  //if critical failure, make sure to ask for panic check
+                  if (parsedRollResult.critical === true) {
+                  //set crit fail
+                  critFail = true;
+                }
               } else if (parsedRollResult.success === true && this.type === 'character') {
                 //calculate stress reduction
               let succeedBy = Math.floor((rollTarget - parsedRollResult.total) / 10);
@@ -1626,13 +1690,13 @@ export class MothershipActor extends Actor {
             } else {
               //prep text based on success or failure
               if (parsedRollResult.success === false && this.type === 'character') {
-              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
                   //increase stress by 1 and retrieve the flavor text from the result
-                let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
+                  let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
                   flavorText = addStress[1];
                 }
-                //if critical failure, make sure to ask for panic check
-                if (parsedRollResult.critical === true) {
+                  //if critical failure, make sure to ask for panic check
+                  if (parsedRollResult.critical === true) {
                   //set crit fail
                   critFail = true;
                 }
@@ -1711,18 +1775,27 @@ export class MothershipActor extends Actor {
           if (firstEdition) {
             //if calm not enabled
             if (!useCalm) {
-            if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
                 //increase stress by 1 and retrieve the flavor text from the result
-              let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
+                let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
                 flavorText = addStress[1];
               }
-              //if critical failure, make sure to ask for panic check
-              if (parsedRollResult.critical === true) {
+                //if critical failure, make sure to ask for panic check
+                if (parsedRollResult.critical === true) {
                 //set crit fail
                 critFail = true;
               }
             } else {
-              flavorText = game.i18n.localize("Mosh.YouSenseTheWeightOfYourSetbacks");
+              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                //increase stress by 1 and retrieve the flavor text from the result
+                let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
+                flavorText = removeCalm[1];
+              }
+                //if critical failure, make sure to ask for panic check
+                if (parsedRollResult.critical === true) {
+                //set crit fail
+                critFail = true;
+              }
             }
           //if 0e
           } else {
@@ -1730,20 +1803,28 @@ export class MothershipActor extends Actor {
             if (!useCalm) {
               //on Save failure
               if (attribute === 'sanity' || attribute === 'fear' || attribute === 'body' || attribute === 'armor') {
-              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
                   //gain 1 stress
-                let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
+                  let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
                   flavorText = addStress[1];
                 }
-                //if critical failure, make sure to ask for panic check
-                if (parsedRollResult.critical === true) {
+                  //if critical failure, make sure to ask for panic check
+                  if (parsedRollResult.critical === true) {
                   //set crit fail
                   critFail = true;
                 }
               }
             } else {
-              //output standard failure
-              flavorText = game.i18n.localize("Mosh.YouSenseTheWeightOfYourSetbacks");
+                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                  //gain 1 stress
+                  let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
+                  flavorText = removeCalm[1];
+                }
+                  //if critical failure, make sure to ask for panic check
+                  if (parsedRollResult.critical === true) {
+                  //set crit fail
+                  critFail = true;
+                }
             }
           }
         } else if (parsedRollResult.success === true && this.type === 'character') {
