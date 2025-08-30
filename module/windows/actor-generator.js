@@ -744,8 +744,15 @@ export class DLActorGenerator extends FormApplication {
       }
       if (formData["system.class.loadout.uuid"]) {
          let loadoutItems = formData["system.class.loadout.uuid"].split(",");
+         let itemsToAdd = {};
          for (var i = 0; i < loadoutItems.length; i++) {
-            await this.object.modifyItem(loadoutItems[i], 1);
+            if(!itemsToAdd[loadoutItems[i]]){
+               itemsToAdd[loadoutItems[i]] = 0;
+            }
+            itemsToAdd[loadoutItems[i]] += 1;
+         }
+         for (const [itemUuid, quantity] of Object.entries(itemsToAdd)) {  
+            await this.object.modifyItem(itemUuid, quantity);
          }
       }
       if (formData["system.class.patch.uuid"]) {
