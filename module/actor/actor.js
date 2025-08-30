@@ -74,6 +74,10 @@ export class MothershipActor extends Actor {
       //set values
       system.netHP.value = ((Number(system.hits.max ?? 0)-Number(system.hits.value ?? 0)-1) * Number(system.health.max ?? 0)) + Number(system.health.value ?? 0);
       system.netHP.max = Number(system.health.max ?? 0) * Number(system.hits.max ?? 0);
+    //notes
+      //check if actor has notes
+      system.notes ??= "";
+
   }
 
   // Prepare Ship type specific data
