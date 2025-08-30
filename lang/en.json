@@ -1136,6 +1136,10 @@
     "Hull": "Hull",
     "Modules": "Modules",
     "DeckPlan": "Deck Plan",
-    "Stock": "Stock"
+    "Stock": "Stock",
+    "Errors":{
+      "SkillAlreadyInList":"This skill is already in the list.",
+      "NoDropTarget":"Something went wrong with the drop, please try again."
+    }
   }
 }
