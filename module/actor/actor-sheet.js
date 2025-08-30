@@ -516,7 +516,6 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
     // Remove the type from the dataset since it's in the itemData.type prop.
     delete itemData.data["type"];
 
-
     // Finally, create the item!
     return this.actor.createEmbeddedDocuments("Item", [itemData]);
   }
