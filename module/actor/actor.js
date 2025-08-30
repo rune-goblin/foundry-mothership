@@ -1155,9 +1155,9 @@ export class MothershipActor extends Actor {
       //create final dialog data
       const dialogData = {
         window: {title: dlgTitle},
-      classes: ["macro-popup-dialog"],
+        classes: ["macro-popup-dialog"],
         position: {width: 600},
-        content: `<h4>` + game.i18n.localize("Mosh.SelectYourRollType") + `:</h4>`,
+        content: `<div class="macro_prompt">` + game.i18n.localize("Mosh.SelectYourRollType") + `:</div>`,
         buttons: [
           {
             label: game.i18n.localize("Mosh.Advantage"),
