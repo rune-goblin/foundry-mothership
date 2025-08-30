@@ -268,7 +268,7 @@ export class MothershipClassSheet extends MothershipItemSheet {
             callback: (event, button, dialog) => {
               
             let new_stat_option = {
-              modification: button.form.querySelector('[id=\"modification\"]').prop("value"),
+              modification: button.form.querySelector('[id=\"modification\"]').value,
               stats: [],
             }
             if (button.form.querySelector('[id=\"strength\"]')?.checked){
