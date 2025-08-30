@@ -250,7 +250,7 @@ export class DLActorGenerator extends FormApplication {
          }
          new_skills.push(skill.uuid);
          /**we need to keep only the Uuid of the item, not the complete string (for now) */
-         let li_html = `<li><img src="${skill.img}" title="${skill.name}" width="24" height="24"/> ${await foundry.applications.ux.TextEditor.implementation.enrichHTML(skill.name, { async: true })}</li>`;
+         let li_html = `<li>${await foundry.applications.ux.TextEditor.implementation.enrichHTML(skill.name, { async: true })}</li>`;
          html.find(`ul[id="system.class.skils.text"]`).append(li_html);
          
       }
