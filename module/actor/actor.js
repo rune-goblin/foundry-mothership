@@ -919,7 +919,7 @@ export class MothershipActor extends Actor {
     }, {
       keepId: true
     });
-    if (game.modules.get("dice-so-nice").active) {
+    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
         //log what was done
         console.log(`Rolled on table ID: ${tableId}, with: rollString:${rollString}, aimFor:${aimFor}, zeroBased:${zeroBased}, checkCrit:${checkCrit}, rollAgainst:${rollAgainst}, comparison:${comparison}`);
         //return messageData
@@ -1899,7 +1899,7 @@ export class MothershipActor extends Actor {
       keepId: true
     });
       //is DSN active?
-    if (game.modules.get("dice-so-nice").active) {
+    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
         //log what was done
         console.log(`Rolled a check on: ${attribute}, with: rollString:${rollString}, aimFor:${aimFor}, skill:${skill}, skillValue:${skillValue}.`);
         //return messageData
@@ -2239,7 +2239,7 @@ export class MothershipActor extends Actor {
         }, {
           keepId: true
         });
-        if (game.modules.get("dice-so-nice").active) {
+        if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
                   //log what was done
                   console.log(`Modified actor: ${this.name}, with: fieldAddress:${fieldAddress}, modValue:${modValue}, modRollString:${modRollString}, outputChatMsg:${outputChatMsg}`);     
                   //return modification values

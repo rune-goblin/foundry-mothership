@@ -655,3 +655,29 @@ export async function fromIdUuid(id_uuid, options={}){
   }
 
 }
+
+/**
+ * This function will format a number into a more readable string with appropriate suffixes.
+ * For example, 1500 becomes "1.5K", 2000000 becomes "2M", etc.
+ * It handles numbers in the trillions (t), billions (b), millions (m), and thousands (k).
+ * It also handles negative numbers and zero.
+ * At the end it appends 'cr' to denote credits.
+ * @namespace formatCreditsNumber
+ * @param {int} num Credits number to format.
+ * @returns {string}  Credits , formatted string with appropriate suffix.
+ */
+export function formatCreditsNumber(num) {
+  const absNum = Math.abs(num);
+
+  if (absNum >= 1_000_000_000_000) {
+    return (num / 1_000_000_000_000).toFixed(1).replace(/\.0$/, '') + 'tcr';
+  } else if (absNum >= 1_000_000_000) {
+    return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'bcr';
+  } else if (absNum >= 1_000_000) {
+    return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'mcr';
+  } else if (absNum >= 1_000) {
+    return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'kcr';
+  } else {
+    return num.toString() + 'cr';
+  }
+}

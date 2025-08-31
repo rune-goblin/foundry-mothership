@@ -72,7 +72,10 @@ export class MothershipClassSheet extends MothershipItemSheet {
 
     const droppedObject = await fromUuid(droppedUuid.uuid);
     if (droppedObject.type == "skill"){
-      //todo: add a check if the skill already exist in the list and dont add it, (by id or by name?)
+      if(event.currentTarget == null) {
+          ui.notifications.error(game.i18n.localize("Mosh.Errors.NoDropTarget"));
+          return this.render(false);
+      }
       console.log(event.currentTarget.id);
       if(event.currentTarget.id == "skills.fixed"){
         let parent_fixed_or = event.target.closest('div[id="skills.fixed.or"]');
@@ -80,12 +83,20 @@ export class MothershipClassSheet extends MothershipItemSheet {
         if(parent_fixed_or){
           let array_index = parent_fixed_or.getAttribute("index");
           let skills = this.object.system.base_adjustment.skills_granted;
+          if(skills[array_index].includes(droppedObject.uuid)){
+            ui.notifications.warn(game.i18n.localize("Mosh.Errors.SkillAlreadyInList"));
+            return this.render(false);
+          }
           skills[array_index].push(droppedObject.uuid);
           this.object.update({"system.base_adjustment.skills_granted":skills});
           return this.render(false);
 
         }else{
           let skills = this.object.system.base_adjustment.skills_granted;
+          if (skills.includes(droppedObject.uuid)){
+            ui.notifications.warn(game.i18n.localize("Mosh.Errors.SkillAlreadyInList"));
+            return this.render(false);
+          }
           skills.push(droppedObject.uuid);
           this.object.update({"system.base_adjustment.skills_granted":skills});
           return this.render(false);
@@ -93,6 +104,10 @@ export class MothershipClassSheet extends MothershipItemSheet {
       }
       else if(event.currentTarget.id =="skills.common"){
         let skills = this.object.system.common_skills;
+        if (skills.includes(droppedObject.uuid)){
+          ui.notifications.warn(game.i18n.localize("Mosh.Errors.SkillAlreadyInList"));
+          return this.render(false);
+        }
         skills.push(droppedObject.uuid);
         this.object.update({"system.common_skills":skills});
         return this.render(false);
@@ -104,7 +119,10 @@ export class MothershipClassSheet extends MothershipItemSheet {
         let parent_index = parent.data("itemId");
 
         let options = this.object.system.selected_adjustment.choose_skill_or;
-        
+        if(options[parent_index][index].from_list.includes(droppedObject.uuid)){
+          ui.notifications.warn(game.i18n.localize("Mosh.Errors.SkillAlreadyInList"));
+          return this.render(false);
+        }
         options[parent_index][index].from_list.push(droppedObject.uuid);
 
         this.object.update({"system.selected_adjustment.choose_skill_or":options});

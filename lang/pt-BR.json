@@ -1136,6 +1136,10 @@
           "Hull": "Casco",
           "Modules": "módulos",
           "DeckPlan": "Planta do Convés",
-          "Stock": "Stock"
+          "Stock": "Stock",
+          "Errors":{
+            "SkillAlreadyInList":"Essa habilidade já está na lista.",
+            "NoDropTarget":"Algo deu errado com o drop, tente novamente"
+          }
     }
 }
