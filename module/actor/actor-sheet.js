@@ -12,7 +12,8 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
       template: "systems/mosh/templates/actor/actor-sheet.html",
       width: 820,
       height: 820,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "character" }]
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "character" }],
+      submitOnChange: true
     }
     return foundry.utils.mergeObject(super.defaultOptions, options);
   }

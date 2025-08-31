@@ -11,7 +11,8 @@ export class MothershipShipSheet extends foundry.appv1.sheets.ActorSheet {
             template: "systems/mosh/templates/actor/ship-sheet.html",
             width: 700,
             height: 650,
-            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "character" }]
+            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "character" }],
+            submitOnChange: true
         });
     }
 

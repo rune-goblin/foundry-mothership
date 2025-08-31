@@ -22,7 +22,8 @@ export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
             tabs: [{ navSelector: "#sheet-tabs", contentSelector: "#sheet-body", initial: "character" },
             { navSelector: "#side-tabs", contentSelector: "#side-body", initial: "close" }],
             //    { navSelector: "#side-tabs", contentSelector: "#side-body", initial: "crew" }],
-            scrollY: [".sheet-body", "scroll-lock"]
+            scrollY: [".sheet-body", "scroll-lock"],
+            submitOnChange: true
         }
 
         return foundry.utils.mergeObject(super.defaultOptions, options);

@@ -96,6 +96,10 @@ export class MothershipActor extends Actor {
       }
       //set values
       system.bleeding.value = Number(bleedingValue ?? 0);
+    //keep combat updates for swarm types
+    if (system.swarm && system.swarm.enabled){
+      system.stats.combat.value = system.swarm.combat.value * ( system.hits.max - system.hits.value ); 
+    }
   }
 
   // Prepare Ship type specific data
@@ -482,7 +486,6 @@ export class MothershipActor extends Actor {
             enrichedRollResult.dice.forEach(function (roll) {
               //add header for this roll
               diceBlock = diceBlock + `
-              <div class="wrapper">
                 <section class="tooltip-part">
                   <div class="dice">
               `;
@@ -545,7 +548,6 @@ export class MothershipActor extends Actor {
                     </ol>
                   </div>
                 </section>
-              </div>
               `;
             });
         //set final roll variables in to template
@@ -554,7 +556,9 @@ export class MothershipActor extends Actor {
             <div class="dice-result">
               <div class="dice-formula">${diceFormula}</div>
               <div class="dice-tooltip" hidden>
-                ${diceBlock}
+                <div class="wrapper">
+                  ${diceBlock}
+                </div>
               </div>
               <h4 class="dice-total">${enrichedRollResult.total}</h4>
             </div>
@@ -1447,7 +1451,7 @@ export class MothershipActor extends Actor {
         };
         //create message
         const template = 'systems/mosh/templates/chat/rollCheck.html';
-        const content = await foundry.applications.handlebars.renderTemplate(template, templateData);
+        const content = await foundry.applications.handlebars.renderTemplate(template, messageData);
         chatData.content = content;
         await ChatMessage.create(chatData);
       //log what was done

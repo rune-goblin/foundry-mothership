@@ -13,8 +13,8 @@
           {{#if system.swarm.enabled}}
             <span class="ability-mod stat-roll rollable creaturestat" data-key="combat" data-roll="d100"
               data-label="Combat">{{ localize 'Mosh.Combat' }} {{ localize 'Mosh.SwarmWoundShort' }}</span>
-            <input class="creaturestat noborder" style="width: 30px;" type="text" name="system.swarm.combat.value"
-              value="{{system.swarm.combat.value}}" data-dtype="Number" />
+            <input class="creaturestat noborder" style="width: 30px;" type="text" name="system.stats.combat.value"
+              value="{{system.stats.combat.value}}" data-dtype="Number" />
           {{else}}
             <span class="ability-mod stat-roll rollable creaturestat" data-key="combat" data-roll="d100"
               data-label="Combat">{{ localize 'Mosh.Combat' }}</span>
