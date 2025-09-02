@@ -9,7 +9,7 @@ import { DLShipMacros } from "../windows/ship-macros.js";
 import { DLShipMegaDamage } from "../windows/ship-megadamage.js";
 import { DLShipSetup } from "../windows/ship-setup.js";
 
-export class MothershipShipSheetSBT extends ActorSheet {
+export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
 
     /** @override */
     static get defaultOptions() {
@@ -22,7 +22,8 @@ export class MothershipShipSheetSBT extends ActorSheet {
             tabs: [{ navSelector: "#sheet-tabs", contentSelector: "#sheet-body", initial: "character" },
             { navSelector: "#side-tabs", contentSelector: "#side-body", initial: "close" }],
             //    { navSelector: "#side-tabs", contentSelector: "#side-body", initial: "crew" }],
-            scrollY: [".sheet-body", "scroll-lock"]
+            scrollY: [".sheet-body", "scroll-lock"],
+            submitOnChange: true
         }
 
         return foundry.utils.mergeObject(super.defaultOptions, options);
@@ -35,7 +36,7 @@ export class MothershipShipSheetSBT extends ActorSheet {
         new DLShipDeckplan(this.actor, {
             top: this.position.top + 40,
             left: this.position.left + (this.position.width - 400) / 2
-        }).render(true);
+        }).render({force: true});
     }
 
     _onOpenMacros(event) {
@@ -43,7 +44,7 @@ export class MothershipShipSheetSBT extends ActorSheet {
         new DLShipMacros(this.actor, {
             top: this.position.top + 40,
             left: this.position.left + (this.position.width - 400) / 2
-        }).render(true);
+        }).render({force: true});
     }
 
     _onOpenSetup(event) {
@@ -51,7 +52,7 @@ export class MothershipShipSheetSBT extends ActorSheet {
         new DLShipSetup(this.actor, {
             top: this.position.top + 40,
             left: this.position.left + (this.position.width - 400) / 2
-        }).render(true);
+        }).render({force: true});
     }
 
     _onOpenMegadamage(event) {
@@ -59,7 +60,7 @@ export class MothershipShipSheetSBT extends ActorSheet {
         new DLShipMegaDamage(this.actor, {
             top: this.position.top + 40,
             left: this.position.left + (this.position.width - 400) / 2
-        }).render(true);
+        }).render({force: true});
     }
 
     /* -------------------------------------------- */
@@ -98,7 +99,7 @@ export class MothershipShipSheetSBT extends ActorSheet {
         superData.supplies.hull.percentage = " [ " + Math.round(maxHull * 0.25) + " | " + Math.round(maxHull * 0.5) + " | " + Math.round(maxHull * 0.75) + " ]";
         
         data.data.enriched = [];
-        data.data.enriched.biography = await TextEditor.enrichHTML(data.data.system.biography, {async: true});
+        data.data.enriched.biography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(data.data.system.biography, {async: true});
         
 
         //Run Setup
@@ -193,17 +194,16 @@ export class MothershipShipSheetSBT extends ActorSheet {
             if (index != 0 && actorData.megadamage.hits.includes(index)) {
                 // megadamageHTML += `<i class="fa-solid fa-wrench megadamage-button rollable" data-key="${index}"></i> &nbsp`;
                 megadamageHTML += `<i class="fas fa-circle megadamage-button rollable" data-key="${index}"></i> &nbsp`;
-                megadamageHTML += `<b>${index} |</b> ${entry[1].text} <br/> <br/>`;
+                megadamageHTML += `<b>${index} |</b> ${entry[1].description} <br/> <br/>`;
             } else if (index != 0) {
                 // megadamageHTML += `<i class="fa-solid fa-wrench megadamage-button rollable" data-key="${index}"></i> &nbsp`;
                 megadamageHTML += `<div class="grey"><i class="far fa-circle megadamage-button rollable grey" data-key="${index}"></i> &nbsp`;
-                megadamageHTML += `<b>${index} |</b> ${entry[1].text} <br/> <br/></div>`;
+                megadamageHTML += `<b>${index} |</b> ${entry[1].description} <br/> <br/></div>`;
             }
             index++;
         }
         // } else {
 
-        // megadamageHTML += entries[0][1].text + "<br/> <br/>";
         // }
 
         await this.object.update({
@@ -270,7 +270,7 @@ export class MothershipShipSheetSBT extends ActorSheet {
         html.find('.item-edit').click(ev => {
             const li = $(ev.currentTarget).parents(".item");
             const item = this.actor.getEmbeddedDocument("Item", li.data("itemId"));
-            item.sheet.render(true);
+            item.sheet.render({force: true});
 
             let amount = item.system.quantity;
 
@@ -284,11 +284,7 @@ export class MothershipShipSheetSBT extends ActorSheet {
             const li = ev.currentTarget.closest(".item");
             //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId))
             var item;
-            if (game.release.generation >= 12) {
-                item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            } else {
-                item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            }
+            item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
             let amount = item.system.quantity;
 
             if (event.button == 0) {
@@ -318,7 +314,7 @@ export class MothershipShipSheetSBT extends ActorSheet {
         html.find('.weapon-edit').click(ev => {
             const li = $(ev.currentTarget).parents(".item");
             const weapon = this.actor.getEmbeddedDocument("Item", li.data("itemId"));
-            weapon.sheet.render(true);
+            weapon.sheet.render({force: true});
         });
 
         // Rollable Weapon - not needed since individual ship weapons are not fired
@@ -391,11 +387,7 @@ export class MothershipShipSheetSBT extends ActorSheet {
         html.on('mousedown', '.weapon-ammo', ev => {
             const li = ev.currentTarget.closest(".item");
             var item;
-            if (game.release.generation >= 12) {
-                item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            } else {
-                item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
-            }
+            item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId));
             //const item = duplicate(this.actor.getEmbeddedDocument("Item", li.dataset.itemId))
             let amount = item.system.ammo;
 
@@ -458,11 +450,8 @@ export class MothershipShipSheetSBT extends ActorSheet {
 
         // Grab any data associated with this control.
         var data;
-        if (game.release.generation >= 12) {
-            data = foundry.utils.duplicate(header.dataset);
-        } else {
-            data = duplicate(header.dataset);
-        }
+        data = foundry.utils.duplicate(header.dataset);
+        
 
         // Initialize a default name.
         const name = `New ${type.capitalize()}`;

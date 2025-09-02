@@ -196,15 +196,29 @@ export const registerSettings = function () {
             valueStart = actor.system.other.stress.value;
             maxStart = actor.system.other.stress.max;
             labelStart = actor.system.other.stress.label;
-            //convert min stress to max calm
-            actor.update({'system.other.stress.max': Math.round(85-(actor.system.other.stress.min*3))});
-            maxEnd = Math.round(85-(actor.system.other.stress.min*3));
+            //update max calm
+              //set max calm to 85 if min stress is 2
+              if (minStart === 2) {
+                actor.update({'system.other.stress.max': 85});
+                maxEnd = 85;
+              //otherwise convert the min stress to max calm
+              } else {
+                actor.update({'system.other.stress.max': Math.round(85-(actor.system.other.stress.value*3))});
+                maxEnd = Math.round(85-(actor.system.other.stress.value*3));
+              }
             //set min stress to 0
             actor.update({'system.other.stress.min': 0});
             minEnd = 0;
-            //convert stress to calm
-            actor.update({'system.other.stress.value': Math.round(85-(actor.system.other.stress.value*3))});
-            valueEnd = Math.round(85-(actor.system.other.stress.value*3));
+            //update calm
+              //set calm to 85 if stress is 2
+              if (valueStart === 2) {
+                actor.update({'system.other.stress.value': 85});
+                valueEnd = 85;
+              //otherwise convert stress to calm
+              } else {
+                actor.update({'system.other.stress.value': Math.round(85-(actor.system.other.stress.value*3))});
+                valueEnd = Math.round(85-(actor.system.other.stress.value*3));
+              }
             //set stress label to Calm
             actor.update({'system.other.stress.label': 'Calm'});
             labelEnd = 'Calm';
@@ -234,7 +248,7 @@ export const registerSettings = function () {
               //set min stress to 20 if > 20
               if (Math.round((85-actor.system.other.stress.max)/3) > 20) {
                 actor.update({'system.other.stress.min': 20});
-                minEnd = 2;
+                minEnd = 20;
               //set min stress to 2 if < 2
               } else if (Math.round((85-actor.system.other.stress.max)/3) < 2) {
                 actor.update({'system.other.stress.min': 2});

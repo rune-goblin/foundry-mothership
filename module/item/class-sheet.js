@@ -15,11 +15,8 @@ export class MothershipClassSheet extends MothershipItemSheet {
     };
     options.dragDrop = [{dragSelector: null, dropSelector: ".dropitem"}];
 
-    if (game.release.generation >= 12) {
-      return foundry.utils.mergeObject(super.defaultOptions, options);
-    } else {
-      return mergeObject(super.defaultOptions, options);
-    }
+    return foundry.utils.mergeObject(super.defaultOptions, options);
+    
   }
 
 
@@ -61,21 +58,24 @@ export class MothershipClassSheet extends MothershipItemSheet {
     }*/
 
     data.enriched=[];
-    data.enriched.description = await TextEditor.enrichHTML(data.system.description, {async: true});
+    data.enriched.description = await foundry.applications.ux.TextEditor.implementation.enrichHTML(data.system.description, {async: true});
 
     return data;
   }
 
   async _onDrop(event){
     await super._onDrop(event);
-    const droppedUuid = TextEditor.getDragEventData(event);
+    const droppedUuid = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
     if (droppedUuid.type != "Item"){
        return;
     }
 
     const droppedObject = await fromUuid(droppedUuid.uuid);
     if (droppedObject.type == "skill"){
-      //todo: add a check if the skill already exist in the list and dont add it, (by id or by name?)
+      if(event.currentTarget == null) {
+          ui.notifications.error(game.i18n.localize("Mosh.Errors.NoDropTarget"));
+          return this.render(false);
+      }
       console.log(event.currentTarget.id);
       if(event.currentTarget.id == "skills.fixed"){
         let parent_fixed_or = event.target.closest('div[id="skills.fixed.or"]');
@@ -83,12 +83,20 @@ export class MothershipClassSheet extends MothershipItemSheet {
         if(parent_fixed_or){
           let array_index = parent_fixed_or.getAttribute("index");
           let skills = this.object.system.base_adjustment.skills_granted;
+          if(skills[array_index].includes(droppedObject.uuid)){
+            ui.notifications.warn(game.i18n.localize("Mosh.Errors.SkillAlreadyInList"));
+            return this.render(false);
+          }
           skills[array_index].push(droppedObject.uuid);
           this.object.update({"system.base_adjustment.skills_granted":skills});
           return this.render(false);
 
         }else{
           let skills = this.object.system.base_adjustment.skills_granted;
+          if (skills.includes(droppedObject.uuid)){
+            ui.notifications.warn(game.i18n.localize("Mosh.Errors.SkillAlreadyInList"));
+            return this.render(false);
+          }
           skills.push(droppedObject.uuid);
           this.object.update({"system.base_adjustment.skills_granted":skills});
           return this.render(false);
@@ -96,6 +104,10 @@ export class MothershipClassSheet extends MothershipItemSheet {
       }
       else if(event.currentTarget.id =="skills.common"){
         let skills = this.object.system.common_skills;
+        if (skills.includes(droppedObject.uuid)){
+          ui.notifications.warn(game.i18n.localize("Mosh.Errors.SkillAlreadyInList"));
+          return this.render(false);
+        }
         skills.push(droppedObject.uuid);
         this.object.update({"system.common_skills":skills});
         return this.render(false);
@@ -107,7 +119,10 @@ export class MothershipClassSheet extends MothershipItemSheet {
         let parent_index = parent.data("itemId");
 
         let options = this.object.system.selected_adjustment.choose_skill_or;
-        
+        if(options[parent_index][index].from_list.includes(droppedObject.uuid)){
+          ui.notifications.warn(game.i18n.localize("Mosh.Errors.SkillAlreadyInList"));
+          return this.render(false);
+        }
         options[parent_index][index].from_list.push(droppedObject.uuid);
 
         this.object.update({"system.selected_adjustment.choose_skill_or":options});
@@ -247,48 +262,52 @@ export class MothershipClassSheet extends MothershipItemSheet {
       event.preventDefault();
       let choose_stat = this.object.system.selected_adjustment.choose_stat;
 
-      let DialogContent = `<h2>${game.i18n.localize("Mosh.CharacterGenerator.StatOption")}</h2>\
-      <div> <input type="number" id='modification' placeholder="${game.i18n.localize("Mosh.Value")}" /></label></div>\
-                 <div> <input type="checkbox" id='strength' />${game.i18n.localize("Mosh.Strength")}</label></div>\
-      <div> <input type="checkbox" id='speed' />${game.i18n.localize("Mosh.Speed")}</label></div>\
-     <div> <input type="checkbox" id='intellect' />${game.i18n.localize("Mosh.Intellect")}</label></div>\
-     <div> <input type="checkbox" id='combat' />${game.i18n.localize("Mosh.Combat")}</label></div>\
-      <div> <input type="checkbox" id='sanity' />${game.i18n.localize("Mosh.Sanity")}</label></div>\
-      <div> <input type="checkbox" id='fear' />${game.i18n.localize("Mosh.Fear")}</label></div>\
-     <div> <input type="checkbox" id='body' />${game.i18n.localize("Mosh.Body")}</label></div>`
+      let DialogContent = `
+        <div class="macro_desc" style="margin-bottom : -5px;"><h4>${game.i18n.localize("Mosh.CharacterGenerator.StatOption")}</h4></div>\
+        <div> <input type="number" id='modification' placeholder="${game.i18n.localize("Mosh.Value")}" /></label></div>\
+        <div> <input type="checkbox" id='strength' />${game.i18n.localize("Mosh.Strength")}</label></div>\
+        <div> <input type="checkbox" id='speed' />${game.i18n.localize("Mosh.Speed")}</label></div>\
+        <div> <input type="checkbox" id='intellect' />${game.i18n.localize("Mosh.Intellect")}</label></div>\
+        <div> <input type="checkbox" id='combat' />${game.i18n.localize("Mosh.Combat")}</label></div>\
+        <div> <input type="checkbox" id='sanity' />${game.i18n.localize("Mosh.Sanity")}</label></div>\
+        <div> <input type="checkbox" id='fear' />${game.i18n.localize("Mosh.Fear")}</label></div>\
+        <div> <input type="checkbox" id='body' />${game.i18n.localize("Mosh.Body")}</label></div>
+      `
 
-      let d = new Dialog({
-        title: "Select Stat",
+      let d = new foundry.applications.api.DialogV2({
+		    window: {title: `Select Stat`},
+        classes: ["macro-popup-dialog"],
         content: DialogContent,
-        buttons: {
-          create: {
-            icon: '<i class="fas fa-check"></i>',
+        buttons: [
+          {
+            icon: 'fas fa-check',
+            action: "create",
             label: "Create",
-            callback: (html) => {
+            callback: (event, button, dialog) => {
               
             let new_stat_option = {
-              modification: html.find('[id=\"modification\"]').prop("value"),
+              modification: button.form.querySelector('[id=\"modification\"]').value,
               stats: [],
             }
-            if (html.find('[id=\"strength\"]')[0].checked){
+            if (button.form.querySelector('[id=\"strength\"]')?.checked){
               new_stat_option.stats.push("strength");
             }
-            if (html.find('[id=\"speed\"]')[0].checked){
+            if (button.form.querySelector('[id=\"speed\"]')?.checked){
               new_stat_option.stats.push("speed");
             }
-            if (html.find('[id=\"intellect\"]')[0].checked){
+            if (button.form.querySelector('[id=\"intellect\"]')?.checked){
               new_stat_option.stats.push("intellect");
             }
-            if (html.find('[id=\"combat\"]')[0].checked){
+            if (button.form.querySelector('[id=\"combat\"]')?.checked){
               new_stat_option.stats.push("combat");
             }
-            if (html.find('[id=\"sanity\"]')[0].checked){
+            if (button.form.querySelector('[id=\"sanity\"]')?.checked){
               new_stat_option.stats.push("sanity");
             }
-            if (html.find('[id=\"fear\"]')[0].checked){
+            if (button.form.querySelector('[id=\"fear\"]')?.checked){
               new_stat_option.stats.push("fear");
             }
-            if (html.find('[id=\"body\"]')[0].checked){
+            if (button.form.querySelector('[id=\"body\"]')?.checked){
               new_stat_option.stats.push("body");
             }
             if(new_stat_option.stats.length < 2){
@@ -301,34 +320,21 @@ export class MothershipClassSheet extends MothershipItemSheet {
 
             }
           },
-          cancel: {
-            icon: '<i class="fas fa-times"></i>',
+          {
+            icon: 'fas fa-times',
+            action: "cancel",
             label: "Cancel",
             callback: () => { }
           }
-        },
+        ],
         default: "create",
         close: () => { }
       });
-      d.render(true);
+      d.render({force: true});
   
       // Finally, create the item!
       return;
     }
-  /****
-  async _updateObject(event, formData) {
-    const item = this.object;
-
-    var updateData;
-    if (game.release.generation >= 12) {
-      updateData = foundry.utils.expandObject(formData);
-    } else {
-      updateData = expandObject(formData);
-    }
-
-    await item.update(updateData, {
-      diff: false
-    });
-  }*/
+  
 }
 

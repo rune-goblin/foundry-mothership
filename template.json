@@ -19,6 +19,12 @@
           "max" : 2,
           "label" : "Wounds"
         },
+        "netHP": {
+          "value": 20,
+          "min": 0,
+          "max" : 20,
+          "label" : "Net HP"
+        },
         "bleeding": {
           "value": 0,
           "min": 0,
@@ -35,9 +41,6 @@
       "weight" : {
         "current" : 0,
         "capacity" : 0
-      },
-      "settings" : {
-        "useCalm" : false
       },
       "class": {
         "value": ""
@@ -155,6 +158,7 @@
         "base"
       ],
       "biography": "",
+      "notes": "",
       "description": "This is a description",
       "xp": {
         "value": 1,
@@ -194,9 +198,12 @@
           "enabled" : false
         },
         "armor": {
-          "value": 10,
+          "value": 0,
+          "mod": 0,
           "min": 0,
           "max": 99,
+          "damageReduction": 0,
+          "cover": "none",
           "label": "Armor",
           "rollLabel": "Armor Save",
           "enabled" : false

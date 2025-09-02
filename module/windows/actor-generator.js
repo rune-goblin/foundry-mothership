@@ -5,6 +5,7 @@ export class DLActorGenerator extends FormApplication {
       options.classes = ["mosh", "sheet", "actor", "character"];
       options.template = 'systems/mosh/templates/dialogs/actor-generator-dialog.html';
       options.width = 800;
+      options.height = "auto";
       options.dragDrop = [{ dragSelector: null, dropSelector: ".dropitem" }];
       return options;
    }
@@ -111,17 +112,17 @@ export class DLActorGenerator extends FormApplication {
          let resultText = "";
          let resultUuid = [];
          for (var i = 0; i < tableResult.results.length; i++) {
-            if (tableResult.results[i].type == "pack") {
+            if (tableResult.results[i].type == "pack" || tableResult.results[i].type == "document") {
                if (type == "ul") {
-                  this._element.find(`ul[id="${id}.text"]`).append(`<li>${tableResult.results[i].text}</li>`);
+                  this._element.find(`ul[id="${id}.text"]`).append(`<li>${tableResult.results[i].name}</li>`);
                } else {
-                  resultText += tableResult.results[i].text + "; ";
+                  resultText += tableResult.results[i].name + "; ";
                }
-               resultUuid.push(tableResult.results[i].documentId);
+               resultUuid.push(tableResult.results[i].documentUuid);
             } else if (tableResult.results[i].type == "text") {
-               let tableTextmatch = tableResult.results[i].text.match(/(.*)(@UUID.*)/i);
+               let tableTextmatch = tableResult.results[i].description.match(/(.*)(@UUID.*)/i);
                if (type == "ul") {
-                  this._element.find(`ul[id="${id}.text"]`).append(`<li>${await TextEditor.enrichHTML(tableTextmatch[2].replace(/(\<br\s\/>)+/i, ""), { async: true })}</li>`);
+                  this._element.find(`ul[id="${id}.text"]`).append(`<li>${await foundry.applications.ux.TextEditor.implementation.enrichHTML(tableTextmatch[2].replace(/(\<br\s\/>)+/i, ""), { async: true })}</li>`);
                }
                else {
                   resultText += tableTextmatch[1].replace(/(\<br\s\/>)+/i, "");
@@ -146,6 +147,7 @@ export class DLActorGenerator extends FormApplication {
    async rollPatch(html) {
       if (!this.patchTable) {
          ui.notifications.error(game.i18n.localize("Mosh.CharacterGenerator.Error.NoClass"));
+         return;
       }
       await this.rollTable(html, "system.class.patch", this.patchTable);
 
@@ -153,6 +155,7 @@ export class DLActorGenerator extends FormApplication {
    async rollTrinket(html) {
       if (!this.trinketTable) {
          ui.notifications.error(game.i18n.localize("Mosh.CharacterGenerator.Error.NoClass"));
+         return;
       }
       await this.rollTable(html, "system.class.trinket", this.trinketTable);
 
@@ -193,23 +196,29 @@ export class DLActorGenerator extends FormApplication {
     */
    async fixedSkillOptionPopup(html, skillPopupOptions) {
       return new Promise((resolve) => {
-         let buttons_options = {};
+         if(skillPopupOptions.length == 0){
+            resolve(null);
+            return;
+         }
+         let buttons_options = [];
          for (let j = 0; j < skillPopupOptions.length; j++) {
-            buttons_options[j] = {
-               icon: '<i class="fas fa-check"></i>',
+            buttons_options.push({
+               icon: 'fas fa-check',
+			      action: skillPopupOptions[j].name,
                label: skillPopupOptions[j].name,
                callback: () => resolve(skillPopupOptions[j].uuid),
-            };
+            });
          }
-         let d = new Dialog({
-            title: game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupTitle"),
-            content: `<p>${game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupText")}</p>`,
+         let d = new foundry.applications.api.DialogV2({
+		      window: {title: game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupTitle")},
+            classes: ["macro-popup-dialog"],
+            content: `<div class="macro_desc"><h4>${game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupText")}</h4></div>`,
             buttons: buttons_options,
             default: "1",
             //render: html => console.log("Register interactivity in the rendered dialog"),
             //close: html => console.log("This always is logged no matter which option is chosen")
          });
-         d.render(true);
+         d.render({force: true});
       });
    }
 
@@ -220,7 +229,6 @@ export class DLActorGenerator extends FormApplication {
     * @returns 
     */
    async updateSkillHtmlUl(html, skillsUuid) {
-      //html.find(`ul[id="system.class.skils.text"]`).empty();
       let new_skills =  await html.find(`input[id="system.class.skills.uuid"]`).prop("value").split(",").filter(Boolean);
       for (let i = 0; i < skillsUuid.length; i++) {
          let skill = null;
@@ -242,7 +250,7 @@ export class DLActorGenerator extends FormApplication {
          }
          new_skills.push(skill.uuid);
          /**we need to keep only the Uuid of the item, not the complete string (for now) */
-         let li_html = `<li><img src="${skill.img}" title="${skill.name}" width="24" height="24"/> ${await TextEditor.enrichHTML(skill.name, { async: true })}</li>`;
+         let li_html = `<li>${await foundry.applications.ux.TextEditor.implementation.enrichHTML(skill.name, { async: true })}</li>`;
          html.find(`ul[id="system.class.skils.text"]`).append(li_html);
          
       }
@@ -321,18 +329,20 @@ export class DLActorGenerator extends FormApplication {
          }
       }
 
-      let popUpContent = await renderTemplate(template, skillPopupData);
+      let popUpContent = await foundry.applications.handlebars.renderTemplate(template, skillPopupData);
 
       return new Promise((resolve) => {
-         let d = new Dialog({
-            title: game.i18n.localize("Mosh.CharacterGenerator.SkillOption.PopupTitle"),
+         let d = new foundry.applications.api.DialogV2({
+		      window: {title: game.i18n.localize("Mosh.CharacterGenerator.SkillOption.PopupTitle")},
+            classes: ["macro-popup-dialog"],
             content: popUpContent,
-            buttons: {
-               "1": {
-                  icon: '<i class="fas fa-check"></i>',
+            buttons: [
+               {
+                  icon: 'fas fa-check',
+			         action: `action_save`,
                   label: "Save",
-                  callback: (html) => {
-                     let form = html.find('form')[0];
+                  callback: (event, button, dialog) => {
+                     let form = button.form;
                      let formData = new FormData(form);
                      let new_skills = [];
                      formData.forEach((value, key) => {
@@ -345,11 +355,11 @@ export class DLActorGenerator extends FormApplication {
                      this.updateSkillHtmlUl(this._element, new_skills);
                      resolve();
                   }
-               },
-            },
+               }
+            ],
             default: "1",
          });
-         d.render(true);
+         d.render({force: true});
       });
    }
 
@@ -361,29 +371,32 @@ export class DLActorGenerator extends FormApplication {
    async showOptionsDialog(list_option_skills_or) {
       let popupData = {options:list_option_skills_or};
 
-      let popUpContent = await renderTemplate("systems/mosh/templates/dialogs/actor-generator/actor-generator-skill-option-choice-dialog.html", popupData);
+      let popUpContent = await foundry.applications.handlebars.renderTemplate("systems/mosh/templates/dialogs/actor-generator/actor-generator-skill-option-choice-dialog.html", popupData);
       
       return new Promise((resolve) => {
-         
-         let buttonsData = {};
-         for (let i=0;i<list_option_skills_or.length;i++){
-            buttonsData[i]={
-               
-                  icon: '<i class="fas fa-check"></i>',
-                  label: list_option_skills_or[i].name,//game.i18n.localize("Mosh.CharacterGenerator.SkillOption.ChoiceWord") + ` ${i}`,
-                  callback: () => {
-                     resolve(list_option_skills_or[i]);
-                  }
-               
-            };
+         if(list_option_skills_or.length == 0){
+            resolve(null);
+            return;
          }
-         let d = new Dialog({
-            title: game.i18n.localize("Mosh.CharacterGenerator.SkillOption.PopupTitle"),
+         let buttonsData = [];
+         for (let i=0;i<list_option_skills_or.length;i++){
+            buttonsData.push({
+               icon: 'fas fa-check',
+			      action: list_option_skills_or[i].name,
+               label: list_option_skills_or[i].name,//game.i18n.localize("Mosh.CharacterGenerator.SkillOption.ChoiceWord") + ` ${i}`,
+               callback: () => {
+                  resolve(list_option_skills_or[i]);
+               }
+            });
+         }
+         let d = new foundry.applications.api.DialogV2({
+		      window: {title: game.i18n.localize("Mosh.CharacterGenerator.SkillOption.PopupTitle")},
+            classes: ["macro-popup-dialog"],
             content: popUpContent,
-            window:{width: 500,},
+            window:{width: 500},
             buttons: buttonsData,
          });
-         d.render(true);
+         d.render({force: true});
       });
    }
 
@@ -395,6 +408,7 @@ export class DLActorGenerator extends FormApplication {
       let class_uuid = html.find(`input[id="system.class.uuid"]`).prop("value");
       if (class_uuid == "") {
          ui.notifications.error(game.i18n.localize("Mosh.CharacterGenerator.SkillOption.Classerror"));
+         return;
       }
       let classObject = await fromUuid(class_uuid);
       //empty previously existing skills
@@ -427,6 +441,48 @@ export class DLActorGenerator extends FormApplication {
          await this.popUpSkillOptions(selected_option);
          
       }
+   }
+
+   /**
+    * Ask the user for the stat options, and apply the bonuses to the form.
+    * @param {Array} list_option_stats_and_saves
+    * @returns 
+    */
+   async statOptions(list_option_stats_and_saves){
+      return new Promise((resolve) => {
+         if(list_option_stats_and_saves.length == 0){
+            resolve();
+            return;
+         }
+
+         for(let i =0;i<list_option_stats_and_saves.length;i++){
+            let option_stats_and_saves = list_option_stats_and_saves[i];
+            if (option_stats_and_saves.modification) {
+               let buttons_options = [];
+               for (let j = 0; j < option_stats_and_saves.stats.length; j++) {
+                  let prev_bonus = this._element.find(`input[name="system.stats.${option_stats_and_saves.stats[j]}.bonus"]`).prop("value");
+                  buttons_options.push({
+                     icon: 'fas fa-check',
+                     action: option_stats_and_saves.stats[j],
+                     label: option_stats_and_saves.stats[j],//.replace(/\.bonus/i,"").replace(/(.*)\.+/i,""),
+                     callback: () => {this._element.find(`input[name="system.stats.${option_stats_and_saves.stats[j]}.bonus"]`).prop("value", (parseInt(option_stats_and_saves.modification) + parseInt(prev_bonus)));
+                        resolve();
+                     }
+                  });
+               }
+               let d = new foundry.applications.api.DialogV2({
+                  window: {title: game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupTitle")},
+                  classes: ["macro-popup-dialog"],
+                  content: `<div class="macro_desc"><h4>${game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupText")} (${option_stats_and_saves.modification})</h4></div>`,
+                  buttons: buttons_options,
+                  default: "1",
+                  //render: html => console.log("Register interactivity in the rendered dialog"),
+                  //close: html => console.log("This always is logged no matter which option is chosen")
+               });
+               d.render({force: true});
+            }
+         }
+      });
    }
 
    /**
@@ -473,35 +529,11 @@ export class DLActorGenerator extends FormApplication {
        * Stats
        */
       //stats options
-      let list_option_stats_and_saves = droppedObject.system.selected_adjustment.choose_stat;
-      for(let i =0;i<list_option_stats_and_saves.length;i++){
-         let option_stats_and_saves = list_option_stats_and_saves[i];
-         if (option_stats_and_saves.modification) {
-            let buttons_options = {};
-            for (let j = 0; j < option_stats_and_saves.stats.length; j++) {
-               let prev_bonus = this._element.find(`input[name="system.stats.${option_stats_and_saves.stats[j]}.bonus"]`).prop("value");
-               buttons_options[j] = {
-                  icon: '<i class="fas fa-check"></i>',
-                  label: option_stats_and_saves.stats[j],//.replace(/\.bonus/i,"").replace(/(.*)\.+/i,""),
-                  callback: () => this._element.find(`input[name="system.stats.${option_stats_and_saves.stats[j]}.bonus"]`).prop("value", (parseInt(option_stats_and_saves.modification) + parseInt(prev_bonus)))
-               };
-            }
-            let d = new Dialog({
-               title: game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupTitle"),
-               content: `<p>${game.i18n.localize("Mosh.CharacterGenerator.StatOptionPopupText")} (${option_stats_and_saves.modification})</p>`,
-               buttons: buttons_options,
-               default: "1",
-               //render: html => console.log("Register interactivity in the rendered dialog"),
-               //close: html => console.log("This always is logged no matter which option is chosen")
-            });
-            d.render(true);
-         }
-      }
+      await this.statOptions(droppedObject.system.selected_adjustment.choose_stat)
 
       /**
        *  Skills
        * */
-
       await this.applyClassSkills(this._element);
 
      
@@ -510,7 +542,7 @@ export class DLActorGenerator extends FormApplication {
 
    async _onDrop(event) {
       await super._onDrop(event);
-      const droppedUuid = TextEditor.getDragEventData(event);
+      const droppedUuid = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
       if (droppedUuid.type != "Item") {
          return;
       }
@@ -538,7 +570,7 @@ export class DLActorGenerator extends FormApplication {
       for (const [class_key, class_value] of class_options.entries()) {
 
          html.find(`datalist[id="class_options"]`).append(
-            `<option class="class_option" data-uuid="${class_value.uuid}" value="${class_value.name}">world.Item</option>`
+            `<option class="class_option" data-uuid="${class_value.uuid}" value="${class_value.name}" label="${class_value.name} - world.Item">world.Item</option>`
          );
       }
 
@@ -547,8 +579,9 @@ export class DLActorGenerator extends FormApplication {
       for (const [compendium_key, compendium_value] of compendiums.entries()) {
          let classes = await compendium_value.getDocuments({ type: "class" });
          for (const [class_key, class_value] of classes.entries()) {
+            let source = class_value.pack.replace(/\..*$/, "");
             html.find(`datalist[id="class_options"]`).append(
-               `<option class="class_option" data-uuid="${class_value.uuid}" value="${class_value.name}">${class_value.pack}</option>`
+               `<option class="class_option" data-uuid="${class_value.uuid}" value="${class_value.name}" label="${class_value.name} - ${source}"></option>`
             );
          }
       }
@@ -711,8 +744,15 @@ export class DLActorGenerator extends FormApplication {
       }
       if (formData["system.class.loadout.uuid"]) {
          let loadoutItems = formData["system.class.loadout.uuid"].split(",");
+         let itemsToAdd = {};
          for (var i = 0; i < loadoutItems.length; i++) {
-            await this.object.modifyItem(loadoutItems[i], 1);
+            if(!itemsToAdd[loadoutItems[i]]){
+               itemsToAdd[loadoutItems[i]] = 0;
+            }
+            itemsToAdd[loadoutItems[i]] += 1;
+         }
+         for (const [itemUuid, quantity] of Object.entries(itemsToAdd)) {  
+            await this.object.modifyItem(itemUuid, quantity);
          }
       }
       if (formData["system.class.patch.uuid"]) {

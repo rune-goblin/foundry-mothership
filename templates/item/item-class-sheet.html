@@ -1,7 +1,7 @@
 <form class="{{cssClass}}" autocomplete="off">
 
   <header class="sheet-header">
-    <div class="header" style="grid-template-columns: 0.15fr 1fr;">
+    <div class="header grid" style="grid-template-columns: 75px auto; width:100%;">
       <!-- Image -->
       <img class="sbt-profile" style="height: auto;" src="{{img}}" data-edit="img" title="{{name}}" />
 
@@ -228,7 +228,7 @@
     </div>
 
     {{!-- skills Tab --}}
-    <div class="tab grid"  id="skills.selected.and" data-group="primary" data-tab="skills.selected.and">
+    <div class="tab"  id="skills.selected.and" data-group="primary" data-tab="skills.selected.and">
       <div class="grid grid-3col widegap">
           <div>
             <label for="system.selected_adjustment.choose_skill_and.trained"
@@ -284,7 +284,7 @@
     </div>
         
     {{!-- skills Tab --}}
-    <div class="tab grid"  id="skills.selected.or" data-group="primary" data-tab="skills.selected.or">
+    <div class="tab"  id="skills.selected.or" data-group="primary" data-tab="skills.selected.or">
       <div class="skill-name">
         <a class="item-control skills-group-add" title="{{ localize 'Mosh.AddGroup' }}" data-type="skill"><i
             class="fas fa-plus"></i> {{ localize 'Mosh.AddGroup' }}</a>
@@ -325,7 +325,7 @@
               </div>
             </li>
           {{/each}}
-            <li hidden id="choose_skill_or_form" class="item flexrow" data-item-id="{{@index}}">
+            <li id="choose_skill_or_form" class="item flexrow" data-item-id="{{@index}}">
               <div class="skill-name"><input name="choose_skill_or_name" value="" data-dtype="text" oninput="handleInputChange(event)" /> </div>
               <div class="skill-stat"><input type="text" name="choose_skill_or_trained" value="" data-dtype="Number" oninput="handleInputChange(event)" /> </div>
               <div class="skill-stat"><input type="text" name="choose_skill_or_expert" value="" data-dtype="Number" oninput="handleInputChange(event)" /> </div>

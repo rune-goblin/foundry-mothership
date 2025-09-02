@@ -59,7 +59,7 @@ export class DLShipMegaDamage extends FormApplication {
                     megadamageSettingsHTML += `<i class="far fa-circle megadamage-button rollable" data-key="${index}"></i> &nbsp`;
                 }
                 
-                megadamageSettingsHTML += `<b>${index} |</b> ${entry[1].text} <br/> <br/>`;
+                megadamageSettingsHTML += `<b>${index} |</b> ${entry[1].description} <br/> <br/>`;
             }
             index++;
         }

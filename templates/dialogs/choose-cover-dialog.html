@@ -1,43 +1,19 @@
-<style>
-    .macro_window{
-      background: rgb(230,230,230);
-      border-radius: 9px;
-    }
-    .macro_img{
-      display: flex;
-      justify-content: center;
-    }
-    .macro_desc{
-      font-family: "Roboto", sans-serif;
-      font-size: 10.5pt;
-      font-weight: 400;
-      padding-top: 8px;
-      padding-right: 8px;
-      padding-bottom: 8px;
-    }
-    .grid-2col {
-      display: grid;
-      grid-column: span 2 / span 2;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 2px;
-      padding: 0;
-    }
-    </style>
-    <!-- HEADER -->
-    <div class ="macro_window" style="margin-bottom : 7px;">
-    <div class="grid grid-2col" style="grid-template-columns: 150px auto">
-      <div class="macro_img"><img src="systems/mosh/images/icons/ui/attributes/armor.png" style="border:none"/></div>
-      <div class="macro_desc"><h3>{{ localize 'Mosh.Cover' }}</h3>
-        {{ localize 'Mosh.TheEnvironmentCanProvideProtectionCalled'}} <strong>{{ localize 'Mosh.Cover'}}</strong>. 
-        {{ localize 'Mosh.ItCanBeDestroyedLikeArmor' }}
-         <strong>{{ localize 'Mosh.IfYouShotWhileInCover'}}.</strong> {{ localize 'Mosh.YourCoverValuesAreDisplayedIn'}} <strong><span style="color: orangered">{{ localize 'Mosh.Orange' }}</span></strong>.</div>
+    <div class ="macro_window">
+      <div class="grid grid-2col" style="grid-template-columns: 150px auto">
+        <div class="macro_img"><img src="systems/mosh/images/icons/ui/attributes/armor.png"/></div>
+        <div class="macro_desc"><h4>{{ localize 'Mosh.Cover' }}</h4>
+          {{ localize 'Mosh.TheEnvironmentCanProvideProtectionCalled'}} <strong>{{ localize 'Mosh.Cover'}}</strong>. 
+          {{ localize 'Mosh.ItCanBeDestroyedLikeArmor' }}
+          <strong>{{ localize 'Mosh.IfYouShotWhileInCover'}}.</strong> {{ localize 'Mosh.YourCoverValuesAreDisplayedIn'}} <strong><span style="color: orangered">{{ localize 'Mosh.Orange' }}</span></strong>.</div>
+      </div>
     </div>
+    <div class="macro_prompt">
+      {{ localize 'Mosh.SelectYourCurrentCoverSituation'}}:
     </div>
-    <h4>{{ localize 'Mosh.SelectYourCurrentCoverSituation'}}:</h4>
     <!-- NO COVER -->
     <label for="none">
-      <div class ="macro_window" style="margin-top: 7px; margin-bottom: 7px; vertical-align: middle; padding-left: 3px;">
-        <div class="grid grid-3col" style="grid-template-columns: 20px auto 250px">
+      <div class ="macro_window" style="vertical-align: middle; padding-left: 3px;">
+        <div class="grid grid-3col" style="align-items: center; grid-template-columns: 20px auto 250px">
           <input type="radio" id="none" name="cover" value="none" {{none_checked}}>
           <div class="macro_desc" style="display: table; padding-left: 5px;">
             <span style="display: table-cell; vertical-align: middle;">
@@ -60,8 +36,8 @@
     </label>
     <!-- INSIGNIFICANT COVER -->
     <label for="insignificant">
-      <div class ="macro_window" style="margin-top: 7px; margin-bottom: 7px; vertical-align: middle; padding-left: 3px;">
-        <div class="grid grid-3col" style="grid-template-columns: 20px auto 250px">
+      <div class ="macro_window" style="vertical-align: middle; padding-left: 3px;">
+        <div class="grid grid-3col" style="align-items: center; grid-template-columns: 20px auto 250px">
           <input type="radio" id="insignificant" name="cover" value="insignificant" {{insignificant_checked}}>
           <div class="macro_desc" style="display: table; padding-left: 5px;">
             <span style="display: table-cell; vertical-align: middle;">
@@ -87,8 +63,8 @@
     </label>
     <!-- LIGHT COVER -->
     <label for="light">
-      <div class ="macro_window" style="margin-top: 7px; margin-bottom : 7px; vertical-align: middle; padding-left: 3px;">
-        <div class="grid grid-3col" style="grid-template-columns: 20px auto 250px">
+      <div class ="macro_window" style="vertical-align: middle; padding-left: 3px;">
+        <div class="grid grid-3col" style="align-items: center; grid-template-columns: 20px auto 250px">
           <input type="radio" id="light" name="cover" value="light" {{light_checked}}>
           <div class="macro_desc" style="display: table; padding-left: 5px;">
             <span style="display: table-cell; vertical-align: middle;">
@@ -114,8 +90,8 @@
     </label>
     <!-- HEAVY COVER -->
     <label for="heavy">
-      <div class ="macro_window" style="margin-top: 7px; margin-bottom : 7px; vertical-align: middle; padding-left: 3px;">
-        <div class="grid grid-3col" style="grid-template-columns: 20px auto 250px">
+      <div class ="macro_window" style="vertical-align: middle; padding-left: 3px;">
+        <div class="grid grid-3col" style="align-items: center; grid-template-columns: 20px auto 250px">
           <input type="radio" id="heavy" name="cover" value="heavy" {{heavy_checked}}>
           <div class="macro_desc" style="display: table; padding-left: 5px;">
             <span style="display: table-cell; vertical-align: middle;">

@@ -1001,6 +1001,7 @@
     "Macros": "Macros",
     "MaintenanceAndRepairs": "Maintenance & Repairs",
     "MaintenanceCheck": "Maintenance Check",
+    "Major": "Major",
     "Maximum": "Maximum",
     "MaxShots": "Max Shots",
     "MaxO2": "Max. O2",
@@ -1128,6 +1129,17 @@
     "Bankrupcy": "Bankrupcy",
     "BankrupcySave": "Bankrupcy Save",
     "RestSave": "Rest Save",
-    "Job": "Occupation"
+    "Job": "Occupation",
+    "Class": "Class",
+    "Type": "Type",
+    "Owed": "Owed",
+    "Hull": "Hull",
+    "Modules": "Modules",
+    "DeckPlan": "Deck Plan",
+    "Stock": "Stock",
+    "Errors":{
+      "SkillAlreadyInList":"This skill is already in the list.",
+      "NoDropTarget":"Something went wrong with the drop, please try again."
+    }
   }
 }

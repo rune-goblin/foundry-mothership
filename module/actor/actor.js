@@ -6,51 +6,105 @@ import { fromIdUuid } from "../mosh.js";
  */
 export class MothershipActor extends Actor {
 
-  //Augment the basic actor data with additional dynamic data.
-  prepareData() {
-    //console.log(game.release.generation);
-    super.prepareData();
+  // augment the basic actor data with additional dynamic data
+  prepareDerivedData() {
 
-    const actorData = this;
-    const data = actorData.system;
-    const flags = actorData.flags;
+    super.prepareDerivedData();
+    const system = this.system;
 
-    // Make separate methods for each Actor type (character, npc, etc.) to keep
-    // things organized.
-    if (actorData.type === 'character') this._prepareCharacterData(actorData);
-    else if (actorData.type === 'creature') this._prepareCreatureData(actorData);
-    else if (actorData.type === 'ship') this._prepareShipData(actorData);
-
+    // ----- per-type derived -----
+    if (this.type === "character") this._deriveCharacter();
+    else if (this.type === "creature") this._deriveCreature();
+    else if (this.type === "ship") this._deriveShip();
   }
 
-  //Prepare Character type specific data
-  _prepareCharacterData(actorData) {
-    const data = actorData.system;
-
-    let armorPoints = 0;
-    let damageReduction = 0;
-    const armors = this.getEmbeddedCollection("Item").filter(e => "armor" === e.type);
-    
-    for (let armor of armors) {
-      if (armor.system.equipped) {
-        armorPoints += armor.system.armorPoints;
-        damageReduction += armor.system.damageReduction;
+  // Prepare Character type specific data
+  _deriveCharacter() {
+    const system = this.system;
+    //armor points + damage reduction
+      //init vars
+      let armorPoints = 0;
+      let damageReduction = 0;
+      //count values
+      for (const armor of this.items.filter(i => i.type === "armor")) {
+        if (armor.system?.equipped) {
+          armorPoints += Number(armor.system.armorPoints ?? 0);
+          damageReduction += Number(armor.system.damageReduction ?? 0);
+        }
       }
+      //set values
+      system.stats.armor.mod = armorPoints;
+      system.stats.armor.total = armorPoints + Number(system.stats.armor.value ?? 0);
+      system.stats.armor.damageReduction = damageReduction;
+    //net hp
+      //init vars
+      let netHPvalue = 0;
+      let netHPmax = 0;
+      //check if actor has netHP
+      system.netHP ??= { value: 0, min: 0, max: 0, label: "Net HP"};
+      //set values
+      system.netHP.value = ((Number(system.hits.max ?? 0)-Number(system.hits.value ?? 0)-1) * Number(system.health.max ?? 0)) + Number(system.health.value ?? 0);
+      system.netHP.max = Number(system.health.max ?? 0) * Number(system.hits.max ?? 0);
+    //bleeding
+      //init vars
+      let bleedingValue = 0;
+      //count values
+      for (const condition of this.items.filter(i => i.type === "condition")) {
+        if (condition.name === 'Bleeding') {
+          bleedingValue += Number(condition.system.severity ?? 0);
+        }
+      }
+      //set values
+      system.bleeding.value = Number(bleedingValue ?? 0);
+  }
+
+  // Prepare Creature type specific data
+  _deriveCreature() {
+    const system = this.system;
+    //armor points + damage reduction
+      //init vars
+      let armorPoints = 0;
+      let damageReduction = 0;
+      //count values
+      for (const armor of this.items.filter(i => i.type === "armor")) {
+        if (armor.system?.equipped) {
+          armorPoints += Number(armor.system.armorPoints ?? 0);
+          damageReduction += Number(armor.system.damageReduction ?? 0);
+        }
+      }
+      //set values
+      system.stats.armor.mod = armorPoints;
+      system.stats.armor.total = armorPoints + Number(system.stats.armor.value ?? 0);
+      system.stats.armor.damageReduction = damageReduction;
+    //net hp
+      //check if actor has netHP
+      system.netHP ??= { value: 0, min: 0, max: 0, label: "Net HP"};
+      //set values
+      system.netHP.value = ((Number(system.hits.max ?? 0)-Number(system.hits.value ?? 0)-1) * Number(system.health.max ?? 0)) + Number(system.health.value ?? 0);
+      system.netHP.max = Number(system.health.max ?? 0) * Number(system.hits.max ?? 0);
+    //notes
+      //check if actor has notes
+      system.notes ??= "";
+    //bleeding
+      //init vars
+      let bleedingValue = 0;
+      //count values
+      for (const condition of this.items.filter(i => i.type === "condition")) {
+        if (condition.name === 'Bleeding') {
+          bleedingValue += Number(condition.system.severity ?? 0);
+        }
+      }
+      //set values
+      system.bleeding.value = Number(bleedingValue ?? 0);
+    //keep combat updates for swarm types
+    if (system.swarm && system.swarm.enabled){
+      system.stats.combat.value = system.swarm.combat.value * ( system.hits.max - system.hits.value ); 
     }
-
-    data.stats.armor.mod = armorPoints;
-    data.stats.armor.total = armorPoints + data.stats.armor.value;
-    data.stats.armor.damageReduction = damageReduction;
   }
 
-  //Prepare Creature type specific data
-  _prepareCreatureData(actorData) {
-    const data = actorData;
-  }
-
-  //Prepare Ship type specific data
-  _prepareShipData(actorData) {
-    const data = actorData;
+  // Prepare Ship type specific data
+  _deriveShip() {
+    //nothing needed yet
   }
 
   //central flavor text library for all chat messages
@@ -429,7 +483,7 @@ export class MothershipActor extends Actor {
           }
           //prepare dice block
             //loop through rolls
-    enrichedRollResult.dice.forEach(function (roll) {
+            enrichedRollResult.dice.forEach(function (roll) {
               //add header for this roll
               diceBlock = diceBlock + `
                 <section class="tooltip-part">
@@ -498,11 +552,13 @@ export class MothershipActor extends Actor {
             });
         //set final roll variables in to template
         rollHtml = `
-          <div class="dice-roll" style="margin-bottom: 10px;">
+          <div class="dice-roll" style="margin-bottom: 10px;" data-action="expandRoll">
             <div class="dice-result">
               <div class="dice-formula">${diceFormula}</div>
-              <div class="dice-tooltip" style="display: none;">
-                ${diceBlock}
+              <div class="dice-tooltip" hidden>
+                <div class="wrapper">
+                  ${diceBlock}
+                </div>
               </div>
               <h4 class="dice-total">${enrichedRollResult.total}</h4>
             </div>
@@ -544,7 +600,7 @@ export class MothershipActor extends Actor {
     let tableResultType = ``;
     let tableResultEdited = ``;
     let tableResultFooter = ``;
-    let chatId = (game.release.generation >= 12 ? foundry.utils.randomID() : randomID())
+    let chatId = foundry.utils.randomID();
     let rollTarget = null;
     let valueAddress = [];
     let specialRoll = null;
@@ -778,9 +834,9 @@ export class MothershipActor extends Actor {
       //panic check #19 customiziation
       if (tableName === 'Panic Check' && tableResultNumber === 19) {
         if (this.system.class.value.toLowerCase() === 'android') {
-        tableResultEdited = tableResult[0].text.replace(game.i18n.localize("Mosh.HEARTATTACKSHORTCIRCUITANDROIDS"), game.i18n.localize("Mosh.SHORTCIRCUIT"));
+        tableResultEdited = tableResult[0].description.replace(game.i18n.localize("Mosh.HEARTATTACKSHORTCIRCUITANDROIDS"), game.i18n.localize("Mosh.SHORTCIRCUIT"));
         } else {
-        tableResultEdited = tableResult[0].text.replace(game.i18n.localize("Mosh.HEARTATTACKSHORTCIRCUITANDROIDS"), game.i18n.localize("Mosh.HEARTATTACK"));
+        tableResultEdited = tableResult[0].description.replace(game.i18n.localize("Mosh.HEARTATTACKSHORTCIRCUITANDROIDS"), game.i18n.localize("Mosh.HEARTATTACK"));
         }
       }
     //assign message description text
@@ -849,7 +905,7 @@ export class MothershipActor extends Actor {
       //prepare template
       messageTemplate = 'systems/mosh/templates/chat/rollTable.html';
       //render template
-      messageContent = await renderTemplate(messageTemplate, messageData);
+      messageContent = await foundry.applications.handlebars.renderTemplate(messageTemplate, messageData);
       //make message
       let macroMsg = await rollResult.toMessage({
         id: chatId,
@@ -863,7 +919,7 @@ export class MothershipActor extends Actor {
     }, {
       keepId: true
     });
-    if (game.modules.get("dice-so-nice").active) {
+    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
         //log what was done
         console.log(`Rolled on table ID: ${tableId}, with: rollString:${rollString}, aimFor:${aimFor}, zeroBased:${zeroBased}, checkCrit:${checkCrit}, rollAgainst:${rollAgainst}, comparison:${comparison}`);
         //return messageData
@@ -890,76 +946,80 @@ export class MothershipActor extends Actor {
       let buttonDesc = ``;
       //create HTML for this window
         //header
-      let dialogDesc = await renderTemplate('systems/mosh/templates/dialogs/skill-check-stat-selection-dialog.html');
+      let dialogDesc = await foundry.applications.handlebars.renderTemplate('systems/mosh/templates/dialogs/skill-check-stat-selection-dialog.html');
         //create button header if needed
         if (!rollString) {
-        buttonDesc = `<h4>` + game.i18n.localize("Mosh.SelectYourRollType") + `:</h4>`;
+        buttonDesc = `<div class="macro_prompt">` + game.i18n.localize("Mosh.SelectYourRollType") + `</div>`;
         } else {
           buttonDesc = ``;
         }
       //create final dialog data
       const dialogData = {
-        title: game.i18n.localize("Mosh.ChooseAStat"),
+        window: {title: game.i18n.localize("Mosh.ChooseAStat")},
+        classes: ["macro-popup-dialog"],
+        position: {width: 600},
         content: dialogDesc + buttonDesc,
-        buttons: {}
+        buttons: []
       };
       //add adv/normal/dis buttons if we need a rollString
       if (!rollString) {
         //we need to generate a roll string
-          //Advantage
-          dialogData.buttons.button1 = {
-          label: game.i18n.localize("Mosh.Advantage"),
-            callback: (html) => {
+        dialogData.buttons = [
+          {
+            label: game.i18n.localize("Mosh.Advantage"),
+            action: `action_advantage`,
+            callback: (event, button, dialog) => {
               rollString = `1d100 [+]`;
               aimFor = `low`;
-              attribute = html.find("input[name='stat']:checked").attr("value");
+              attribute = button.form.querySelector("input[name='stat']:checked")?.getAttribute("value");
               resolve([rollString, aimFor, attribute]);
               console.log(`User left the chooseAttribute dialog with: rollString:${rollString}, aimFor:${aimFor}, attribute:${attribute}`);
             },
-            icon: `<i class="fas fa-angle-double-up"></i>`
-          };
-          //Normal
-          dialogData.buttons.button2 = {
-          label: game.i18n.localize("Mosh.Normal"),
-            callback: (html) => {
+            icon: `fas fa-angle-double-up`
+          },
+          {
+            label: game.i18n.localize("Mosh.Normal"),
+			      action: `action_normal`,
+            callback: (event, button, dialog) => {
               rollString = `1d100`;
               aimFor = `low`;
-              attribute = html.find("input[name='stat']:checked").attr("value");
+              attribute = button.form.querySelector("input[name='stat']:checked")?.getAttribute("value");
               resolve([rollString, aimFor, attribute]);
               console.log(`User left the chooseAttribute dialog with: rollString:${rollString}, aimFor:${aimFor}, attribute:${attribute}`);
             },
-            icon: `<i class="fas fa-minus"></i>`
-          };
-          //Disadvantage
-          dialogData.buttons.button3 = {
-          label: game.i18n.localize("Mosh.Disadvantage"),
-            callback: (html) => {
+            icon: `fas fa-minus`
+          },
+          {
+            label: game.i18n.localize("Mosh.Disadvantage"),
+			      action: `action_disadvantage`,
+            callback: (event, button, dialog) => {
               rollString = `1d100 [-]`;
               aimFor = `low`;
-              attribute = html.find("input[name='stat']:checked").attr("value");
+              attribute = button.form.querySelector("input[name='stat']:checked")?.getAttribute("value");
               resolve([rollString, aimFor, attribute]);
               console.log(`User left the chooseAttribute dialog with: rollString:${rollString}, aimFor:${aimFor}, attribute:${attribute}`);
             },
-            icon: `<i class="fas fa-angle-double-down"></i>`
-          };
+            icon: `fas fa-angle-double-down`
+          }
+        ]
       //add a next button if we dont need a rollString
       } else {
-        dialogData.buttons.button1 = {
-          label: game.i18n.localize("Mosh.Next"),
-          callback: (html) => {
-            aimFor = `low`;
-            attribute = html.find("input[name='stat']:checked").attr("value");
-            resolve([rollString, aimFor, attribute]);
-            console.log(`User left the chooseAttribute dialog with: rollString:${rollString}, aimFor:${aimFor}, attribute:${attribute}`);
-          },
-          icon: `<i class="fas fa-chevron-circle-right"></i>`
-        };
+        dialogData.buttons = [
+          {
+            label: game.i18n.localize("Mosh.Next"),
+			      action: `action_next`,
+            callback: (event, button, dialog) => {
+              aimFor = `low`;
+              attribute = button.form.querySelector("input[name='stat']:checked")?.getAttribute("value");
+              resolve([rollString, aimFor, attribute]);
+              console.log(`User left the chooseAttribute dialog with: rollString:${rollString}, aimFor:${aimFor}, attribute:${attribute}`);
+            },
+            icon: `fas fa-chevron-circle-right`
+          }
+        ]
       }
       //render dialog
-      const dialog = new Dialog(dialogData, {
-        width: 600,
-        height: 500
-      }).render(true);
+      const dialog = new foundry.applications.api.DialogV2(dialogData).render({force: true});
     });
   }
 
@@ -974,13 +1034,12 @@ export class MothershipActor extends Actor {
       let buttonDesc = ``;
       //create HTML for this window
         //header
-        let skillHeader = await renderTemplate('systems/mosh/templates/dialogs/choose-skill-dialog-header.html');
-       
+        let skillHeader = await foundry.applications.handlebars.renderTemplate('systems/mosh/templates/dialogs/choose-skill-dialog-header.html');
         //skill template
         let skillRow = `
         <label for="[RADIO_ID]">
-        <div class ="macro_window" style="margin-bottom : 7px; vertical-align: middle; padding-left: 3px;">
-          <div class="grid grid-4col" style="grid-template-columns: 20px 60px 45px auto">
+        <div class ="macro_window" style="vertical-align: middle; padding-left: 3px;">
+          <div class="grid grid-4col" style="align-items: center; grid-template-columns: 20px 60px 45px auto">
             <input type="radio" id="[RADIO_ID]" name="skill" value="[RADIO_VALUE]">
             <div class="macro_img" style="padding-top: 5px; padding-left: 0px; padding-right: 0px; padding-bottom: 5px;"><img src="[RADIO_IMG]" style="border:none"/></div>
             <div class="macro_desc" style="display: table;">
@@ -1010,17 +1069,17 @@ export class MothershipActor extends Actor {
               //set temprow as template
               let tempRow = skillRow;
               //replace ID
-          tempRow = tempRow.replaceAll("[RADIO_ID]", item.name);
+              tempRow = tempRow.replaceAll("[RADIO_ID]", item.name);
               //replace value
-          tempRow = tempRow.replace("[RADIO_VALUE]", item.system.bonus);
+              tempRow = tempRow.replace("[RADIO_VALUE]", item.system.bonus);
               //replace img
-          tempRow = tempRow.replace("[RADIO_IMG]", item.img);
+              tempRow = tempRow.replace("[RADIO_IMG]", item.img);
               //replace name
-          tempRow = tempRow.replace("[RADIO_BONUS]", item.system.bonus);
+              tempRow = tempRow.replace("[RADIO_BONUS]", item.system.bonus);
               //replace name
-          tempRow = tempRow.replace("[RADIO_NAME]", item.name);
+              tempRow = tempRow.replace("[RADIO_NAME]", item.name);
               //replace desc
-          tempRow = tempRow.replace("[RADIO_DESC]", item.system.description.replace("<p>", "<strong>:</strong> "));
+              tempRow = tempRow.replace("[RADIO_DESC]", item.system.description.replace("<p>", "<strong>:</strong> "));
               //add to skillList
               skillList = skillList + tempRow;
               //increment skill count
@@ -1038,73 +1097,77 @@ export class MothershipActor extends Actor {
           }
         //create button header if needed
         if (!rollString) {
-        buttonDesc = `<h4>` + game.i18n.localize("Mosh.SelectYourRollType") + `:</h4>`;
+          buttonDesc = `<div class="macro_prompt">` + game.i18n.localize("Mosh.SelectYourRollType") + `:</div>`;
         } else {
           buttonDesc = ``;
         }
       //create final dialog data
       const dialogData = {
-        title: dlgTitle,
+        window: {title: dlgTitle},
+        classes: ["macro-popup-dialog"],
+        position: {width: 600},
         content: skillHeader + skillList + buttonDesc,
-        buttons: {}
+        buttons: []
       };
       //add adv/normal/dis buttons if we need a rollString
       if (!rollString) {
         //we need to generate a roll string
-          //Advantage
-          dialogData.buttons.button1 = {
-          label: game.i18n.localize("Mosh.Advantage"),
-            callback: (html) => {
+        dialogData.buttons = [
+          {
+            label: game.i18n.localize("Mosh.Advantage"),
+            action: `action_advantage`,
+            callback: (event, button, dialog) => {
               rollString = `1d100 [+]`;
-              skill = html.find("input[name='skill']:checked").attr("id");
-              skillValue = html.find("input[name='skill']:checked").attr("value");
+              skill = button.form.querySelector("input[name='skill']:checked")?.getAttribute("id");
+              skillValue = button.form.querySelector("input[name='skill']:checked")?.getAttribute("value");
               resolve([rollString, skill, skillValue]);
               console.log(`User left the chooseSkill dialog with: rollString:${rollString}, skill:${skill}, skillValue:${skillValue}`);
             },
-            icon: `<i class="fas fa-angle-double-up"></i>`
-          };
-          //Normal
-          dialogData.buttons.button2 = {
-          label: game.i18n.localize("Mosh.Normal"),
-            callback: (html) => {
+            icon: `fas fa-angle-double-up`
+          },
+          {
+            label: game.i18n.localize("Mosh.Normal"),
+            action: `action_normal`,
+            callback: (event, button, dialog) => {
               rollString = `1d100`;
-              skill = html.find("input[name='skill']:checked").attr("id");
-              skillValue = html.find("input[name='skill']:checked").attr("value");
+              skill = button.form.querySelector("input[name='skill']:checked")?.getAttribute("id");
+              skillValue = button.form.querySelector("input[name='skill']:checked")?.getAttribute("value");
               resolve([rollString, skill, skillValue]);
               console.log(`User left the chooseSkill dialog with: rollString:${rollString}, skill:${skill}, skillValue:${skillValue}`);
             },
-            icon: `<i class="fas fa-minus"></i>`
-          };
-          //Disadvantage
-          dialogData.buttons.button3 = {
-          label: game.i18n.localize("Mosh.Disadvantage"),
-            callback: (html) => {
+            icon: `fas fa-minus`
+          },
+          {
+            label: game.i18n.localize("Mosh.Disadvantage"),
+            action: `action_disadvantage`,
+            callback: (event, button, dialog) => {
               rollString = `1d100 [-]`;
-              skill = html.find("input[name='skill']:checked").attr("id");
-              skillValue = html.find("input[name='skill']:checked").attr("value");
+              skill = button.form.querySelector("input[name='skill']:checked")?.getAttribute("id");
+              skillValue = button.form.querySelector("input[name='skill']:checked")?.getAttribute("value");
               resolve([rollString, skill, skillValue]);
               console.log(`User left the chooseSkill dialog with: rollString:${rollString}, skill:${skill}, skillValue:${skillValue}`);
             },
-            icon: `<i class="fas fa-angle-double-down"></i>`
-          };
+            icon: `fas fa-angle-double-down`
+          }
+        ]
       //add a next button if we dont need a rollString
       } else {
-        dialogData.buttons.button1 = {
-          label: game.i18n.localize("Mosh.Next"),
-          callback: (html) => {
-            skill = html.find("input[name='skill']:checked").attr("id");
-            skillValue = html.find("input[name='skill']:checked").attr("value");
-            resolve([rollString, skill, skillValue]);
-            console.log(`User left the chooseSkill dialog with: rollString:${rollString}, skill:${skill}, skillValue:${skillValue}`);
-          },
-          icon: `<i class="fas fa-chevron-circle-right"></i>`
-        };
+        dialogData.buttons = [
+          {
+            label: game.i18n.localize("Mosh.Next"),
+			      action: `action_next`,
+            callback: (event, button, dialog) => {
+              skill = button.form.querySelector("input[name='skill']:checked")?.getAttribute("id");
+              skillValue = button.form.querySelector("input[name='skill']:checked")?.getAttribute("value");
+              resolve([rollString, skill, skillValue]);
+              console.log(`User left the chooseSkill dialog with: rollString:${rollString}, skill:${skill}, skillValue:${skillValue}`);
+            },
+            icon: `fas fa-chevron-circle-right`
+          }
+        ]
       }
       //render dialog
-      const dialog = new Dialog(dialogData, {
-        width: 600,
-        height: dialogHeight
-      }).render(true);
+      const dialog = new foundry.applications.api.DialogV2(dialogData).render({force: true});
     });
   }
 
@@ -1119,47 +1182,45 @@ export class MothershipActor extends Actor {
         let dieDis = die + ` [-]`;
       //create final dialog data
       const dialogData = {
-        title: dlgTitle,
-        buttonDesc: `<h4>` + game.i18n.localize("Mosh.SelectYourRollType") + `:</h4>`,
-        buttons: {}
+        window: {title: dlgTitle},
+        classes: ["macro-popup-dialog"],
+        position: {width: 600},
+        content: `<div class="macro_prompt">` + game.i18n.localize("Mosh.SelectYourRollType") + `:</div>`,
+        buttons: [
+          {
+            label: game.i18n.localize("Mosh.Advantage"),
+			      action: `action_advantage`,
+            callback: (event, button, dialog) => {
+              rollString = dieAdv;
+              resolve([rollString]);
+              console.log(`User left the chooseAdvantage dialog with: rollString:${rollString}`);
+            },
+            icon: `fas fa-angle-double-up`
+          },
+          {
+            label: game.i18n.localize("Mosh.Normal"),
+			      action: `action_normal`,
+            callback: (event, button, dialog) => {
+              rollString = die;
+              resolve([rollString]);
+              console.log(`User left the chooseAdvantage dialog with: rollString:${rollString}`);
+            },
+            icon: `fas fa-minus`
+          },
+          {
+            label: game.i18n.localize("Mosh.Disadvantage"),
+			      action: `action_disadvantage`,
+            callback: (event, button, dialog) => { 
+              rollString = dieDis;
+              resolve([rollString]);
+              console.log(`User left the chooseAdvantage dialog with: rollString:${rollString}`);
+            },
+            icon: `fas fa-angle-double-down`
+          }
+        ]
       };
-      //add buttons
-        //Advantage
-        dialogData.buttons.button1 = {
-        label: game.i18n.localize("Mosh.Advantage"),
-          callback: (html) => {
-            rollString = dieAdv;
-            resolve([rollString]);
-            console.log(`User left the chooseAdvantage dialog with: rollString:${rollString}`);
-          },
-          icon: `<i class="fas fa-angle-double-up"></i>`
-        };
-        //Normal
-        dialogData.buttons.button2 = {
-        label: game.i18n.localize("Mosh.Normal"),
-          callback: (html) => {
-            rollString = die;
-            resolve([rollString]);
-            console.log(`User left the chooseAdvantage dialog with: rollString:${rollString}`);
-          },
-          icon: `<i class="fas fa-minus"></i>`
-        };
-        //Disadvantage
-        dialogData.buttons.button3 = {
-        label: game.i18n.localize("Mosh.Normal"),
-          label: game.i18n.localize("Mosh.Disadvantage"),
-          callback: (html) => { 
-            rollString = dieDis;
-            resolve([rollString]);
-            console.log(`User left the chooseAdvantage dialog with: rollString:${rollString}`);
-          },
-          icon: `<i class="fas fa-angle-double-down"></i>`
-        };
       //render dialog
-      const dialog = new Dialog(dialogData, {
-        width: 600,
-        height: 105
-      }).render(true);
+      const dialog = new foundry.applications.api.DialogV2(dialogData).render({force: true});
     });
   }
 
@@ -1187,7 +1248,7 @@ export class MothershipActor extends Actor {
     let woundEffect = ``;
     let msgHeader = ``;
     let msgImgPath = ``;
-    let chatId = (game.release.generation >= 12 ? foundry.utils.randomID() : randomID());
+    let chatId = foundry.utils.randomID();
     let firstEdition = game.settings.get('mosh', 'firstEdition');
     let useCalm = game.settings.get('mosh', 'useCalm');
     //customize this roll if its a unique use-case
@@ -1388,11 +1449,11 @@ export class MothershipActor extends Actor {
             alias: this.name
           }
         };
-        let template = 'systems/mosh/templates/chat/rollCheck.html';
-        renderTemplate(template, messageData).then(content => {
-          chatData.content = content;
-          ChatMessage.create(chatData);
-        });
+        //create message
+        const template = 'systems/mosh/templates/chat/rollCheck.html';
+        const content = await foundry.applications.handlebars.renderTemplate(template, messageData);
+        chatData.content = content;
+        await ChatMessage.create(chatData);
       //log what was done
       console.log(`Rolled damage on:${weapon.name}`);
       //return messageData
@@ -1489,18 +1550,27 @@ export class MothershipActor extends Actor {
           if (firstEdition) {
             //if calm not enabled
             if (!useCalm) {
-            if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
                 //increase stress by 1 and retrieve the flavor text from the result
-              let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
+                let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
                 flavorText = addStress[1];
               }
-              //if critical failure, make sure to ask for panic check
-              if (parsedRollResult.critical === true) {
+                //if critical failure, make sure to ask for panic check
+                if (parsedRollResult.critical === true) {
                 //set crit fail
                 critFail = true;
               }
             } else {
-              flavorText = game.i18n.localize("Mosh.YouSenseTheWeightOfYourSetbacks");
+              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                //increase stress by 1 and retrieve the flavor text from the result
+                let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
+                flavorText = removeCalm[1];
+              }
+                //if critical failure, make sure to ask for panic check
+                if (parsedRollResult.critical === true) {
+                //set crit fail
+                critFail = true;
+              }
             }
           //if 0e
           } else {
@@ -1508,20 +1578,31 @@ export class MothershipActor extends Actor {
             if (!useCalm) {
               //on Save failure
               if (attribute === 'sanity' || attribute === 'fear' || attribute === 'body' || attribute === 'armor') {
-              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
                   //gain 1 stress
-                let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
+                  let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
                   flavorText = addStress[1];
                 }
-                //if critical failure, make sure to ask for panic check
-                if (parsedRollResult.critical === true) {
+                  //if critical failure, make sure to ask for panic check
+                  if (parsedRollResult.critical === true) {
                   //set crit fail
                   critFail = true;
                 }
               }
             } else {
-              //output standard failure
-              flavorText = game.i18n.localize("Mosh.YouSenseTheWeightOfYourSetbacks");
+              //on Save failure
+              if (attribute === 'sanity' || attribute === 'fear' || attribute === 'body' || attribute === 'armor') {
+                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                  //gain 1 stress
+                  let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
+                  flavorText = removeCalm[1];
+                }
+                  //if critical failure, make sure to ask for panic check
+                  if (parsedRollResult.critical === true) {
+                  //set crit fail
+                  critFail = true;
+                }
+              }
             }
           }
         }
@@ -1567,8 +1648,16 @@ export class MothershipActor extends Actor {
             if (useCalm) {
               //prep text based on success or failure
               if (parsedRollResult.success === false && this.type === 'character') {
-                //set fail text
-                flavorText = game.i18n.localize("Mosh.YouSenseTheWeightOfYourSetbacks");
+                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                  //increase stress by 1 and retrieve the flavor text from the result
+                  let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
+                  flavorText = removeCalm[1];
+                }
+                  //if critical failure, make sure to ask for panic check
+                  if (parsedRollResult.critical === true) {
+                  //set crit fail
+                  critFail = true;
+                }
               } else if (parsedRollResult.success === true && this.type === 'character') {
                 //calculate stress reduction
               let onesValue = Number(String(parsedRollResult.total).charAt(String(parsedRollResult.total).length - 1));
@@ -1580,13 +1669,13 @@ export class MothershipActor extends Actor {
             } else {
               //prep text based on success or failure
               if (parsedRollResult.success === false && this.type === 'character') {
-              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
                   //increase stress by 1 and retrieve the flavor text from the result
-                let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
+                  let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
                   flavorText = addStress[1];
                 }
-                //if critical failure, make sure to ask for panic check
-                if (parsedRollResult.critical === true) {
+                  //if critical failure, make sure to ask for panic check
+                  if (parsedRollResult.critical === true) {
                   //set crit fail
                   critFail = true;
                 }
@@ -1604,8 +1693,16 @@ export class MothershipActor extends Actor {
             if (useCalm) {
               //prep text based on success or failure
               if (parsedRollResult.success === false && this.type === 'character') {
-                //set fail text
-                flavorText = game.i18n.localize("Mosh.YouSenseTheWeightOfYourSetbacks");
+                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                  //increase stress by 1 and retrieve the flavor text from the result
+                  let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
+                  flavorText = removeCalm[1];
+                }
+                  //if critical failure, make sure to ask for panic check
+                  if (parsedRollResult.critical === true) {
+                  //set crit fail
+                  critFail = true;
+                }
               } else if (parsedRollResult.success === true && this.type === 'character') {
                 //calculate stress reduction
               let succeedBy = Math.floor((rollTarget - parsedRollResult.total) / 10);
@@ -1621,13 +1718,13 @@ export class MothershipActor extends Actor {
             } else {
               //prep text based on success or failure
               if (parsedRollResult.success === false && this.type === 'character') {
-              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
                   //increase stress by 1 and retrieve the flavor text from the result
-                let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
+                  let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
                   flavorText = addStress[1];
                 }
-                //if critical failure, make sure to ask for panic check
-                if (parsedRollResult.critical === true) {
+                  //if critical failure, make sure to ask for panic check
+                  if (parsedRollResult.critical === true) {
                   //set crit fail
                   critFail = true;
                 }
@@ -1660,19 +1757,19 @@ export class MothershipActor extends Actor {
           //prep text for success
           if (parsedRollResult.success && parsedRollResult.critical) {
             //flavor text
-            flavorText = tableData.getResultsForRoll(0)[0].text;
+            flavorText = tableData.getResultsForRoll(0)[0].description;
           //prep text for critical success
           } else if (parsedRollResult.success && !parsedRollResult.critical) {
             //flavor text
-            flavorText = tableData.getResultsForRoll(1)[0].text;
+            flavorText = tableData.getResultsForRoll(1)[0].description;
           //prep text for failure
           } else if (!parsedRollResult.success && !parsedRollResult.critical) {
             //flavor text
-            flavorText = tableData.getResultsForRoll(2)[0].text;
+            flavorText = tableData.getResultsForRoll(2)[0].description;
           //prep text for critical failure
           } else if (!parsedRollResult.success && parsedRollResult.critical) {
             //flavor text
-            flavorText = tableData.getResultsForRoll(3)[0].text;
+            flavorText = tableData.getResultsForRoll(3)[0].description;
           }
         }
         //morale check
@@ -1706,18 +1803,27 @@ export class MothershipActor extends Actor {
           if (firstEdition) {
             //if calm not enabled
             if (!useCalm) {
-            if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
                 //increase stress by 1 and retrieve the flavor text from the result
-              let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
+                let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
                 flavorText = addStress[1];
               }
-              //if critical failure, make sure to ask for panic check
-              if (parsedRollResult.critical === true) {
+                //if critical failure, make sure to ask for panic check
+                if (parsedRollResult.critical === true) {
                 //set crit fail
                 critFail = true;
               }
             } else {
-              flavorText = game.i18n.localize("Mosh.YouSenseTheWeightOfYourSetbacks");
+              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                //increase stress by 1 and retrieve the flavor text from the result
+                let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
+                flavorText = removeCalm[1];
+              }
+                //if critical failure, make sure to ask for panic check
+                if (parsedRollResult.critical === true) {
+                //set crit fail
+                critFail = true;
+              }
             }
           //if 0e
           } else {
@@ -1725,20 +1831,28 @@ export class MothershipActor extends Actor {
             if (!useCalm) {
               //on Save failure
               if (attribute === 'sanity' || attribute === 'fear' || attribute === 'body' || attribute === 'armor') {
-              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
                   //gain 1 stress
-                let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
+                  let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
                   flavorText = addStress[1];
                 }
-                //if critical failure, make sure to ask for panic check
-                if (parsedRollResult.critical === true) {
+                  //if critical failure, make sure to ask for panic check
+                  if (parsedRollResult.critical === true) {
                   //set crit fail
                   critFail = true;
                 }
               }
             } else {
-              //output standard failure
-              flavorText = game.i18n.localize("Mosh.YouSenseTheWeightOfYourSetbacks");
+                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                  //gain 1 stress
+                  let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
+                  flavorText = removeCalm[1];
+                }
+                  //if critical failure, make sure to ask for panic check
+                  if (parsedRollResult.critical === true) {
+                  //set crit fail
+                  critFail = true;
+                }
             }
           }
         } else if (parsedRollResult.success === true && this.type === 'character') {
@@ -1770,7 +1884,7 @@ export class MothershipActor extends Actor {
       //prepare template
       messageTemplate = 'systems/mosh/templates/chat/rollCheck.html';
       //render template
-      messageContent = await renderTemplate(messageTemplate, messageData);
+      messageContent = await foundry.applications.handlebars.renderTemplate(messageTemplate, messageData);
       //make message
       let macroMsg = await rollResult.toMessage({
         id: chatId,
@@ -1785,7 +1899,7 @@ export class MothershipActor extends Actor {
       keepId: true
     });
       //is DSN active?
-    if (game.modules.get("dice-so-nice").active) {
+    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
         //log what was done
         console.log(`Rolled a check on: ${attribute}, with: rollString:${rollString}, aimFor:${aimFor}, skill:${skill}, skillValue:${skillValue}.`);
         //return messageData
@@ -1820,7 +1934,7 @@ export class MothershipActor extends Actor {
     let msgFlavor = ``;
     let msgOutcome = ``;
     let msgChange = ``;
-    let chatId = (game.release.generation >= 12 ? foundry.utils.randomID() : randomID())
+    let chatId = foundry.utils.randomID();
     let halfDamage = false;
     let firstEdition = game.settings.get('mosh', 'firstEdition');
     let useCalm = game.settings.get('mosh', 'useCalm');
@@ -1970,7 +2084,7 @@ export class MothershipActor extends Actor {
             //prepare template
             messageTemplate = 'systems/mosh/templates/chat/modifyActor.html';
             //render template
-            messageContent = await renderTemplate(messageTemplate, messageData);
+            messageContent = await foundry.applications.handlebars.renderTemplate(messageTemplate, messageData);
             //push message
             ChatMessage.create({
               id: chatId,
@@ -2111,7 +2225,7 @@ export class MothershipActor extends Actor {
                 //prepare template
                 messageTemplate = 'systems/mosh/templates/chat/modifyActor.html';
                 //render template
-                messageContent = await renderTemplate(messageTemplate, messageData);
+                messageContent = await foundry.applications.handlebars.renderTemplate(messageTemplate, messageData);
                 //make message
                 let macroMsg = await rollResult.toMessage({
                   id: chatId,
@@ -2125,7 +2239,7 @@ export class MothershipActor extends Actor {
         }, {
           keepId: true
         });
-        if (game.modules.get("dice-so-nice").active) {
+        if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
                   //log what was done
                   console.log(`Modified actor: ${this.name}, with: fieldAddress:${fieldAddress}, modValue:${modValue}, modRollString:${modRollString}, outputChatMsg:${outputChatMsg}`);     
                   //return modification values
@@ -2151,7 +2265,7 @@ export class MothershipActor extends Actor {
     let oldValue = 0;
     let newValue = 0;
     let flavorText = ``;
-    let chatId = (game.release.generation >= 12 ? foundry.utils.randomID(): randomID())
+    let chatId = foundry.utils.randomID();
     //get item data
     let itemData = await fromIdUuid(itemId,{type:"Item"});
     //add or increase the count of the item, depending on type, if the actor has it
@@ -2235,7 +2349,7 @@ export class MothershipActor extends Actor {
       //prepare template
       messageTemplate = 'systems/mosh/templates/chat/modifyItem.html';
       //render template
-      messageContent = await renderTemplate(messageTemplate, messageData);
+      messageContent = await foundry.applications.handlebars.renderTemplate(messageTemplate, messageData);
       //make message
       ChatMessage.create({
         id: chatId,
@@ -2259,25 +2373,28 @@ export class MothershipActor extends Actor {
     return new Promise(async (resolve) => {
       //create final dialog data
       const dialogData = {
-        title: game.i18n.localize("Mosh.WeaponIssue"),
-        content: `<h4>` + game.i18n.localize("Mosh.OutOfAmmoNeedReload") + `</h4><br/>`,
-        buttons: {}
+        window: {
+          title: game.i18n.localize("Mosh.WeaponIssue")
+        },
+        classes: ["macro-popup-dialog"],
+        content: `<div class="macro_prompt">` + game.i18n.localize("Mosh.OutOfAmmoNeedReload") + `</div>`,
+        buttons: [
+          {
+            label: game.i18n.localize("Mosh.Reload"),
+			      action: `action_reload`,
+            callback: () => this.reloadWeapon(itemId),
+            icon: `fas fa-check`
+          },
+          {
+            label: `Cancel`,
+			      action: `action_cancel`,
+            callback: () => {},
+            icon: `fas fa-times`
+          }
+        ]
       };
-      //add buttons
-        //reload
-        dialogData.buttons.roll = {
-          label: game.i18n.localize("Mosh.Reload"),
-          callback: () => this.reloadWeapon(itemId),
-          icon: `<i class="fas fa-check"></i>`
-        };
-        //cancel
-        dialogData.buttons.cancel = {
-          label: `Cancel`,
-        callback: () => {},
-          icon: `<i class="fas fa-times"></i>`
-        };
       //render dialog
-      const dialog = new Dialog(dialogData).render(true);
+      const dialog = new foundry.applications.api.DialogV2(dialogData).render({force: true});
     });
     //log what was done
     console.log(`Asked for reload.`);
@@ -2289,19 +2406,22 @@ export class MothershipActor extends Actor {
     return new Promise(async (resolve) => {
       //create final dialog data
       const dialogData = {
-        title: game.i18n.localize("Mosh.WeaponIssue"),
-        content: `<h4>` + game.i18n.localize("Mosh.OutOfAmmo") + `</h4><br/>`,
-        buttons: {}
+        window: {
+          title: game.i18n.localize("Mosh.WeaponIssue")
+        },
+        classes: ["macro-popup-dialog"],
+        content: `<div class="macro_prompt">` + game.i18n.localize("Mosh.OutOfAmmo") + `</div>`,
+        buttons: [
+          {
+            label: game.i18n.localize("Mosh.OK"),
+			      action: `action_okay`,
+            callback: () => {},
+            icon: 'fas fa-check'
+          }
+        ]
       };
-      //add buttons
-        //Ok
-        dialogData.buttons.cancel = {
-          label: game.i18n.localize("Mosh.OK"),
-        callback: () => {},
-          icon: '<i class="fas fa-check"></i>'
-        };
       //render dialog
-      const dialog = new Dialog(dialogData).render(true);
+      const dialog = new foundry.applications.api.DialogV2(dialogData).render({force: true});
     });
     //log what was done
     console.log(`Told user they are out of ammo.`);
@@ -2313,15 +2433,10 @@ export class MothershipActor extends Actor {
     let messageTemplate = ``;
     let messageContent = ``;
     let msgBody = ``;
-    let chatId = (game.release.generation >= 12 ? foundry.utils.randomID() : randomID())
+    let chatId = foundry.utils.randomID();
     //dupe item to work with
     var item;
-    if (game.release.generation >= 12) {
-      item = foundry.utils.duplicate(this.getEmbeddedDocument('Item', itemId));
-    } else {
-      item = duplicate(this.getEmbeddedDocument('Item', itemId));
-    }
-
+    item = foundry.utils.duplicate(this.getEmbeddedDocument('Item', itemId));
     //reload
     if (!item.system.useAmmo) {
       //exit function (it should not be possible to get here)
@@ -2371,16 +2486,16 @@ export class MothershipActor extends Actor {
       //prepare template
       messageTemplate = 'systems/mosh/templates/chat/reload.html';
       //render template
-      messageContent = await renderTemplate(messageTemplate, messageData);
+      messageContent = await foundry.applications.handlebars.renderTemplate(messageTemplate, messageData);
       //push message
       ChatMessage.create({
         id: chatId,
         user: game.user.id,
-      speaker: {
-        actor: this.id,
-        token: this.token,
-        alias: this.name
-      },
+        speaker: {
+          actor: this.id,
+          token: this.token,
+          alias: this.name
+        },
         content: messageContent
     }, {
       keepId: true
@@ -2392,7 +2507,7 @@ export class MothershipActor extends Actor {
   //make the player take bleeding damage
   async takeBleedingDamage() {
     //init vars
-    let chatId = (game.release.generation >= 12 ? foundry.utils.randomID() : randomID())
+    let chatId = foundry.utils.randomID();
     //determine bleeding amount
     let healthLost = this.items.getName("Bleeding").system.severity * -1;
     //run the function for the player's 'Selected Character'
@@ -2439,7 +2554,7 @@ export class MothershipActor extends Actor {
   //make the player take radiation damage
   async takeRadiationDamage() {
     //init vars
-    let chatId = (game.release.generation >= 12 ? foundry.utils.randomID() : randomID())
+    let chatId = foundry.utils.randomID();
     //reduce all stats and saves by 1
     this.modifyActor('system.stats.strength.value', -1, null, false);
     this.modifyActor('system.stats.speed.value', -1, null, false);
@@ -2492,7 +2607,7 @@ export class MothershipActor extends Actor {
   //make the player take radiation damage
   async takeCryoDamage(rollString) {
     //init vars
-    let chatId = (game.release.generation >= 12 ? foundry.utils.randomID() : randomID())
+    let chatId = foundry.utils.randomID();
     //roll the dice
       //parse the roll string
     let parsedRollString = this.parseRollString(rollString, 'low');
@@ -2576,7 +2691,7 @@ export class MothershipActor extends Actor {
       }  
 
       //create pop-up HTML
-      let msgContent = await renderTemplate('systems/mosh/templates/dialogs/choose-cover-dialog.html', {
+      let msgContent = await foundry.applications.handlebars.renderTemplate('systems/mosh/templates/dialogs/choose-cover-dialog.html', {
           curDR:curDR, 
           curAP:curAP, 
           none_checked: none_checked,
@@ -2588,28 +2703,28 @@ export class MothershipActor extends Actor {
       
       //create final dialog data
       const dialogData = {
-        title: game.i18n.localize("Mosh.Cover"),
+        window: {title: game.i18n.localize("Mosh.Cover")},
+        classes: ["macro-popup-dialog"],
+        position: {width: 600},
         content: msgContent,
-        buttons: {}
+        buttons: [
+          {
+            label: game.i18n.localize("Mosh.OK"),
+			      action: `action_okay`,
+            callback: (event, button, dialog) => {
+              this.update({
+                'system.stats.armor.cover': button.form.querySelector("input[name='cover']:checked")?.getAttribute("value")
+              });
+              console.log(`User's cover is now:${button.form.querySelector("input[name='cover']:checked")?.getAttribute("value")}`);
+            },
+            icon: 'fas fa-check'
+          }
+        ]
       };
-      //add buttons
-        //Ok
-        dialogData.buttons.cancel = {
-          label: game.i18n.localize("Mosh.OK"),
-          callback: (html) => {
-          this.update({
-            'system.stats.armor.cover': html.find("input[name='cover']:checked").attr("value")
-          });
-            console.log(`User's cover is now:${html.find("input[name='cover']:checked").attr("value")}`);
-          },
-          icon: '<i class="fas fa-check"></i>'
-        };
       //render dialog
-      const dialog = new Dialog(dialogData, {
-        width: 600,
-        height: 580
-      }).render(true);
-      });
+      const dialog = new foundry.applications.api.DialogV2(dialogData).render({force: true});
+    
+    });
     
   }
 
@@ -2618,36 +2733,39 @@ export class MothershipActor extends Actor {
     //wrap the whole thing in a promise, so that it waits for the form to be interacted with
     return new Promise(async (resolve) => {
       //create pop-up HTML
-      let msgContent = await renderTemplate('systems/mosh/templates/dialogs/distres-signal-dialog.html');
+      let msgContent = await foundry.applications.handlebars.renderTemplate('systems/mosh/templates/dialogs/distres-signal-dialog.html');
       
       //create final dialog data
       const dialogData = {
-        title: game.i18n.localize("Mosh.DistressSignal"),
+        window: {title: game.i18n.localize("Mosh.DistressSignal")},
+        classes: ["macro-popup-dialog"],
+        position: {width: 600,height: 265},
         content: msgContent,
-        buttons: {
-          button1: {
+        buttons: [
+          {
             label: game.i18n.localize("Mosh.Advantage"),
+			      action: `action_advantage`,
             callback: () => this.rollTable(game.settings.get('mosh', 'table1eDistressSignal'), `1d10 [+]`, `low`, true, false, null, null),
-            icon: `<i class="fas fa-angle-double-up"></i>`
+            icon: `fas fa-angle-double-up`
           },
-          button2: {
+          {
             label: game.i18n.localize("Mosh.Normal"),
+			      action: `action_normal`,
             callback: () => this.rollTable(game.settings.get('mosh', 'table1eDistressSignal'), `1d10`, `low`, true, false, null, null),
-            icon: `<i class="fas fa-minus"></i>`
+            icon: `fas fa-minus`
           },
-          button3: {
+          {
             label: game.i18n.localize("Mosh.Disadvantage"),
+			      action: `action_disadvantage`,
             callback: () => this.rollTable(game.settings.get('mosh', 'table1eDistressSignal'), `1d10 [-]`, `low`, true, false, null, null),
-            icon: `<i class="fas fa-angle-double-down"></i>`
+            icon: `fas fa-angle-double-down`
           }
-        }
+        ]
       };
       //render dialog
-      const dialog = new Dialog(dialogData, {
-        width: 600,
-        height: 265
-      }).render(true);
-      });
+      const dialog = new foundry.applications.api.DialogV2(dialogData).render({force: true});
+    
+    });
     
   }
 
@@ -2661,32 +2779,35 @@ export class MothershipActor extends Actor {
       `;
       //create final dialog data
       const dialogData = {
-        title: game.i18n.localize("Mosh.MaintenanceCheck"),
+        window: {title: game.i18n.localize("Mosh.MaintenanceCheck")},
+        classes: ["macro-popup-dialog"],
+        position: {width: 600,height: 265},
         content: msgContent,
-        buttons: {
-          button1: {
+        buttons: [
+          {
             label: game.i18n.localize("Mosh.Advantage"),
+			      action: `action_advantage`,
             callback: () => this.rollTable(`maintenanceCheck`, `1d100 [+]`, `low`, null, null, null, null),
-            icon: `<i class="fas fa-angle-double-up"></i>`
+            icon: `fas fa-angle-double-up`
           },
-          button2: {
+          {
             label: game.i18n.localize("Mosh.Normal"),
+			      action: `action_normal`,
             callback: () => this.rollTable(`maintenanceCheck`, `1d100`, `low`, null, null, null, null),
-            icon: `<i class="fas fa-minus"></i>`
+            icon: `fas fa-minus`
           },
-          button3: {
+          {
             label: game.i18n.localize("Mosh.Disadvantage"),
+			      action: `action_disadvantage`,
             callback: () => this.rollTable(`maintenanceCheck`, `1d100 [-]`, `low`, null, null, null, null),
-            icon: `<i class="fas fa-angle-double-down"></i>`
+            icon: `fas fa-angle-double-down`
           }
-        }
+        ]
       };
       //render dialog
-      const dialog = new Dialog(dialogData, {
-        width: 600,
-        height: 265
-      }).render(true);
-      });
+      const dialog = new foundry.applications.api.DialogV2(dialogData).render({force: true});
+    
+    });
     
   }
 
@@ -2700,32 +2821,35 @@ export class MothershipActor extends Actor {
       `;
       //create final dialog data
       const dialogData = {
-        title: game.i18n.localize("Mosh.BankrupcySave"),
+        window: {title: game.i18n.localize("Mosh.BankrupcySave")},
+        classes: ["macro-popup-dialog"],
+        position: {width: 600,height: 265},
         content: msgContent,
-        buttons: {
-          button1: {
+        buttons: [
+          {
             label: game.i18n.localize("Mosh.Advantage"),
+			      action: `action_advantage`,
             callback: () => this.rollCheck(`1d100 [+]`, `low`, `bankruptcySave`, null, null, null),
-            icon: `<i class="fas fa-angle-double-up"></i>`
+            icon: `fas fa-angle-double-up`
           },
-          button2: {
+          {
             label: game.i18n.localize("Mosh.Normal"),
+			      action: `action_normal`,
             callback: () => this.rollCheck(`1d100`, `low`, `bankruptcySave`, null, null, null),
-            icon: `<i class="fas fa-minus"></i>`
+            icon: `fas fa-minus`
           },
-          button3: {
+          {
             label: game.i18n.localize("Mosh.Disadvantage"),
+			      action: `action_disadvantage`,
             callback: () => this.rollCheck(`1d100 [-]`, `low`, `bankruptcySave`, null, null, null),
-            icon: `<i class="fas fa-angle-double-down"></i>`
+            icon: `fas fa-angle-double-down`
           }
-        }
+        ]
       };
       //render dialog
-      const dialog = new Dialog(dialogData, {
-        width: 600,
-        height: 265
-      }).render(true);
-      });
+      new foundry.applications.api.DialogV2(dialogData).render({force: true});
+
+    });
     
   }
 
@@ -2774,105 +2898,96 @@ export class MothershipActor extends Actor {
       `;
       //create final dialog data
       const dialogData = {
-        title: `Morale Check`,
+        window: {title: `Morale Check`},
+        classes: ["macro-popup-dialog"],
+        position: {width: 600,height: 265},
         content: msgContent,
-        buttons: {
-          button1: {
+        buttons: [
+          {
             label: game.i18n.localize("Mosh.Advantage"),
+			      action: `action_advantage`,
             callback: () => this.rollCheck(`1d10 [+]`, `high-equal`, `moraleCheck`, null, null, null),
-            icon: `<i class="fas fa-angle-double-up"></i>`
+            icon: `fas fa-angle-double-up`
           },
-          button2: {
+          {
             label: game.i18n.localize("Mosh.Normal"),
+			      action: `action_normal`,
             callback: () => this.rollCheck(`1d10`, `high-equal`, `moraleCheck`, null, null, null),
-            icon: `<i class="fas fa-minus"></i>`
+            icon: `fas fa-minus`
           },
-          button3: {
+          {
             label: game.i18n.localize("Mosh.Disadvantage"),
+			      action: `action_disadvantage`,
             callback: () => this.rollCheck(`1d10 [-]`, `high-equal`, `moraleCheck`, null, null, null),
-            icon: `<i class="fas fa-angle-double-down"></i>`
+            icon: `fas fa-angle-double-down`
           }
-        }
+        ]
       };
       //render dialog
-      const dialog = new Dialog(dialogData, {
-        width: 600,
-        height: 265
-      }).render(true);
-      });
+      const dialog = new foundry.applications.api.DialogV2(dialogData).render({force: true});
+
+    });
     
   }
 
   // print description
-  printDescription(itemId, options = {
-    event: null
-  }) {
+  printDescription(itemId, options = {event: null}) {
     var item;
-    if (game.release.generation >= 12) {
-      item = foundry.utils.duplicate(this.getEmbeddedDocument('Item', itemId));
-    } else {
-      item = duplicate(this.getEmbeddedDocument('Item', itemId));
-    }
+    item = foundry.utils.duplicate(this.getEmbeddedDocument('Item', itemId));
     this.chatDesc(item);
   }
 
   // Print the item description into the chat.
-  chatDesc(item) {
+  async chatDesc(item) {
     let swapNameDesc = false;
     let swapName = '';
     let itemName = item.name?.charAt(0).toUpperCase() + item.name?.toLowerCase().slice(1);
     if (!item.name && isNaN(itemName)) {
       itemName = item.charAt(0)?.toUpperCase() + item.toLowerCase().slice(1);
     }
-    var rollInsert = '';
+
+    let rollInsert = '';
     if (item.system.roll) {
-      let r = new Roll(item.system.roll, {});
-      r.evaluate({
-        async: false
-      });
-      rollInsert = '\
-        <div class="rollh2" style="text-transform: lowercase;">' + item.system.roll + '</div>\
-        <div class="roll-grid">\
-          <div class="roll-result">' + r._total + '</div>\
-        </div>';
+      const r = new Roll(item.system.roll, {});
+      await r.evaluate();
+      rollInsert = `
+        <div class="rollh2" style="text-transform: lowercase;">${item.system.roll}</div>
+        <div class="roll-grid">
+          <div class="roll-result">${r.total}</div>
+        </div>`;
     }
 
-    //add flag to swap name and description, if desc contains trinket or patch
-    if (item.system.description === '<p>Patch</p>' || item.system.description === '<p>Trinket</p>' || item.system.description === '<p>Maintenance Issue</p>') {
+    // add flag to swap name and description, if desc contains trinket or patch
+    if (["<p>Patch</p>", "<p>Trinket</p>", "<p>Maintenance Issue</p>"].includes(item.system.description)) {
       swapNameDesc = true;
       swapName = item.system.description.replaceAll('<p>', '').replaceAll('</p>', '');
     }
 
-    var templateData = {
+    const templateData = {
       actor: this,
-      stat: {
-        name: itemName.toUpperCase()
-      },
-      item: item,
+      stat: { name: itemName.toUpperCase() },
+      item,
       insert: rollInsert,
       onlyDesc: true,
-      swapNameDesc: swapNameDesc,
-      swapName: swapName
+      swapNameDesc,
+      swapName
     };
 
-    let chatData = {
+    const chatData = {
       user: game.user.id,
-      speaker: {
-        actor: this.id,
-        token: this.token,
-        alias: this.name
-      }
+      speaker: { actor: this.id, token: this.token, alias: this.name }
     };
 
-    let rollMode = game.settings.get("core", "rollMode");
-    if (["gmroll", "blindroll"].includes(rollMode)) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM");
+    const rollMode = game.settings.get("core", "rollMode");
+    if (["gmroll", "blindroll"].includes(rollMode)) {
+      chatData.whisper = ChatMessage.getWhisperRecipients("GM");
+    }
 
-    let template = 'systems/mosh/templates/chat/itemRoll.html';
-    renderTemplate(template, templateData).then(content => {
-      chatData.content = content;
-      ChatMessage.create(chatData);
-    });
-    //log what was done
+    const template = 'systems/mosh/templates/chat/itemRoll.html';
+    const content = await foundry.applications.handlebars.renderTemplate(template, templateData);
+    chatData.content = content;
+    await ChatMessage.create(chatData);
+
     console.log(`Created chat message with details on ${item.name}`);
   }
 
