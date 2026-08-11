@@ -4,7 +4,7 @@
   "type": "script",
   "scope": "global",
   "img": "icons/svg/d10-grey.svg",
-  "command": "game.mothership.initRollTable(game.settings.get('mothershiprpg','table1ePanicStressAndroid'),`1d20`,`high`,false,false,'system.other.stress.value','>');",
+  "command": "game.mothershiprpg.initRollTable(game.settings.get('mothershiprpg','table1ePanicStressAndroid'),`1d20`,`high`,false,false,'system.other.stress.value','>');",
   "folder": null,
   "flags": {},
   "_stats": {

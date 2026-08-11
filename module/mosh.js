@@ -19,7 +19,7 @@ import {
 
 Hooks.once('init', async function () {
 
-  game.mothership = {
+  game.mothershiprpg = {
     MothershipActor,
     MothershipItem,
     rollItemMacro,
@@ -234,7 +234,7 @@ async function createMothershipMacro(data, slot) {
   if (!item) return ui.notifications.warn("You can only create macro buttons for owned Items");
 
   // Create the macro command
-  let command = `game.mothership.rollItemMacro("${item.name}");`;
+  let command = `game.mothershiprpg.rollItemMacro("${item.name}");`;
 console.log(command);
   let macro = game.macros.find(m => (m.name === item.name) && (m.command === command));
   if (!macro) {
@@ -266,7 +266,7 @@ function rollItemMacro(itemName) {
     //is there a selected character? warn if no
     if (!game.user.character) {
       //warn player
-      game.mothership.noCharSelected();
+      game.mothershiprpg.noCharSelected();
     } else {
       //run the function for the player's 'Selected Character'
         //get item id
@@ -288,7 +288,7 @@ function rollItemMacro(itemName) {
     //is there a selected character? warn if no
     if (!canvas.tokens.controlled.length) {
       //warn player
-      game.mothership.noCharSelected();
+      game.mothershiprpg.noCharSelected();
     } else {
       //run the function for all selected tokens
       canvas.tokens.controlled.forEach(function(token){
@@ -348,7 +348,7 @@ async function initRollTable(tableId,rollString,aimFor,zeroBased,checkCrit,rollA
     //is there a selected character? warn if no
     if (!game.user.character) {
       //warn player
-      game.mothership.noCharSelected();
+      game.mothershiprpg.noCharSelected();
     } else {
       //run the function for the player's 'Selected Character'
       game.user.character.rollTable(tableId,rollString,aimFor,zeroBased,checkCrit,rollAgainst,comparison);
@@ -357,7 +357,7 @@ async function initRollTable(tableId,rollString,aimFor,zeroBased,checkCrit,rollA
     //is there a selected character? warn if no
     if (!canvas.tokens.controlled.length) {
       //warn player
-      game.mothership.noCharSelected();
+      game.mothershiprpg.noCharSelected();
     } else {
       //run the function for all selected tokens
       canvas.tokens.controlled.forEach(function(token){
@@ -376,7 +376,7 @@ async function initRollCheck(rollString,aimFor,attribute,skill,skillValue,weapon
     //is there a selected character? warn if no
     if (!game.user.character) {
       //warn player
-      game.mothership.noCharSelected();
+      game.mothershiprpg.noCharSelected();
     } else {
       //run the function for the player's 'Selected Character'
       game.user.character.rollCheck(rollString,aimFor,attribute,skill,skillValue,weapon);
@@ -385,7 +385,7 @@ async function initRollCheck(rollString,aimFor,attribute,skill,skillValue,weapon
     //is there a selected character? warn if no
     if (!canvas.tokens.controlled.length) {
       //warn player
-      game.mothership.noCharSelected();
+      game.mothershiprpg.noCharSelected();
     } else {
       //run the function for all selected tokens
       canvas.tokens.controlled.forEach(function(token){
@@ -404,7 +404,7 @@ async function initModifyActor(fieldAddress,modValue,modRollString,outputChatMsg
     //is there a selected character? warn if no
     if (!game.user.character) {
       //warn player
-      game.mothership.noCharSelected();
+      game.mothershiprpg.noCharSelected();
     } else {
       //run the function for the player's 'Selected Character'
       game.user.character.modifyActor(fieldAddress,modValue,modRollString,outputChatMsg);
@@ -413,7 +413,7 @@ async function initModifyActor(fieldAddress,modValue,modRollString,outputChatMsg
     //is there a selected character? warn if no
     if (!canvas.tokens.controlled.length) {
       //warn player
-      game.mothership.noCharSelected();
+      game.mothershiprpg.noCharSelected();
     } else {
       //run the function for all selected tokens
       canvas.tokens.controlled.forEach(function(token){
@@ -432,7 +432,7 @@ async function initModifyItem(itemId,addAmount) {
     //is there a selected character? warn if no
     if (!game.user.character) {
       //warn player
-      game.mothership.noCharSelected();
+      game.mothershiprpg.noCharSelected();
     } else {
       //run the function for the player's 'Selected Character'
       game.user.character.modifyItem(itemId,addAmount);
@@ -441,7 +441,7 @@ async function initModifyItem(itemId,addAmount) {
     //is there a selected character? warn if no
     if (!canvas.tokens.controlled.length) {
       //warn player
-      game.mothership.noCharSelected();
+      game.mothershiprpg.noCharSelected();
     } else {
       //run the function for all selected tokens
       canvas.tokens.controlled.forEach(function(token){

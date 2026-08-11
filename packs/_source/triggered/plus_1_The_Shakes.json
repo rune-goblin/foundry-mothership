@@ -4,7 +4,7 @@
   "type": "script",
   "scope": "global",
   "img": "icons/svg/d10-grey.svg",
-  "command": "game.mothership.initModifyItem('d3KlY4zMdD1j3CTW',1);",
+  "command": "game.mothershiprpg.initModifyItem('d3KlY4zMdD1j3CTW',1);",
   "folder": null,
   "flags": {},
   "_stats": {

@@ -1117,17 +1117,30 @@ one. Two systems sharing an id also collide locally — both install to the same
 
 | Changed | Kept |
 |---|---|
-| `id`, `title`, `version`, `esmodules`, `styles`, `download` | `game.mothership` — the public API |
-| 193 `game.settings.*('mothershiprpg', …)` scopes | 196 `.mosh` CSS class names |
-| 7 `registerSheet("mothershiprpg", …)` | `Mosh.*` localization keys |
-| 636 `systems/mothershiprpg/…` runtime paths | `css/mosh.css`, `module/mosh.js` filenames |
+| `id`, `title`, `version`, `esmodules`, `styles`, `download` | 196 `.mosh` CSS class names |
+| `game.mothership` → `game.mothershiprpg` (220 refs, 208 of them shipped macros) | `Mosh.*` localization keys |
+| 193 `game.settings.*('mothershiprpg', …)` scopes | `css/mosh.css`, `module/mosh.js` filenames |
+| 7 `registerSheet("mothershiprpg", …)` | |
+| 636 `systems/mothershiprpg/…` runtime paths | |
 | 353 `Compendium.mothershiprpg.…` references | |
 | `SYSTEM_ID` in `foundry-data.ts`, `packs.sh`, `setup-test-env.ts`, the e2e fixtures | |
 
-**The API stays `game.mothership`.** 208 shipped compendium macros call it, the id is a
-registry-uniqueness choice rather than a brand, and `game.mothershiprpg` reads badly. The CSS
-classes and lang keys are internal with no external contract; renaming them is churn with
-visual risk, and the sheets are mid-conversion to Svelte.
+**The API matches the id, and the reason is not collision.** Two systems can never both be
+active — Foundry loads exactly one system per world — so `game.mosh` and `game.mothership` could
+never have coexisted. Nor does Foundry require the match: `game.<x>` is just a property the
+system assigns during `init`, and a hyphenated id could not match even in principle.
+
+It matches because the API name is what 208 shipped macros *type*.
+`game.mothershiprpg.rollItemMacro("Frag Grenade")` names its own dependency; `game.mothership`
+did not. One string now identifies the package in settings, packs, paths and macros alike.
+
+The cost is that a macro a user has already copied out of a compendium into their own hotbar
+keeps calling the old name and breaks silently. With the id change already invalidating every
+existing world, that cost is currently zero — which is precisely why this was the moment to do
+it rather than later.
+
+The CSS classes and lang keys stay: internal, no external contract, and renaming them is churn
+with visual risk while the sheets are mid-conversion to Svelte.
 
 ### Consequences, and the two traps hit on the way
 

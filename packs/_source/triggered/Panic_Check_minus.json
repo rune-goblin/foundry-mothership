@@ -4,7 +4,7 @@
   "type": "script",
   "scope": "global",
   "img": "icons/svg/d10-grey.svg",
-  "command": "game.mothership.initRollTable(`panicCheck`,`[-]`,null,false,false,null,null);",
+  "command": "game.mothershiprpg.initRollTable(`panicCheck`,`[-]`,null,false,false,null,null);",
   "folder": null,
   "flags": {},
   "_stats": {

@@ -8,12 +8,12 @@ test.describe('system loads', () => {
       const g = (window as any).game;
       return {
         system: g.system.id,
-        api: Object.keys(g.mothership ?? {}).sort(),
+        api: Object.keys(g.mothershiprpg ?? {}).sort(),
         actorClass: g.actors?.documentClass?.name ?? null,
       };
     });
     expect(api.system).toBe(SYSTEM_ID);
-    // mosh.js hangs the macro entry points off game.mothership during init.
+    // mosh.js hangs the macro entry points off game.mothershiprpg during init.
     expect(api.api).toContain('rollItemMacro');
     expect(api.api).toContain('initRollTable');
     expect(api.actorClass).toBe('MothershipActor');

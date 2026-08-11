@@ -4,7 +4,7 @@
   "type": "script",
   "scope": "global",
   "img": "icons/svg/d10-grey.svg",
-  "command": "game.mothership.initModifyActor('system.supplies.upgrades.value',-1,null,true);",
+  "command": "game.mothershiprpg.initModifyActor('system.supplies.upgrades.value',-1,null,true);",
   "folder": null,
   "flags": {},
   "_stats": {

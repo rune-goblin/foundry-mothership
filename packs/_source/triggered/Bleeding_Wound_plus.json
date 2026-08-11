@@ -4,7 +4,7 @@
   "type": "script",
   "scope": "global",
   "img": "icons/svg/d10-grey.svg",
-  "command": "game.mothership.initRollTable(game.settings.get('mothershiprpg','table1eWoundBleeding'),`1d10 [+]`,`low`,true,false,null,null);",
+  "command": "game.mothershiprpg.initRollTable(game.settings.get('mothershiprpg','table1eWoundBleeding'),`1d10 [+]`,`low`,true,false,null,null);",
   "folder": null,
   "flags": {},
   "_stats": {
