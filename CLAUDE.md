@@ -14,10 +14,10 @@ Code style: global `~/.claude/CLAUDE.md` — comment only the non-obvious *why*.
 ## Where the project is
 
 Modernization from a dead gulp build to the runegoblin baseline. **Phases 1–3, the test
-harness, and phase 4's step 0 + first conversion are done; `skill-sheet.js` is next.**
-`MODERNIZATION.md` is the living plan — read its status header and §Phase 4 before starting
-UI work, §10 for the conventions the item sheet settled, §13 for what is next and why, and
-update it as work lands.
+harness, phase 4's step 0 + first conversion, and the shared component layer are done;
+`skill-sheet.js` is next.** `MODERNIZATION.md` is the living plan — read its status header and
+§Phase 4 before starting UI work, §10 for the conventions the item sheet settled, §20 for the
+component layer, and update it as work lands.
 
 | Done | Not done |
 |---|---|
@@ -26,8 +26,9 @@ update it as work lands.
 | Packs from JSON source, 0e removed | 28 Handlebars templates |
 | Svelte 5 wired into build, check, vitest | 6 sheets/windows left to convert |
 | 8 item sheets on ApplicationV2 + Svelte | |
+| Shared components in `module/ui/parts/` | |
 | 0e / `firstEdition` rules removed | |
-| 97 vitest + 57 Playwright specs | |
+| 119 vitest + 57 Playwright specs | |
 
 ## Hard rules (override defaults)
 
@@ -49,7 +50,7 @@ npm run build            # vite → dist/
 npm run setup            # dev install: symlink scaffold (packs are COPIED — re-run after packing)
 npm run deploy           # release rehearsal: link-free copy, same shape as the zip
 ./scripts/packs.sh pack  # packs/_source/*.json → LevelDB (close Foundry first)
-npm test                 # 97 vitest specs — the CI tier
+npm test                 # 119 vitest specs — the CI tier
 npm run check            # tsc over the .ts surface, then svelte-check over module/ui
 npm run test:e2e         # 57 Playwright specs vs a real headless Foundry
 ```
@@ -74,6 +75,12 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
 - **New UI lives in `module/ui/`** — an ApplicationV2 shell per window plus Svelte 5
   components (runes mode is forced on). `MODERNIZATION.md` §10 has the conventions: the
   document stays the source of truth, Foundry persists the form, mount once.
+- **`module/ui/parts/` holds the shared primitives** (§20) — `ItemList`/`ItemRow`/`ItemCell`/
+  `ItemControls`/`ItemControl`, `Tabs`/`TabPanel`, `CircleStats`/`CircleStat`, `Field`,
+  `CheckField`, `Editor`, `SheetHeader`, plus the `dropTarget` attachment. Build a conversion
+  out of these before writing bespoke markup. They emit the **global** class names from
+  `css/mosh.css` on purpose and carry no `<style>` blocks; `test/ui-parts.test.ts` pins every
+  one of those class names, because the stylesheet is a contract no compiler checks.
 - **Manifest URLs point at `rune-goblin`** (`MODERNIZATION.md` §15). `manifest` must stay on
   `/releases/latest` or Foundry can never detect an update; `download` is version-specific and
   is stamped by `release.yml` from the tag — don't hardcode it.

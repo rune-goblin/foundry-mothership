@@ -1,6 +1,6 @@
 <script>
-  import Field from '../parts/Field.svelte';
-  import CheckField from '../parts/CheckField.svelte';
+  import Field from '../../parts/Field.svelte';
+  import CheckField from '../../parts/CheckField.svelte';
   import { localize } from '../../i18n.js';
 
   const WOUND_ROLLS = [

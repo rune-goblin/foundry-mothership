@@ -1,6 +1,8 @@
 <script>
-  import SheetHeader from './parts/SheetHeader.svelte';
-  import Editor from './parts/Editor.svelte';
+  import SheetHeader from '../parts/SheetHeader.svelte';
+  import Editor from '../parts/Editor.svelte';
+  import Tabs from '../parts/Tabs.svelte';
+  import TabPanel from '../parts/TabPanel.svelte';
   import { ITEM_BODIES, ITEM_EXTRA_TABS } from './types.js';
   import { localize } from '../i18n.js';
 
@@ -9,6 +11,11 @@
   const doc = $derived(store.current);
   const Body = $derived(ITEM_BODIES[doc.type]);
   const extra = $derived(ITEM_EXTRA_TABS[doc.type]);
+
+  const tabs = $derived([
+    { id: 'description', label: localize('Mosh.Description') },
+    ...(extra ? [{ id: extra.tab, label: localize(extra.label) }] : []),
+  ]);
 
   let tab = $state('description');
 </script>
@@ -19,51 +26,24 @@
 <Body system={doc.system} />
 <br />
 
-<nav class="mosh sheet-tabs tabs" style="height: auto;" data-group="primary">
-  <a
-    class="tab-select"
-    class:active={tab === 'description'}
-    data-tab="description"
-    href={null}
-    role="tab"
-    tabindex="0"
-    aria-selected={tab === 'description'}
-    onclick={() => (tab = 'description')}
-  >
-    {localize('Mosh.Description')}
-  </a>
-  {#if extra}
-    <a
-      class="tab-select"
-      class:active={tab === extra.tab}
-      data-tab={extra.tab}
-      href={null}
-      role="tab"
-      tabindex="0"
-      aria-selected={tab === extra.tab}
-      onclick={() => (tab = extra.tab)}
-    >
-      {localize(extra.label)}
-    </a>
-  {/if}
-</nav>
+<Tabs {tabs} bind:active={tab} />
 
 <br />
 
 <section class="sheet-body">
-  {#if tab === 'description'}
-    <div class="tab active" data-group="primary" data-tab="description">
-      <Editor
-        name="system.description"
-        value={doc.system.description}
-        enriched={doc.enriched.description}
-        uuid={doc.uuid}
-      />
-    </div>
-  {:else if extra}
+  <TabPanel tab="description" active={tab}>
+    <Editor
+      name="system.description"
+      value={doc.system.description}
+      enriched={doc.enriched.description}
+      uuid={doc.uuid}
+    />
+  </TabPanel>
+
+  {#if extra}
     {@const Extra = extra.component}
-    <div class="tab ranges active" data-group="primary" data-tab={extra.tab}>
+    <TabPanel tab={extra.tab} active={tab} class="ranges">
       <Extra system={doc.system} />
-    </div>
+    </TabPanel>
   {/if}
 </section>

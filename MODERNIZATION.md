@@ -11,14 +11,15 @@ memory. API claims below were checked in that file.
 ## Start here
 
 **Phases 1–3, the test harness, phase 4's step 0 + first conversion, the 0e removal, the schema
-repairs and the `mothershiprpg` rename are complete.**
-**Next: the shared component layer (§13), then `skill-sheet.js`.**
+repairs, the `mothershiprpg` rename and the shared component layer are complete.**
+**Next: `skill-sheet.js` (§Phase 4 item 2), then the rest of the order.**
 
 | | |
 |---|---|
 | Read first | `CLAUDE.md`, then the `foundry-mosh` skill (`.claude/skills/foundry-mosh/`) |
 | The plan | §Phase 4 below — the conversion order, one sheet at a time |
-| Verify with | `npm run check && npm test` (97 specs), `npm run test:e2e` (57 specs) |
+| Build on | `module/ui/parts/` — the shared primitives (§20), before writing bespoke markup |
+| Verify with | `npm run check && npm test` (119 specs), `npm run test:e2e` (57 specs) |
 | State | `master`, tree clean, pushed and tracking `origin/master` |
 
 **Pushed.** The rewritten history is live on `origin/master` (§14) and `master` tracks it, so
@@ -879,7 +880,7 @@ assertion in `data-models.spec.ts` — write the field, read it back — not the
 
 ---
 
-## 13. Next — the shared component layer
+## 13. The shared component layer — the decision (built: see §20)
 
 **Decision taken: build the component layer before converting more sheets.** Reason: the sheets
 left are the big ones (`actor-sheet` 638, `creature-sheet` 477, `ship-sheet-sbt` 566,
@@ -1165,6 +1166,13 @@ Two things the verification caught that a grep would not have:
   browser-side callbacks compiled fine and threw at runtime. The specs now read `game.system.id`
   from the page instead, which is self-checking.
 
+**A third miss surfaced later, in `css/mosh.css`** (found while building §20's component layer —
+the Vite build warns about unresolvable asset URLs, and the warning named `/systems/mosh/`). Two
+absolute `url()`s, `#logo` and `#pause > img`, still addressed the old system id, so the branding
+logo and the pause overlay had been 404s since the rename. Fixed to
+`/systems/mothershiprpg/images/…`. That makes three root-level or non-obvious files the sweep
+missed; the pattern is that it rewrote *code* roots and left the ones that only carry paths.
+
 
 ---
 
@@ -1207,3 +1215,77 @@ Content referenced as `Compendium.<module-id>.<pack>.<id>` becomes
 `Compendium.mothershiprpg.<pack>.<id>`, so any world or macro pointing at the old ids breaks —
 the same class of break as §18, and best done in the same window as that one if it is going to
 happen at all.
+
+
+---
+
+## 20. The shared component layer — built
+
+§13 measured the shapes and set the order; this is what landed. Twelve new files plus the four
+promoted out of `item/parts/`, all under **`module/ui/parts/`**:
+
+```
+activate.js       onActivate(handler) -- the Enter/Space twin every click-only element needs
+drop-target.js    dropTarget(onDrop) -- a Svelte attachment, replaces AppV1's dragDrop config
+ItemList          ol.items-list
+ItemRow           li.item.flexrow, + .item-header or .draggable + data-item-id
+ItemImage         div.item-image, with or without the 24px thumbnail
+ItemCell          div.skill-stat, optional flex-grow, optional click
+ItemControls      div.item-controls
+ItemControl       a.item-control with a Font Awesome glyph
+Tabs              nav.mosh.sheet-tabs.tabs + a.tab-select, `active` is bindable
+TabPanel          div.tab[data-tab], renders only when active, takes an optional attachment
+CircleStats       the three circle-statwrapper variants
+CircleStat        div.resource.circle-stat + a sibling div.circlestatlabel
+Field CheckField Editor SheetHeader   promoted from module/ui/item/parts/
+```
+
+Per §13 the primitives emit the **global** class names from `css/mosh.css`; no component owns
+its styling and none carries a `<style>` block.
+
+### Three things worth carrying forward
+
+- **`.dropitem` is gone from rows, on purpose.** It was never styled — it existed only as the
+  jQuery selector AppV1's `options.dragDrop` bound to. `ActorSheetV2` drags from `.draggable`,
+  and drops now arrive through the `dropTarget` attachment, so `ItemRow` emits `.draggable` +
+  `draggable="true"` + `data-item-id` instead.
+- **Drops are an attachment, not a selector.** AppV1 re-bound `dragDrop` on every render. A
+  Svelte component **mounts once** while ApplicationV2 re-renders many times, so selector
+  re-binding would stack duplicate listeners on the same node. `{@attach dropTarget(fn)}` binds
+  to the node it is written on and tears down with it. `{@attach undefined}` is inert (Svelte
+  guards with `if (fn)`), so `TabPanel`'s `attach` prop is genuinely optional.
+- **Click-only elements need a keyboard twin or `npm run check` fails.** `svelte-check` runs at
+  0 warnings, and its a11y rules reject an `onclick` on `<a href-less>` / `<div>` without
+  `role`, `tabindex` and a key handler. `ItemCell` and `CircleStat` build those as one spread
+  object — a *dynamic* `tabindex` beside a *dynamic* `role` trips `a11y_no_noninteractive_tabindex`,
+  and the spread is opaque to that analysis while rendering exactly the same markup.
+
+### How it is verified
+
+Two consumers and one contract test.
+
+`module/ui/item/ItemSheet.svelte` was retrofitted onto `Tabs` + `TabPanel`, so the eight
+converted item sheets exercise them under the existing e2e specs (including the one that clicks
+`a.tab-select[data-tab="item"]`). The retrofit was proved to be a pure refactor by diffing the
+sheet's **rendered markup** out of the real headless Foundry before and against after: the only
+differences are attribute ordering, Svelte's `<!---->` block anchors, and a cosmetic double
+space in `class="tab  active"`.
+
+**`test/ui-parts.test.ts`** (22 specs, jsdom) mounts every primitive and asserts the selector the
+stylesheet actually keys off. That is the point: the hybrid decision makes each class name a
+contract with a stylesheet no compiler ever sees, so renaming one in a component would otherwise
+lose the styling silently with every tier still green. It is also the *only* thing holding
+`CircleStat` and `CircleStats` to their shape — they have no converted consumer until
+`ship-sheet-sbt`.
+
+Checked by mutation, not assumed: **13 mutations, 13 failures.** Renaming `.items-list`,
+`.skill-stat`, `.circle-input`, `.tab-select` or the `circle-statwrapper-` variant prefix;
+dropping `.draggable` from rows; making `onActivate` ignore Enter; losing the space before a
+control's label; making `TabPanel` ignore its attachment; and three separate breaks of
+`dropTarget` (either `preventDefault`, and the payload parse) each fail the specs that cover them.
+
+`jsdom` is a new devDependency and `"svelte"` joins `types` in `tsconfig.json` — without the
+latter's ambient `declare module '*.svelte'`, a `.ts` spec cannot import the components it mounts.
+
+**Verified:** `npm run check` (0 errors, 0 warnings, 226 files) · **119 vitest** (97 + 22) ·
+**57 Playwright** · `npm run build`.

@@ -43,14 +43,14 @@
 
 /* Branding */
 #logo {
-  content: url("/systems/mosh/images/icons/ui/system/logo.webp");
+  content: url("/systems/mothershiprpg/images/icons/ui/system/logo.webp");
   width: 100px;
   height: 50px;
 }
 
 #pause>img {
   background: none;
-  content: url("/systems/mosh/images/icons/ui/system/pause.webp");
+  content: url("/systems/mothershiprpg/images/icons/ui/system/pause.webp");
   width: 200px;
   height: 200px;
   top: -95px;

@@ -1,5 +1,5 @@
 <script>
-  import Field from '../parts/Field.svelte';
+  import Field from '../../parts/Field.svelte';
   import { localize } from '../../i18n.js';
 
   let { system } = $props();
