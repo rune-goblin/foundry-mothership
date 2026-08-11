@@ -285,15 +285,15 @@ Also surfaced by the build: **direct `eval()` at `module/mosh.js:88` and `:94`**
 a comparison out of string concatenation. Rolldown flags it. Replace with a comparator
 lookup — small, self-contained, and a good first unit-test target in phase 2.
 
-### Phase 2 — quality gates and repo weight (≈2 days)
+### Phase 2 — quality gates and repo weight (partly done)
 
 1. `tsconfig.json` with `allowJs: true, checkJs: false` — TypeScript can type-check the
    build tooling and any new `src/` code without touching 9,274 lines of legacy JS yet.
-2. `vitest.config.ts` + first unit specs. Target the automation in `actor.js` — panic
-   checks, stress, wounds, saves. These are pure-ish functions and the highest-risk code
-   in the system; they are also exactly what will break during phases 3–5, so writing
-   them *before* the refactor is what makes the refactor safe.
-3. `.github/workflows/ci.yml`: `npm ci && npm run check && npm test` on push and PR.
+   **Not done.**
+2. ~~`vitest.config.ts` + first unit specs~~ **done** — see §8.
+3. ~~`.github/workflows/ci.yml`~~ **done** — `npm ci`, `npm test`, `npm run build`, then
+   `packs.sh pack` with a completeness check, on push to `master` and every PR. Add
+   `npm run check` once item 1 lands.
 4. `.github/workflows/release.yml`: tag `vX.Y.Z` → stamp version, build, publish
    `system.json` + `mosh.zip` to GitHub Releases.
 5. ~~`scripts/setup.ts`~~ **done early** — `npm run setup` rebuilds `Data/systems/mosh`
@@ -445,6 +445,61 @@ and a locally built release zip carries 5 packs with `.ldb`/`CURRENT`/`MANIFEST`
   in untested automation, so it is queued behind phase 2's specs.
 - **Existing worlds that used a 0e compendium will have dangling links.** Nothing in the
   system references them any more, but a world built on 0e content is not migrated.
+
+---
+
+## 8. Test harness — done
+
+**63 specs, run in CI, no Foundry required.** `actor.js` is imported with an empty `Actor`
+base class (`test/setup.ts`) and its methods are called with a hand-built `this`, so the
+specs exercise the real shipped code without constructing a document or booting a world.
+The one import that reaches the entry module is mocked.
+
+Covered:
+
+| Area | What is pinned |
+|---|---|
+| `parseRollString` | keep-highest vs keep-lowest for `[+]`/`[-]` in both check directions |
+| `_deriveCharacter` | armour points, damage reduction, net HP, bleeding |
+| `parseRollResult` | zero-based dice, the 90+ auto-failure, all four comparisons, doubles as criticals, crit-preference under advantage/disadvantage in both directions, the panic-check exception |
+| `compare` | the four comparators the templates use, plus the coercion the old `eval` implied |
+
+These are **characterisation** specs: they pin what the code does today, so the DataModel
+and Svelte work changes behaviour deliberately rather than by accident.
+
+**Harness health was checked, not assumed.** Mutating the auto-fail threshold, the doubles
+set, and each of the four advantage/disadvantage arms all fail the suite. That exercise
+paid for itself: the roll-*over* direction (`[+]`/kh and `[-]`/kl, used by damage rolls)
+was untested at first and a mutation to it survived. Re-run it after adding specs — a
+suite that cannot fail is worse than no suite.
+
+### Bugs found and fixed along the way
+
+- **`DLShipMacros` extended the wrong base class.** `foundry.applications.sheets.BaseSheet`
+  is `HandlebarsApplicationMixin(DocumentSheetV2)`, but the class is written entirely
+  against AppV1 (`defaultOptions`, `getData`, `activateListeners`, `_updateObject`,
+  `this.object`), none of which V2 reads. Now `foundry.appv1.api.FormApplication`, matching
+  its siblings.
+- **Six updates wrote to the `data.` alias removed in v10** and silently did nothing —
+  `ship-macros`, `ship-megadamage`, and four in `creature-settings`.
+- **`creature-settings` read `system.stats.stats.speed`**, which `template.json` shows
+  does not exist, so `_updateObject` threw on every submission; and called
+  `updateEmbeddedEntity("OwnedItem", update)` — an API removed years ago, passing an
+  `update` variable that was never declared.
+- **The two `eval()` calls behind the `compare` helper** are gone (`module/compare.js`).
+  The old form built an expression string, so any value containing a quote was a syntax
+  error rather than a comparison; there is a spec for that.
+
+### Left deliberately
+
+`creature-settings._updateObject` still does not persist the form. `formData` is keyed
+`actor.system.*` — not valid Actor update paths — and the explicit branches only ever
+write `true`, so a stat can be switched on but never off. What *should* persist is a
+design decision, not a typo, so it is marked `FIXME` rather than guessed at.
+
+None of these fixes have been verified in a running game; they are correct against the
+schema and the v14 API, but the creature-settings and ship-macros windows are worth
+opening once before release.
 
 ---
 
