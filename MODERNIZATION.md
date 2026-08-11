@@ -364,29 +364,27 @@ file.
 
 ## 6. Open decisions
 
-**a. Purge `_releases/` from git history?** Deleting it from the working tree (done) does
-not shrink `.git` — the 854 MB, including a single 48 MB zip, still lives in every clone.
-`git filter-repo` would fix that, but it rewrites every SHA: everyone re-clones, open PRs
-and forks break, and the link to upstream `Futil/foundry-mothership` gets messier than it
-already is. Worth it if this becomes a hard fork; skip it otherwise. **Not done — needs
-your call.**
+**a. `_releases/` purged from history — done.** `git filter-repo --path _releases
+--invert-paths`. `.git` 353 MB → **102 MB**; whole repo 435 MB → **185 MB**.
 
-**b. What happens to `scss/`?** It is now outside the build and 17 months stale (§1.1).
-Three options:
+- 584 commits remain of 599 parsed: the difference is commits that only ever added
+  release zips, which became empty and were pruned. The `chore: remove committed release
+  archives` commit pruned itself for the same reason — once the files never existed,
+  there is nothing to remove.
+- `git log --all -- _releases` returns nothing.
+- **Every SHA changed.** Old `e70d25b` → new `017615f`.
+- Full pre-rewrite backup: `../../mothership-backup-pre-filter-repo.bundle` (339 MB,
+  `git bundle verify` reports a complete history). Keep until the force-push is settled.
+- filter-repo removed the `origin` remote as a safety measure; it has been restored.
+  **The next push must be `git push --force origin master`**, and anyone else with a
+  clone must re-clone.
 
-- *Delete it.* Honest, and it is recoverable from git history. Removes the trap.
-- *Keep hand-authored CSS, no preprocessor.* Nesting and custom properties are native
-  now, and Vite bundles plain CSS fine. The reasons to run SCSS in 2026 are thin.
-- *Rebuild the SCSS properly from the current CSS.* Real work, real regression risk, and
-  it collides with phase 4 — Svelte components carry their own scoped styles, so a large
-  chunk of `css/mosh.css` will dissolve into components anyway.
+**b. `scss/` deleted — done.** 13 files, recoverable from history. Styling stays plain
+hand-authored CSS through phase 4, then dissolves into scoped component styles as sheets
+become Svelte. Build output is unchanged at 247 selectors with the tree gone.
 
-Leaning strongly toward the first two: leave styling as plain CSS through phase 4 and let
-the Svelte migration absorb it component by component. **Nothing deleted yet.**
-
-**c. Commit strategy.** Phase 1 is staged but uncommitted, so you can review or unwind it
-in one step. Suggest two commits: `chore: remove committed release archives` and
-`build: replace gulp with vite`.
+**c. Commits.** Phase 1 landed as `0edf526 build: replace gulp with vite` (post-rewrite
+SHA), on `master`.
 
 ---
 
