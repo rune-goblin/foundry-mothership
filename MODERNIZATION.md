@@ -160,10 +160,19 @@ Both compendium formats are committed for all 9 packs — the NeDB `.db` JSON-li
 `packs/conditions_1e/`, 54 tracked files including `LOCK` files). Meanwhile `system.json`
 still points at the `.db` paths.
 
-v14 references NeDB only in `dist/migrations.mjs` — it migrates the format, it does not
-serve it. So the manifest paths are at best stale and at worst wrong, and every pack's
-content is stored twice in git. This needs verifying in a real world load, then
-consolidating.
+**Resolved** by inspecting the live install at `Data/systems/mosh`: its `system.json`
+still declares `packs/conditions_1e.db`, yet there are **zero** `.db` files on disk —
+only the 9 LevelDB directories — and the world runs. So v14 resolves a `.db` manifest
+path to the sibling directory, and Foundry deleted the NeDB files on install (the local
+config sets `deleteNEDB: true`).
+
+Consequences:
+
+- The 9 committed `.db` files are **dead weight**. They are also a hazard: exposing them
+  to Foundry invites it to delete them out of the working tree. `scripts/setup.ts`
+  therefore links the LevelDB directories individually and withholds the `.db` files.
+- The `.db` paths in `system.json` work but are misleading; correct them when the pack
+  pipeline is reworked.
 
 There is also no source-of-truth story: the template builds `packs/` from tracked JSON in
 `packs/_source/` via `scripts/pack.ts`, so content is diffable and reviewable. Here,
@@ -287,7 +296,12 @@ lookup — small, self-contained, and a good first unit-test target in phase 2.
 3. `.github/workflows/ci.yml`: `npm ci && npm run check && npm test` on push and PR.
 4. `.github/workflows/release.yml`: tag `vX.Y.Z` → stamp version, build, publish
    `system.json` + `mosh.zip` to GitHub Releases.
-5. `scripts/setup.ts` and `scripts/deploy.ts`, adapted to `Data/systems/mosh/`.
+5. ~~`scripts/setup.ts`~~ **done early** — `npm run setup` rebuilds `Data/systems/mosh`
+   as a real directory symlinking back to the repo (`system.json`, `template.json`,
+   `dist`, `templates`, `images`, `lang`, `data`, plus `packs/` entry-by-entry). Verified
+   against a headless v14 server on port 30099: `dist/mosh.js` 200 (215,140 B),
+   `dist/mosh.css` 200 (36,628 B), templates/images/lang all 200, and the retired
+   `module/mosh.js` path correctly 404s. `scripts/deploy.ts` still to do.
 6. `_releases/` is already out of the working tree (phase 1). Purging it from *history*
    is a separate, irreversible call — see §6.
 7. Resolve the pack duplication: confirm which format v14 actually loads, keep one, fix
@@ -354,9 +368,10 @@ file.
 - **`actor.js` is the crown jewels.** 2,993 lines of unstested automation. Phase 2's tests
   are a precondition for phases 3–5, not a nice-to-have. If you cut one thing from this
   plan, do not cut those.
-- **Pack format** needs a real answer from a live v14 world load before phase 2 item 7.
-  I could not conclusively determine from the server bundle whether v14 resolves a `.db`
-  path to the sibling LevelDB directory.
+- **Linked packs will dirty the repo.** `npm run setup` points Foundry at the repo's
+  LevelDB packs, and Foundry compacts and locks them on world load — expect unexplained
+  diffs under `packs/`. This is the strongest argument for phase 2 item 7 (track JSON
+  sources, gitignore the built LevelDB) and it will keep biting until that lands.
 - **48 MB of images** in a 798-file `images/` tree ships in every clone and every release
   zip. Worth an audit for unused art at some point; not urgent.
 
@@ -373,11 +388,14 @@ file.
   there is nothing to remove.
 - `git log --all -- _releases` returns nothing.
 - **Every SHA changed.** Old `e70d25b` → new `017615f`.
-- Full pre-rewrite backup: `../../mothership-backup-pre-filter-repo.bundle` (339 MB,
-  `git bundle verify` reports a complete history). Keep until the force-push is settled.
 - filter-repo removed the `origin` remote as a safety measure; it has been restored.
   **The next push must be `git push --force origin master`**, and anyone else with a
   clone must re-clone.
+- **The recovery route is `origin`, and only until the force-push.** The local backup
+  bundle was deleted; `git ls-remote origin` confirms GitHub still holds the pre-rewrite
+  `e70d25b` with `_releases` intact. That is the whole safety net — re-clone from
+  GitHub *before* force-pushing if any of this needs undoing. (Upstream
+  `Futil/foundry-mothership` is not a substitute: it lacks this fork's own commits.)
 
 **b. `scss/` deleted — done.** 13 files, recoverable from history. Styling stays plain
 hand-authored CSS through phase 4, then dissolves into scoped component styles as sheets

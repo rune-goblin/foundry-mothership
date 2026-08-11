@@ -12,7 +12,8 @@
     "build": "vite build",
     "dev": "vite",
     "watch": "vite build --watch",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "setup": "node scripts/setup.ts"
   },
   "devDependencies": {
     "vite": "^8.0.0"
