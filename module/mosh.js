@@ -1,6 +1,7 @@
 // Import Modules
 import { compare } from "./compare.js";
 import { ITEM_MODELS } from "./data/item-models.js";
+import { ACTOR_MODELS } from "./data/actor-models.js";
 import { MothershipActor } from "./actor/actor.js";
 import { MothershipActorSheet } from "./actor/actor-sheet.js";
 import { MothershipCreatureSheet } from "./actor/creature-sheet.js";
@@ -46,8 +47,9 @@ Hooks.once('init', async function () {
   CONFIG.Actor.documentClass = MothershipActor;
   CONFIG.Item.documentClass = MothershipItem;
 
-  // Item system data comes from DataModels; template.json still covers the Actor types
-  // until they are migrated too. A registered model takes precedence over template.json.
+  // System data comes from DataModels. A registered model takes precedence over
+  // template.json, which v14 deprecates and v16 removes.
+  CONFIG.Actor.dataModels = ACTOR_MODELS;
   CONFIG.Item.dataModels = ITEM_MODELS;
 
 

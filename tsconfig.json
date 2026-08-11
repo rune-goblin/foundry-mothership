@@ -10,6 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "types": ["node"],
+    "allowImportingTsExtensions": true,
     "noEmit": true,
     // The system's 9,274 lines of legacy JS are importable but not yet type-checked.
     // Flip checkJs on per-file with // @ts-check, or globally once the conversion starts.
