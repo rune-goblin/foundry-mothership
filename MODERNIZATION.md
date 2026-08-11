@@ -10,15 +10,16 @@ memory. API claims below were checked in that file.
 
 ## Start here
 
-**Phases 1–3, the test harness, phase 4's step 0 + first conversion, the 0e removal and the
-schema repairs are complete.** **Next: the shared component layer (§13), then `skill-sheet.js`.**
+**Phases 1–3, the test harness, phase 4's step 0 + first conversion, the 0e removal, the schema
+repairs and the `mothershiprpg` rename are complete.**
+**Next: the shared component layer (§13), then `skill-sheet.js`.**
 
 | | |
 |---|---|
 | Read first | `CLAUDE.md`, then the `foundry-mosh` skill (`.claude/skills/foundry-mosh/`) |
 | The plan | §Phase 4 below — the conversion order, one sheet at a time |
 | Verify with | `npm run check && npm test` (97 specs), `npm run test:e2e` (57 specs) |
-| State | `master`, tree clean, **unpushed** |
+| State | `master`, tree clean, pushed and tracking `origin/master` |
 
 **Pushed.** The rewritten history is live on `origin/master` (§14) and `master` tracks it, so
 `git push` and `git pull` work bare. The pre-rewrite history is gone. The manifest URLs now
