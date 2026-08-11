@@ -219,3 +219,47 @@ they should not survive a runes rewrite that derives instead of persisting.
 So the data model does not get cleaned up *before* or *beside* the UI work. It gets cleaned up
 **as a consequence of it** — which means the target schema and the target component architecture
 have to be designed together, or the second will re-enshrine the first.
+
+
+---
+
+## Part 3 — what the runtime actually uses
+
+Measured by enumerating every leaf the DataModels declare (via `test/field-stubs.ts`, the same
+helper the equivalence tests use) and checking each against all of `module/` and `templates/`.
+
+**334 declared leaves. 202 referenced by literal `system.<path>`.** Of the remaining 132, the
+overwhelming majority are per-stat scaffolding — `min`, `max`, `label`, `rollLabel` on every
+character, creature and ship stat — reached through computed keys (`actor.js:1247,1256,1371,1373,
+1428` use `stats[attribute].rollLabel/.value/.mod/.label`). Those are used, not dead. The same
+applies to the four ship `stats.*.mod` leaves.
+
+After excluding dynamic access, these declared fields have **no reference anywhere**:
+
+| Type | Field | Note |
+|---|---|---|
+| `weapon` | `system.wound` | distinct from `woundEffect`, which is used |
+| `ability` | `system.text` | |
+| `crew` | `system.text` | |
+| `module` | `system.offline` | |
+| `class` | `system.source`, `system.author`, `system.link` | metadata, never read |
+| `ship` | `system.images.beauty` | |
+| `ship` | `system.megadamage.menu.html` | already known dead (1.4) |
+| `ship` | `system.supplies.hull.25` / `.50` / `.75` | the sheet computes `hull.percentage` at render instead |
+
+**`stressdesc` is declared twice.** `character` has it at the top level *and* inside `other`
+(`actor-models.js:58` and `:75`; `template.json:57` and `:151`). Only `system.other.stressdesc.value`
+is used — by `actor-sheet.html:161` and `actor-generator.js:717`. The top-level copy is dead in
+both the model and the oracle.
+
+That is roughly a dozen fields to drop, in the DataModel **and** `template.json` together. Small in
+itself; the point is that the method — enumerate declared leaves, check each against real usage —
+is cheap, repeatable, and should be a test rather than a one-off.
+
+### The owner's direction on content
+
+The Player's Survival Guide is the source of record and stays so. What gets cut is **metadata, not
+gameplay data**: `source.book` / `version` / `page` / `section` in `mothership-data` carry
+provenance useful to the extraction pipeline and useless at runtime. Gameplay fields — tiers,
+bonuses, prerequisites, damage, costs, descriptions — are what the system needs and what should
+survive the merge.
