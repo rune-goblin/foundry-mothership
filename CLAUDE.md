@@ -94,5 +94,6 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
 - **Update paths are `system.*`.** The `data.` alias was removed in v10; six updates were
   still using it and silently doing nothing.
 - **History was rewritten** (`git filter-repo`, to drop 854 MB of committed release zips) and
-  **has not been force-pushed**. `origin` still holds the pre-rewrite history — which is the
-  only recovery route. The next push must be `git push --force origin master`.
+  has now been **force-pushed**; `master` tracks `origin/master`, so plain `git push` works.
+  The pre-rewrite history is gone from both the remote and this clone (`MODERNIZATION.md` §14).
+  Anyone holding an older clone must re-clone.

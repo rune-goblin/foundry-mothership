@@ -20,11 +20,10 @@ schema repairs are complete.** **Next: the shared component layer (§13), then `
 | Verify with | `npm run check && npm test` (97 specs), `npm run test:e2e` (57 specs) |
 | State | `master`, tree clean, **unpushed** |
 
-**Before pushing:** history was rewritten to drop 854 MB of committed release zips, so the
-next push must be `git push --force origin master`. `origin` still holds the pre-rewrite
-history and is the only recovery route — re-clone from GitHub first if anything needs
-undoing. Also fix the manifest `url`/`manifest`/`download`, which still point at the
-`Futil` upstream (§5).
+**Pushed.** The rewritten history is live on `origin/master` (§14) and `master` tracks it, so
+`git push` and `git pull` work bare. The pre-rewrite history is gone. Still outstanding: the
+manifest `url`/`manifest`/`download` point at the `Futil` upstream (§5), and that repo is
+public.
 
 Everything below is the audit and the record of what landed, newest phases at §7–§9.
 
@@ -477,11 +476,10 @@ file.
 - filter-repo removed the `origin` remote as a safety measure; it has been restored.
   **The next push must be `git push --force origin master`**, and anyone else with a
   clone must re-clone.
-- **The recovery route is `origin`, and only until the force-push.** The local backup
-  bundle was deleted; `git ls-remote origin` confirms GitHub still holds the pre-rewrite
-  `e70d25b` with `_releases` intact. That is the whole safety net — re-clone from
-  GitHub *before* force-pushing if any of this needs undoing. (Upstream
-  `Futil/foundry-mothership` is not a substitute: it lacks this fork's own commits.)
+- ~~The recovery route is `origin`, and only until the force-push.~~ **This was wrong** — see
+  §14. The pre-rewrite objects were still in the local clone the whole time, unreferenced,
+  which is why `.git` measured 393 MB rather than the 102 MB recorded here. Both copies are
+  now gone, deliberately.
 
 **b. `scss/` deleted — done.** 13 files, recoverable from history. Styling stays plain
 hand-authored CSS through phase 4, then dissolves into scoped component styles as sheets
@@ -951,3 +949,38 @@ recorded fields the code had been writing loosely for years, so the oracle was i
 Assume more exist in the windows still unconverted. **Every conversion should round-trip the
 fields it touches** — write the value, read it back from `toObject()` — rather than trusting the
 defaults comparison, which passes just as happily when a field cannot be stored at all.
+
+
+---
+
+## 14. The force-push — done, and a correction
+
+`origin/master` went `e70d25b` → `d2afdad7` (forced), replacing 597 commits of pre-rewrite
+history with the 606-commit rewritten one. Pushed with
+`--force-with-lease=master:e70d25b…` rather than a bare `--force`, so it would have aborted if
+the remote had moved since the check. `master` now tracks `origin/master`.
+
+**The correction.** §6a claimed `origin` was "the whole safety net" and the only recovery route,
+making the push a point of no return. That was wrong: the pre-rewrite objects were still in this
+clone the entire time — 597 commits in a 285 MB pack, unreachable from any ref but very much
+present. `filter-repo` had unlinked them, not deleted them. That is also why `.git` measured
+**393 MB** against the 102 MB this document recorded after the rewrite.
+
+So the push was reversible right up until the cleanup that followed it, which was not what
+anyone reading §6a would have believed.
+
+**Both copies are now gone, on purpose.** After confirming the remote held every commit, the
+unreachable objects were pruned:
+
+```
+git reflog expire --expire-unreachable=now --all   # current branch's reflog left intact
+git gc --prune=now
+```
+
+`.git` **393 MB → 102 MB**, one pack, `fsck` clean, all 606 commits intact. The 19 committed
+release zips are unrecoverable from git; they belong in GitHub Releases (§1.4), which is the
+whole reason they were purged.
+
+**The lesson worth keeping:** "the objects are gone" and "no ref points at the objects" are
+different claims, and this document conflated them for the entire life of the rewrite. Check
+with `git cat-file -e <sha>` before asserting either.
