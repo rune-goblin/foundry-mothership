@@ -46,7 +46,8 @@ update it as work lands.
 
 ```bash
 npm run build            # vite → dist/
-npm run setup            # (re)link Data/systems/mosh at this repo
+npm run setup            # dev install: symlink scaffold (packs are COPIED — re-run after packing)
+npm run deploy           # release rehearsal: link-free copy, same shape as the zip
 ./scripts/packs.sh pack  # packs/_source/*.json → LevelDB (close Foundry first)
 npm test                 # 97 vitest specs — the CI tier
 npm run check            # tsc over the .ts surface, then svelte-check over module/ui

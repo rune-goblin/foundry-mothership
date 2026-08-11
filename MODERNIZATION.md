@@ -315,7 +315,7 @@ lookup — small, self-contained, and a good first unit-test target in phase 2.
    `dist`, `templates`, `images`, `lang`, `data`, plus `packs/` entry-by-entry). Verified
    against a headless v14 server on port 30099: `dist/mosh.js` 200 (215,140 B),
    `dist/mosh.css` 200 (36,628 B), templates/images/lang all 200, and the retired
-   `module/mosh.js` path correctly 404s. `scripts/deploy.ts` still to do.
+   `module/mosh.js` path correctly 404s. ~~`scripts/deploy.ts` still to do~~ — **done, §16.**
 6. `_releases/` is already out of the working tree (phase 1). Purging it from *history*
    is a separate, irreversible call — see §6.
 7. ~~Pack pipeline~~ **done** — see §7.
@@ -1017,3 +1017,43 @@ attribution for a fork. The README screenshot is still hosted on the upstream re
 (`README.md:16`); it renders today but breaks if that repo goes away.
 
 `release.yml` exists and is complete, contrary to §Phase 2 item 4, which lists it as not done.
+
+
+---
+
+## 16. The dev install — `setup` and `deploy`
+
+The house pattern is two scripts, and MoSh only had one. The template's `setup` symlinks for
+live editing and its `deploy` copies a link-free install matching the release zip; MoSh had
+`setup` and nothing to rehearse a release with.
+
+`npm run deploy` now exists, ported and adapted for `systems/` rather than `modules/`. Its file
+list mirrors `release.yml`'s include-list on purpose — if the two drift, `deploy` stops being a
+rehearsal of what ships.
+
+### Symlink or copy — it is not a system/module question
+
+It is dev-versus-distribution, and both scripts exist for that reason. But two hazards do bite
+harder for a system, and both had already bitten this repo:
+
+- **Pack locks.** Foundry takes an exclusive LevelDB lock on every pack it can see and compacts
+  them in place. A module can be disabled per world; a system is inherently active in any world
+  built on it, so the lock is unavoidable. **`setup` now copies `packs/` instead of linking it**
+  — the packs are gitignored build output, and linking let a running Foundry mutate them and
+  block `packs.sh`. Cost: re-run `npm run setup` after `packs.sh pack`.
+- **Migration blast radius.** A system change can migrate a world, and a symlinked dev install
+  means an in-progress schema edit is live against real campaigns. Both scripts now warn when
+  the target data directory holds worlds, and both honour `FOUNDRY_DATA` so schema work can be
+  pointed at a scratch directory. The e2e harness already had the right instinct — it clones
+  into `test/foundry-data/` rather than touching real data.
+
+### A bug the verification caught
+
+The first `deploy` left **2 symlinks** behind. `copyFileSync` onto a path that *is* a symlink
+writes *through* it, so deploying over a `setup` install copied `system.json` and
+`template.json` back into the repo and left the "link-free" copy still pointing at the working
+tree. Fixed by `rmSync`-ing the destination first, which drops the link rather than its target.
+
+Verified end to end against a scratch data dir: `setup` → 7 symlinks + copied packs; `deploy`
+over the top → **0 symlinks**, contents matching the release include-list, no `_source`, no
+LOCK/LOG, 5 packs with `.ldb` data, and the repo untouched.

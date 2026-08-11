@@ -28,13 +28,25 @@ art, which would inline a second copy into the bundle. The two build warnings ab
 ## Dev install
 
 ```bash
-npm run setup     # rebuild Data/systems/mosh as a symlink scaffold
+npm run setup     # dev install: symlink scaffold at Data/systems/mosh
+npm run deploy    # release rehearsal: a link-free copy, same shape as the zip
 ```
 
-Creates a **real directory** whose entries symlink back to the repo — `system.json`,
-`template.json`, `dist`, `templates`, `images`, `lang`, `data`, plus `packs/` linked
-**entry by entry**. Not a whole-repo symlink: that would expose `node_modules/` and `.git`
-to the server.
+**`setup`** creates a **real directory** whose entries symlink back to the repo —
+`system.json`, `template.json`, `dist`, `templates`, `images`, `lang`, `data`. Not a
+whole-repo symlink: that would expose `node_modules/` and `.git` to the server.
+
+**`packs/` is copied, not linked.** Foundry takes an exclusive LevelDB lock on every pack it
+can see and compacts them in place, and a system — unlike a module — cannot be disabled per
+world, so the lock is unavoidable. Linking let a running Foundry mutate gitignored build
+output and block `packs.sh`. The cost is re-running `npm run setup` after `packs.sh pack`.
+
+**`deploy`** builds, then copies a link-free install matching `release.yml`'s include-list, so
+it works with the repo absent. Use it to test a release. It removes any `setup` symlink at the
+destination first — copying over one would write straight back into the working tree.
+
+Both honour `FOUNDRY_DATA` and warn when the target holds real worlds: a system is active in
+every world built on it, so in-progress schema edits migrate them.
 
 `packs/_source` is deliberately excluded — it is the JSON source, not a compendium, and
 Foundry would try to load it as one.
