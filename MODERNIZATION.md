@@ -17,7 +17,7 @@ memory. API claims below were checked in that file.
 |---|---|
 | Read first | `CLAUDE.md`, then the `foundry-mosh` skill (`.claude/skills/foundry-mosh/`) |
 | The plan | §Phase 4 below — the conversion order, one sheet at a time |
-| Verify with | `npm run check && npm test` (94 specs), `npm run test:e2e` (43 specs) |
+| Verify with | `npm run check && npm test` (97 specs), `npm run test:e2e` (53 specs) |
 | State | `master`, tree clean, **unpushed** |
 
 **Before pushing:** history was rewritten to drop 854 MB of committed release zips, so the
@@ -388,7 +388,7 @@ before the risky sheets:
 | 3 | `ship-setup`, `ship-megadamage`, `settings-rolltables` | 73 / 120 / 89 | The simple windows. All three still extend the **bare global** `FormApplication`, which CLAUDE.md forbids in new code. `ship-megadamage` also has a stale `data.` path fixed but unverified. |
 | 4 | `creature-settings.js` | 160 | **Resolve the `FIXME` first** — `_updateObject` still does not persist (see §8). Decide what should save, then convert. |
 | 5 | `class-sheet.js` | 340 | Mutates the model it renders from; converting it is what unblocks tightening the two free-form `ObjectField`s (§7). |
-| 6 | `ship-sheet.js`, `ship-sheet-sbt.js`, `creature-sheet.js`, `ship-deckplan.js` | 275 / 498 / 661 / 40 | SBT is the **default** ship sheet — check which you are looking at. **Fix the schema holes first** (§10). |
+| 6 | `ship-sheet.js`, `ship-sheet-sbt.js`, `creature-sheet.js`, `ship-deckplan.js` | 275 / 498 / 661 / 40 | SBT is the **default** ship sheet — check which you are looking at. Schema holes fixed ahead of time (§10). |
 | 7 | `actor-generator.js` | 772 | The character generator. Biggest window; drives `class-sheet` data. |
 | 8 | `actor-sheet.js` | 659 | The character sheet — highest risk, most player-visible, do it last with the most conventions in hand. |
 
@@ -418,8 +418,8 @@ before the risky sheets:
   `skills_granted_object`). Derive into local state instead; that is the precondition for
   tightening `base_adjustment`/`selected_adjustment` into real schemas.
 - **Sheets bind fields no schema declares.** A `SchemaField` silently cleans off keys it does
-  not know, so the edit is accepted and discarded. See §10 — fixed for items and pinned by a
-  spec; still open for `ship` and `creature`.
+  not know, so the edit is accepted and discarded. Twelve were found and fixed (§10);
+  `test/sheet-bindings.test.ts` now fails on the thirteenth.
 - **V2 windows carry `.application`, not `.window-app`, and are themed.** `css/mosh.css` was
   written for the V1 frame and paints `.window-app .window-content` white; without the
   matching `.application` rule a converted sheet renders dark, with the theme's light text on
@@ -720,25 +720,35 @@ Fixed by adding to `MoshArmor` and `template.json`, deliberately and in both:
 | `armor` | `equipped`, `features` | armor sheet; `_deriveCharacter`, `_deriveCreature` |
 | `module` | `cost` | module sheet |
 
-**Pinned by `test/item-sheet-bindings.test.ts`** — every `name="system.x"` an item sheet binds
-must resolve in that type's schema. It reads the Handlebars templates *and* the Svelte
-components, so it survived the conversion, and mutation-testing confirms it fails when the
-field is removed. It would have caught this on the day.
+**Pinned by `test/sheet-bindings.test.ts`** — every `name="system.x"` a sheet binds must resolve
+in that type's schema, across **all 13 types**. It reads the Handlebars templates *and* the
+Svelte components, so it survived the conversion, and mutation-testing confirms it fails when
+the field is removed. It would have caught this on the day.
 
-### Still open: the same bug on the Actor side
+Only unprefixed `name="system.…"` is checked. `armor.system.equipped` on the actor sheets
+addresses an *embedded item*, not the actor, and is driven by a click handler rather than the
+form — checking it against the actor schema would be wrong.
 
-The same audit over the actor templates finds bindings with no schema behind them. These are
-**not fixed** — each belongs to its own conversion, and some are behaviour decisions:
+### The same bug on the Actor side — also fixed
 
-| Type | Bound but not in the schema |
-|---|---|
-| `creature` | `xp.selectedSkill` |
-| `ship` | `cost`, `make`, `owed`, `transponder`, `stats.oxygen.value`, and `stats.{armor,combat,intellect,speed}.mod` |
+The same audit over the actor templates found nine more. `character` was clean. Each was
+decided rather than blanket-restored:
 
-The `.mod` keys are a different fault: `prepareDerivedData` computes them, so binding an input
-to one writes to a value that is recomputed on the next prepare. Decide per field whether it
-should be stored, derived, or dropped — then extend the bindings spec to Actor types, which is
-the first step of conversion items 4 and 6.
+| Type | Field | Verdict | Why |
+|---|---|---|---|
+| `creature` | `xp.selectedSkill` | **store** | The 1e Skill Training textarea is live on the creature sheet. `character` already had it; the creature block was a copy that lost the field. |
+| `ship` | `cost`, `owed`, `make` | **store**, as strings | The header inputs carry no `data-dtype`, so they submit strings, and `make` is a free-text "Make / Model / Jump / Class / Type" area. `2,000,000cr` is the kind of value the sheet is for. |
+| `ship` | `transponder` | **store**, boolean | Live checkbox on the **default** SBT sheet, with an Enabled/Disabled readout beside it. |
+| `ship` | `stats.{armor,combat,intellect,speed}.mod` | **store** — and on all 8 ship stats | `actor.js:1467` adds `stats[attribute].mod` to the target of *every* stat roll, for every actor type, and `_deriveShip()` is empty, so nothing recomputes it. Ship stat mods were silently ignored. Only four are exposed by `ship-sheet.html`; adding the other four closes the same latent hole rather than leaving it. |
+| `ship` | `stats.oxygen.value` | **dropped — the binding was wrong** | Ship oxygen is `supplies.oxygen.value`, which is already in the schema and is where the rest of the supplies block lives. `stats.oxygen` was a typo; adding it would have enshrined it and split O2 across two places. `ship-sheet-sbt.html` now binds the real path. |
+
+Note the earlier claim that the `.mod` keys were derived was wrong for ships: `_deriveShip()`
+has an empty body. It **is** true for `character`/`creature`, where `_deriveCharacter` overwrites
+`stats.armor.mod` with the equipped armour total on every prepare — so the armour `mod` input on
+those sheets is decorative. That is existing behaviour, not a schema hole, and is untouched.
+
+Existing ships lose nothing that still worked: `stats.oxygen` has been cleaned off every write
+since phase 3, so the O2 field on a migrated ship already reads 0.
 
 ### Two warm-up fixes that shipped alongside
 
@@ -755,9 +765,16 @@ the first step of conversion items 4 and 6.
 
 ### Verified
 
-`npm run check` (tsc + svelte-check, 0 errors, 0 warnings) · **94 vitest** · **43 Playwright**.
-The e2e tier is honest about this work: flipping `submitOnChange` to `false` fails the two
-persistence specs, and removing `equipped` from the schema fails the bindings spec.
+`npm run check` (tsc + svelte-check, 0 errors, 0 warnings) · **97 vitest** · **53 Playwright**.
+
+The tiers are honest about this work, checked by mutation rather than assumed:
+
+- flipping `submitOnChange` to `false` fails the two item-sheet persistence specs;
+- removing a field from a schema fails `sheet-bindings` for the type that binds it, on both the
+  Item and Actor halves;
+- `data-models.spec.ts` writes each restored field and reads it back, so it fails on a field
+  that exists with the right default but cannot be *stored* — which is exactly how the original
+  bug hid from the defaults assertions.
 
 Rendering was checked against the real headless Foundry, not eyeballed from the markup — which
 is how the `.application` / theming problem in §Phase 4's hazards was found and fixed.

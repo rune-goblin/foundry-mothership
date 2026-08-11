@@ -129,7 +129,7 @@ emitted `dist/mosh.css`.
   (DocumentSheetV2 only appends its own when `themed` is absent), or the sheet renders with
   light theme text on the stylesheet's light boxes.
 - **A `SchemaField` cleans off keys it does not declare.** Before porting a field, check it
-  exists in the DataModel — `test/item-sheet-bindings.test.ts` is the pattern.
+  exists in the DataModel. `test/sheet-bindings.test.ts` fails the build if it does not.
 
 ## The language itself — use Svelte's tooling
 

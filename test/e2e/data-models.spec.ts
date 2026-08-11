@@ -50,6 +50,37 @@ test.describe('created documents get the DataModel defaults', () => {
     });
   }
 
+  // The defaults assertions above pass whether or not a field can be *written*: a SchemaField
+  // cleans off keys it does not declare, so an unbacked binding round-trips as "absent" rather
+  // than failing. These are the fields the migration silently dropped -- write each one.
+  const RESTORED: Array<[kind: 'Actor' | 'Item', type: string, path: string, value: unknown]> = [
+    ['Item', 'armor', 'system.equipped', true],
+    ['Item', 'armor', 'system.features', 'sealed'],
+    ['Item', 'module', 'system.cost', 250],
+    ['Actor', 'creature', 'system.xp.selectedSkill', 'Zero-G'],
+    ['Actor', 'ship', 'system.cost', '2,000,000cr'],
+    ['Actor', 'ship', 'system.owed', '750,000cr'],
+    ['Actor', 'ship', 'system.make', 'Galloway / Class II'],
+    ['Actor', 'ship', 'system.transponder', true],
+    ['Actor', 'ship', 'system.stats.speed.mod', 5],
+    ['Actor', 'ship', 'system.supplies.oxygen.value', 12],
+  ];
+
+  for (const [kind, type, path, value] of RESTORED) {
+    test(`${kind} ${type} stores ${path}`, async ({ gmPage }) => {
+      const stored = await gmPage.evaluate(
+        async ({ k, t, p, v }: { k: string; t: string; p: string; v: unknown }) => {
+          const cls = (window as any)[k];
+          const doc = await cls.create({ name: `__e2e_${t}_${p}`, type: t });
+          await doc.update({ [p]: v });
+          return (window as any).foundry.utils.getProperty(doc.toObject(), p);
+        },
+        { k: kind, t: type, p: path, v: value },
+      );
+      expect(stored).toEqual(value);
+    });
+  }
+
   // This is the behaviour change the migration actually buys, and the one worth knowing about:
   // template.json stored whatever it was given, DataModels validate. A bad value now fails the
   // create outright -- Foundry returns undefined and surfaces the error in the UI rather than

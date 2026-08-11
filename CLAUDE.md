@@ -25,7 +25,7 @@ UI work, §10 for the conventions the item sheet settled, and update it as work 
 | Packs from JSON source, 0e removed | 28 Handlebars templates |
 | Svelte 5 wired into build, check, vitest | `firstEdition` rules toggle (55 refs) |
 | 8 item sheets on ApplicationV2 + Svelte | |
-| 94 vitest + 43 Playwright specs | |
+| 97 vitest + 53 Playwright specs | |
 
 ## Hard rules (override defaults)
 
@@ -46,9 +46,9 @@ UI work, §10 for the conventions the item sheet settled, and update it as work 
 npm run build            # vite → dist/
 npm run setup            # (re)link Data/systems/mosh at this repo
 ./scripts/packs.sh pack  # packs/_source/*.json → LevelDB (close Foundry first)
-npm test                 # 94 vitest specs — the CI tier
+npm test                 # 97 vitest specs — the CI tier
 npm run check            # tsc over the .ts surface, then svelte-check over module/ui
-npm run test:e2e         # 43 Playwright specs vs a real headless Foundry
+npm run test:e2e         # 53 Playwright specs vs a real headless Foundry
 ```
 
 A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — both `dist/` and
@@ -79,9 +79,9 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   building from any input, verify it produces what actually ships.
 - **`packs/` and `dist/` are never committed.** Sources are `packs/_source/**/*.json`.
 - **A sheet can bind a field no schema declares.** A `SchemaField` cleans off keys it does not
-  know, so the write is accepted and silently discarded — that is how the DataModel migration
-  stopped armour from equipping. `test/item-sheet-bindings.test.ts` pins this for Items; the
-  Actor side is still open (`MODERNIZATION.md` §10).
+  know, so the write is accepted and silently discarded. That is how the DataModel migration
+  stopped armour from equipping; twelve such fields were found and restored.
+  `test/sheet-bindings.test.ts` pins all 13 types. See `MODERNIZATION.md` §10.
 - **Foundry holds an exclusive LevelDB lock** on every pack it can see; `packs.sh` refuses
   to run while it is open. That guard is deliberate.
 - **A killed e2e run leaves the GM session occupied** — the next run hangs 30s then fails in

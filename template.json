@@ -162,7 +162,8 @@
       "description": "This is a description",
       "xp": {
         "value": 1,
-        "html": ""
+        "html": "",
+        "selectedSkill": ""
       },
       "stats": {
         "combat": {
@@ -226,6 +227,10 @@
       "description": "This is a description",
       "type": "",
       "class": "",
+      "cost": "",
+      "owed": "",
+      "make": "",
+      "transponder": false,
       "xp": {
         "value": 1
       },
@@ -245,6 +250,7 @@
       "stats": {
         "armor": {
           "value": 10,
+          "mod": 0,
           "min": 0,
           "max": 99,
           "label": "Armor",
@@ -252,6 +258,7 @@
         },
         "combat": {
           "value": 10,
+          "mod": 0,
           "min": 0,
           "max": 99,
           "label": "Combat",
@@ -259,6 +266,7 @@
         },
         "intellect": {
           "value": 10,
+          "mod": 0,
           "min": 0,
           "max": 99,
           "label": "Intellect",
@@ -266,6 +274,7 @@
         },
         "speed": {
           "value": 10,
+          "mod": 0,
           "min": 0,
           "max": 99,
           "label": "Speed",
@@ -273,6 +282,7 @@
         },
         "thrusters": {
           "value": 10,
+          "mod": 0,
           "min": 0,
           "max": 99,
           "label": "Thrusters",
@@ -280,6 +290,7 @@
         },
         "battle": {
           "value": 10,
+          "mod": 0,
           "min": 0,
           "max": 99,
           "label": "Battle",
@@ -287,6 +298,7 @@
         },
         "systems": {
           "value": 10,
+          "mod": 0,
           "min": 0,
           "max": 99,
           "label": "Systems",
@@ -294,6 +306,7 @@
         },
         "bankruptcy": {
           "value": 10,
+          "mod": 0,
           "min": 0,
           "max": 99,
           "label": "Bankruptcy",

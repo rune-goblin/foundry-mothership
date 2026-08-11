@@ -85,7 +85,7 @@ export class MoshCreature extends foundry.abstract.TypeDataModel {
       biography: html(''),
       notes: html(''),
       description: html('This is a description'),
-      xp: new fields.SchemaField({ value: num(1), html: str('') }),
+      xp: new fields.SchemaField({ value: num(1), html: str(''), selectedSkill: str('') }),
       stats: new fields.SchemaField({
         combat: stat(10, 'Combat', 'Combat Check', { enabled: true }),
         instinct: stat(10, 'Instinct', 'Instinct Check', { enabled: true }),
@@ -106,6 +106,12 @@ export class MoshShip extends foundry.abstract.TypeDataModel {
       description: html('This is a description'),
       type: str(''),
       class: str(''),
+      // The ship-sheet header treats these as free text, not currency: no data-dtype, and
+      // values like "2,000,000cr" are what the sheet is for.
+      cost: str(''),
+      owed: str(''),
+      make: str(''),
+      transponder: bool(false),
       xp: new fields.SchemaField({ value: num(1) }),
       images: new fields.SchemaField({
         layout: new fields.FilePathField({
@@ -124,15 +130,18 @@ export class MoshShip extends foundry.abstract.TypeDataModel {
         menu: new fields.SchemaField({ html: str('') }),
         open: bool(false),
       }),
+      // Every ship stat carries `mod`: parseRollResult's caller adds `stats[attribute].mod` to
+      // the target of any stat roll, and _deriveShip() is empty, so nothing recomputes it.
+      // Only four are exposed by ship-sheet.html today; the rest would be the same latent hole.
       stats: new fields.SchemaField({
-        armor: stat(10, 'Armor', 'Armor Save'),
-        combat: stat(10, 'Combat', 'Combat Check'),
-        intellect: stat(10, 'Intellect', 'Intellect Check'),
-        speed: stat(10, 'Speed', 'Speed Check'),
-        thrusters: stat(10, 'Thrusters', 'Thrusters Save'),
-        battle: stat(10, 'Battle', 'Battle Save'),
-        systems: stat(10, 'Systems', 'Systems Save'),
-        bankruptcy: stat(10, 'Bankruptcy', 'Bankruptcy Save'),
+        armor: stat(10, 'Armor', 'Armor Save', { mod: true }),
+        combat: stat(10, 'Combat', 'Combat Check', { mod: true }),
+        intellect: stat(10, 'Intellect', 'Intellect Check', { mod: true }),
+        speed: stat(10, 'Speed', 'Speed Check', { mod: true }),
+        thrusters: stat(10, 'Thrusters', 'Thrusters Save', { mod: true }),
+        battle: stat(10, 'Battle', 'Battle Save', { mod: true }),
+        systems: stat(10, 'Systems', 'Systems Save', { mod: true }),
+        bankruptcy: stat(10, 'Bankruptcy', 'Bankruptcy Save', { mod: true }),
       }),
       supplies: new fields.SchemaField({
         // The numeric keys are the damage thresholds the hull has already crossed.
