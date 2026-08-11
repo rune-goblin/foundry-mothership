@@ -5,7 +5,6 @@ import { fromIdUuid } from "../mosh.js";
  * @extends {ActorSheet}
  */
 import { DLShipDeckplan } from "../windows/ship-deckplan.js";
-import { DLShipMacros } from "../windows/ship-macros.js";
 import { DLShipMegaDamage } from "../windows/ship-megadamage.js";
 import { DLShipSetup } from "../windows/ship-setup.js";
 
@@ -34,14 +33,6 @@ export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
     _onOpenDeckplan(event) {
         event.preventDefault();
         new DLShipDeckplan(this.actor, {
-            top: this.position.top + 40,
-            left: this.position.left + (this.position.width - 400) / 2
-        }).render({force: true});
-    }
-
-    _onOpenMacros(event) {
-        event.preventDefault();
-        new DLShipMacros(this.actor, {
             top: this.position.top + 40,
             left: this.position.left + (this.position.width - 400) / 2
         }).render({force: true});
@@ -355,9 +346,6 @@ export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
 
         // Deckplan Button
         html.find('.deckplan-button').click(ev => this._onOpenDeckplan(ev));
-
-        //Macro Menu Button
-        html.find('.macro-menu-button').click(ev => this._onOpenMacros(ev));
 
         //Testing Setup Menu Button
         html.find('.setup-menu-button').click(ev => this._onOpenSetup(ev));

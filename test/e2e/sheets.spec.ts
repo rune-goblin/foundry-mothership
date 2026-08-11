@@ -8,7 +8,6 @@ test.describe('sheets render', () => {
     await gmPage.evaluate(async () => {
       const g = (window as any).game;
       // ui.windows holds AppV1 instances; ApplicationV2 registers in foundry.applications.instances.
-      // Closing both matters for DLShipMacros, which outlives the actor it was opened from.
       for (const app of Object.values((window as any).ui.windows ?? {}) as any[]) await app.close?.();
       for (const app of ((window as any).foundry.applications.instances?.values?.() ?? []) as any[]) {
         await app.close?.();
@@ -46,27 +45,19 @@ test.describe('sheets render', () => {
     expect(derived).toEqual({ armorMod: 0, armorTotal: 0, netHP: 20, netHPMax: 20 });
   });
 
-  // DLShipMacros extended the wrong base class (a V2 DocumentSheet configured with the AppV1
-  // contract) and never rendered correctly.
-  //
-  // Driven through the sheet's own _onOpenMacros handler rather than a click: the only trigger,
-  // `.macro-menu-button`, is commented out in ship-sheet-sbt.html:132 and appears in no other
-  // ship template, so the window has no UI route at present. The handler is the code path a
-  // restored button would run, and it needs no production change to reach.
-  test('the ship macros window renders', async ({ gmPage }) => {
-    const title = await gmPage.evaluate(async () => {
+  // The DLShipMacros popout was deleted: its four checks are all on the sheet's own Macros tab,
+  // and its only trigger had been commented out. This pins the surviving route.
+  test('the ship sheet carries the four ship checks on its macros tab', async ({ gmPage }) => {
+    const appId = await gmPage.evaluate(async () => {
       const doc = await (window as any).Actor.create({ name: '__e2e_ship_macros', type: 'ship' });
       await doc.sheet.render(true);
-      doc.sheet._onOpenMacros(new Event('click'));
-      await new Promise((r) => setTimeout(r, 1000));
-      return `${doc.name}: Ship Macros`;
+      return doc.sheet.id;
     });
 
-    const macros = gmPage.locator('.app, .application').filter({ hasText: title }).first();
-    await expect(macros).toBeVisible();
-    // The four ship checks the window exists to offer.
+    const macros = gmPage.locator(`#${appId} [data-tab="macros"]`);
     for (const button of ['.distress-button', '.maintenance-button', '.bankruptcy-button', '.morale-button']) {
       await expect(macros.locator(button)).toHaveCount(1);
     }
+    await expect(gmPage.locator(`#${appId} .deckplan-button`)).toHaveCount(1);
   });
 });
