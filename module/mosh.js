@@ -1,5 +1,6 @@
 // Import Modules
 import { compare } from "./compare.js";
+import { ITEM_MODELS } from "./data/item-models.js";
 import { MothershipActor } from "./actor/actor.js";
 import { MothershipActorSheet } from "./actor/actor-sheet.js";
 import { MothershipCreatureSheet } from "./actor/creature-sheet.js";
@@ -44,6 +45,10 @@ Hooks.once('init', async function () {
   // Define custom Entity classes
   CONFIG.Actor.documentClass = MothershipActor;
   CONFIG.Item.documentClass = MothershipItem;
+
+  // Item system data comes from DataModels; template.json still covers the Actor types
+  // until they are migrated too. A registered model takes precedence over template.json.
+  CONFIG.Item.dataModels = ITEM_MODELS;
 
 
   // Register sheet application classes
