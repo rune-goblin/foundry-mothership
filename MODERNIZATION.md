@@ -10,8 +10,8 @@ memory. API claims below were checked in that file.
 
 ## Start here
 
-**Phases 1–3, the test harness, and phase 4's step 0 + first conversion are complete.**
-**Next: `skill-sheet.js` (§Phase 4, item 2).**
+**Phases 1–3, the test harness, phase 4's step 0 + first conversion, the 0e removal and the
+schema repairs are complete.** **Next: the shared component layer (§13), then `skill-sheet.js`.**
 
 | | |
 |---|---|
@@ -878,3 +878,76 @@ Fixed by adding `swarm: { enabled, combat: { value } }` to `MoshCreature` and `t
 `name="system.…"`, and this dialog binds `name="actor.system.…"` with the real path in `id`
 instead. It could not have caught this. The durable net for dialogs is the round-trip
 assertion in `data-models.spec.ts` — write the field, read it back — not the binding scan.
+
+
+---
+
+## 13. Next — the shared component layer
+
+**Decision taken: build the component layer before converting more sheets.** Reason: the sheets
+left are the big ones (`actor-sheet` 638, `creature-sheet` 477, `ship-sheet-sbt` 566,
+`actor-generator` 306+), and they repeat the same handful of shapes hundreds of times. Converting
+them one at a time with bespoke markup writes those shapes out by hand over and over, and lets
+each conversion invent its own dialect.
+
+### The shapes, measured
+
+Counted over the 28 remaining templates with HTML comments stripped. **Use these numbers, not the
+first pass an agent produced** — that one reported 1 `textvaluewrapper` (really 18), merged
+`circle-stat`/`circle-input` into a single figure of 63 (really 8 and 52), and counted raw
+checkboxes as the `blankstat` pattern, which no longer occurs at all.
+
+| Shape | Live count | Sheets using it |
+|---|---|---|
+| `a.item-control` action links | **81** | 6 of 6 |
+| `li.item.flexrow` rows / `ol.items-list` | 52 / 24 | 6 of 6 |
+| `input.circle-input` / `div.circle-statwrapper` | 52 / 18 | 4 |
+| `div.tab[data-tab]` / `a.tab-select` / `nav.sheet-tabs` | 33 / 32 / 6 | 6 of 6 |
+| `.dropitem` drop zones | 29 | 6 of 6 |
+| `.rollable` stat labels (`data-key`/`data-roll`/`data-label`) | 26 | 3 |
+| `.textvaluewrapper` / `.valuewrapper` | 18 / 3 | 4 |
+
+So the build order is **ItemList + ItemRow + ItemControls** first (by far the biggest win, and
+universal), then **CircleStat** (concentrated in `ship-sheet-sbt`), then **Tabs** and **DropZone**.
+`Field`, `CheckField`, `Editor` and `SheetHeader` already exist in `module/ui/item/parts/` and
+cover the rest; they will want promoting out of `item/` when a second sheet family uses them.
+
+### How components relate to `css/mosh.css` — decided
+
+**Hybrid.** Primitives keep the existing global class names, exactly as the item sheets do now, so
+a conversion carries no visual risk. New layout goes in scoped `<style>` blocks. `css/mosh.css`
+shrinks only where a component fully owns a shape.
+
+Rejected: dismantling the 247-selector stylesheet into scoped styles as sheets convert. That is a
+styling project with real visual risk attached to every conversion, and it would need screenshot
+verification per component. Revisit once the component set is stable — CLAUDE.md's "styles move
+into scoped `<style>` blocks" is the long-term aim, not the next step.
+
+### How to run the remaining conversions
+
+Delegate a whole conversion per agent, then review the diff and run the tiers yourself. Three
+things constrain it:
+
+- **e2e cannot run in parallel.** One Foundry, one GM session, `workers: 1`. Two agents running
+  `test:e2e` hang each other. Agents can self-run `check` / `vitest` / `build` — those are fast
+  and parallel-safe — but the e2e tier is the reviewer's job, per merge rather than once at the end.
+- **`module/mosh.js` is shared.** Every conversion re-registers a sheet there. Give agents
+  `isolation: "worktree"` and wire the registrations up on merge.
+- **They are not independent units.** `module/item/item-sheet.js` is the base class for *both*
+  `skill-sheet.js` and `class-sheet.js`, so it can only be deleted once both convert.
+  `actor-generator.js` drives `class-sheet` data.
+
+`ship-setup`, `ship-megadamage`, `settings-rolltables` and `skill-sheet` are genuinely mechanical.
+`class-sheet` (mutates the model it renders from), `actor-generator` and `actor-sheet` are not —
+do those one at a time with the most conventions in hand.
+
+### One pattern to expect
+
+**Three schema holes of the same shape turned up in three consecutive pieces of work** — armour
+`equipped` (§10), nine ship/creature fields (§10), and creature `swarm` (§12). Phase 3 migrated
+schemas type-by-type against `template.json` as the oracle, but `template.json` itself never
+recorded fields the code had been writing loosely for years, so the oracle was incomplete.
+
+Assume more exist in the windows still unconverted. **Every conversion should round-trip the
+fields it touches** — write the value, read it back from `toObject()` — rather than trusting the
+defaults comparison, which passes just as happily when a field cannot be stored at all.

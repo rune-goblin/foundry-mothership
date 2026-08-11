@@ -16,7 +16,8 @@ Code style: global `~/.claude/CLAUDE.md` — comment only the non-obvious *why*.
 Modernization from a dead gulp build to the runegoblin baseline. **Phases 1–3, the test
 harness, and phase 4's step 0 + first conversion are done; `skill-sheet.js` is next.**
 `MODERNIZATION.md` is the living plan — read its status header and §Phase 4 before starting
-UI work, §10 for the conventions the item sheet settled, and update it as work lands.
+UI work, §10 for the conventions the item sheet settled, §13 for what is next and why, and
+update it as work lands.
 
 | Done | Not done |
 |---|---|
