@@ -21,9 +21,8 @@ schema repairs are complete.** **Next: the shared component layer (§13), then `
 | State | `master`, tree clean, **unpushed** |
 
 **Pushed.** The rewritten history is live on `origin/master` (§14) and `master` tracks it, so
-`git push` and `git pull` work bare. The pre-rewrite history is gone. Still outstanding: the
-manifest `url`/`manifest`/`download` point at the `Futil` upstream (§5), and that repo is
-public.
+`git push` and `git pull` work bare. The pre-rewrite history is gone. The manifest URLs now
+point at `rune-goblin` (§15).
 
 Everything below is the audit and the record of what landed, newest phases at §7–§9.
 
@@ -444,9 +443,9 @@ file.
 ## 5. Risks and open questions
 
 - **Upstream relationship.** This is a fork of `Futil/foundry-mothership`. A rewrite of
-  this scope makes merging upstream fixes impractical. Decide deliberately whether this
-  becomes a hard fork; if so, say so in the README and change the manifest URLs (they
-  currently point at `Futil/foundry-mothership` releases).
+  this scope makes merging upstream fixes impractical. The manifest URLs are repointed
+  (§15); what remains is the *stated* position — say in the README whether this is a hard
+  fork. `authors` still credits the upstream authors, deliberately.
 - **Foundry typings quality.** Item 3 in §3. Generic v14 typings are less mature than the
   PF2e-specific package the template uses. Do not let type coverage block phase 1–2 —
   `checkJs: false` sidesteps it entirely until phase 5.
@@ -984,3 +983,37 @@ whole reason they were purged.
 **The lesson worth keeping:** "the objects are gone" and "no ref points at the objects" are
 different claims, and this document conflated them for the entire life of the rewrite. Check
 with `git cat-file -e <sha>` before asserting either.
+
+
+---
+
+## 15. The manifest — repointed
+
+`system.json` advertised the upstream fork, so a system installed from it would have taken its
+updates and downloads from `Futil/foundry-mothership`:
+
+| Field | Was | Now |
+|---|---|---|
+| `url` | `github.com/Futil/foundry-mothership` | `github.com/rune-goblin/foundry-mothership` |
+| `manifest` | `raw.githubusercontent.com/Futil/…/0.6.1/system.json` | `…/rune-goblin/…/releases/latest/download/system.json` |
+| `download` | `…/Futil/…/releases/download/0.6.1/foundry-mothership.zip` | `…/rune-goblin/…/releases/download/v0.6.1/mosh.zip` |
+
+Two things beyond the owner change:
+
+- **`manifest` must be version-independent.** It pointed at a tag, so Foundry re-fetching it
+  would forever see 0.6.1 and never offer an update. It now points at `/releases/latest`, which
+  `release.yml` feeds by attaching `system.json` to every release.
+- **`download` is version-*specific*, and is now stamped by CI.** The workflow already stamped
+  `.version` from the tag but left `download` hardcoded — so the next release would have shipped
+  a manifest pointing at the previous release's zip. That is exactly how the URL came to be
+  stale at 0.6.1 in the first place, so the fix is in `release.yml`, not just in the file. Also
+  corrected: the zip is `mosh.zip`, not `foundry-mothership.zip`.
+
+Dry-run of the stamp step against a hypothetical `v0.7.0` tag produces
+`download …/releases/download/v0.7.0/mosh.zip` with `manifest` untouched.
+
+**Not changed, on purpose:** `authors` still credits Futilrevenge and hollowphoton — correct
+attribution for a fork. The README screenshot is still hosted on the upstream repo's asset CDN
+(`README.md:16`); it renders today but breaks if that repo goes away.
+
+`release.yml` exists and is complete, contrary to §Phase 2 item 4, which lists it as not done.

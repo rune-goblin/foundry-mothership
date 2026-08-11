@@ -71,8 +71,9 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
 - **New UI lives in `module/ui/`** — an ApplicationV2 shell per window plus Svelte 5
   components (runes mode is forced on). `MODERNIZATION.md` §10 has the conventions: the
   document stays the source of truth, Foundry persists the form, mount once.
-- Manifest `url`/`manifest`/`download` still point at the `Futil` upstream while `origin` is
-  `rune-goblin`. **Fix before releasing.**
+- **Manifest URLs point at `rune-goblin`** (`MODERNIZATION.md` §15). `manifest` must stay on
+  `/releases/latest` or Foundry can never detect an update; `download` is version-specific and
+  is stamped by `release.yml` from the tag — don't hardcode it.
 
 ## Gotchas
 
