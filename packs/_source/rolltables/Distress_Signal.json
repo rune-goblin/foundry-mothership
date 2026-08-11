@@ -1,0 +1,159 @@
+{
+  "_id": "UxAjAqUTjYTcCbS8",
+  "name": "Distress Signal",
+  "img": "systems/mosh/images/icons/ui/rolltables/distress_signal.png",
+  "description": "<p>Occasionally you may need to put your ship on emergency power, seal yourselves in cryopods, send out a Distress Signal, and wait for help. It’s a long shot, but sometimes it’s the only shot you’ve got. When this happens, roll on this table.</p>",
+  "formula": "1d10-1",
+  "replacement": true,
+  "displayRoll": true,
+  "results": [
+    {
+      "_id": "4W0riCssZ2SEzGLe",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/distress_signal.png",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>[[2D10]] WEEKS.</strong> You’re one of the lucky ones.",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!UxAjAqUTjYTcCbS8.4W0riCssZ2SEzGLe"
+    },
+    {
+      "_id": "tG7DvLzk0nIDsGxH",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/distress_signal.png",
+      "weight": 1,
+      "range": [
+        1,
+        2
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>[[2D10]] MONTHS.</strong> Note to self: Remember to review Company policy on backpay in the event of a cryoemergency.",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!UxAjAqUTjYTcCbS8.tG7DvLzk0nIDsGxH"
+    },
+    {
+      "_id": "Bx4dP1VaEfohIdO9",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/distress_signal.png",
+      "weight": 1,
+      "range": [
+        3,
+        4
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>[[2D10]] YEARS.</strong> Make a Body Save or lose 1d5 to all Stats and Saves.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.X3gqTFFwMe7AudiS]{Body Save}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.SeMStXQGIaeiLwvw]{-1d5 All Stats/Saves}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!UxAjAqUTjYTcCbS8.Bx4dP1VaEfohIdO9"
+    },
+    {
+      "_id": "K9MvgxDKYTflPZDl",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/distress_signal.png",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>[[2D10]] DECADES.</strong> Make a Body Save [-] or lose 1d10 to all Stats and Saves.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.ItHLy3URKFQVLipe]{Body Save [-]}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.2MuANcdgp2g8SDlF]{-1d10 All Stats/Saves}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!UxAjAqUTjYTcCbS8.K9MvgxDKYTflPZDl"
+    },
+    {
+      "_id": "rFLMF0FIuJOK582Z",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/distress_signal.png",
+      "weight": 1,
+      "range": [
+        6,
+        9
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>NEVER.</strong> The ship floats endlessly in the all consuming void of space. Thanks for playing Mothership.",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!UxAjAqUTjYTcCbS8.rFLMF0FIuJOK582Z"
+    }
+  ],
+  "_stats": {
+    "systemId": "mosh",
+    "systemVersion": "0.4.0",
+    "coreVersion": "13.348",
+    "createdTime": 1685936572185,
+    "modifiedTime": 1693515520278,
+    "lastModifiedBy": "6EeM38DJkcBWNAmw",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "folder": null,
+  "sort": 0,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_key": "!tables!UxAjAqUTjYTcCbS8"
+}

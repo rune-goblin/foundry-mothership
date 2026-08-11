@@ -1,0 +1,33 @@
+{
+  "_id": "pe7ChrErjX6N57VP",
+  "name": "Ethical Directive Failure",
+  "type": "condition",
+  "img": "systems/mosh/images/icons/ui/conditions/moral_compass.png",
+  "system": {
+    "description": "<p>You now lose half the Calm <em>(rounded up)</em> you normally would from all sources but you now have the Panic Effect of a Marine, in addition to that of an Android.</p>",
+    "severity": 1,
+    "treatment": {
+      "value": 0,
+      "html": ""
+    }
+  },
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 0,
+  "_stats": {
+    "systemId": "mosh",
+    "systemVersion": "0.4.0",
+    "coreVersion": "13.348",
+    "createdTime": 1685936572185,
+    "modifiedTime": 1693515520278,
+    "lastModifiedBy": "6EeM38DJkcBWNAmw",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_key": "!items!pe7ChrErjX6N57VP"
+}

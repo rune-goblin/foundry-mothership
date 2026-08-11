@@ -1,0 +1,33 @@
+{
+  "_id": "pxtF1NfletmoFFGV",
+  "name": "Bleeding",
+  "type": "condition",
+  "img": "systems/mosh/images/icons/ui/conditions/bleeding.png",
+  "system": {
+    "description": "<p>Some weapons or Wounds cause you to <strong>Bleed</strong>. This means you take <strong>1 Damage every round until the bleeding is stopped.</strong> This is cumulative. If a character is bleeding 1 Damage per round and gains <strong>Bleeding +1,</strong> they now take 2 Damage per round. Bleeding damage ignores armor and damage reduction.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.aur5HWqZJNspwdCd]{Take Bleeding Damage}</p>",
+    "severity": 1,
+    "treatment": {
+      "value": 0,
+      "html": ""
+    }
+  },
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 0,
+  "_stats": {
+    "systemId": "mosh",
+    "systemVersion": "0.4.0",
+    "coreVersion": "13.348",
+    "createdTime": 1685936572185,
+    "modifiedTime": 1693515520278,
+    "lastModifiedBy": "6EeM38DJkcBWNAmw",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_key": "!items!pxtF1NfletmoFFGV"
+}

@@ -1,0 +1,33 @@
+{
+  "_id": "acxtiC0oGwQloAwj",
+  "name": "Corrosive Atmosphere",
+  "type": "condition",
+  "img": "systems/mosh/images/icons/ui/conditions/corrosive_atmosphere.png",
+  "system": {
+    "description": "<p>Planets with Corrosive atmospheres require special gear to explore, otherwise there is the risk of harm or even death.<br><br>The planet’s atmosphere is deadly and destructive. It deals Damage every round while on it. <strong>This ranges from 1 DMG / round <em>(Mildly Corrosive)</em> to 10 DMG / round <em>(Highly Corrosive)</em>.</strong> Anything higher is simply impossible to safely traverse without specialized equipment and armor.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.vwpxRBbMwjfDCQVG]{-1 Health}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.C9iTlPOpROuuYi2F]{-10 Health}</p>",
+    "severity": 1,
+    "treatment": {
+      "value": 0,
+      "html": ""
+    }
+  },
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 0,
+  "_stats": {
+    "systemId": "mosh",
+    "systemVersion": "0.4.0",
+    "coreVersion": "13.348",
+    "createdTime": 1685936572185,
+    "modifiedTime": 1693515520278,
+    "lastModifiedBy": "6EeM38DJkcBWNAmw",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_key": "!items!acxtiC0oGwQloAwj"
+}

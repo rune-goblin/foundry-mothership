@@ -1,0 +1,26 @@
+{
+  "_id": "yYujq1tBZPqGrQlh",
+  "name": "-1d5 Maximum Health",
+  "type": "script",
+  "scope": "global",
+  "img": "icons/svg/d10-grey.svg",
+  "command": "game.mosh.initModifyActor('system.health.max',null,'-1d5',true);",
+  "folder": null,
+  "flags": {},
+  "_stats": {
+    "systemId": "mosh",
+    "systemVersion": "0.4.0",
+    "coreVersion": "13.348",
+    "createdTime": 1685936572185,
+    "modifiedTime": 1693515520278,
+    "lastModifiedBy": "6EeM38DJkcBWNAmw",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "sort": 0,
+  "ownership": {
+    "default": 0
+  },
+  "_key": "!macros!yYujq1tBZPqGrQlh"
+}

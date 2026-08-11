@@ -14,7 +14,7 @@
       "name": "conditions_1e",
       "label": "Conditions (1e)",
       "system": "mosh",
-      "path": "packs/conditions_1e.db",
+      "path": "packs/conditions_1e",
       "type": "Item",
       "flags": {},
       "ownership": {
@@ -26,7 +26,7 @@
       "name": "items_maintenance_1e",
       "label": "Maintenance Issues (1e)",
       "system": "mosh",
-      "path": "packs/items_maintenance_1e.db",
+      "path": "packs/items_maintenance_1e",
       "type": "Item",
       "flags": {},
       "ownership": {
@@ -38,7 +38,7 @@
       "name": "macros_hotbar_1e",
       "label": "Hotbar Macros (1e)",
       "system": "mosh",
-      "path": "packs/macros_hotbar_1e.db",
+      "path": "packs/macros_hotbar_1e",
       "type": "Macro",
       "flags": {},
       "ownership": {
@@ -50,7 +50,7 @@
       "name": "macros_triggered_1e",
       "label": "Triggered Macros (1e)",
       "system": "mosh",
-      "path": "packs/macros_triggered_1e.db",
+      "path": "packs/macros_triggered_1e",
       "type": "Macro",
       "flags": {},
       "ownership": {
@@ -62,55 +62,7 @@
       "name": "rolltables_1e",
       "label": "Rolltables (1e)",
       "system": "mosh",
-      "path": "packs/rolltables_1e.db",
-      "type": "RollTable",
-      "flags": {},
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "conditions_0e",
-      "label": "Conditions (0e)",
-      "system": "mosh",
-      "path": "packs/conditions_0e.db",
-      "type": "Item",
-      "flags": {},
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "macros_hotbar_0e",
-      "label": "Hotbar Macros (0e)",
-      "system": "mosh",
-      "path": "packs/macros_hotbar_0e.db",
-      "type": "Macro",
-      "flags": {},
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "macros_triggered_0e",
-      "label": "Triggered Macros (0e)",
-      "system": "mosh",
-      "path": "packs/macros_triggered_0e.db",
-      "type": "Macro",
-      "flags": {},
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "rolltables_0e",
-      "label": "Rolltables (0e)",
-      "system": "mosh",
-      "path": "packs/rolltables_0e.db",
+      "path": "packs/rolltables_1e",
       "type": "RollTable",
       "flags": {},
       "ownership": {

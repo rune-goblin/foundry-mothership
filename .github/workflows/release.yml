@@ -1,0 +1,77 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Stamp version into system.json
+        run: |
+          jq --arg v "${{ steps.version.outputs.version }}" '.version = $v' system.json > system.tmp.json
+          mv system.tmp.json system.json
+
+      - run: npm ci
+
+      - name: Build bundle
+        run: npm run build
+
+      # packs/ is gitignored: the LevelDB compendiums are built from the JSON in
+      # packs/_source/ so the repo holds only reviewable text.
+      - name: Build compendium packs
+        run: ./scripts/packs.sh pack
+
+      # An include-list, not an exclude-list: the repo carries build tooling, JS
+      # sources and dev docs that must never ship, and a new one appearing should
+      # not silently end up in the zip.
+      - name: Build zip
+        run: |
+          zip -r mosh.zip \
+            system.json template.json LICENSE.txt README.md \
+            dist packs lang templates images data \
+            -x "packs/_source/*" -x "packs/*/LOCK" -x "packs/*/LOG" \
+            -x "packs/*/LOG.old" -x "packs/*/*.log"
+
+      # A pack missing its .ldb, CURRENT or MANIFEST opens as an empty database
+      # rather than failing, so an incomplete build would ship as a system that
+      # installs cleanly and contains nothing.
+      - name: Verify the zip carries every pack
+        run: |
+          expected=$(ls -d packs/_source/*/ | wc -l)
+          listing=$(unzip -l mosh.zip)
+          for f in ldb CURRENT MANIFEST; do
+            got=$(printf '%s\n' "$listing" | grep -c "packs/[^_][^/]*/.*$f" || true)
+            [ "$got" -ge "$expected" ] || { echo "::error::expected $expected packs to carry $f, found $got"; exit 1; }
+          done
+          if printf '%s\n' "$listing" | grep -q "_source"; then
+            echo "::error::sources leaked into the zip"; exit 1
+          fi
+          if ! printf '%s\n' "$listing" | grep -q "dist/mosh.js"; then
+            echo "::error::the built esmodule is missing from the zip"; exit 1
+          fi
+          echo "$expected packs present with data, index and manifest"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            mosh.zip
+            system.json
+          generate_release_notes: true

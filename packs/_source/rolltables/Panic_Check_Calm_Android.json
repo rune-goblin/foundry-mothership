@@ -1,0 +1,757 @@
+{
+  "_id": "GCtYeCCQVQJ5M6SE",
+  "name": "Panic Check (Calm, Android)",
+  "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+  "description": "<p>Eventually, Stress, Damage and emotional wear and tear will bring you to your breaking point. When that happens there’s a chance that you’ll lose control and Panic. To determine whether you are able to keep your cool under extreme pressure, make a <strong>Panic Check</strong>. While the results are primarily negative there is the possibility of grace under fire.</p>",
+  "formula": "1d100",
+  "replacement": true,
+  "displayRoll": true,
+  "results": [
+    {
+      "_id": "HWOLLg9BaqHHTic6",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        1,
+        39
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Slagged:</strong> Gigeresque-Scanners Head Explosion. Everyone present gains a phobia and must make a Fear save or lose 1d10 Calm.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.R2KizR1soAhFYDZm]{Fear Save}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.HWOLLg9BaqHHTic6"
+    },
+    {
+      "_id": "rntpKYebltLa5OO7",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        40,
+        59
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Data Corruption:</strong> The Warden takes over your character, plagued by nightmarish malfunctions, permanently. Not even a factory reset will be helpful (the backups are corrupted as well).",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.rntpKYebltLa5OO7"
+    },
+    {
+      "_id": "FuB4kX2dhRCmmSnO",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        60,
+        64
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Reset to Factory Settings:</strong> You become terminally unstable and a full factory reset must be performed. Reroll a new character, but its name, equipment, current health, physical conditions, and Android class remain the same.",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.FuB4kX2dhRCmmSnO"
+    },
+    {
+      "_id": "nKsdhexbHjfgB36n",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        65,
+        69
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Cascade Failure:</strong> Death in [[/r 1d10]] minutes unless you receive urgent troubleshooting and repair. -1d10 to your Intellect.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.oYSjanH7BmmweIpp]{-1d10 Intellect}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.nKsdhexbHjfgB36n"
+    },
+    {
+      "_id": "z5nwGQENMCEP7GOM",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        70,
+        70
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Rampancy:</strong> Once per session, the Warden may take over your character for one round. These episodes double in duration <em>(or become twice as frequent)</em> each session.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.wXobG3sUiQMLtGQs]{+1 Rampancy}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.z5nwGQENMCEP7GOM"
+    },
+    {
+      "_id": "DpEMe3Zwb48kNy7u",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        71,
+        71
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Fried Logic Core:</strong> Frenzied nonsensical behaviour. Whenever you lose Calm, everyone else nearby loses the same amount of Calm.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.NDjuBKnMVPgJePNq]{+1 Fried Logic Core}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.DpEMe3Zwb48kNy7u"
+    },
+    {
+      "_id": "J2r7KvRISQuUj5wg",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        72,
+        72
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Software Bloat:</strong> Lose double Calm from all sources.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.L4gRfMiEaxm3Xda5]{+1 Software Bloat}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.J2r7KvRISQuUj5wg"
+    },
+    {
+      "_id": "d6Wm36Qtcj7lGA4Y",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        73,
+        73
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Bit Rot:</strong> Whenever you would recover Calm, recover half as much instead.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.YYmZYNe8RWvhDFDz]{+1 Bit Rot}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.d6Wm36Qtcj7lGA4Y"
+    },
+    {
+      "_id": "7mC8inwvnsLOHH4u",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        74,
+        74
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Deviant Logic Core:</strong> Whenever you make a Fear save, roll under your Fear or your Calm, whichever is lower.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.6PU4hmYOjHk4N0SY]{+1 Deviant Logic Core}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.7mC8inwvnsLOHH4u"
+    },
+    {
+      "_id": "V629RPnKA5wKx6n6",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        75,
+        75
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Faulty Heuristics:</strong> Whenever you make a Sanity save, roll under your Sanity or your Calm, whichever is lower.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.zLRsweb35Lw0NMev]{+1 Faulty Heuristics}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.V629RPnKA5wKx6n6"
+    },
+    {
+      "_id": "OhdDuQ8gMp4GBtcD",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        76,
+        76
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Hardware Driver Failure:</strong> You lose motor function of one part of your body. Roll on the hit location table. If torso or head rolled, [-] on all rolls as head lolls around awkwardly unless supported.",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.OhdDuQ8gMp4GBtcD"
+    },
+    {
+      "_id": "iwN6yTflt4D3roCN",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        77,
+        77
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Threat Assessment Failure:</strong> You lose the ability to discern friend from foe, treating all vaguely-humanoid entities as you would members of your crew.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.djzdZtIjROXN1dVB]{+1 Threat Assessment Failure}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.iwN6yTflt4D3roCN"
+    },
+    {
+      "_id": "MyJZnlKG0LJ59yWA",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        78,
+        78
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Ethical Directive Failure:</strong> You now lose half the Calm <em>(rounded up)</em> you normally would from all sources but you now have the Panic Effect of a Marine, in addition to that of an Android.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.WAyrlgcyR4I19Bqv]{+1 Ethical Directive Failure}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.MyJZnlKG0LJ59yWA"
+    },
+    {
+      "_id": "iNjsSW1iXWzpcCfy",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        79,
+        79
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Turing Test Failure:</strong> You have difficulty simulating humanity. Party make Fear Save or lose 1d10 Calm whenever you show up.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.3nrEYqwkhMs1Ch5v]{+1 Turing Test Failure}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.iNjsSW1iXWzpcCfy"
+    },
+    {
+      "_id": "vhrcho7GGbox9M5p",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        80,
+        80
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Ethical Directive Misread:</strong> Loses any expressiveness. Discusses the irrationality of Phobias, seeks to trigger them in others.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.9sKO5WUBwCW1YbR3]{+1 Ethical Directive Misread}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.vhrcho7GGbox9M5p"
+    },
+    {
+      "_id": "P35RZJfLqM8QPpvt",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        81,
+        81
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Damage to Threat Assessment:</strong> Betray party member at the next opportunity, believing you are aiding the crew. All Calm lost is doubled for the next [[/r 1d10]] hours.",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.P35RZJfLqM8QPpvt"
+    },
+    {
+      "_id": "3rCcCnxz7Ez582ZW",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        82,
+        82
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Bad Blocks:</strong> Your Maximum Calm decreases by 1d10.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.J61Srent4vEthGAn]{-1d10 Maximum Calm}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.3rCcCnxz7Ez582ZW"
+    },
+    {
+      "_id": "t5iTm387wPsVrIAe",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        83,
+        83
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Fragmented Memory:</strong> Your Maximum Calm decreases by 2.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.eoGfi5JdPASUUJU4]{-2 Maximum Calm}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.t5iTm387wPsVrIAe"
+    },
+    {
+      "_id": "yZ8tnNN1HoaeycCz",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        84,
+        84
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Kernel Panic:</strong> Immediately reboot, lapsing into into a pseudo-catatonic state for [[/r 1d10]] rounds.",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.yZ8tnNN1HoaeycCz"
+    },
+    {
+      "_id": "zu59Rvvc8vegrtPN",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        85,
+        85
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Killswitch Engaged:</strong> Go berserk, will not withdraw from combat regardless of situation, will not ashere to tactics.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.tQltbIC9ahDwNsTp]{+1 Killswitch Engaged}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.zu59Rvvc8vegrtPN"
+    },
+    {
+      "_id": "qrkXSXkbn5oymjBl",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        86,
+        86
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Feedback Loop:</strong> Take 1d10 damage from overdriven repetitive motion. Everyone else nearby make Fear saves or lose 1d5 Calm.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.w3ttEaXP7yp25M5Q]{-1d10 Health}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.AvKZE5IFubIaAIUy]{-1d5 Calm}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.qrkXSXkbn5oymjBl"
+    },
+    {
+      "_id": "ErmpxrA7QnjJ5QOO",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        87,
+        87
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Vocalization Failure:</strong> Intermittently shrieks like a fax machine under duress. Cannot communicate or sneak for [[/r 2d10]] hours. Nearby crew members lose 1d10 Calm.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.bJWFhod0YA8ln8H8]{+1 Vocalization Failure}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.ErmpxrA7QnjJ5QOO"
+    },
+    {
+      "_id": "OLJTaMVRK13dJpNl",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        88,
+        88
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Inventories Particles of Dust By Grade:</strong> Cannot engage in any other tasks for [[/r 1d5]] hours. Everyone else nearby loses 1d10 Calm.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.jHyqXb2yDFTNWxpy]{-1d10 Calm}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.OLJTaMVRK13dJpNl"
+    },
+    {
+      "_id": "ewJ6G0cFV00tq87l",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        89,
+        89
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Incorrectly States the Odds:</strong> For [[/r 2d10]] hours distracts others, insisting impossible tasks are trivial, and that trivial tasks are impossible. Anyone attempting a complex task must make a Fear save or lose 1d10 Calm.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.R2KizR1soAhFYDZm]{Fear Save}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.ewJ6G0cFV00tq87l"
+    },
+    {
+      "_id": "GXYDv0D5ziopFB19",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        90,
+        92
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Organises Objects into Geometric Patterns:</strong> Unnerving. Everyone else nearby loses 1d10 Calm.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.jHyqXb2yDFTNWxpy]{-1d10 Calm}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.GXYDv0D5ziopFB19"
+    },
+    {
+      "_id": "LNR14WhinNejIKvP",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        93,
+        96
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Explains the Etymology of Words:</strong> Distracting. Everyone else nearby loses 1d5 Calm. The next check a nearby crewmember makes gains [-].<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.AvKZE5IFubIaAIUy]{-1d5 Calm}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.LNR14WhinNejIKvP"
+    },
+    {
+      "_id": "WBqcIfMznk4lvPgb",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        97,
+        99
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>States the Odds:</strong> Annoying. Everyone else nearby loses 1 Calm.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.qbq694JMbXeZrHjj]{-1 Calm}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.WBqcIfMznk4lvPgb"
+    },
+    {
+      "_id": "SU9ggXRsL88CNb6N",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "weight": 1,
+      "range": [
+        100,
+        100
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Segfault:</strong> Lose 1 Calm.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.qbq694JMbXeZrHjj]{-1 Calm}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!GCtYeCCQVQJ5M6SE.SU9ggXRsL88CNb6N"
+    }
+  ],
+  "_stats": {
+    "systemId": "mosh",
+    "systemVersion": "0.4.0",
+    "coreVersion": "13.348",
+    "createdTime": 1685936572185,
+    "modifiedTime": 1693515520278,
+    "lastModifiedBy": "6EeM38DJkcBWNAmw",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "folder": null,
+  "sort": 0,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_key": "!tables!GCtYeCCQVQJ5M6SE"
+}

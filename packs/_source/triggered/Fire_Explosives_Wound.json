@@ -1,0 +1,26 @@
+{
+  "_id": "bZi1qKmcKLFvnhZ2",
+  "name": "Fire & Explosives Wound",
+  "type": "script",
+  "scope": "global",
+  "img": "icons/svg/d10-grey.svg",
+  "command": "game.mosh.initRollTable(game.settings.get('mosh','table1eWoundFireExplosives'),`1d10`,`low`,true,false,null,null);",
+  "folder": null,
+  "flags": {},
+  "_stats": {
+    "systemId": "mosh",
+    "systemVersion": "0.4.0",
+    "coreVersion": "13.348",
+    "createdTime": 1685936572185,
+    "modifiedTime": 1693515520278,
+    "lastModifiedBy": "6EeM38DJkcBWNAmw",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "sort": 0,
+  "ownership": {
+    "default": 0
+  },
+  "_key": "!macros!bZi1qKmcKLFvnhZ2"
+}

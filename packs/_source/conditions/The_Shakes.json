@@ -1,0 +1,33 @@
+{
+  "_id": "d3KlY4zMdD1j3CTW",
+  "name": "The Shakes",
+  "type": "condition",
+  "img": "systems/mosh/images/icons/ui/conditions/the_shakes.png",
+  "system": {
+    "description": "<p>You can’t keep your hands steady any more. Disadvantage on ranged attacks and all tasks requiring fine motor skills. Drugs may be able to help with this.</p>",
+    "severity": 1,
+    "treatment": {
+      "value": 0,
+      "html": ""
+    }
+  },
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 0,
+  "_stats": {
+    "systemId": "mosh",
+    "systemVersion": "0.4.0",
+    "coreVersion": "13.348",
+    "createdTime": 1685936572185,
+    "modifiedTime": 1693515520278,
+    "lastModifiedBy": "6EeM38DJkcBWNAmw",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_key": "!items!d3KlY4zMdD1j3CTW"
+}

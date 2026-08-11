@@ -1,0 +1,289 @@
+{
+  "_id": "31YibfjueXuZdNLb",
+  "name": "Blunt Force Wound",
+  "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+  "description": "<p>Whenever you gain a Blunt Force Wound, roll on this table to determine the effect. <strong>Flesh Wounds</strong> are small inconveniences. <strong>Minor/Major Injuries</strong> cause lasting issues which require medical treatment. <strong>Lethal Injuries</strong> can kill you if not dealt with immediately. <strong>Fatal Injuries</strong> can kill outright. <strong>Bleeding</strong> wounds, if not treated can quickly overwhelm you.</p>",
+  "formula": "1d10-1",
+  "replacement": true,
+  "displayRoll": true,
+  "results": [
+    {
+      "_id": "kGDBRdD9azQLJRDl",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Flesh Wound:</strong> Knocked down.",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!31YibfjueXuZdNLb.kGDBRdD9azQLJRDl"
+    },
+    {
+      "_id": "mYsLkuttsbN0PPzE",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Minor Injury:</strong> Winded. [-] until you catch your breath.",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!31YibfjueXuZdNLb.mYsLkuttsbN0PPzE"
+    },
+    {
+      "_id": "RnmOw1OvhVaYQsJV",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Minor Injury:</strong> Sprained Ankle. [-] on Speed Checks.",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!31YibfjueXuZdNLb.RnmOw1OvhVaYQsJV"
+    },
+    {
+      "_id": "rCPAVwvuRI5PDapO",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Minor Injury:</strong> Concussion. [-] on mental tasks.",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!31YibfjueXuZdNLb.rCPAVwvuRI5PDapO"
+    },
+    {
+      "_id": "gYfGKit1I8vIlXas",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Minor Injury:</strong> Leg or foot broken. [-] on Speed Checks.",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!31YibfjueXuZdNLb.gYfGKit1I8vIlXas"
+    },
+    {
+      "_id": "Xvo8mQoXzQb18gms",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Major Injury:</strong> Arm or hand broken. [-] on manual tasks.",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!31YibfjueXuZdNLb.Xvo8mQoXzQb18gms"
+    },
+    {
+      "_id": "AiacUbJlw1slbsW3",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Major Injury:</strong> Snapped collarbone. [-] on Strength Checks.",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!31YibfjueXuZdNLb.AiacUbJlw1slbsW3"
+    },
+    {
+      "_id": "bxD3uLX6GcVG7kwG",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Lethal Injury:</strong> Back broken. [-] on all rolls. Death Save in [[/r 1d10]] rounds.",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!31YibfjueXuZdNLb.bxD3uLX6GcVG7kwG"
+    },
+    {
+      "_id": "5WHDRIu6o2xp1Vml",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Lethal Injury:</strong> Skull cracked. [-] on all rolls. Death Save in [[/r 1d10]] rounds.",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!31YibfjueXuZdNLb.5WHDRIu6o2xp1Vml"
+    },
+    {
+      "_id": "NzrMxLpPo52Ayoq7",
+      "type": "text",
+      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "_stats": {
+        "coreVersion": "13.348",
+        "systemId": null,
+        "systemVersion": null,
+        "createdTime": null,
+        "modifiedTime": null,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "description": "<strong>Fatal Injury:</strong> Spine or neck broken. Death Save.<br><br>@UUID[Compendium.mosh.macros_hotbar_1e.Macro.NsRHfRuuNGPfkYVf]{Death Save}",
+      "name": "",
+      "flags": {},
+      "_key": "!tables.results!31YibfjueXuZdNLb.NzrMxLpPo52Ayoq7"
+    }
+  ],
+  "_stats": {
+    "systemId": "mosh",
+    "systemVersion": "0.4.0",
+    "coreVersion": "13.348",
+    "createdTime": 1685936572185,
+    "modifiedTime": 1693515520278,
+    "lastModifiedBy": "6EeM38DJkcBWNAmw",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "folder": null,
+  "sort": 0,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_key": "!tables!31YibfjueXuZdNLb"
+}

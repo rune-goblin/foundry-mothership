@@ -1,0 +1,33 @@
+{
+  "_id": "jfcpnfM3bSHvMJlG",
+  "name": "Exhausted",
+  "type": "condition",
+  "img": "systems/mosh/images/icons/ui/conditions/exhausted.png",
+  "system": {
+    "description": "<p>Long grueling treks on undiscovered planets can easily grind you down. If it becomes relevant, track exhaustion by making a Body Save every hour after 12 hours of activity. On a failure gain 1 Stress and take 1 Damage. <strong>After 24 hours of exhaustion, roll at Disadvantage on all rolls until you can rest for 8 hours.</strong><br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.X3gqTFFwMe7AudiS]{Body Save}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.vwpxRBbMwjfDCQVG]{-1 Health}</p>",
+    "severity": 1,
+    "treatment": {
+      "value": 0,
+      "html": ""
+    }
+  },
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 0,
+  "_stats": {
+    "systemId": "mosh",
+    "systemVersion": "0.4.0",
+    "coreVersion": "13.348",
+    "createdTime": 1685936572185,
+    "modifiedTime": 1693515520278,
+    "lastModifiedBy": "6EeM38DJkcBWNAmw",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_key": "!items!jfcpnfM3bSHvMJlG"
+}

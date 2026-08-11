@@ -1,1 +1,0 @@
-game.mosh.initModifyActor('system.hits.value',-1,null,true);

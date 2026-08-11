@@ -1,0 +1,30 @@
+{
+  "_id": "fbrN7sbgPjIwkk7I",
+  "name": "Throttled Afterburners. -2d10 Thrusters.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.jmOh8n2ps0YIeBC0]{-2d10 Thrusters}",
+  "type": "repair",
+  "img": "systems/mosh/images/icons/ui/rolltables/maintenance_issues.png",
+  "system": {
+    "description": "<p>Maintenance Issue</p>",
+    "quantity": 1,
+    "major": true
+  },
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 0,
+  "_stats": {
+    "systemId": "mosh",
+    "systemVersion": "0.4.0",
+    "coreVersion": "13.348",
+    "createdTime": 1685936572185,
+    "modifiedTime": 1693515520278,
+    "lastModifiedBy": "6EeM38DJkcBWNAmw",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_key": "!items!fbrN7sbgPjIwkk7I"
+}

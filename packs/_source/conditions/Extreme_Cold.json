@@ -1,0 +1,33 @@
+{
+  "_id": "uco5QbXZ6ZTKxx9g",
+  "name": "Extreme Cold",
+  "type": "condition",
+  "img": "systems/mosh/images/icons/ui/conditions/extreme_cold.png",
+  "system": {
+    "description": "<p>In most cases, a cold climate has no notable effects. However, in places of extreme cold, you should make Body Saves every hour or succumb to the Extreme Cold.<br><br>In sub-zero temperatures hypothermia and frostbite can set in within 10-30 min for those not dressed appropriately. To survive you must bring your body up to its normal temperature. Hypothermia can kill within 30 min to 6 hours.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.X3gqTFFwMe7AudiS]{Body Save}</p>",
+    "severity": 1,
+    "treatment": {
+      "value": 0,
+      "html": ""
+    }
+  },
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 0,
+  "_stats": {
+    "systemId": "mosh",
+    "systemVersion": "0.4.0",
+    "coreVersion": "13.348",
+    "createdTime": 1685936572185,
+    "modifiedTime": 1693515520278,
+    "lastModifiedBy": "6EeM38DJkcBWNAmw",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_key": "!items!uco5QbXZ6ZTKxx9g"
+}

@@ -1,1 +1,0 @@
-game.mosh.initModifyActor('system.stats.strength.value',-5,null,true);

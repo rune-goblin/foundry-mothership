@@ -1,0 +1,33 @@
+{
+  "_id": "8lOkseRbg09YFvv7",
+  "name": "Suspicious",
+  "type": "condition",
+  "img": "systems/mosh/images/icons/ui/conditions/suspicious.png",
+  "system": {
+    "description": "<p>For the next week, whenever someone joins the crew <em>(even if they only left for a short period of time),</em> make a Fear Save or gain 1 Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.R2KizR1soAhFYDZm]{Fear Save}</p>",
+    "severity": 1,
+    "treatment": {
+      "value": 0,
+      "html": ""
+    }
+  },
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 0,
+  "_stats": {
+    "systemId": "mosh",
+    "systemVersion": "0.4.0",
+    "coreVersion": "13.348",
+    "createdTime": 1685936572185,
+    "modifiedTime": 1693515520278,
+    "lastModifiedBy": "6EeM38DJkcBWNAmw",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_key": "!items!8lOkseRbg09YFvv7"
+}

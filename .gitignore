@@ -3,3 +3,9 @@ dist/
 .DS_Store
 *.zip
 *.log
+
+# The compiled LevelDB compendiums are a build output: scripts/packs.sh builds
+# them from packs/_source/, and the release workflow does the same before
+# zipping. Only the JSON sources are tracked.
+packs/*/
+!packs/_source/

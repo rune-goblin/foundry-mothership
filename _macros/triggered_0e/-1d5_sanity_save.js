@@ -1,1 +1,0 @@
-game.mosh.initModifyActor('system.stats.sanity.value',null,'-1d5',true);

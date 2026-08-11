@@ -46,8 +46,9 @@ for (const entry of LINKED) {
 
 const packsOut = join(TARGET, 'packs');
 mkdirSync(packsOut);
+// _source holds the tracked JSON that packs/ is built from — it is not a compendium.
 const leveldb = readdirSync(join(REPO, 'packs'), { withFileTypes: true })
-  .filter((e) => e.isDirectory());
+  .filter((e) => e.isDirectory() && e.name !== '_source');
 for (const pack of leveldb) {
   symlinkSync(join(REPO, 'packs', pack.name), join(packsOut, pack.name));
 }

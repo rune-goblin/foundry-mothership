@@ -1,0 +1,33 @@
+{
+  "_id": "dA6COSDLbpmKdOkm",
+  "name": "Software Bloat",
+  "type": "condition",
+  "img": "systems/mosh/images/icons/ui/conditions/software_bloat.png",
+  "system": {
+    "description": "<p>Lose double Calm from all sources.</p>",
+    "severity": 1,
+    "treatment": {
+      "value": 0,
+      "html": ""
+    }
+  },
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 0,
+  "_stats": {
+    "systemId": "mosh",
+    "systemVersion": "0.4.0",
+    "coreVersion": "13.348",
+    "createdTime": 1685936572185,
+    "modifiedTime": 1693515520278,
+    "lastModifiedBy": "6EeM38DJkcBWNAmw",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_key": "!items!dA6COSDLbpmKdOkm"
+}

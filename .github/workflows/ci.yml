@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build bundle
+        run: npm run build
+
+      # packs/ is gitignored: the LevelDB compendiums are built from the JSON in
+      # packs/_source/, so a source that fails to compile must fail the build here
+      # rather than at someone's table.
+      - name: Build compendium packs
+        run: ./scripts/packs.sh pack
+
+      - name: Verify every pack built with data, index and manifest
+        run: |
+          expected=$(ls -d packs/_source/*/ | wc -l)
+          for f in ldb CURRENT MANIFEST; do
+            got=$(ls packs/*/ | grep -c "$f" || true)
+            [ "$got" -ge "$expected" ] || { echo "::error::expected $expected packs to carry $f, found $got"; exit 1; }
+          done
+          echo "$expected packs built"

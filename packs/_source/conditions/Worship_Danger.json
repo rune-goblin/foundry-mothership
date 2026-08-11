@@ -1,0 +1,33 @@
+{
+  "_id": "LDoAzwiELtLjgxrf",
+  "name": "Worship Danger",
+  "type": "condition",
+  "img": "systems/mosh/images/icons/ui/conditions/worship_danger.png",
+  "system": {
+    "description": "<p>Becomes Nihilistically Worshipful of the Source of Danger. Everyone else has Disadvantage on rolls against it. Everyone else takes a Fear save when failing to act against danger or gains a Phobia.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.R2KizR1soAhFYDZm]{Fear Save}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.RTL29CqdaAriGSTS]{+1 Phobia}</p>",
+    "severity": 1,
+    "treatment": {
+      "value": 0,
+      "html": ""
+    }
+  },
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 0,
+  "_stats": {
+    "systemId": "mosh",
+    "systemVersion": "0.4.0",
+    "coreVersion": "13.348",
+    "createdTime": 1685936572185,
+    "modifiedTime": 1693515520278,
+    "lastModifiedBy": "6EeM38DJkcBWNAmw",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_key": "!items!LDoAzwiELtLjgxrf"
+}

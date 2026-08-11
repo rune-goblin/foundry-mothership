@@ -1,0 +1,33 @@
+{
+  "_id": "gSTHeVqpynRxoQEy",
+  "name": "Irradiated",
+  "type": "condition",
+  "img": "systems/mosh/images/icons/ui/conditions/irradiated.png",
+  "system": {
+    "description": "<p>Whether it’s cosmic rays, an engine leak, or some previously undiscovered asteroid ore, radiation can kill you if you’re not careful.<br><br><ul><li><strong>Level 1 - Trace Radiation</strong><br>Normal, everyday radiation, cosmic rays. Damage: None immediately. Possible longterm side effects <em>(cancer, etc.).</em></li><li><strong>Level 2 - Acute Radiation</strong><br>Unshielded reactors/Warp Cores. Damage: Reduce all Stats and Saves by 1 every round.</li><li><strong>Level 3 - Lethal Radiation</strong><br>Atomic weapons, direct handling of Warp Cores. Damage: Every round: Body Save or lethal dose <em>(death in [[/r 1d5]] days).</em></li></ul><br>Armor with <strong>Radiation Shielding</strong> <em>(e.g., the Hazard Suit).</em> blocks all three levels of radiation.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.V1PPeCwryXNQAkUe]{-1 All Stats/Saves}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.X3gqTFFwMe7AudiS]{Body Save}</p>",
+    "severity": 1,
+    "treatment": {
+      "value": 0,
+      "html": ""
+    }
+  },
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 0,
+  "_stats": {
+    "systemId": "mosh",
+    "systemVersion": "0.4.0",
+    "coreVersion": "13.348",
+    "createdTime": 1685936572185,
+    "modifiedTime": 1693515520278,
+    "lastModifiedBy": "6EeM38DJkcBWNAmw",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_key": "!items!gSTHeVqpynRxoQEy"
+}
