@@ -13,17 +13,19 @@ Code style: global `~/.claude/CLAUDE.md` — comment only the non-obvious *why*.
 
 ## Where the project is
 
-Modernization from a dead gulp build to the runegoblin baseline. **Phases 1–3 and the test
-harness are done; phase 4 (ApplicationV2 + Svelte) is next.** `MODERNIZATION.md` is the
-living plan — read its status header and §Phase 4 before starting UI work, and update it as
-phases land.
+Modernization from a dead gulp build to the runegoblin baseline. **Phases 1–3, the test
+harness, and phase 4's step 0 + first conversion are done; `skill-sheet.js` is next.**
+`MODERNIZATION.md` is the living plan — read its status header and §Phase 4 before starting
+UI work, §10 for the conventions the item sheet settled, and update it as work lands.
 
 | Done | Not done |
 |---|---|
-| Vite build, TS tooling, CI | 8 AppV1 sheet classes |
-| DataModels for all 13 types | 6 `FormApplication` windows |
-| Packs from JSON source, 0e removed | 37 Handlebars templates |
-| 84 vitest + 28 Playwright specs | `firstEdition` rules toggle (50 refs) |
+| Vite build, TS tooling, CI | 7 AppV1 sheet classes |
+| DataModels for all 13 types | 4 bare-`FormApplication` windows |
+| Packs from JSON source, 0e removed | 28 Handlebars templates |
+| Svelte 5 wired into build, check, vitest | `firstEdition` rules toggle (55 refs) |
+| 8 item sheets on ApplicationV2 + Svelte | |
+| 94 vitest + 43 Playwright specs | |
 
 ## Hard rules (override defaults)
 
@@ -44,9 +46,9 @@ phases land.
 npm run build            # vite → dist/
 npm run setup            # (re)link Data/systems/mosh at this repo
 ./scripts/packs.sh pack  # packs/_source/*.json → LevelDB (close Foundry first)
-npm test                 # 84 vitest specs — the CI tier
-npm run check            # tsc over the .ts surface
-npm run test:e2e         # 28 Playwright specs vs a real headless Foundry
+npm test                 # 94 vitest specs — the CI tier
+npm run check            # tsc over the .ts surface, then svelte-check over module/ui
+npm run test:e2e         # 43 Playwright specs vs a real headless Foundry
 ```
 
 A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — both `dist/` and
@@ -64,6 +66,9 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   `<style>` blocks.
 - **`template.json` is inert but kept on purpose** — it is the oracle the DataModel
   equivalence tests compare against. Changing a schema means changing both, deliberately.
+- **New UI lives in `module/ui/`** — an ApplicationV2 shell per window plus Svelte 5
+  components (runes mode is forced on). `MODERNIZATION.md` §10 has the conventions: the
+  document stays the source of truth, Foundry persists the form, mount once.
 - Manifest `url`/`manifest`/`download` still point at the `Futil` upstream while `origin` is
   `rune-goblin`. **Fix before releasing.**
 
@@ -73,6 +78,10 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   and deleted (`scss/`, `_macros/`), each duplicating something that had moved on. Before
   building from any input, verify it produces what actually ships.
 - **`packs/` and `dist/` are never committed.** Sources are `packs/_source/**/*.json`.
+- **A sheet can bind a field no schema declares.** A `SchemaField` cleans off keys it does not
+  know, so the write is accepted and silently discarded — that is how the DataModel migration
+  stopped armour from equipping. `test/item-sheet-bindings.test.ts` pins this for Items; the
+  Actor side is still open (`MODERNIZATION.md` §10).
 - **Foundry holds an exclusive LevelDB lock** on every pack it can see; `packs.sh` refuses
   to run while it is open. That guard is deliberate.
 - **A killed e2e run leaves the GM session occupied** — the next run hangs 30s then fails in

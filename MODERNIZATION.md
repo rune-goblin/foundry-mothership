@@ -10,14 +10,15 @@ memory. API claims below were checked in that file.
 
 ## Start here
 
-**Phases 1–3 and the test harness are complete. Phase 4 (ApplicationV2 + Svelte) is next.**
+**Phases 1–3, the test harness, and phase 4's step 0 + first conversion are complete.**
+**Next: `skill-sheet.js` (§Phase 4, item 2).**
 
 | | |
 |---|---|
 | Read first | `CLAUDE.md`, then the `foundry-mosh` skill (`.claude/skills/foundry-mosh/`) |
-| The plan | §Phase 4 below — step 0 wires Svelte up, then a sheet at a time |
-| Verify with | `npm run check && npm test` (84 specs), `npm run test:e2e` (28 specs) |
-| State | 13 commits on `master`, tree clean, **unpushed** |
+| The plan | §Phase 4 below — the conversion order, one sheet at a time |
+| Verify with | `npm run check && npm test` (94 specs), `npm run test:e2e` (43 specs) |
+| State | `master`, tree clean, **unpushed** |
 
 **Before pushing:** history was rewritten to drop 854 MB of committed release zips, so the
 next push must be `git push --force origin master`. `origin` still holds the pre-rewrite
@@ -358,23 +359,22 @@ earning its keep; v16 removes support regardless.
 against a real Foundry, and validation is confirmed to reject a bad value outright rather
 than store it.
 
-### Phase 4 — ApplicationV2 + Svelte, sheet by sheet (next)
+### Phase 4 — ApplicationV2 + Svelte, sheet by sheet (in progress)
 
 **Read first:** the `foundry-mosh` skill's `references/svelte-in-applicationv2.md` — the
 shell pattern, the AppV1→V2 mapping table, and the five codebase-specific hazards.
 
-#### Step 0 — wire Svelte up (half a day, once)
+#### Step 0 — wire Svelte up ✅ **done**
 
-Svelte is **not installed**. Before the first conversion:
+Svelte 5.56 / `@sveltejs/vite-plugin-svelte` 7.3 / `svelte-check` 4.7. `svelte.config.js`
+pins **runes mode on**, so the Svelte 4 idioms (`export let`, `$:`, `on:click`) are compile
+errors rather than silent legacy mode. The plugin is in `vite.config.ts` and in
+`vitest.config.ts` (with `resolve.conditions: ['browser']`, without which runes have no
+reactivity under Node). `npm run check` now runs `tsc` **and** `svelte-check` against
+`tsconfig.svelte.json`.
 
-```bash
-npm i -D svelte @sveltejs/vite-plugin-svelte svelte-check
-```
-
-then `svelte.config.js` with `vitePreprocess()`, the `svelte()` plugin in `vite.config.ts`,
-`svelte-check` appended to `npm run check`, and the svelte plugin added to
-`vitest.config.ts` so `.svelte.js` runes modules can be unit-tested headlessly. Verify the
-existing 84 + 28 specs still pass before converting anything.
+Verified before converting anything: 84 vitest + 28 Playwright still green, and the new gate
+is not vacuous — a throwaway component using `export let` and `on:click` fails `svelte-check`.
 
 #### Order of attack
 
@@ -383,17 +383,16 @@ before the risky sheets:
 
 | # | Target | Lines | Notes |
 |---|---|---|---|
-| 1 | `item-sheet.js` + 8 item templates | 80 | Smallest and most repetitive — establish the component conventions here. One shell, a component per item type. |
-| 2 | `skill-sheet.js` | 72 | Extends the item sheet; follows straight on. |
-| 3 | `ship-setup`, `ship-megadamage`, `settings-rolltables` | 73 / 120 / 89 | The simple `FormApplication` windows. `ship-megadamage` also has a stale `data.` path fixed but unverified. |
-| 4 | `ship-macros.js` | 110 | Already repaired; small, and its e2e spec exists. Decide whether to restore the commented-out trigger (below) or delete the window. |
-| 5 | `creature-settings.js` | 160 | **Resolve the `FIXME` first** — `_updateObject` still does not persist (see §8). Decide what should save, then convert. |
-| 6 | `class-sheet.js` | 340 | Mutates the model it renders from; converting it is what unblocks tightening the two free-form `ObjectField`s (§7). |
-| 7 | `ship-sheet.js`, `ship-sheet-sbt.js`, `creature-sheet.js` | 275 / 498 / 661 | SBT is the **default** ship sheet — check which you are looking at. |
-| 8 | `actor-generator.js` | 772 | The character generator. Biggest window; drives `class-sheet` data. |
-| 9 | `actor-sheet.js` | 659 | The character sheet — highest risk, most player-visible, do it last with the most conventions in hand. |
+| ~~1~~ | ~~`item-sheet.js` + 8 item templates~~ | 80 | ✅ **done** — see §10. |
+| 2 | `skill-sheet.js` | 72 | **Next.** Extends the AppV1 `MothershipItemSheet`, which now exists only for that; both it and `item-skill-sheet.html` die with this conversion. Adds drag-drop (`foundry.applications.ux.DragDrop` in V2). |
+| 3 | `ship-setup`, `ship-megadamage`, `settings-rolltables` | 73 / 120 / 89 | The simple windows. All three still extend the **bare global** `FormApplication`, which CLAUDE.md forbids in new code. `ship-megadamage` also has a stale `data.` path fixed but unverified. |
+| 4 | `creature-settings.js` | 160 | **Resolve the `FIXME` first** — `_updateObject` still does not persist (see §8). Decide what should save, then convert. |
+| 5 | `class-sheet.js` | 340 | Mutates the model it renders from; converting it is what unblocks tightening the two free-form `ObjectField`s (§7). |
+| 6 | `ship-sheet.js`, `ship-sheet-sbt.js`, `creature-sheet.js`, `ship-deckplan.js` | 275 / 498 / 661 / 40 | SBT is the **default** ship sheet — check which you are looking at. **Fix the schema holes first** (§10). |
+| 7 | `actor-generator.js` | 772 | The character generator. Biggest window; drives `class-sheet` data. |
+| 8 | `actor-sheet.js` | 659 | The character sheet — highest risk, most player-visible, do it last with the most conventions in hand. |
 
-37 Handlebars templates retire as their sheets migrate.
+28 Handlebars templates remain and retire as their sheets migrate.
 
 #### Definition of done, per conversion
 
@@ -418,9 +417,13 @@ before the risky sheets:
 - **`class-sheet.js` writes onto the model while rendering** (`from_list_names`,
   `skills_granted_object`). Derive into local state instead; that is the precondition for
   tightening `base_adjustment`/`selected_adjustment` into real schemas.
-- **`.macro-menu-button` is commented out** at `templates/actor/ship-sheet-sbt.html:132`, so
-  `DLShipMacros` has no UI route at all. Restore the button or drop the window — but decide,
-  rather than porting dead UI.
+- **Sheets bind fields no schema declares.** A `SchemaField` silently cleans off keys it does
+  not know, so the edit is accepted and discarded. See §10 — fixed for items and pinned by a
+  spec; still open for `ship` and `creature`.
+- **V2 windows carry `.application`, not `.window-app`, and are themed.** `css/mosh.css` was
+  written for the V1 frame and paints `.window-app .window-content` white; without the
+  matching `.application` rule a converted sheet renders dark, with the theme's light text on
+  the stylesheet's light boxes. Converted sheets pin `themed theme-light` in `classes`.
 
 #### Queued behind this phase
 
@@ -661,3 +664,100 @@ A killed run leaves the GM session occupied (Foundry allows one session per user
 
 **Not in CI.** e2e needs a licensed Foundry and a migrated world, so `ci.yml` stays on the
 vitest tier. Run it locally before a release.
+
+---
+
+## 10. Phase 4 — step 0 and the item sheet
+
+Svelte is wired up (§Phase 4 step 0) and the **eight simple item types** — `item`, `weapon`,
+`armor`, `ability`, `module`, `condition`, `crew`, `repair` — are ApplicationV2 + Svelte 5.
+
+```
+module/ui/document-store.svelte.js   the render-time snapshot every converted sheet reads
+module/ui/i18n.js                    localize()
+module/ui/item/ItemSheetApp.js       the DocumentSheetV2 shell (mount once, refresh per render)
+module/ui/item/ItemSheet.svelte      header, tabs, description editor
+module/ui/item/parts/                Field, CheckField, Editor, SheetHeader
+module/ui/item/types/                one component per type (+ ArmorExtra, WeaponExtra)
+module/ui/item/types.js              type → body / second tab
+```
+
+Eight `templates/item/item-*-sheet.html` deleted. `module/item/item-sheet.js` is registered
+for nothing now and survives only as `MothershipSkillSheet`'s base; it dies with item 2.
+
+### Conventions this conversion settles
+
+- **The document stays the source of truth.** `createDocumentStore` holds a `$state.raw`
+  snapshot; the shell calls `refresh()` on every render and the components re-read. Nothing is
+  mirrored into local state, so a change from another client lands the same way as your own.
+- **Foundry persists the form, not us.** Fields keep `name="system.…"` and the shell sets
+  `form: {submitOnChange: true}`, which is exactly what AppV1's `ItemSheet` defaulted to. No
+  per-field `update()` calls, and `FormDataExtended` still reads `data-dtype`.
+- **Mount once.** `_renderHTML` caches the root node and the component; re-mounting per render
+  leaks the old component and discards reactive state.
+- **`{{editor}}` becomes `<prose-mirror>`.** The V1 editor markup only worked with AppV1's
+  `activateEditor`. `HTMLProseMirrorElement.create()` is self-contained: it is a form input,
+  and saving dispatches a bubbling `change` the sheet's form handler already listens for.
+  Enriched HTML is computed in the shell (it is async) and passed through the store.
+- **Don't port string concatenation.** `getData()` composed `ranges.short/medium/long` into
+  `ranges.value` *and wrote it back onto the model while rendering*; it is now a `$derived`.
+
+### A phase 3 regression this surfaced
+
+**Armour stopped equipping when the DataModels landed**, and nothing caught it.
+
+`system.equipped` is bound by the armor item sheet and both actor sheets, and
+`_deriveCharacter`/`_deriveCreature` gate all armour points and damage reduction on it — with
+unit specs. It was in **no** schema, and in no `template.json` either. Under `template.json`
+Foundry kept unknown keys, so it worked; a `SchemaField` cleans them off, so every write was
+accepted and discarded. Proved against a real Foundry both ways (with the armor model
+registered and with it deleted at runtime).
+
+Fixed by adding to `MoshArmor` and `template.json`, deliberately and in both:
+
+| Type | Added | Bound by |
+|---|---|---|
+| `armor` | `equipped`, `features` | armor sheet; `_deriveCharacter`, `_deriveCreature` |
+| `module` | `cost` | module sheet |
+
+**Pinned by `test/item-sheet-bindings.test.ts`** — every `name="system.x"` an item sheet binds
+must resolve in that type's schema. It reads the Handlebars templates *and* the Svelte
+components, so it survived the conversion, and mutation-testing confirms it fails when the
+field is removed. It would have caught this on the day.
+
+### Still open: the same bug on the Actor side
+
+The same audit over the actor templates finds bindings with no schema behind them. These are
+**not fixed** — each belongs to its own conversion, and some are behaviour decisions:
+
+| Type | Bound but not in the schema |
+|---|---|
+| `creature` | `xp.selectedSkill` |
+| `ship` | `cost`, `make`, `owed`, `transponder`, `stats.oxygen.value`, and `stats.{armor,combat,intellect,speed}.mod` |
+
+The `.mod` keys are a different fault: `prepareDerivedData` computes them, so binding an input
+to one writes to a value that is recomputed on the next prepare. Decide per field whether it
+should be stored, derived, or dropped — then extend the bindings spec to Actor types, which is
+the first step of conversion items 4 and 6.
+
+### Two warm-up fixes that shipped alongside
+
+- **Two malformed `@UUID`s** in `lang/en.json` and `lang/pt-BR.json` read
+  `Compendium.macros_triggered_1e.<id>` with no package scope, so both links were dead. Now
+  `Compendium.mosh.macros_triggered_1e.<id>`, matching the 20 correct ones in the same files.
+  Both target ids verified against `packs/_source/triggered/`.
+- **`DLShipMacros` deleted**, with `templates/dialogs/ship-macro-dialog.html`, `_onOpenMacros`,
+  and the commented-out `.macro-menu-button`. Every action it offered — distress, bankruptcy,
+  maintenance, morale, deckplan — is already on the SBT ship sheet's own **Macros tab**, wired
+  by `ship-sheet-sbt.js`. The popout was superseded, which is why its trigger was commented
+  out; porting it into Svelte would have duplicated live UI. Its e2e spec was replaced by one
+  asserting the surviving route.
+
+### Verified
+
+`npm run check` (tsc + svelte-check, 0 errors, 0 warnings) · **94 vitest** · **43 Playwright**.
+The e2e tier is honest about this work: flipping `submitOnChange` to `false` fails the two
+persistence specs, and removing `equipped` from the schema fails the bindings spec.
+
+Rendering was checked against the real headless Foundry, not eyeballed from the markup — which
+is how the `.application` / theming problem in §Phase 4's hazards was found and fixed.

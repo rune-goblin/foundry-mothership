@@ -29,9 +29,11 @@ structured data `foundry.abstract.TypeDataModel` + `defineSchema()`.
 | DataModels | ✅ done — all 13 types, `module/data/{actor,item}-models.js` |
 | Dialogs | ✅ DialogV2 throughout |
 | Namespacing | ✅ `foundry.utils.*`, `foundry.documents.collections.*` |
-| **Sheets** | ❌ 8 classes still `foundry.appv1.sheets.*` with `getData`/`activateListeners` |
-| **Windows** | ❌ 6 still `FormApplication` with `_updateObject` |
-| **Templates** | ❌ 37 Handlebars `.html` files |
+| Svelte | ✅ wired into vite, `npm run check`, vitest — runes mode forced on |
+| Item sheets | ✅ the 8 simple types are ApplicationV2 + Svelte in `module/ui/item/` |
+| **Sheets** | ❌ 7 classes still `foundry.appv1.sheets.*` with `getData`/`activateListeners` |
+| **Windows** | ❌ 4 still the bare `FormApplication` global with `_updateObject` |
+| **Templates** | ❌ 28 Handlebars `.html` files |
 
 Converting those is phase 4 (see `MODERNIZATION.md`). Don't add new v1 code; when you
 *touch* a v1 class, prefer converting it whole over extending it.

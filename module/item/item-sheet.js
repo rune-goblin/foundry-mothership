@@ -1,5 +1,8 @@
 /**
- * Extend the basic ItemSheet with some very simple modifications
+ * No longer registered for any type: the eight simple item types moved to
+ * ui/item/ItemSheetApp.js in phase 4. This survives only as MothershipSkillSheet's base and
+ * dies with it, along with templates/item/item-skill-sheet.html.
+ *
  * @extends {ItemSheet}
  */
 export class MothershipItemSheet extends foundry.appv1.sheets.ItemSheet {

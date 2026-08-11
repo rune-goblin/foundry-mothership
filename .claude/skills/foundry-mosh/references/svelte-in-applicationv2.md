@@ -114,17 +114,22 @@ shows its actor, and that derived armour/net HP survive. Those are the regressio
 this work — a conversion that breaks them broke something real. Add a spec per converted
 sheet for the interactions it owns.
 
-## Wiring (not yet present — phase 4 sets it up)
+## Wiring — done
 
-Svelte is **not installed yet**. First conversion needs:
+Svelte 5 is installed and wired into vite, `npm run check` (`svelte-check` against
+`tsconfig.svelte.json`) and vitest. `svelte.config.js` forces **runes mode on**, so Svelte 4
+idioms are compile errors. Component `<style>` blocks are scoped and fold into the single
+emitted `dist/mosh.css`.
 
-```bash
-npm i -D svelte @sveltejs/vite-plugin-svelte svelte-check
-```
+`module/ui/item/` is the worked example — read it before converting the next sheet.
+`MODERNIZATION.md` §10 states the conventions it settled; the two that bite hardest:
 
-then `svelte.config.js` with `vitePreprocess()`, the `svelte()` plugin in
-`vite.config.ts`, and `svelte-check` added to `npm run check`. Component `<style>` blocks
-are scoped and fold into the single emitted `dist/mosh.css`.
+- **`css/mosh.css` targets the V1 frame.** A V2 window is `.application`, not `.window-app`,
+  and carries the user's theme classes. Put `themed`, `theme-light` in `DEFAULT_OPTIONS.classes`
+  (DocumentSheetV2 only appends its own when `themed` is absent), or the sheet renders with
+  light theme text on the stylesheet's light boxes.
+- **A `SchemaField` cleans off keys it does not declare.** Before porting a field, check it
+  exists in the DataModel — `test/item-sheet-bindings.test.ts` is the pattern.
 
 ## The language itself — use Svelte's tooling
 

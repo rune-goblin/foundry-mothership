@@ -75,13 +75,31 @@ p {
 }
 
 /* Global styles */
-.window-app {
+/* .window-app is the AppV1 frame, .application the V2 one -- both are in play mid-migration. */
+.window-app,
+.mosh.application {
   font-family: "Roboto", sans-serif;
 }
 
-.window-app .window-content {
+.window-app .window-content,
+.mosh.application .window-content {
   background: #fff;
   /* font-family: "Montserrat", "Arial Black", sans-serif; */
+}
+
+/* AppV1 sheets sized .sheet-body from setPosition(); a V2 window has no such hook, so the
+   Svelte root has to carry the column layout the height:100% rules below assume. */
+.mosh.application .window-content > .mosh-sheet-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.mosh.application .mosh-sheet-root .sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .mosh ::-webkit-scrollbar-thumb {

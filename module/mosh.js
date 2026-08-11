@@ -9,7 +9,7 @@ import { MothershipShipSheet } from "./actor/ship-sheet.js";
 import { MothershipShipSheetSBT } from "./actor/ship-sheet-sbt.js";
 
 import { MothershipItem } from "./item/item.js";
-import { MothershipItemSheet } from "./item/item-sheet.js";
+import { MoshItemSheet } from "./ui/item/ItemSheetApp.js";
 import { MothershipClassSheet } from "./item/class-sheet.js";
 import { MothershipSkillSheet } from "./item/skill-sheet.js";
 
@@ -62,7 +62,7 @@ Hooks.once('init', async function () {
   foundry.documents.collections.Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
   foundry.documents.collections.Items.registerSheet("mosh", MothershipClassSheet, {types: ['class'], makeDefault: true});
   foundry.documents.collections.Items.registerSheet("mosh", MothershipSkillSheet, {types: ['skill'], makeDefault: true});
-  foundry.documents.collections.Items.registerSheet("mosh", MothershipItemSheet, {
+  foundry.documents.collections.Items.registerSheet("mosh", MoshItemSheet, {
     types: [
       "item",
       "weapon",
