@@ -1,7 +1,12 @@
 import { DLShipDeckplan } from "../windows/ship-deckplan.js";
 
 
-export class DLShipMacros extends foundry.applications.sheets.BaseSheet {
+// This class is written entirely against the AppV1 contract -- defaultOptions, getData,
+// activateListeners, _updateObject, this.object. It briefly extended
+// foundry.applications.sheets.BaseSheet, which is HandlebarsApplicationMixin(DocumentSheetV2)
+// and reads none of those, so the window never configured or rendered correctly.
+// Its sibling windows are FormApplications; this matches them until they all move to V2.
+export class DLShipMacros extends foundry.appv1.api.FormApplication {
     static get defaultOptions() {
         const options = super.defaultOptions;
         options.id = 'sheet-modifiers';
@@ -90,8 +95,9 @@ export class DLShipMacros extends foundry.applications.sheets.BaseSheet {
         //     "data.stats.loyalty.enabled": true
         // });
 
+        // The `data` alias was removed in v10; the form input names the system path.
         await this.object.update({
-            "data.stats.bankruptcy.value": formData['actor.system.stats.bankruptcy.value']
+            "system.stats.bankruptcy.value": formData['actor.system.stats.bankruptcy.value']
         });
 
         // await this.object.updateEmbeddedEntity("OwnedItem", update);

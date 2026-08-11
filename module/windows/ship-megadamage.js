@@ -91,7 +91,7 @@ export class DLShipMegaDamage extends FormApplication {
             }
             
             this.object.update({
-                "data.megadamage.hits": data.system.megadamage.hits
+                "system.megadamage.hits": data.system.megadamage.hits
             });
 
             this.render(true, {focus: true});
