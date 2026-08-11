@@ -304,10 +304,7 @@ lookup — small, self-contained, and a good first unit-test target in phase 2.
    `module/mosh.js` path correctly 404s. `scripts/deploy.ts` still to do.
 6. `_releases/` is already out of the working tree (phase 1). Purging it from *history*
    is a separate, irreversible call — see §6.
-7. Resolve the pack duplication: confirm which format v14 actually loads, keep one, fix
-   the `system.json` paths, then move toward `packs/_source/` JSON as the tracked source
-   with `packs/` built and gitignored. Fold `_macros/` into that pipeline or document what
-   it is for.
+7. ~~Pack pipeline~~ **done** — see §7.
 
 **Verify:** CI green on a PR; `npm run deploy` produces a working install.
 
@@ -406,6 +403,49 @@ SHA), on `master`.
 
 ---
 
+## 7. Content pipeline — done
+
+Packs are distribution, not repository. The 5 remaining 1e compendia now build from
+tracked JSON via `scripts/packs.sh {pack|unpack}`, ported from
+`mothership-survival-guide`; `packs/*/` is gitignored and CI builds it.
+
+**Removed:** the 4 `_0e` compendia, `_macros/{hotbar,triggered}_0e` (103 files), and the
+9 legacy NeDB `.db` files (dead — v14 serves only LevelDB, which is why the live install
+had none). Pack paths in `system.json` dropped the stale `.db` suffix to match what
+v14-native packages use.
+
+**Two dangling references** to deleted 0e macros were found and repointed to their 1e
+equivalents: `templates/chat/modifyActor.html` (Panic Check) and the *Panic Check (Calm,
+Normal)* rolltable (`+1 Insane`). No `_0e` reference remains anywhere.
+
+**One deliberate divergence from the survival-guide script.** Its `strip_ids` assumes a
+document's name slugs to a unique filename. Mosh's macros come in +/- pairs — `+1 Stress`
+vs `-1 Stress`, `Panic Check [+]` vs `[-]` — and a naive slug collapses each pair onto one
+filename, silently losing which is which. `packs.sh` preserves the sign as `plus`/`minus`
+and leaves mid-word hyphens alone so `Well-Rested` stays readable. The collision guard is
+kept as a backstop; it is what caught this in the first place.
+
+**Verified:** all 326 documents round-trip byte-identical through unpack → pack → unpack,
+and a locally built release zip carries 5 packs with `.ldb`/`CURRENT`/`MANIFEST`, the
+`dist` bundle, no sources and no dev tooling.
+
+### Still open here
+
+- **`_macros/` is now a duplicate source.** `_macros/triggered_1e` holds 151 loose `.js`
+  files against `packs/_source/triggered`'s 151 documents, and a sampled macro's body is
+  byte-identical to the pack document's `command`. Two sources for one thing is exactly
+  the `scss/` trap (§1.1). `packs/_source/` is the tracked, buildable, CI-verified one, so
+  **the recommendation is to delete `_macros/`** — it is recoverable from history. Not
+  done; it was outside the "remove 0e, extract 1e" ask.
+- **The `firstEdition` rules code stays for now** by decision: 50 references across 12
+  files (21 in `actor.js`), plus a `hideWeight` setting labelled "Hide 0e Weight" and an
+  `onChange` that migrates actor stress. Collapsing it to the 1e path is behaviour change
+  in untested automation, so it is queued behind phase 2's specs.
+- **Existing worlds that used a 0e compendium will have dangling links.** Nothing in the
+  system references them any more, but a world built on 0e content is not migrated.
+
+---
+
 ## Appendix — measurements
 
 | | |
@@ -415,7 +455,7 @@ SHA), on `master`.
 | Stylesheet (hand-authored source) | `css/mosh.css`, 36,616 B, 247 selectors |
 | SCSS (stale, out of build) | 13 files, 2,245 lines → 4,551 B, 51 selectors |
 | Handlebars templates | 37 `.html` (0 `.hbs`) |
-| Compendium packs | 9, tracked in 2 formats, 54 files |
+| Compendium packs | was 9 in 2 formats (54 files); now 5, built from 326 tracked JSON docs |
 | `game.settings.register` calls | 29 |
 | `_releases/` | 854 MB |
 | `.git/` | 353 MB |
