@@ -99,8 +99,8 @@ Order of attack and per-sheet notes live in `MODERNIZATION.md` §Phase 4.
    recompute in the component.
 3. **Settings are read per-sheet today.** Each `getData()` copies
    `game.settings.get('mosh', …)` into `data.system.settings.*` (`useCalm`, `hideWeight`,
-   `firstEdition`, `androidPanic`). A component can read settings directly — but note
-   `firstEdition` is slated for removal (see `MODERNIZATION.md`), so don't entrench it.
+   `androidPanic`). A component can read settings directly. `firstEdition` is gone — the 0e
+   rules branches were removed, so there is no edition switch to carry forward.
 4. **`class-sheet.js` mutates the model it renders from** — it writes `from_list_names` and
    `skills_granted_object` onto `system.selected_adjustment` during `getData()`. That is why
    those fields are free-form `ObjectField`s in the DataModel. A component should derive

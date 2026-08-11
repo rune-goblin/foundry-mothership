@@ -1,5 +1,31 @@
 import { test, expect } from './fixtures/foundry-clients.ts';
 
+// The 0e removal was a repair as much as a simplification: five `table0e*` settings still pointed
+// at rolltables phase 3 had deleted with the 0e compendia, so the 0e panic check and death save
+// rolled against nothing. This pins the invariant — every rolltable the system can select exists.
+test('every rolltable setting resolves to a real document', async ({ gmPage }) => {
+  const { checked, unresolved } = await gmPage.evaluate(async () => {
+    const g = (window as any).game;
+    const keys = [...g.settings.settings.keys()].filter(
+      (k: string) => k.startsWith('mosh.table') && typeof g.settings.get(...k.split(/\.(.*)/s, 2)) === 'string',
+    );
+    const bad: string[] = [];
+    for (const key of keys) {
+      const [scope, name] = key.split(/\.(.*)/s, 2);
+      const id = g.settings.get(scope, name);
+      if (!id) continue;
+      const found = g.packs
+        .filter((p: any) => p.documentName === 'RollTable')
+        .some((p: any) => p.index.has(id));
+      if (!found) bad.push(`${key} -> ${id}`);
+    }
+    return { checked: keys.length, unresolved: bad };
+  });
+  expect(unresolved).toEqual([]);
+  // Guard against the assertion above passing on an empty list.
+  expect(checked).toBe(14);
+});
+
 // Proves the pack pipeline end to end: JSON in packs/_source → scripts/packs.sh → LevelDB →
 // Foundry actually reading the documents back. A pack missing its .ldb opens as an empty
 // database rather than failing, so counts are the assertion that matters.

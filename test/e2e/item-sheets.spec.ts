@@ -115,17 +115,17 @@ test.describe('item sheets', () => {
     await expect(sheet.locator('input[name="system.cost"]')).toHaveValue('42');
   });
 
-  test('the first-edition fields follow the rules setting', async ({ gmPage }) => {
-    const before = await gmPage.evaluate(() => (window as any).game.settings.get('mosh', 'firstEdition'));
+  // These three were gated behind the firstEdition setting, which has been removed along with
+  // the 0e rules. They are unconditional now, and the setting no longer exists to toggle.
+  test('the 1e-only fields render unconditionally', async ({ gmPage }) => {
+    const armor = await openSheet(gmPage, 'armor');
+    await expect(gmPage.locator(`#${armor.appId} input[name="system.damageReduction"]`)).toHaveCount(1);
 
-    await gmPage.evaluate(() => (window as any).game.settings.set('mosh', 'firstEdition', false));
-    const off = await openSheet(gmPage, 'armor');
-    await expect(gmPage.locator(`#${off.appId} input[name="system.damageReduction"]`)).toHaveCount(0);
+    const weapon = await openSheet(gmPage, 'weapon');
+    await expect(gmPage.locator(`#${weapon.appId} input[name="system.antiArmor"]`)).toHaveCount(1);
+    await expect(gmPage.locator(`#${weapon.appId} input[name="system.woundEffect"]`)).toHaveCount(1);
 
-    await gmPage.evaluate(() => (window as any).game.settings.set('mosh', 'firstEdition', true));
-    const on = await openSheet(gmPage, 'armor');
-    await expect(gmPage.locator(`#${on.appId} input[name="system.damageReduction"]`)).toHaveCount(1);
-
-    await gmPage.evaluate((v) => (window as any).game.settings.set('mosh', 'firstEdition', v), before);
+    const removed = await gmPage.evaluate(() => (window as any).game.settings.settings.has('mosh.firstEdition'));
+    expect(removed).toBe(false);
   });
 });

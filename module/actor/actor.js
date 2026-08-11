@@ -604,7 +604,6 @@ export class MothershipActor extends Actor {
     let rollTarget = null;
     let valueAddress = [];
     let specialRoll = null;
-    let firstEdition = game.settings.get('mosh', 'firstEdition');
     let useCalm = game.settings.get('mosh', 'useCalm');
     let androidPanic = game.settings.get('mosh', 'androidPanic');
     let tableResultNumber = null;
@@ -617,88 +616,45 @@ export class MothershipActor extends Actor {
         //set special roll value for use later
         specialRoll = tableId;
         //assign variables depending on settings
-        if (firstEdition) { 
-          if (androidPanic && this.system.class.value.toLowerCase() === 'android') { 
-            if (useCalm) {
+        if (androidPanic && this.system.class.value.toLowerCase() === 'android') {
+          if (useCalm) {
             tableId = game.settings.get('mosh', 'table1ePanicCalmAndroid');
-              aimFor = 'low';
-              zeroBased = true;
-              checkCrit = true;
-              rollAgainst = 'system.other.stress.value';
-              comparison = '<';
-            } else {
-            tableId = game.settings.get('mosh', 'table1ePanicStressAndroid');
-              aimFor = 'high';
-              zeroBased = false;
-              checkCrit = false;
-              rollAgainst = 'system.other.stress.value';
-              comparison = '>';
-            }
+            aimFor = 'low';
+            zeroBased = true;
+            checkCrit = true;
+            rollAgainst = 'system.other.stress.value';
+            comparison = '<';
           } else {
-            if (useCalm) { 
-            tableId = game.settings.get('mosh', 'table1ePanicCalmNormal');
-              aimFor = 'low';
-              zeroBased = true;
-              checkCrit = true;
-              rollAgainst = 'system.other.stress.value';
-              comparison = '<';
-            } else {
-            tableId = game.settings.get('mosh', 'table1ePanicStressNormal');
-              aimFor = 'high';
-              zeroBased = false;
-              checkCrit = false;
-              rollAgainst = 'system.other.stress.value';
-              comparison = '>';
-            }
+            tableId = game.settings.get('mosh', 'table1ePanicStressAndroid');
+            aimFor = 'high';
+            zeroBased = false;
+            checkCrit = false;
+            rollAgainst = 'system.other.stress.value';
+            comparison = '>';
           }
         } else {
-          if (androidPanic && this.system.class.value.toLowerCase() === 'android') { 
-            if (useCalm) { 
-            tableId = game.settings.get('mosh', 'table0ePanicCalmAndroid');
-              aimFor = 'low';
-              zeroBased = true;
-              checkCrit = true;
-              rollAgainst = 'system.other.stress.value';
-              comparison = '<';
-            } else {
-            tableId = game.settings.get('mosh', 'table0ePanicStressAndroid');
-              aimFor = 'high';
-              zeroBased = false;
-              checkCrit = false;
-              rollAgainst = 'system.other.stress.value';
-              comparison = '>';
-            }
+          if (useCalm) {
+            tableId = game.settings.get('mosh', 'table1ePanicCalmNormal');
+            aimFor = 'low';
+            zeroBased = true;
+            checkCrit = true;
+            rollAgainst = 'system.other.stress.value';
+            comparison = '<';
           } else {
-            if (useCalm) { 
-            tableId = game.settings.get('mosh', 'table0ePanicCalmNormal');
-              aimFor = 'low';
-              zeroBased = true;
-              checkCrit = true;
-              rollAgainst = 'system.other.stress.value';
-              comparison = '<';
-            } else {
-            tableId = game.settings.get('mosh', 'table0ePanicStressNormal');
-              aimFor = 'high';
-              zeroBased = false;
-              checkCrit = false;
-              rollAgainst = 'system.other.stress.value';
-              comparison = '>';
-            }
+            tableId = game.settings.get('mosh', 'table1ePanicStressNormal');
+            aimFor = 'high';
+            zeroBased = false;
+            checkCrit = false;
+            rollAgainst = 'system.other.stress.value';
+            comparison = '>';
           }
         }
         //assign rollString if its a partial
         if (rollString === '[-]' || rollString === '' || rollString === '[+]') {
-          //if 1e and no calm, then 1d20
-        if (firstEdition && !useCalm) {
-          rollString = '1d20' + rollString;
-        }
-          //if 0e and no calm, then 2d10
-        if (!firstEdition && !useCalm) {
-          rollString = '2d10' + rollString;
-        }
-          //if calm, then 1d100
         if (useCalm) {
           rollString = '1d100' + rollString;
+        } else {
+          rollString = '1d20' + rollString;
         }
         }
       }
@@ -719,18 +675,7 @@ export class MothershipActor extends Actor {
         //init vars
         let rollDie = '';
         //set rollDie
-          //if 1e and no calm, then 1d20
-      if (firstEdition) {
-        rollDie = '1d20';
-      }
-          //if 0e and no calm, then 2d10
-      if (!firstEdition) {
-        rollDie = '2d10';
-      }
-          //if calm, then 1d100
-      if (useCalm) {
-        rollDie = '1d100';
-      }
+        rollDie = useCalm ? '1d100' : '1d20';
         //run the choose attribute function
       let chosenRollType = await this.chooseAdvantage( game.i18n.localize("Mosh.PanicCheck"), rollDie);
         //set variables
@@ -785,32 +730,9 @@ export class MothershipActor extends Actor {
       let rollResult = await new Roll(parsedRollString).evaluate();
       //interpret the results
     let parsedRollResult = this.parseRollResult(rollString, rollResult, zeroBased, checkCrit, rollTarget, comparison, specialRoll);
-    //if this is a panic check, we may need to roll again OR add modifiers to our result total
-      //roll a second die if needed
-      if (!parsedRollResult.success && specialRoll === 'maintenanceCheck' && !firstEdition && !useCalm) {
-        //determine the rollString
-        let rollString2 = '2d10';
-        //add modifiers if needed
-          //0e modifier: + Stress - Resolve
-          if (specialRoll === 'maintenanceCheck' && !firstEdition && !useCalm) {
-            rollString2 = rollString2 + ' + ' + this.system.other.stress.value + ' - ' + this.system.other.resolve.value
-          }
-          //Calm modifier: + Stress - Resolve
-          if (specialRoll === 'panicCheck' && useCalm) {
-            rollString2 = rollString2 + ' + ' + this.system.other.resolve.value
-          }
-        //roll second dice
-        rollResult2 = await new Roll(rollString2).evaluate();
-        //roll second set of dice
-      parsedRollResult2 = this.parseRollResult(rollString2, rollResult2, false, false, null, null, specialRoll);
-        //set marker for HTML
-        secondRoll = true;
-        //set table result number
-        tableResultNumber = parsedRollResult2.total
-      }
     //if this is a maintenance check, we need to roll again if a failure
       //roll a second die if needed
-      if (!parsedRollResult.success && specialRoll === 'maintenanceCheck' && firstEdition) {
+      if (!parsedRollResult.success && specialRoll === 'maintenanceCheck') {
         //determine the rollString
         let rollString2 = '1d100';
         //roll second dice
@@ -844,10 +766,6 @@ export class MothershipActor extends Actor {
     //assign flavor text
       //get main flavor text
     flavorText = this.getFlavorText('table', tableName.replaceAll('& ', '').replaceAll(' ', '_').toLowerCase(), 'success');
-      //append 0e crit success effect
-      if (!firstEdition && !useCalm && parsedRollResult.success && parsedRollResult.critical) {
-      flavorText = flavorText + game.i18n.localize("Mosh.Relieve1Stressqbq694JMbXeZrHj");
-      }
       //append Calm effects for Critical Panic Success
       if (useCalm && parsedRollResult.success && parsedRollResult.critical) {
       flavorText = flavorText + game.i18n.localize("Mosh.Gain1d10Calmk2TtLFOG9mGaWVx31d10Calm");
@@ -1249,7 +1167,6 @@ export class MothershipActor extends Actor {
     let msgHeader = ``;
     let msgImgPath = ``;
     let chatId = foundry.utils.randomID();
-    let firstEdition = game.settings.get('mosh', 'firstEdition');
     let useCalm = game.settings.get('mosh', 'useCalm');
     //customize this roll if its a unique use-case
       //damage roll
@@ -1272,39 +1189,28 @@ export class MothershipActor extends Actor {
       }
       //rest save
       if (attribute === 'restSave') {
-        //1e rest save
-        if (firstEdition) {
-          //set special roll value for use later
-          specialRoll = attribute;
-          //disable criticals for this roll
-          checkCrit = false;
-          //lets figure out the actors worst save and update this roll accordingly
-            //get current save values
-            let sanitySave = Number(this.system.stats.sanity.value) + Number(this.system.stats.sanity.mod || 0);
-            let fearSave = Number(this.system.stats.fear.value) + Number(this.system.stats.fear.mod || 0);
-            let bodySave = Number(this.system.stats.body.value) + Number(this.system.stats.body.mod || 0);
-            //get the lowest value
-        let minSave = Math.min(sanitySave, fearSave, bodySave);
-            //set attribute to the first one matching the lowest (since actor may have 2 with the lowest)
-            if (sanitySave === minSave) {
-              //set attribute
-              attribute = 'sanity';
-            } else if (fearSave === minSave) {
-              //set attribute
-              attribute = 'fear';
-            } else {
-              //set attribute
-              attribute = 'body';
-            }
-        //0e Rest save
-        } else {
-          //set special roll value for use later
-          specialRoll = attribute;
-          //disable criticals for this roll
-          checkCrit = false;
-          //set attribute
-          attribute = 'fear';
-        }
+        //set special roll value for use later
+        specialRoll = attribute;
+        //disable criticals for this roll
+        checkCrit = false;
+        //lets figure out the actors worst save and update this roll accordingly
+          //get current save values
+          let sanitySave = Number(this.system.stats.sanity.value) + Number(this.system.stats.sanity.mod || 0);
+          let fearSave = Number(this.system.stats.fear.value) + Number(this.system.stats.fear.mod || 0);
+          let bodySave = Number(this.system.stats.body.value) + Number(this.system.stats.body.mod || 0);
+          //get the lowest value
+          let minSave = Math.min(sanitySave, fearSave, bodySave);
+          //set attribute to the first one matching the lowest (since actor may have 2 with the lowest)
+          if (sanitySave === minSave) {
+            //set attribute
+            attribute = 'sanity';
+          } else if (fearSave === minSave) {
+            //set attribute
+            attribute = 'fear';
+          } else {
+            //set attribute
+            attribute = 'body';
+          }
       }
       //bankruptcy save
       if (attribute === 'bankruptcySave') {  
@@ -1547,64 +1453,31 @@ export class MothershipActor extends Actor {
           }
         } else if (parsedRollResult.success === false && this.type === 'character') {
           //if first edition
-          if (firstEdition) {
-            //if calm not enabled
-            if (!useCalm) {
-              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
-                //increase stress by 1 and retrieve the flavor text from the result
-                let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
-                flavorText = addStress[1];
-              }
-                //if critical failure, make sure to ask for panic check
-                if (parsedRollResult.critical === true) {
-                //set crit fail
-                critFail = true;
-              }
-            } else {
-              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
-                //increase stress by 1 and retrieve the flavor text from the result
-                let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
-                flavorText = removeCalm[1];
-              }
-                //if critical failure, make sure to ask for panic check
-                if (parsedRollResult.critical === true) {
-                //set crit fail
-                critFail = true;
-              }
+          //if calm not enabled
+          if (!useCalm) {
+            if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+              //increase stress by 1 and retrieve the flavor text from the result
+              let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
+              flavorText = addStress[1];
             }
-          //if 0e
+              //if critical failure, make sure to ask for panic check
+              if (parsedRollResult.critical === true) {
+              //set crit fail
+              critFail = true;
+            }
           } else {
-            //if calm not enabled
-            if (!useCalm) {
-              //on Save failure
-              if (attribute === 'sanity' || attribute === 'fear' || attribute === 'body' || attribute === 'armor') {
-                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
-                  //gain 1 stress
-                  let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
-                  flavorText = addStress[1];
-                }
-                  //if critical failure, make sure to ask for panic check
-                  if (parsedRollResult.critical === true) {
-                  //set crit fail
-                  critFail = true;
-                }
-              }
-            } else {
-              //on Save failure
-              if (attribute === 'sanity' || attribute === 'fear' || attribute === 'body' || attribute === 'armor') {
-                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
-                  //gain 1 stress
-                  let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
-                  flavorText = removeCalm[1];
-                }
-                  //if critical failure, make sure to ask for panic check
-                  if (parsedRollResult.critical === true) {
-                  //set crit fail
-                  critFail = true;
-                }
-              }
+            if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+              //increase stress by 1 and retrieve the flavor text from the result
+              let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
+              flavorText = removeCalm[1];
+            }
+              //if critical failure, make sure to ask for panic check
+              if (parsedRollResult.critical === true) {
+              //set crit fail
+              critFail = true;
             }
           }
+        //if 0e
         }
         //determine if this roll needs a description area
         if (weapon.system.description || weapon.system.woundEffect) {
@@ -1643,104 +1516,50 @@ export class MothershipActor extends Actor {
           //prepare attribute label
           attributeLabel = this.system.stats[attribute].label;
           //1e rest save
-          if (firstEdition) {
-            //calm outcome
-            if (useCalm) {
-              //prep text based on success or failure
-              if (parsedRollResult.success === false && this.type === 'character') {
-                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
-                  //increase stress by 1 and retrieve the flavor text from the result
-                  let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
-                  flavorText = removeCalm[1];
-                }
-                  //if critical failure, make sure to ask for panic check
-                  if (parsedRollResult.critical === true) {
-                  //set crit fail
-                  critFail = true;
-                }
-              } else if (parsedRollResult.success === true && this.type === 'character') {
-                //calculate stress reduction
-              let onesValue = Number(String(parsedRollResult.total).charAt(String(parsedRollResult.total).length - 1));
-                //decrease stress by ones place of roll value and retrieve the flavor text from the result
-              let removeStress = await this.modifyActor('system.other.stress.value', onesValue, null, false);
-                flavorText = removeStress[1];
+          //calm outcome
+          if (useCalm) {
+            //prep text based on success or failure
+            if (parsedRollResult.success === false && this.type === 'character') {
+              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                //increase stress by 1 and retrieve the flavor text from the result
+                let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
+                flavorText = removeCalm[1];
               }
-            //no calm outcome
-            } else {
-              //prep text based on success or failure
-              if (parsedRollResult.success === false && this.type === 'character') {
-                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
-                  //increase stress by 1 and retrieve the flavor text from the result
-                  let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
-                  flavorText = addStress[1];
-                }
-                  //if critical failure, make sure to ask for panic check
-                  if (parsedRollResult.critical === true) {
-                  //set crit fail
-                  critFail = true;
-                }
-              } else if (parsedRollResult.success === true && this.type === 'character') {
-                //calculate stress reduction
-              let onesValue = -1 * Number(String(parsedRollResult.total).charAt(String(parsedRollResult.total).length - 1));
-                //decrease stress by ones place of roll value and retrieve the flavor text from the result
-              let removeStress = await this.modifyActor('system.other.stress.value', onesValue, null, false);
-                flavorText = removeStress[1];
+                //if critical failure, make sure to ask for panic check
+                if (parsedRollResult.critical === true) {
+                //set crit fail
+                critFail = true;
               }
+            } else if (parsedRollResult.success === true && this.type === 'character') {
+              //calculate stress reduction
+            let onesValue = Number(String(parsedRollResult.total).charAt(String(parsedRollResult.total).length - 1));
+              //decrease stress by ones place of roll value and retrieve the flavor text from the result
+            let removeStress = await this.modifyActor('system.other.stress.value', onesValue, null, false);
+              flavorText = removeStress[1];
             }
-          //0e rest save
+          //no calm outcome
           } else {
-            //calm outcome
-            if (useCalm) {
-              //prep text based on success or failure
-              if (parsedRollResult.success === false && this.type === 'character') {
-                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
-                  //increase stress by 1 and retrieve the flavor text from the result
-                  let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
-                  flavorText = removeCalm[1];
-                }
-                  //if critical failure, make sure to ask for panic check
-                  if (parsedRollResult.critical === true) {
-                  //set crit fail
-                  critFail = true;
-                }
-              } else if (parsedRollResult.success === true && this.type === 'character') {
-                //calculate stress reduction
-              let succeedBy = Math.floor((rollTarget - parsedRollResult.total) / 10);
-                //double it if critical
-              if (parsedRollResult.critical) {
-                succeedBy = succeedBy * 2;
+            //prep text based on success or failure
+            if (parsedRollResult.success === false && this.type === 'character') {
+              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+                //increase stress by 1 and retrieve the flavor text from the result
+                let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
+                flavorText = addStress[1];
               }
-                //decrease stress by ones place of roll value and retrieve the flavor text from the result
-              let removeStress = await this.modifyActor('system.other.stress.value', succeedBy, null, false);
-                flavorText = removeStress[1];
+                //if critical failure, make sure to ask for panic check
+                if (parsedRollResult.critical === true) {
+                //set crit fail
+                critFail = true;
               }
-            //no calm outcome
-            } else {
-              //prep text based on success or failure
-              if (parsedRollResult.success === false && this.type === 'character') {
-                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
-                  //increase stress by 1 and retrieve the flavor text from the result
-                  let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
-                  flavorText = addStress[1];
-                }
-                  //if critical failure, make sure to ask for panic check
-                  if (parsedRollResult.critical === true) {
-                  //set crit fail
-                  critFail = true;
-                }
-              } else if (parsedRollResult.success === true && this.type === 'character') {
-                //calculate stress reduction
-              let succeedBy = -1 * Math.floor((rollTarget - parsedRollResult.total) / 10);
-                //double it if critical
-              if (parsedRollResult.critical) {
-                succeedBy = succeedBy * 2;
-              }
-                //decrease stress by ones place of roll value and retrieve the flavor text from the result
-              let removeStress = await this.modifyActor('system.other.stress.value', succeedBy, null, false);
-                flavorText = removeStress[1];
-              }
+            } else if (parsedRollResult.success === true && this.type === 'character') {
+              //calculate stress reduction
+            let onesValue = -1 * Number(String(parsedRollResult.total).charAt(String(parsedRollResult.total).length - 1));
+              //decrease stress by ones place of roll value and retrieve the flavor text from the result
+            let removeStress = await this.modifyActor('system.other.stress.value', onesValue, null, false);
+              flavorText = removeStress[1];
             }
           }
+        //0e rest save
         }
         //bankruptcy save
         if (specialRoll === 'bankruptcySave') {
@@ -1800,61 +1619,31 @@ export class MothershipActor extends Actor {
         //prep text based on success or failure
         if (parsedRollResult.success === false && this.type === 'character') {
           //if first edition
-          if (firstEdition) {
-            //if calm not enabled
-            if (!useCalm) {
-              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
-                //increase stress by 1 and retrieve the flavor text from the result
-                let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
-                flavorText = addStress[1];
-              }
-                //if critical failure, make sure to ask for panic check
-                if (parsedRollResult.critical === true) {
-                //set crit fail
-                critFail = true;
-              }
-            } else {
-              if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
-                //increase stress by 1 and retrieve the flavor text from the result
-                let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
-                flavorText = removeCalm[1];
-              }
-                //if critical failure, make sure to ask for panic check
-                if (parsedRollResult.critical === true) {
-                //set crit fail
-                critFail = true;
-              }
+          //if calm not enabled
+          if (!useCalm) {
+            if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+              //increase stress by 1 and retrieve the flavor text from the result
+              let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
+              flavorText = addStress[1];
             }
-          //if 0e
+              //if critical failure, make sure to ask for panic check
+              if (parsedRollResult.critical === true) {
+              //set crit fail
+              critFail = true;
+            }
           } else {
-            //if calm not enabled
-            if (!useCalm) {
-              //on Save failure
-              if (attribute === 'sanity' || attribute === 'fear' || attribute === 'body' || attribute === 'armor') {
-                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
-                  //gain 1 stress
-                  let addStress = await this.modifyActor('system.other.stress.value', 1, null, false);
-                  flavorText = addStress[1];
-                }
-                  //if critical failure, make sure to ask for panic check
-                  if (parsedRollResult.critical === true) {
-                  //set crit fail
-                  critFail = true;
-                }
-              }
-            } else {
-                if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
-                  //gain 1 stress
-                  let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
-                  flavorText = removeCalm[1];
-                }
-                  //if critical failure, make sure to ask for panic check
-                  if (parsedRollResult.critical === true) {
-                  //set crit fail
-                  critFail = true;
-                }
+            if (game.settings.get('mosh', 'autoStress')) { //If the automatic stress option is enabled
+              //increase stress by 1 and retrieve the flavor text from the result
+              let removeCalm = await this.modifyActor('system.other.stress.value', null, '-1d10', false);
+              flavorText = removeCalm[1];
+            }
+              //if critical failure, make sure to ask for panic check
+              if (parsedRollResult.critical === true) {
+              //set crit fail
+              critFail = true;
             }
           }
+        //if 0e
         } else if (parsedRollResult.success === true && this.type === 'character') {
           //flavor text = generic roll success
         flavorText = this.getFlavorText('attribute', attribute, 'check');
@@ -1877,7 +1666,6 @@ export class MothershipActor extends Actor {
         needsDesc: needsDesc,
         woundEffect: woundEffect,
         critFail: critFail,
-      firstEdition: game.settings.get('mosh', 'firstEdition'),
       useCalm: game.settings.get('mosh', 'useCalm'),
       androidPanic: game.settings.get('mosh', 'androidPanic')
       };
@@ -1935,8 +1723,6 @@ export class MothershipActor extends Actor {
     let msgOutcome = ``;
     let msgChange = ``;
     let chatId = foundry.utils.randomID();
-    let halfDamage = false;
-    let firstEdition = game.settings.get('mosh', 'firstEdition');
     let useCalm = game.settings.get('mosh', 'useCalm');
     let androidPanic = game.settings.get('mosh', 'androidPanic');
     //get information about this field from the actor
@@ -1995,7 +1781,7 @@ export class MothershipActor extends Actor {
             //measure any surplus if we exceeded min/max
             modifySurplus = modifyChange - modifyDifference;
           //if health hits zero, reset to next hp bar
-          if (firstEdition && fieldId === 'health' && modifyNew === 0 && this.system.hits.value < this.system.hits.max) {
+          if (fieldId === 'health' && modifyNew === 0 && this.system.hits.value < this.system.hits.max) {
             //set marker for later
             getWound = true;
             //reset hp
@@ -2020,10 +1806,6 @@ export class MothershipActor extends Actor {
             msgChange = 'decreased';
         msgHeader = fieldPrefix + this.getFlavorText('attribute', fieldId, 'decreaseHeader');
         msgImgPath = this.getFlavorText('attribute', fieldId, 'decreaseImg');
-          }
-          //detect if half damage has been taken
-      if (!firstEdition && (-1 * modifyChange) > (modifyMaximum / 2)) {
-            halfDamage = true;
           }
           //get modification description
             //calculate change type
@@ -2078,8 +1860,7 @@ export class MothershipActor extends Actor {
               msgHeader: msgHeader,
               msgImgPath: msgImgPath,
               msgFlavor: msgFlavor,
-              msgOutcome: msgOutcome,
-              halfDamage: halfDamage
+              msgOutcome: msgOutcome
             };
             //prepare template
             messageTemplate = 'systems/mosh/templates/chat/modifyActor.html';
@@ -2135,7 +1916,7 @@ export class MothershipActor extends Actor {
             //measure any surplus if we exceeded min/max
             modifySurplus = modifyChange - modifyDifference;
             //if health hits zero, reset to next hp bar
-            if (firstEdition && fieldId === 'health' && modifyNew === 0 && this.system.hits.value < this.system.hits.max) {
+            if (fieldId === 'health' && modifyNew === 0 && this.system.hits.value < this.system.hits.max) {
               //set marker for later
               getWound = true;
               //reset hp
@@ -2160,10 +1941,6 @@ export class MothershipActor extends Actor {
                 msgChange = 'decreased';
         msgHeader = fieldPrefix + this.getFlavorText('attribute', fieldId, 'decreaseHeader');
         msgImgPath = this.getFlavorText('attribute', fieldId, 'decreaseImg');
-              }
-              //detect if half damage has been taken
-      if (!firstEdition && (-1 * modifyChange) > (modifyMaximum / 2)) {
-                halfDamage = true;
               }
               //get modification description
                 //calculate change type
@@ -2219,8 +1996,7 @@ export class MothershipActor extends Actor {
                   msgImgPath: msgImgPath,
                   msgFlavor: msgFlavor,
                   modRollString: modRollString,
-                  msgOutcome: msgOutcome,
-                  halfDamage: halfDamage
+                  msgOutcome: msgOutcome
                 };
                 //prepare template
                 messageTemplate = 'systems/mosh/templates/chat/modifyActor.html';

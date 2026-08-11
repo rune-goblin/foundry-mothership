@@ -16,7 +16,7 @@
 <SheetHeader documentName={doc.name} img={doc.img} />
 <br />
 
-<Body system={doc.system} firstEdition={doc.settings.firstEdition} />
+<Body system={doc.system} />
 <br />
 
 <nav class="mosh sheet-tabs tabs" style="height: auto;" data-group="primary">

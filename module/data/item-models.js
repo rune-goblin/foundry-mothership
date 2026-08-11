@@ -51,7 +51,6 @@ export class MoshWeapon extends foundry.abstract.TypeDataModel {
       ranges: new fields.SchemaField({
         short: num(0), medium: num(0), long: num(0), value: str(''),
       }),
-      settings: new fields.SchemaField({ firstEdition: bool(false) }),
     };
   }
 }

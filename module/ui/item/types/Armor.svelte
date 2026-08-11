@@ -3,7 +3,7 @@
   import CheckField from '../parts/CheckField.svelte';
   import { localize } from '../../i18n.js';
 
-  let { system, firstEdition } = $props();
+  let { system } = $props();
 </script>
 
 <div class="item-armor-grid" style="margin-top: 10px; margin-bottom: 10px;">
@@ -15,14 +15,12 @@
         value={system.armorPoints}
         dtype="Number"
       />
-      {#if firstEdition}
-        <Field
-          name="system.damageReduction"
-          label={localize('Mosh.DMGReduction')}
-          value={system.damageReduction}
-          dtype="Number"
-        />
-      {/if}
+      <Field
+        name="system.damageReduction"
+        label={localize('Mosh.DMGReduction')}
+        value={system.damageReduction}
+        dtype="Number"
+      />
     </div>
 
     <div class="circle-statwrapper-horizontal transparentBackground">

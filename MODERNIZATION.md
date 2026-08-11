@@ -17,7 +17,7 @@ memory. API claims below were checked in that file.
 |---|---|
 | Read first | `CLAUDE.md`, then the `foundry-mosh` skill (`.claude/skills/foundry-mosh/`) |
 | The plan | §Phase 4 below — the conversion order, one sheet at a time |
-| Verify with | `npm run check && npm test` (97 specs), `npm run test:e2e` (53 specs) |
+| Verify with | `npm run check && npm test` (97 specs), `npm run test:e2e` (54 specs) |
 | State | `master`, tree clean, **unpushed** |
 
 **Before pushing:** history was rewritten to drop 854 MB of committed release zips, so the
@@ -411,9 +411,8 @@ before the risky sheets:
   component this becomes `{#each}` markup. Do not port string concatenation forward.
 - **Derived data is already computed.** `prepareDerivedData` fills `stats.armor.mod/total`,
   `netHP`, `bleeding`. Read them; don't recompute.
-- **Settings are copied per-sheet today** (`useCalm`, `hideWeight`, `firstEdition`,
-  `androidPanic`). Components can read settings directly — but `firstEdition` is slated for
-  removal, so don't entrench it.
+- **Settings are copied per-sheet today** (`useCalm`, `hideWeight`, `androidPanic`).
+  Components can read settings directly. `firstEdition` no longer exists (§11).
 - **`class-sheet.js` writes onto the model while rendering** (`from_list_names`,
   `skills_granted_object`). Derive into local state instead; that is the precondition for
   tightening `base_adjustment`/`selected_adjustment` into real schemas.
@@ -427,11 +426,12 @@ before the risky sheets:
 
 #### Queued behind this phase
 
-**Remove the `firstEdition` / 0e rules branches** — 50 references across 12 files (21 in
-`actor.js`), plus the `hideWeight` setting labelled "Hide 0e Weight" and an `onChange` that
-migrates actor stress. Deferred by decision until the automation had test cover; it now does,
-so this can happen whenever. Doing it *before* the big sheet conversions removes 12 template
-conditionals from work that has to be redone otherwise.
+~~Remove the `firstEdition` / 0e rules branches~~ — **done, see §11.** Landed before the big
+sheet conversions so the conditionals were deleted rather than ported into Svelte and deleted
+afterwards.
+
+**`creature-settings._updateObject` still does not persist** (§8). That is a design decision,
+not a port, and it blocks conversion item 4. Settle what should save before converting it.
 
 ### Phase 5 — TypeScript conversion (opportunistic, ongoing)
 
@@ -528,10 +528,7 @@ and a locally built release zip carries 5 packs with `.ldb`/`CURRENT`/`MANIFEST`
   it from `game.settings.get('mosh','table1ePanicStressAndroid')`, the configurable form
   the rolltable-config window expects. Deleting them removed the outdated copies.
   Recoverable from history.
-- **The `firstEdition` rules code stays for now** by decision: 50 references across 12
-  files (21 in `actor.js`), plus a `hideWeight` setting labelled "Hide 0e Weight" and an
-  `onChange` that migrates actor stress. Collapsing it to the 1e path is behaviour change
-  in untested automation, so it is queued behind phase 2's specs.
+- ~~The `firstEdition` rules code stays for now~~ — **removed, see §11.**
 - **Existing worlds that used a 0e compendium will have dangling links.** Nothing in the
   system references them any more, but a world built on 0e content is not migrated.
 
@@ -778,3 +775,62 @@ The tiers are honest about this work, checked by mutation rather than assumed:
 
 Rendering was checked against the real headless Foundry, not eyeballed from the markup — which
 is how the `.application` / theming problem in §Phase 4's hazards was found and fixed.
+
+
+---
+
+## 11. The 0e / `firstEdition` removal — done
+
+The rules switch is gone. `firstEdition` defaulted to **true**, so the 1e path is what every
+default install already ran; everything below collapses to it.
+
+| Area | Removed |
+|---|---|
+| `module/actor/actor.js` | 21 refs across `rollTable`, `rollCheck`, `modifyActor` |
+| Templates | 18 refs — 12 in `actor-sheet.html`, 3 each in `creature-sheet.html` and `item-class-sheet.html` |
+| `module/settings.js` | the `firstEdition` registration and its 82-line stress-migration `onChange`; five `table0e*` settings |
+| Sheets / components | the per-sheet `settings.firstEdition` copies, and the `firstEdition` prop through `ItemSheet.svelte` → `Armor`/`Weapon` |
+| Schema | `weapon.system.settings.firstEdition`, from the model **and** `template.json` |
+| Also | `halfDamage`, `system.other.resolve`'s 0e duplicate, one orphaned lang key, the 0e rows of the rolltable-config window |
+
+`hideWeight` **survives**, relabelled from "Hide 0e Weight" — it still hides the weight columns,
+and deleting the weight mechanic is a separate, larger decision nobody has taken.
+
+### It was a repair, not just a simplification
+
+**The 0e path was already broken.** Its five rolltable settings — the four `table0ePanic*` and
+`table0eDeath` — point at documents that phase 3 deleted along with the 0e compendia. Verified
+id by id: every `table0e*` default resolves to nothing, every `table1e*` default resolves to a
+shipped table. Turning the setting off gave you a panic check against a rolltable that did not
+exist.
+
+`test/e2e/compendiums.spec.ts` now pins that invariant: every rolltable setting the system can
+select must resolve to a real document. It asserts the count it checked (14) so it cannot pass
+on an empty list.
+
+### What was *not* covered, and why
+
+**The unit specs were blind to this flag.** `test/parse-roll-result.test.ts` stubbed
+`game.settings.get` to return `false` for everything except `useCalm`, so all 30 specs ran the
+**0e** path — the branches being deleted. Flipping the stub to `true` changed nothing, which
+proves the specs never reached those branches in either direction.
+
+So the suites are not a safety net here, and a green run should not be read as one. The three
+methods holding the 21 refs are `async` and end in `renderTemplate`/`ChatMessage.create`;
+building a stubbing harness for them is really the phase-5 "split `actor.js` into tested
+modules" job, not something to attach to this sweep.
+
+What the removal was controlled with instead:
+
+- **Every edit is a branch collapse, never a rewrite.** The three large `if/else` blocks in
+  `rollCheck` were collapsed by brace-matching, then the retained text was diffed against the
+  original true-branch: byte-identical.
+- `node --check` after each mechanical pass, and the full `check` / `vitest` / `build` /
+  `test:e2e` tiers after.
+- A real world **reaching `game.ready`** with the setting and its 82-line `onChange` gone.
+
+### Worth knowing next time
+
+Two e2e runs failed at `waitForGameReady` and looked like a broken world. They were not: a
+`kill -9` on the Foundry process left the LevelDB dirty, and a clean boot fixed it. The
+client console showed no errors and `game.ready` came up `true`. Kill the port gently.

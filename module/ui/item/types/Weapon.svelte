@@ -11,7 +11,7 @@
     'Gunshot', 'Gunshot [-]', 'Gunshot [+]',
   ];
 
-  let { system, firstEdition } = $props();
+  let { system } = $props();
 
   // Weapons predating the single `ranges.value` string still carry the short/medium/long trio.
   // getData() used to compose them and write the result back onto the model while rendering;
@@ -43,13 +43,11 @@
     </div>
 
     <div class="circle-statwrapper-horizontal transparentBackground">
-      {#if firstEdition}
-        <CheckField
-          name="system.antiArmor"
-          label={localize('Mosh.AntiArmor')}
-          checked={system.antiArmor}
-        />
-      {/if}
+      <CheckField
+        name="system.antiArmor"
+        label={localize('Mosh.AntiArmor')}
+        checked={system.antiArmor}
+      />
       <Field
         name="system.ranges.value"
         label={localize('Mosh.Range')}
@@ -77,22 +75,20 @@
     <br />
 
     <div class="resource">
-      {#if firstEdition}
-        <label class="resource-label" for="system.woundEffect">{localize('Mosh.WoundEffect')}</label>
-        <input
-          id="system.woundEffect"
-          type="text"
-          list="woundRolls"
-          name="system.woundEffect"
-          value={system.woundEffect}
-          data-dtype="String"
-        />
-        <datalist id="woundRolls">
-          {#each WOUND_ROLLS as roll (roll)}
-            <option value={roll}></option>
-          {/each}
-        </datalist>
-      {/if}
+      <label class="resource-label" for="system.woundEffect">{localize('Mosh.WoundEffect')}</label>
+      <input
+        id="system.woundEffect"
+        type="text"
+        list="woundRolls"
+        name="system.woundEffect"
+        value={system.woundEffect}
+        data-dtype="String"
+      />
+      <datalist id="woundRolls">
+        {#each WOUND_ROLLS as roll (roll)}
+          <option value={roll}></option>
+        {/each}
+      </datalist>
     </div>
   </div>
 

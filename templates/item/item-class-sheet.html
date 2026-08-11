@@ -75,16 +75,8 @@
       <div class="mainstatwrapper">
         <div class="resource mainstat">
           <div class="mainstatlabel">
-            <span class=" mainstattext" data-key="health" data-label="{{#if system.settings.firstEdition}}
-                {{ localize 'Mosh.Wounds' }} 
-                 {{else}}
-                {{ localize 'Mosh.Hits' }} 
-                 {{/if}}">
-              {{#if system.settings.firstEdition}}
+            <span class=" mainstattext" data-key="health" data-label="{{ localize 'Mosh.Wounds' }}">
               {{ localize 'Mosh.Wounds' }}
-              {{else}}
-              {{ localize 'Mosh.Hits' }}
-              {{/if}}
             </span>
           </div>
           <input id="system.base_adjustment.max_wounds" class="circle-input" type="text"
@@ -144,11 +136,7 @@
   </div>
   <br />
   <div class="" style="margin-left: 6px; margin-right: 0px; flex: 0; grid-column-start: 1; grid-column-end: 3;">
-    {{#if system.settings.firstEdition}}
     <div class="resource-label">{{ localize 'Mosh.TraumaResponse' }}</div>
-    {{else}}
-    <div class="resource-label">{{ localize 'Mosh.StressResponse' }}</div>
-    {{/if}}
     <textarea name="system.trauma_response" rows="2" class="textarea-input" type="text"
       data-target="system.trauma_response" placeholder="" style="height: 50px;">{{system.trauma_response}}</textarea>
 

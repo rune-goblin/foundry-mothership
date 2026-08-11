@@ -49,7 +49,6 @@ export class MothershipItemSheet extends foundry.appv1.sheets.ItemSheet {
     }
     data.data.system.settings.useCalm = game.settings.get("mosh", "useCalm");
     data.data.system.settings.hideWeight = game.settings.get("mosh", "hideWeight");
-    data.data.system.settings.firstEdition = game.settings.get("mosh", "firstEdition");
     data.data.system.settings.androidPanic = game.settings.get("mosh", "androidPanic");
 
     data.data.enriched = [];

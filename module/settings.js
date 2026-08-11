@@ -2,88 +2,6 @@ import { rolltableConfig } from "./windows/settings-rolltables.js";
 
 export const registerSettings = function () {
   
-  game.settings.register('mosh', 'firstEdition', {
-    name: "1e Rules",
-    hint: "Use the 1st edition rules and character sheet.",
-    default: true,
-    scope: 'world',
-    type: Boolean,
-    config: true,
-    onChange: value => {
-      //log the change
-      console.log("firstEdition set to " + value)
-      //get list of actors
-      let actorList = game.actors;
-      let actorName = '';
-      let maxStart = null;
-      let maxEnd = null;
-      //only make changes if calm is false
-      if (game.settings.get('mosh','useCalm') === false) {
-        //if setting is now true
-        if (value) {
-          //loop through all actors and update their maximum stress
-            //get list of actors
-            let actorList = game.actors;
-            //loop through each actor
-            actorList.forEach(function(actor){ 
-              //loop through each result
-              if (actor.type === 'character') {
-                //set character name
-                actorName = actor.name;
-                //set current values
-                maxStart = actor.system.other.stress.max;
-                //set max stress to 20
-                actor.update({'system.other.stress.max': 20});
-                //set final values
-                actorList = game.actors;
-                maxEnd = 20;
-                //log change
-                console.log(actorName + " stress.max changed from " + maxStart + " to " + maxEnd);
-                //rerender this sheet
-                actor.render();
-              }
-            });
-        //if value is now false
-        } else {
-          //loop through all actors and update their maximum stress
-            //get list of actors
-            let actorList = game.actors;
-            //loop through each actor
-            actorList.forEach(function(actor){ 
-              //loop through each result
-              if (actor.type === 'character') {
-                //set character name
-                actorName = actor.name;
-                //set current values
-                maxStart = actor.system.other.stress.max;
-                //set max stress to 999
-                actor.update({'system.other.stress.max': 999});
-                //set final values
-                actorList = game.actors;
-                maxEnd = 999;
-                //log change
-                console.log(actorName + " stress.max changed from " + maxStart + " to " + maxEnd);
-                //rerender this sheet
-                actor.render();
-              }
-            });
-        }
-      } else {
-        //get list of actors
-        let actorList = game.actors;
-        //loop through each actor
-        actorList.forEach(function(actor){ 
-          //loop through each result
-          if (actor.type === 'character') {
-            //log change
-            console.log("First Edition switched to " + value);
-            //rerender this sheet
-            actor.render();
-          }
-        });
-      }
-    }
-  });
 
   game.settings.register('mosh', 'macroTarget', {
     name: "Macro Target",
@@ -150,8 +68,8 @@ export const registerSettings = function () {
   });
 
   game.settings.register('mosh', 'hideWeight', {
-    name: "Hide 0e Weight",
-    hint: "Hide the 0e weight mechanic in the items list for players and ships?",
+    name: "Hide Weight",
+    hint: "Hide the weight mechanic in the items list for players and ships?",
     default: true,
     scope: 'world',
     type: Boolean,
@@ -258,16 +176,9 @@ export const registerSettings = function () {
                 actor.update({'system.other.stress.min': Math.round((85-actor.system.other.stress.max)/3)});
                 minEnd = Math.round((85-actor.system.other.stress.max)/3);
               }
-            //set max stress based on current system setting
-            if (game.settings.get('mosh','firstEdition')) {
-              //set max stress to 20
-              actor.update({'system.other.stress.max': 20});
-              maxEnd = 20;
-            } else {
-              //set max stress to 999
-              actor.update({'system.other.stress.max': 999});
-              maxEnd = 999;
-            }
+            //set max stress
+            actor.update({'system.other.stress.max': 20});
+            maxEnd = 20;
             //convert calm to stress
             actor.update({'system.other.stress.value': Math.round((85-actor.system.other.stress.value)/3)});
             valueEnd = Math.round((85-actor.system.other.stress.value)/3);
@@ -320,34 +231,6 @@ export const registerSettings = function () {
     hint: "Customize which rolltables are used.",
     icon: "fa-solid fa-list",
     type: rolltableConfig
-  });
-
-  game.settings.register('mosh', 'table0ePanicStressNormal', {
-    scope: 'world',
-    config: false,
-    type: String,
-    default: "1vCm4ElRPotQXgNB"
-  });
-
-  game.settings.register('mosh', 'table0ePanicStressAndroid', {
-    scope: 'world',
-    config: false,
-    type: String,
-    default: "egJ11m2mJM3HBd6d"
-  });
-
-  game.settings.register('mosh', 'table0ePanicCalmNormal', {
-    scope: 'world',
-    config: false,
-    type: String,
-    default: "kqKpQAXyLTEEyz6Z"
-  });
-
-  game.settings.register('mosh', 'table0ePanicCalmAndroid', {
-    scope: 'world',
-    config: false,
-    type: String,
-    default: "VW6HQ29T7zClNIZ6"
   });
 
   game.settings.register('mosh', 'table1ePanicStressNormal', {
@@ -411,13 +294,6 @@ export const registerSettings = function () {
     config: false,
     type: String,
     default: "uVfC1CqYdojaJ7yR"
-  });
-
-  game.settings.register('mosh', 'table0eDeath', {
-    scope: 'world',
-    config: false,
-    type: String,
-    default: "cZOHlhEJcYGZsQBM"
   });
 
   game.settings.register('mosh', 'table1eDeath', {

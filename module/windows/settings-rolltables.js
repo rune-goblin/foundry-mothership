@@ -22,10 +22,6 @@ export class rolltableConfig extends FormApplication {
      */
     getData() {
         const tableSelection = super.getData();
-        tableSelection.table0ePanicStressNormal = game.settings.get("mosh", "table0ePanicStressNormal");
-        tableSelection.table0ePanicStressAndroid = game.settings.get("mosh", "table0ePanicStressAndroid");
-        tableSelection.table0ePanicCalmNormal = game.settings.get("mosh", "table0ePanicCalmNormal");
-        tableSelection.table0ePanicCalmAndroid = game.settings.get("mosh", "table0ePanicCalmAndroid");
         tableSelection.table1ePanicStressNormal = game.settings.get("mosh", "table1ePanicStressNormal");
         tableSelection.table1ePanicStressAndroid = game.settings.get("mosh", "table1ePanicStressAndroid");
         tableSelection.table1ePanicCalmNormal = game.settings.get("mosh", "table1ePanicCalmNormal");
@@ -35,7 +31,6 @@ export class rolltableConfig extends FormApplication {
         tableSelection.table1eWoundGunshot = game.settings.get("mosh", "table1eWoundGunshot");
         tableSelection.table1eWoundFireExplosives = game.settings.get("mosh", "table1eWoundFireExplosives");
         tableSelection.table1eWoundGoreMassive = game.settings.get("mosh", "table1eWoundGoreMassive");
-        tableSelection.table0eDeath = game.settings.get("mosh", "table0eDeath");
         tableSelection.table1eDeath = game.settings.get("mosh", "table1eDeath");
         tableSelection.table1eDistressSignal = game.settings.get("mosh", "table1eDistressSignal");
         tableSelection.table1eMegadamageEffects = game.settings.get("mosh", "table1eMegadamageEffects");
@@ -64,10 +59,6 @@ export class rolltableConfig extends FormApplication {
      */
     async _updateObject(event, formData) {
         await Promise.all([
-            game.settings.set("mosh", "table0ePanicStressNormal", formData["table0ePanicStressNormal"]),
-            game.settings.set("mosh", "table0ePanicStressAndroid", formData["table0ePanicStressAndroid"]),
-            game.settings.set("mosh", "table0ePanicCalmNormal", formData["table0ePanicCalmNormal"]),
-            game.settings.set("mosh", "table0ePanicCalmAndroid", formData["table0ePanicCalmAndroid"]),
             game.settings.set("mosh", "table1ePanicStressNormal", formData["table1ePanicStressNormal"]),
             game.settings.set("mosh", "table1ePanicStressAndroid", formData["table1ePanicStressAndroid"]),
             game.settings.set("mosh", "table1ePanicCalmNormal", formData["table1ePanicCalmNormal"]),
@@ -77,7 +68,6 @@ export class rolltableConfig extends FormApplication {
             game.settings.set("mosh", "table1eWoundGunshot", formData["table1eWoundGunshot"]),
             game.settings.set("mosh", "table1eWoundFireExplosives", formData["table1eWoundFireExplosives"]),
             game.settings.set("mosh", "table1eWoundGoreMassive", formData["table1eWoundGoreMassive"]),
-            game.settings.set("mosh", "table0eDeath", formData["table0eDeath"]),
             game.settings.set("mosh", "table1eDeath", formData["table1eDeath"]),
             game.settings.set("mosh", "table1eDistressSignal", formData["table1eDistressSignal"]),
             game.settings.set("mosh", "table1eMegadamageEffects", formData["table1eMegadamageEffects"]),

@@ -43,7 +43,6 @@ export class MoshItemSheet extends DocumentSheetV2 {
           relativeTo: this.document,
         }),
       },
-      settings: { firstEdition: game.settings.get('mosh', 'firstEdition') },
     };
   }
 
