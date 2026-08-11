@@ -105,7 +105,7 @@
   "secondaryTokenAttribute": "other.stress",
   "url": "https://github.com/rune-goblin/foundry-mothership",
   "manifest": "https://github.com/rune-goblin/foundry-mothership/releases/latest/download/system.json",
-  "download": "https://github.com/rune-goblin/foundry-mothership/releases/download/v0.6.1/mosh.zip",
+  "download": "https://github.com/rune-goblin/foundry-mothership/releases/latest/download/mosh.zip",
   "license": "LICENSE.txt",
   "authors": [
     {
