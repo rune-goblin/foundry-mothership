@@ -1,7 +1,7 @@
 /**
  * No longer registered for any type: the eight simple item types moved to
- * ui/item/ItemSheetApp.js in phase 4. This survives only as MothershipSkillSheet's base and
- * dies with it, along with templates/item/item-skill-sheet.html.
+ * ui/item/ItemSheetApp.js in phase 4, and skill followed to ui/skill/SkillSheetApp.js. This
+ * survives only as MothershipClassSheet's base and dies with it.
  *
  * @extends {ItemSheet}
  */

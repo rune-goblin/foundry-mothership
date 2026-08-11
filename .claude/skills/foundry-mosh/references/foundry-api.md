@@ -44,7 +44,7 @@ Use `foundry.utils.*`, `foundry.applications.handlebars.renderTemplate`,
 
 `game.user`/`game.user.isGM`, `game.users`, `game.actors`, `game.items`, `game.macros`,
 `game.settings`, `game.i18n`, `game.packs.get('mosh.<pack>')`, `game.system.id`/`.version`,
-`game.world.id`, `game.ready`, and this system's `game.mosh` API object.
+`game.world.id`, `game.ready`, and this system's `game.mothershiprpg` API object.
 
 ## Hooks
 
@@ -72,8 +72,8 @@ Use `foundry.utils.*`, `foundry.applications.handlebars.renderTemplate`,
 ## Settings
 
 ```js
-game.settings.register('mosh', key, { scope: 'world'|'client'|'user', config, type, default, onChange });
-game.settings.get('mosh', key);
+game.settings.register('mothershiprpg', key, { scope: 'world'|'client'|'user', config, type, default, onChange });
+game.settings.get('mothershiprpg', key);
 ```
 
 29 are registered in `module/settings.js`. `registerMenu` for config apps (this system uses

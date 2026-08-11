@@ -24,6 +24,13 @@ const exists = (path: string) => existsSync(fileURLToPath(new URL(path, root)));
 // match on the lowercased basename rather than globbing by exact name.
 const itemComponents = globSync('module/ui/item/types/*.svelte', { cwd: fileURLToPath(root) });
 
+// Types whose sheet outgrew the shared item component live in their own folder, outside that
+// glob. Listing them beats widening it to module/ui/**, where the shared primitives would match
+// type names like "item" and cover nothing.
+const OWN_COMPONENTS: Record<string, string[]> = {
+  skill: ['module/ui/skill/SkillSheet.svelte'],
+};
+
 // The Handlebars paths stay listed so the types still on AppV1 keep their cover until they
 // convert; a missing file is skipped, an empty list fails.
 const SOURCES: Record<string, Record<string, string[]>> = {
@@ -33,6 +40,7 @@ const SOURCES: Record<string, Record<string, string[]>> = {
       [
         `templates/item/item-${type}-sheet.html`,
         ...itemComponents.filter((p) => p.split('/').pop()!.toLowerCase().startsWith(type)),
+        ...(OWN_COMPONENTS[type] ?? []),
       ],
     ]),
   ),

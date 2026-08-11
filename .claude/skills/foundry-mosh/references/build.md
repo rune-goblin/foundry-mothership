@@ -2,7 +2,7 @@
 
 ## The build
 
-Vite lib build: `module/index.js` → `dist/mosh.js` + `dist/mosh.css`, ES format, no minify,
+Vite lib build: `module/index.js` → `dist/mothershiprpg.js` + `dist/mothershiprpg.css`, ES format, no minify,
 sourcemaps on. `system.json` loads `dist/`.
 
 ```js
@@ -21,14 +21,14 @@ npm run clean     # rm -rf dist
 `./scripts/packs.sh pack`) before the system will load.
 
 **What is not bundled:** `templates/*.html`, `images/`, `lang/`, `packs/` are served by
-Foundry from disk at `systems/mosh/…`. Reference them by that runtime path; never `import`
+Foundry from disk at `systems/mothershiprpg/…`. Reference them by that runtime path; never `import`
 art, which would inline a second copy into the bundle. The two build warnings about
-`systems/mosh/images/...webp` "not resolved at build time" are correct and expected.
+`systems/mothershiprpg/images/...webp` "not resolved at build time" are correct and expected.
 
 ## Dev install
 
 ```bash
-npm run setup     # dev install: symlink scaffold at Data/systems/mosh
+npm run setup     # dev install: symlink scaffold at Data/systems/mothershiprpg
 npm run deploy    # release rehearsal: a link-free copy, same shape as the zip
 ```
 
@@ -67,7 +67,7 @@ Tag `vX.Y.Z` → `.github/workflows/release.yml`:
 3. zips an **include-list**: `system.json template.json LICENSE.txt README.md dist packs
    lang templates images data`, excluding `packs/_source` and LevelDB lock/log files
 4. verifies every pack carries `.ldb`/`CURRENT`/`MANIFEST`, that no sources leaked, and that
-   `dist/mosh.js` is present
+   `dist/mothershiprpg.js` is present
 5. publishes the zip + `system.json` to GitHub Releases
 
 An **include-list, not an exclude-list** — the repo carries build tooling, JS sources and dev

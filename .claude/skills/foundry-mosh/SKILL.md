@@ -30,10 +30,11 @@ structured data `foundry.abstract.TypeDataModel` + `defineSchema()`.
 | Dialogs | ✅ DialogV2 throughout |
 | Namespacing | ✅ `foundry.utils.*`, `foundry.documents.collections.*` |
 | Svelte | ✅ wired into vite, `npm run check`, vitest — runes mode forced on |
-| Item sheets | ✅ the 8 simple types are ApplicationV2 + Svelte in `module/ui/item/` |
-| **Sheets** | ❌ 7 classes still `foundry.appv1.sheets.*` with `getData`/`activateListeners` |
+| Shared components | ✅ `module/ui/parts/` — build conversions out of these, see `MODERNIZATION.md` §20 |
+| Item sheets | ✅ the 8 simple types (`module/ui/item/`) and `skill` (`module/ui/skill/`) |
+| **Sheets** | ❌ 6 classes still `foundry.appv1.sheets.*` with `getData`/`activateListeners` |
 | **Windows** | ❌ 4 still the bare `FormApplication` global with `_updateObject` |
-| **Templates** | ❌ 28 Handlebars `.html` files |
+| **Templates** | ❌ 27 Handlebars `.html` files |
 
 Converting those is phase 4 (see `MODERNIZATION.md`). Don't add new v1 code; when you
 *touch* a v1 class, prefer converting it whole over extending it.
@@ -60,11 +61,13 @@ you go. Node ≥22.18 strips types, so scripts run under plain `node` with no `t
 
 ## Essentials worth knowing without opening a file
 
-**Identity.** System id `mosh`. It keys settings (`game.settings.get('mosh', …)`), flags,
-and pack names (`mosh.<pack>`). Foundry serves the system at `systems/mosh/…` — that is
-the path templates and art use at runtime.
+**Identity.** System id `mothershiprpg` (renamed from `mosh`; `MODERNIZATION.md` §18). It keys
+settings (`game.settings.get('mothershiprpg', …)`), flags, and pack names
+(`mothershiprpg.<pack>`). Foundry serves the system at `systems/mothershiprpg/…` — that is the
+path templates and art use at runtime. The `.mosh` CSS classes and `Mosh.*` lang keys are
+internal and were deliberately kept.
 
-**Public API.** `game.mosh` holds the macro entry points (`rollItemMacro`, `initRollTable`,
+**Public API.** `game.mothershiprpg` holds the macro entry points (`rollItemMacro`, `initRollTable`,
 `initRollCheck`, `initModifyActor`, …). Compendium macros call these, so **changing a
 signature breaks shipped content** — grep `packs/_source/` before you do.
 
@@ -96,6 +99,7 @@ is the ground truth — grep it rather than guessing about an API.
 - **`template.json` is inert but kept deliberately** — it is the oracle the DataModel
   equivalence tests compare against. Changing a schema means changing both, on purpose.
 - **A killed e2e run leaves the GM session occupied** and the next run hangs 30s then fails
-  in `globalSetup`. Fix: `lsof -ti:30005 | xargs kill`.
+  in `globalSetup`. Fix: `lsof -ti:30005 | xargs kill -9`, then wait for the port to actually
+  free — a fixed `sleep` is not enough.
 - **Foundry holds an exclusive LevelDB lock** on every pack it can see. `scripts/packs.sh`
   refuses to run while Foundry is open; that guard is deliberate.

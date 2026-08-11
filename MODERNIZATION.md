@@ -11,15 +11,16 @@ memory. API claims below were checked in that file.
 ## Start here
 
 **Phases 1–3, the test harness, phase 4's step 0 + first conversion, the 0e removal, the schema
-repairs, the `mothershiprpg` rename and the shared component layer are complete.**
-**Next: `skill-sheet.js` (§Phase 4 item 2), then the rest of the order.**
+repairs, the `mothershiprpg` rename, the shared component layer and `skill-sheet.js` are
+complete.**
+**Next: the three simple windows (§Phase 4 item 3), then the rest of the order.**
 
 | | |
 |---|---|
 | Read first | `CLAUDE.md`, then the `foundry-mosh` skill (`.claude/skills/foundry-mosh/`) |
 | The plan | §Phase 4 below — the conversion order, one sheet at a time |
 | Build on | `module/ui/parts/` — the shared primitives (§20), before writing bespoke markup |
-| Verify with | `npm run check && npm test` (119 specs), `npm run test:e2e` (57 specs) |
+| Verify with | `npm run check && npm test` (120 specs), `npm run test:e2e` (64 specs) |
 | State | `master`, tree clean, pushed and tracking `origin/master` |
 
 **Pushed.** The rewritten history is live on `origin/master` (§14) and `master` tracks it, so
@@ -384,8 +385,8 @@ before the risky sheets:
 | # | Target | Lines | Notes |
 |---|---|---|---|
 | ~~1~~ | ~~`item-sheet.js` + 8 item templates~~ | 80 | ✅ **done** — see §10. |
-| 2 | `skill-sheet.js` | 72 | **Next.** Extends the AppV1 `MothershipItemSheet`, which now exists only for that; both it and `item-skill-sheet.html` die with this conversion. Adds drag-drop (`foundry.applications.ux.DragDrop` in V2). |
-| 3 | `ship-setup`, `ship-megadamage`, `settings-rolltables` | 73 / 120 / 89 | The simple windows. All three still extend the **bare global** `FormApplication`, which CLAUDE.md forbids in new code. `ship-megadamage` also has a stale `data.` path fixed but unverified. |
+| ~~2~~ | ~~`skill-sheet.js`~~ | 72 | ✅ **done** — see §21. `item-skill-sheet.html` deleted; `item-sheet.js` now survives only for `class-sheet.js`. |
+| 3 | `ship-setup`, `ship-megadamage`, `settings-rolltables` | 73 / 120 / 89 | **Next.** The simple windows. All three still extend the **bare global** `FormApplication`, which CLAUDE.md forbids in new code. `ship-megadamage` also has a stale `data.` path fixed but unverified. |
 | 4 | `creature-settings.js` | 160 | **Resolve the `FIXME` first** — `_updateObject` still does not persist (see §8). Decide what should save, then convert. |
 | 5 | `class-sheet.js` | 340 | Mutates the model it renders from; converting it is what unblocks tightening the two free-form `ObjectField`s (§7). |
 | 6 | `ship-sheet.js`, `ship-sheet-sbt.js`, `creature-sheet.js`, `ship-deckplan.js` | 275 / 498 / 661 / 40 | SBT is the **default** ship sheet — check which you are looking at. Schema holes fixed ahead of time (§10). |
@@ -1289,3 +1290,87 @@ latter's ambient `declare module '*.svelte'`, a `.ts` spec cannot import the com
 
 **Verified:** `npm run check` (0 errors, 0 warnings, 226 files) · **119 vitest** (97 + 22) ·
 **57 Playwright** · `npm run build`.
+
+
+---
+
+## 21. `skill-sheet.js` — converted, and two bugs it had been hiding
+
+Phase 4 item 2. `MothershipSkillSheet` (AppV1, extending `MothershipItemSheet`) and
+`templates/item/item-skill-sheet.html` are gone, replaced by:
+
+```
+module/ui/skill/SkillSheetApp.js   MoshSkillSheet extends MoshItemSheet
+module/ui/skill/SkillSheet.svelte  built entirely from module/ui/parts/ (§20)
+```
+
+`module/item/item-sheet.js` **stays** — `MothershipClassSheet` is its last user, so it dies with
+item 5, not this one.
+
+### The shell became a base class rather than a copy
+
+`MoshItemSheet` gained `static COMPONENT` and a protected `_context()` (was a private
+`#context()`). `MoshSkillSheet` overrides both — swapping the root component and adding the
+resolved prerequisites — and inherits mount-once, the store, the form handling and the theming
+untouched. That is the pattern for `class-sheet.js` too.
+
+### Two bugs fixed rather than ported
+
+**Deleting a prerequisite had never worked.** `system.prerequisite_ids` holds **UUIDs** — the
+drop handler pushed `droppedObject.uuid`, and `actor-generator.js:321` reads the array back with
+`skillsUuid.includes(item)`. But the delete handler filtered it by `li.data("itemId")`, and the
+row's `data-item-id` was the *resolved skill's `_id`*. A UUID never equals an `_id`, so the
+filter removed nothing: you could add a prerequisite and never remove one. Rows are keyed by
+UUID now and delete by UUID.
+
+**A dangling reference rendered as a blank, undeletable row.** `fromUuid` returns `null` for a
+deleted skill and the old `getData()` pushed that straight into the render list. Unresolvable
+entries now render under their raw UUID — with a `title`, because `.skill-name` clips and a UUID
+does not fit — and carry the same working delete control. Nothing is dropped from the stored
+array implicitly; the user clears it deliberately.
+
+Also closed the `//todo` the old `_onDrop` carried: a drop whose UUID is already listed is
+ignored instead of appended twice. The `typeof … == 'undefined'` guard is gone — the DataModel
+guarantees the array.
+
+### Two things the conversion had to decide
+
+- **Rows here are not draggable.** `ItemRow` makes an identified row draggable by default,
+  which is what an actor sheet wants. This is a `DocumentSheetV2` with no dragstart handler, so
+  a draggable row would offer a drag nothing listens for; the sheet passes `draggable={false}`.
+- **`{#each}` is keyed `` `${index}-${uuid}` ``, not by UUID alone.** The old sheet appended
+  without a duplicate check, so an existing world can hold the same UUID twice and a
+  UUID-keyed each would throw on it. Identity, the row attribute and deletion are all still by
+  UUID, and deleting a legacy duplicate clears both copies.
+
+### Verified
+
+`npm run check` (0 errors, 0 warnings) · **120 vitest** · **64 Playwright** · build.
+
+`test/e2e/skill-sheet.spec.ts` is 8 specs covering what this sheet owns, and per §13 it
+**round-trips** every field it touches through `toObject().system` rather than trusting a
+defaults comparison. Checked by mutation against the real Foundry, not assumed:
+
+| Mutation | Result |
+|---|---|
+| delete filters nothing (reproduces the original `_id` bug) | **2 specs fail** |
+| the duplicate-drop check is removed | 1 spec fails |
+| unresolvable prerequisites are hidden instead of listed | 1 spec fails |
+| a drop that is not a skill is accepted | 1 spec fails |
+
+The first pass of that table found a real gap — nothing dropped a **non-skill**, so the type
+guard was untested — and a spec was added for it. `data?.type !== 'Item'` remains **not
+independently covered**, and cannot be: an Actor drop fails the skill-type check anyway, so the
+`Item` test is a cheap early-out rather than a distinct behaviour.
+
+Rendering was checked against real headless Foundry: bonus and rank sit side by side in the
+horizontal wrapper, the tabs underline, and the prerequisite table shows the name pill, rank,
+bonus and the delete control — including for a dangling UUID.
+
+### One process note
+
+The conversion ran in an isolated worktree, which branched from **session start** rather than
+from the component-layer commit. The agent therefore found no `module/ui/parts/` and rebuilt a
+parallel version of it. Only the skill-specific half was merged, re-based onto the committed
+primitives. Worth checking a worktree's merge base before briefing an agent to build *on* work
+that has just landed.

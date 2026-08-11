@@ -15,3 +15,6 @@ test/foundry-data/
 test-results/
 playwright-report/
 playwright/.cache/
+
+# Agent worktrees (git metadata lives in .git/worktrees; never a repo file)
+.claude/worktrees/

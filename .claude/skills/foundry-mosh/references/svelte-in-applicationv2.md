@@ -98,7 +98,7 @@ Order of attack and per-sheet notes live in `MODERNIZATION.md` §Phase 4.
    `system.stats.armor.mod/total`, `system.netHP`, `system.bleeding`. Read them; don't
    recompute in the component.
 3. **Settings are read per-sheet today.** Each `getData()` copies
-   `game.settings.get('mosh', …)` into `data.system.settings.*` (`useCalm`, `hideWeight`,
+   `game.settings.get('mothershiprpg', …)` into `data.system.settings.*` (`useCalm`, `hideWeight`,
    `androidPanic`). A component can read settings directly. `firstEdition` is gone — the 0e
    rules branches were removed, so there is no edition switch to carry forward.
 4. **`class-sheet.js` mutates the model it renders from** — it writes `from_list_names` and
@@ -119,10 +119,17 @@ sheet for the interactions it owns.
 Svelte 5 is installed and wired into vite, `npm run check` (`svelte-check` against
 `tsconfig.svelte.json`) and vitest. `svelte.config.js` forces **runes mode on**, so Svelte 4
 idioms are compile errors. Component `<style>` blocks are scoped and fold into the single
-emitted `dist/mosh.css`.
+emitted `dist/mothershiprpg.css`.
 
-`module/ui/item/` is the worked example — read it before converting the next sheet.
-`MODERNIZATION.md` §10 states the conventions it settled; the two that bite hardest:
+**`module/ui/parts/` holds the shared primitives** (`MODERNIZATION.md` §20) — `ItemList`,
+`ItemRow`, `ItemCell`, `ItemControls`, `ItemControl`, `Tabs`, `TabPanel`, `CircleStats`,
+`CircleStat`, `Field`, `CheckField`, `Editor`, `SheetHeader`, and the `dropTarget` attachment.
+Assemble a conversion from these rather than writing bespoke markup, and don't rename the class
+names they emit: they are `css/mosh.css`'s, pinned by `test/ui-parts.test.ts`.
+
+`module/ui/item/` is the worked example and `module/ui/skill/` (§21) shows a sheet that needs
+more than the shared shell — it subclasses `MoshItemSheet`, overriding `static COMPONENT` and
+`_context()`. `MODERNIZATION.md` §10 states the conventions they settled; the two that bite hardest:
 
 - **`css/mosh.css` targets the V1 frame.** A V2 window is `.application`, not `.window-app`,
   and carries the user's theme classes. Put `themed`, `theme-light` in `DEFAULT_OPTIONS.classes`

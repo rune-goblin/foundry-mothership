@@ -70,6 +70,19 @@ describe('ItemRow', () => {
     expect(el.getAttribute('draggable')).toBe('true');
     expect(el.getAttribute('data-item-id')).toBe('abc123');
   });
+
+  it('keeps its id but offers no drag when the list only receives drops', () => {
+    // The skill sheet's prerequisites are a DocumentSheetV2 with no dragstart handler, so a
+    // draggable row would offer a drag nothing listens for.
+    const el = render(ItemRow, {
+      children: text('x'),
+      itemId: 'Item.abc',
+      draggable: false,
+    }).firstElementChild!;
+    expect([...el.classList]).toEqual(['item', 'flexrow']);
+    expect(el.hasAttribute('draggable')).toBe(false);
+    expect(el.getAttribute('data-item-id')).toBe('Item.abc');
+  });
 });
 
 describe('ItemImage', () => {

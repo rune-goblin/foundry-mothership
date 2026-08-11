@@ -40,14 +40,13 @@ test.describe('item sheets', () => {
     });
   }
 
-  // skill-sheet.js still extends the AppV1 MothershipItemSheet, which is now registered for
-  // nothing. Both are next in the conversion order; until then, prove they still open.
-  for (const type of ['skill', 'class']) {
-    test(`the ${type} sheet still renders on AppV1`, async ({ gmPage }) => {
-      const { appId } = await openSheet(gmPage, type);
-      await expect(gmPage.locator(`#${appId}`)).toBeVisible();
-    });
-  }
+  // class-sheet.js is the last user of the AppV1 MothershipItemSheet, which is registered for
+  // nothing itself. It is next in the conversion order; until then, prove it still opens.
+  // (skill moved to ApplicationV2 + Svelte — see skill-sheet.spec.ts.)
+  test('the class sheet still renders on AppV1', async ({ gmPage }) => {
+    const { appId } = await openSheet(gmPage, 'class');
+    await expect(gmPage.locator(`#${appId}`)).toBeVisible();
+  });
 
   test('editing a field persists it to the document', async ({ gmPage }) => {
     const { appId, uuid } = await openSheet(gmPage, 'item');
