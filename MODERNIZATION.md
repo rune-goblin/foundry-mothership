@@ -431,12 +431,14 @@ and a locally built release zip carries 5 packs with `.ldb`/`CURRENT`/`MANIFEST`
 
 ### Still open here
 
-- **`_macros/` is now a duplicate source.** `_macros/triggered_1e` holds 151 loose `.js`
-  files against `packs/_source/triggered`'s 151 documents, and a sampled macro's body is
-  byte-identical to the pack document's `command`. Two sources for one thing is exactly
-  the `scss/` trap (§1.1). `packs/_source/` is the tracked, buildable, CI-verified one, so
-  **the recommendation is to delete `_macros/`** — it is recoverable from history. Not
-  done; it was outside the "remove 0e, extract 1e" ask.
+- ~~`_macros/` duplicate source~~ **deleted** (162 files). It was the `scss/` trap again:
+  two sources for one thing. Before removing it, every loose `.js` was compared to the
+  pack documents *by content, not filename* — 160 of 162 were byte-identical to a pack
+  document's `command`. The 2 that were not turned out to be **stale**: the loose android
+  panic macros hardcode a rolltable id (`aBnY19jlhPXzibCt`) while the pack versions read
+  it from `game.settings.get('mosh','table1ePanicStressAndroid')`, the configurable form
+  the rolltable-config window expects. Deleting them removed the outdated copies.
+  Recoverable from history.
 - **The `firstEdition` rules code stays for now** by decision: 50 references across 12
   files (21 in `actor.js`), plus a `hideWeight` setting labelled "Hide 0e Weight" and an
   `onChange` that migrates actor stress. Collapsing it to the 1e path is behaviour change

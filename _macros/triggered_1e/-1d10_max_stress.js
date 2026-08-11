@@ -1,1 +1,0 @@
-game.mosh.initModifyActor('system.other.stress.max',null,'-1d10',true);

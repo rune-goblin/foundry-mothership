@@ -1,1 +1,0 @@
-game.mosh.initModifyItem('ZO4f9gvaiVSKDmRC',1);
