@@ -17,7 +17,7 @@ memory. API claims below were checked in that file.
 |---|---|
 | Read first | `CLAUDE.md`, then the `foundry-mosh` skill (`.claude/skills/foundry-mosh/`) |
 | The plan | §Phase 4 below — the conversion order, one sheet at a time |
-| Verify with | `npm run check && npm test` (97 specs), `npm run test:e2e` (54 specs) |
+| Verify with | `npm run check && npm test` (97 specs), `npm run test:e2e` (57 specs) |
 | State | `master`, tree clean, **unpushed** |
 
 **Before pushing:** history was rewritten to drop 854 MB of committed release zips, so the
@@ -430,8 +430,8 @@ before the risky sheets:
 sheet conversions so the conditionals were deleted rather than ported into Svelte and deleted
 afterwards.
 
-**`creature-settings._updateObject` still does not persist** (§8). That is a design decision,
-not a port, and it blocks conversion item 4. Settle what should save before converting it.
+~~`creature-settings._updateObject` still does not persist~~ — **resolved, see §12.** It should
+persist nothing; item 4 is unblocked.
 
 ### Phase 5 — TypeScript conversion (opportunistic, ongoing)
 
@@ -582,6 +582,7 @@ suite that cannot fail is worse than no suite.
 `actor.system.*` — not valid Actor update paths — and the explicit branches only ever
 write `true`, so a stat can be switched on but never off. What *should* persist is a
 design decision, not a typo, so it is marked `FIXME` rather than guessed at.
+**Resolved in §12: nothing should persist there.**
 
 None of these fixes have been verified in a running game; they are correct against the
 schema and the v14 API, but the creature-settings and ship-macros windows are worth
@@ -834,3 +835,46 @@ What the removal was controlled with instead:
 Two e2e runs failed at `waitForGameReady` and looked like a broken world. They were not: a
 `kill -9` on the Foundry process left the LevelDB dirty, and a clean boot fixed it. The
 client console showed no errors and `game.ready` came up `true`. Kill the port gently.
+
+
+---
+
+## 12. `creature-settings` — the FIXME resolved, and a data-loss bug behind it
+
+**`_updateObject` should persist nothing.** The question the `FIXME` posed was the wrong one.
+
+Every toggle in that window is *already* persisted, by its own `click` handler in
+`activateListeners`, using the real update path and the actual checked value — including
+`false`. So the premise recorded in §8, "a stat can be switched on but never off", was wrong:
+switching off works fine. The `_updateObject` body was simply never-executed rubbish — its
+branches re-wrote `true` over things already `true`, and `this.object.update({ formData })`
+nests the form under a literal `formData` key, which is not an update path at all.
+
+It never ran, either: the dialog has no submit button and the class sets neither
+`submitOnChange` nor `submitOnClose` (both default `false`). The override exists only because
+`FormApplication._updateObject` throws if a subclass omits it. It is now a documented no-op,
+and the ApplicationV2 conversion should declare no form handler at all.
+
+### The bug that was hiding behind it
+
+`system.swarm` was **in no schema** — not in the model, not in `template.json` — while the
+swarm toggle reads and writes it. Measured against a real Foundry:
+
+| Step | Effect |
+|---|---|
+| Swarm **on** | combat 30 → **60** (multiplied by remaining wounds); the original is stashed in `system.swarm.combat.value` |
+| — | the stash is cleaned off by the SchemaField, so it never reaches the database |
+| Swarm **off** | restore reads `undefined`; the update is a no-op; combat **stays at 60** |
+| Swarm on again | 60 → **120**, and so on |
+
+So the toggle permanently multiplied a creature's combat stat and could never undo it. Same
+fault as armour `equipped` (§10) — a live UI writing to a field no schema declares — but this
+one destroys data rather than discarding it.
+
+Fixed by adding `swarm: { enabled, combat: { value } }` to `MoshCreature` and `template.json`.
+`data-models.spec.ts` now drives the handler's arithmetic end to end and asserts 30 → 60 → 30.
+
+**Note the gap this exposes in `sheet-bindings`:** that spec only checks unprefixed
+`name="system.…"`, and this dialog binds `name="actor.system.…"` with the real path in `id`
+instead. It could not have caught this. The durable net for dialogs is the round-trip
+assertion in `data-models.spec.ts` — write the field, read it back — not the binding scan.

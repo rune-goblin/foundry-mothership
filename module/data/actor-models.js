@@ -94,6 +94,13 @@ export class MoshCreature extends foundry.abstract.TypeDataModel {
         armor: stat(0, 'Armor', 'Armor Save', { armor: true, enabled: false }),
         sanity: stat(10, 'Sanity', 'Sanity Save', { enabled: false }),
       }),
+      // The creature-settings swarm toggle multiplies combat by the creature's remaining
+      // wounds and stashes the original here to restore on the way back. Absent from the
+      // schema, the stash was cleaned off and the multiplication became permanent.
+      swarm: new fields.SchemaField({
+        enabled: bool(false),
+        combat: new fields.SchemaField({ value: num(0) }),
+      }),
     };
   }
 }

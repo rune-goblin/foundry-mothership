@@ -217,6 +217,12 @@
           "rollLabel": "Sanity Save",
           "enabled" : false
         }
+      },
+      "swarm": {
+        "enabled": false,
+        "combat": {
+          "value": 0
+        }
       }
     },
     "ship": {

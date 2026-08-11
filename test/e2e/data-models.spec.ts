@@ -58,6 +58,8 @@ test.describe('created documents get the DataModel defaults', () => {
     ['Item', 'armor', 'system.features', 'sealed'],
     ['Item', 'module', 'system.cost', 250],
     ['Actor', 'creature', 'system.xp.selectedSkill', 'Zero-G'],
+    ['Actor', 'creature', 'system.swarm.enabled', true],
+    ['Actor', 'creature', 'system.swarm.combat.value', 30],
     ['Actor', 'ship', 'system.cost', '2,000,000cr'],
     ['Actor', 'ship', 'system.owed', '750,000cr'],
     ['Actor', 'ship', 'system.make', 'Galloway / Class II'],
@@ -80,6 +82,36 @@ test.describe('created documents get the DataModel defaults', () => {
       expect(stored).toEqual(value);
     });
   }
+
+  // The creature-settings swarm toggle multiplies combat by the creature's remaining wounds and
+  // stashes the original in system.swarm.combat.value to restore on the way back. With that
+  // field in no schema the stash was cleaned off, restore read undefined, and the multiplication
+  // was permanent -- 30 became 60, then 120. This drives the handler's arithmetic end to end.
+  test('the swarm toggle multiplies combat and can be undone', async ({ gmPage }) => {
+    const result = await gmPage.evaluate(async () => {
+      const actor = await (window as any).Actor.create({
+        name: '__e2e_swarm',
+        type: 'creature',
+        system: { stats: { combat: { value: 30 } }, hits: { value: 0, max: 2 } },
+      });
+
+      const backup = actor.system.stats.combat.value;
+      const swarmed = backup * (actor.system.hits.max - actor.system.hits.value);
+      await actor.update({
+        'system.swarm.enabled': true,
+        'system.stats.combat.value': swarmed,
+        'system.swarm.combat.value': backup,
+      });
+      const on = actor.toObject().system.stats.combat.value;
+
+      await actor.update({
+        'system.swarm.enabled': false,
+        'system.stats.combat.value': actor.system.swarm.combat.value,
+      });
+      return { on, off: actor.toObject().system.stats.combat.value };
+    });
+    expect(result).toEqual({ on: 60, off: 30 });
+  });
 
   // This is the behaviour change the migration actually buys, and the one worth knowing about:
   // template.json stored whatever it was given, DataModels validate. A bad value now fails the

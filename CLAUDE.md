@@ -23,10 +23,10 @@ UI work, §10 for the conventions the item sheet settled, and update it as work 
 | Vite build, TS tooling, CI | 7 AppV1 sheet classes |
 | DataModels for all 13 types | 4 bare-`FormApplication` windows |
 | Packs from JSON source, 0e removed | 28 Handlebars templates |
-| Svelte 5 wired into build, check, vitest | `creature-settings` `_updateObject` FIXME |
+| Svelte 5 wired into build, check, vitest | 6 sheets/windows left to convert |
 | 8 item sheets on ApplicationV2 + Svelte | |
 | 0e / `firstEdition` rules removed | |
-| 97 vitest + 54 Playwright specs | |
+| 97 vitest + 57 Playwright specs | |
 
 ## Hard rules (override defaults)
 
@@ -49,7 +49,7 @@ npm run setup            # (re)link Data/systems/mosh at this repo
 ./scripts/packs.sh pack  # packs/_source/*.json → LevelDB (close Foundry first)
 npm test                 # 97 vitest specs — the CI tier
 npm run check            # tsc over the .ts surface, then svelte-check over module/ui
-npm run test:e2e         # 54 Playwright specs vs a real headless Foundry
+npm run test:e2e         # 57 Playwright specs vs a real headless Foundry
 ```
 
 A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — both `dist/` and

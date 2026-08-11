@@ -121,42 +121,12 @@ export class DLCreatureSettings extends FormApplication {
      * @param formData {Object}   The object of validated form data with which to update the object
      * @private
      */
-    async _updateObject(event, formData) {
-
-        console.log("Updating Object");
-
-        // Loyalty
-        if (this.object.system.stats.loyalty.enabled) {
-            await this.object.update({
-                "system.stats.loyalty.enabled": true
-            });
-        }
-        // Speed
-        if (this.object.system.stats.speed.enabled) {
-            await this.object.update({
-                "system.stats.speed.enabled": true
-            });
-        }
-        // Armor
-        if (this.object.system.stats.armor.enabled) {
-            await this.object.update({
-                "system.stats.armor.enabled": true
-            });
-        }
-        // swarm
-        if (this.object.system.swarm.enabled) {
-            await this.object.update({
-                "system.swarm.enabled": true
-            });
-        }
-
-        // FIXME: this never persists the form. formData is keyed `actor.system.*` (see the
-        // dialog template), which are not valid Actor update paths, and the branches above
-        // only ever write `true` -- so a stat can be switched on but never off. Deciding
-        // what should persist is a design call; see MODERNIZATION.md.
-        this.object.update({
-            formData
-        });
-        this.object.sheet.render({force: true});
-    }
+    /**
+     * Deliberately empty. Every toggle is already persisted by its own click handler above,
+     * with the real update path and the actual checked value. This form has no submit button
+     * and neither `submitOnChange` nor `submitOnClose`, so nothing ever submits it -- the
+     * override exists only because FormApplication throws if a subclass omits it. It goes
+     * away with the ApplicationV2 conversion, which declares no form handler at all.
+     */
+    async _updateObject(_event, _formData) {}
 }
