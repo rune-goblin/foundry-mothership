@@ -1,23 +1,20 @@
 {
   "name": "mosh",
-  "version": "1.0.0",
-  "description": "CSS compiler for the Mothership system",
-  "scripts": {
-    "build": "gulp",
-    "compile": "gulp css",
-    "watch": "gulp",
-    "gulp": "gulp"
-  },
-  "browserslist": [
-    "last 3 versions"
-  ],
-  "author": "Martin Jencka",
-  "license": "MIT",
+  "version": "0.6.1",
+  "description": "MoSh - the unofficial Mothership system for Foundry VTT",
+  "type": "module",
   "private": true,
-  "dependencies": {
-    "gulp": "^4.0.2",
-    "gulp-autoprefixer": "^7.0.1",
-    "gulp-sass": "^4.1.0",
-    "gulp-sourcemaps": "^2.6.5"
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "watch": "vite build --watch",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "vite": "^8.0.0"
   }
 }

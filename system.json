@@ -4,10 +4,10 @@
   "description": "The unofficial Mothership system for FoundryVTT.",
   "version": "0.6.1",
   "esmodules": [
-    "module/mosh.js"
+    "dist/mosh.js"
   ],
   "styles": [
-    "css/mosh.css"
+    "dist/mosh.css"
   ],
   "packs": [
     {
