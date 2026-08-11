@@ -1,4 +1,4 @@
-import { rolltableConfig } from "./windows/settings-rolltables.js";
+import { RolltableConfigApp } from "./ui/settings/RolltableConfigApp.js";
 
 export const registerSettings = function () {
   
@@ -230,7 +230,7 @@ export const registerSettings = function () {
     label: "Choose Tables",
     hint: "Customize which rolltables are used.",
     icon: "fa-solid fa-list",
-    type: rolltableConfig
+    type: RolltableConfigApp
   });
 
   game.settings.register('mothershiprpg', 'table1ePanicStressNormal', {
