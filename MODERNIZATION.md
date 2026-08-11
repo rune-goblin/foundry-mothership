@@ -23,6 +23,7 @@ compromise with a scheduled end, not the target state.
 |---|---|
 | Read first | `CLAUDE.md`, then the `foundry-mosh` skill (`.claude/skills/foundry-mosh/`) |
 | The plan | §Phase 4 below — the conversion order, one sheet at a time |
+| How it runs | `docs/plans/run-to-the-end.md` — waves, model assignment, the gate before each lands |
 | Build on | `module/ui/parts/` — the shared primitives (§20), before writing bespoke markup |
 | Verify with | `npm run check && npm test` (120 specs), `npm run test:e2e` (75 specs) |
 | State | `master`, tree clean, pushed and tracking `origin/master` |
