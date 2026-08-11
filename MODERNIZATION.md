@@ -1163,3 +1163,50 @@ Two things the verification caught that a grep would not have:
 - **`SYSTEM_ID` is not in scope inside `page.evaluate`.** Substituting the imported constant into
   browser-side callbacks compiled fine and threw at runtime. The specs now read `game.system.id`
   from the page instead, which is self-checking.
+
+
+---
+
+## 19. The content-module merge — scope decided, licensing is the blocker
+
+Folding the sibling Mothership content modules into the system has been a parked intention
+since the start. The scope is now decided; the blocker is not technical.
+
+| Module | Licence as it stands | In the merge? |
+|---|---|---|
+| `mothership-survival-guide` | **GPL-3** (`LICENSE` file; no `license` in `module.json`) | **No — dropped** |
+| `mothership-character-builder` | **none declared**, authored by **Naurgul** | Blocked — see below |
+| `mothership-data` | none declared, no git remote, no author | Probably fine, verify origin |
+
+### Why the survival guide is out
+
+This system is **MIT**. GPL-3 is copyleft and travels one way: MIT-licensed code can be taken
+into a GPL work, but GPL-licensed code cannot be relicensed MIT. Merging that module's contents
+would therefore push the combined system to GPL-3 — a relicensing of the whole project as the
+side effect of absorbing one module.
+
+The GPL-3 came from hollowphoton's original `fvtt_mosh_1e_psg`, which this is a fork of, so it
+is not rune-goblin's to relicense. **Decision: leave it as a separate module.** The repository
+is untouched and stays published; it simply is not merged.
+
+### The one that looks safer and is not
+
+`mothership-character-builder` declares **no licence at all** and credits **Naurgul** — it is
+third-party work forked into the org. No licence is not the same as permissive: with nothing
+granted, nothing is granted. It is a weaker position to merge from than the GPL module, not a
+stronger one, and it needs the author's say-so.
+
+`mothership-data` has no remote and no declared author, which suggests it is original — worth
+confirming before it moves, since "I think we wrote this" is exactly the assumption that makes
+this class of problem.
+
+### What this means for the merge
+
+Only content whose provenance is settled should move. That is a permissions question for a
+human, not something to resolve by editing a `LICENSE` file. Until then the merge stays parked,
+and the modules stay modules.
+
+Note the mechanical consequence for whatever *does* eventually merge: content referenced as
+`Compendium.<module-id>.<pack>.<id>` becomes `Compendium.mothershiprpg.<pack>.<id>`, so any
+world or macro pointing at the old ids breaks. The same class of break as §18, and worth doing
+in the same window if it is going to happen at all.

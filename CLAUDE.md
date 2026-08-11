@@ -78,6 +78,13 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   `/releases/latest` or Foundry can never detect an update; `download` is version-specific and
   is stamped by `release.yml` from the tag — don't hardcode it.
 
+## Not in scope
+
+- **The content-module merge is parked on licensing, not effort** (`MODERNIZATION.md` §19).
+  `mothership-survival-guide` is GPL-3 and is **dropped from the merge** — absorbing it would
+  relicense this MIT system. `mothership-character-builder` declares no licence and is
+  third-party (Naurgul). Don't merge content whose provenance is unsettled.
+
 ## Gotchas
 
 - **Check that a "source" is really the source.** Two dead sources have already been found
