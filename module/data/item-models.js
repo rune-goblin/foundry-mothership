@@ -42,7 +42,6 @@ export class MoshWeapon extends foundry.abstract.TypeDataModel {
       shotsPerFire: num(1, true),
       useAmmo: bool(false),
       ammoType: str(''),
-      wound: str(''),
       critDmg: str(''),
       woundEffect: str(''),
       bonus: num(0),
@@ -77,7 +76,7 @@ export class MoshArmor extends foundry.abstract.TypeDataModel {
 
 export class MoshAbility extends foundry.abstract.TypeDataModel {
   static defineSchema() {
-    return { ...base(), text: str('An Ability'), roll: str('') };
+    return { ...base(), roll: str('') };
   }
 }
 
@@ -89,7 +88,6 @@ export class MoshModule extends foundry.abstract.TypeDataModel {
       hull: num(1),
       totalHull: num(1),
       feature: str(''),
-      offline: bool(false),
       cost: num(0),
     };
   }
@@ -107,7 +105,7 @@ export class MoshCondition extends foundry.abstract.TypeDataModel {
 
 export class MoshCrew extends foundry.abstract.TypeDataModel {
   static defineSchema() {
-    return { ...base(), text: str(''), job: str('') };
+    return { ...base(), job: str('') };
   }
 }
 
@@ -121,9 +119,6 @@ export class MoshClass extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       ...base(),
-      source: str(''),
-      author: str(''),
-      link: str(''),
       trauma_response: str(''),
       robotic: bool(true),
       common_skills: uuidList(),

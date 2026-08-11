@@ -54,9 +54,6 @@
       "credits": {
         "value": ""
       },
-      "stressdesc": {
-        "value": ""
-      },
       "xp": {
         "value": 0,
         "html" : 0,
@@ -419,7 +416,6 @@
       "shotsPerFire" : 1,
       "useAmmo": false,
       "ammoType": "",
-      "wound":"",
       "critDmg": "",
       "woundEffect": "",
       "bonus": 0,
@@ -460,14 +456,12 @@
       "templates": [
         "base"
       ],
-      "text": "An Ability",
       "roll": ""
     },
     "crew": {
       "templates": [
         "base"
       ],
-      "text": "",
       "job" : ""
     },
     "repair": {
@@ -485,16 +479,12 @@
       "hull": 1,
       "totalHull" : 1,
       "feature" : "",
-      "offline" : false,
       "cost" : 0
     },
     "class": {
       "templates": [
         "base"
       ],
-      "source": "",
-      "author": "",
-      "link": "",
       "trauma_response": "",
       "robotic": true,
       "common_skills": [],

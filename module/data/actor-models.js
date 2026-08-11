@@ -55,7 +55,6 @@ export class MoshCharacter extends foundry.abstract.TypeDataModel {
       rank: new fields.SchemaField({ value: str('') }),
       pronouns: new fields.SchemaField({ value: str('') }),
       credits: new fields.SchemaField({ value: str('') }),
-      stressdesc: new fields.SchemaField({ value: str('') }),
       // `html` is a number here, not a string -- the sheet builds the XP pips from it.
       xp: new fields.SchemaField({ value: num(0), html: num(0), selectedSkill: str('') }),
       attributes: new fields.SchemaField({ level: new fields.SchemaField({ value: num(0) }) }),
