@@ -9,3 +9,9 @@ dist/
 # zipping. Only the JSON sources are tracked.
 packs/*/
 !packs/_source/
+
+# Playwright e2e harness (all generated locally)
+test/foundry-data/
+test-results/
+playwright-report/
+playwright/.cache/

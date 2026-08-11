@@ -12,7 +12,7 @@ memory. API claims below were checked in that file.
 > typecheck, CI), the content pipeline (packs built from JSON, 0e dropped), and the
 > DataModel migration have all landed. **Phase 4 — ApplicationV2 + Svelte — is next.**
 > Nothing has been verified in a running game since the world load early in phase 1; see
-> the notes at the end of §3, §7 and §8.
+> the notes at the end of §7 — everything else is now covered by the e2e harness (§9).
 
 ---
 
@@ -341,10 +341,9 @@ the equivalence tests check against — a locked record of the pre-migration sch
 future schema change has to be made deliberately in both places. Delete it when that stops
 earning its keep; v16 removes support regardless.
 
-**Not verified in a running game.** The schemas are provably identical to what
-`template.json` produced, but no world has been opened against them. Do that before
-release: DataModels validate where `template.json` did not, so any existing document
-holding out-of-schema data will be cleaned on load.
+**Now verified in a running game** — see §9. All 13 types create with the right defaults
+against a real Foundry, and validation is confirmed to reject a bad value outright rather
+than store it.
 
 ### Phase 4 — ApplicationV2 + Svelte, sheet by sheet (≈2–3 weeks)
 
@@ -549,3 +548,54 @@ opening once before release.
 [API docs](https://foundryvtt.com/api/) (select the v14 build) ·
 `runegoblin-foundrytemplate/.claude/skills/foundry-pf2e/` ·
 `svelte:svelte-core-bestpractices`
+
+---
+
+## 9. e2e harness — done
+
+Playwright against a real headless Foundry v14, ported from `runegoblin-foundrytemplate`.
+**28 specs**, `npm run test:e2e`. This closes the "not verified in a running game" gap that
+every phase above carried.
+
+`test/e2e/README.md` has the commands, preconditions and conventions. What it proves:
+
+| Spec file | Covers |
+|---|---|
+| `system-loads` | the built bundle initialises, `game.mosh` API present, the stylesheet's rules are live, all 13 DataModels registered, no 0e pack remains |
+| `data-models` | every one of the 13 types creates with exactly its `template.json` defaults **in a real Foundry**; validation rejects a bad value and coerces a numeric string |
+| `compendiums` | all 5 packs load with the document count their JSON source holds; the +/- macro pair survived the filename scheme; the android panic macros use the setting, not the hardcoded id; no document references a deleted 0e pack |
+| `sheets` | all three actor sheets render, derived armour/net HP survive `prepareDerivedData`, and the repaired ship-macros window renders |
+
+### Adapting it from a module to a system
+
+- **No activation step.** A module must be enabled per world; a system is inherently active
+  in a world built on it, so `global-setup` asserts world + system id and logs provenance.
+- **Packs are de-symlinked per entry**, because `npm run setup` links each compendium
+  individually rather than linking `packs` as a whole. Without that the test Foundry takes an
+  exclusive LevelDB lock on the repo's packs.
+
+### Two things the harness caught immediately
+
+- **`Actor.create` returns `undefined` on a validation failure** — it does not throw. So a bad
+  value fails the create silently from the caller's perspective and surfaces in the UI. That is
+  the behaviour change the DataModel migration actually buys, and it is now pinned.
+- **v14 injects package styles as `@import "…" layer(system)` in an inline `<style>`**, not as
+  a `<link>`. My first spec asserted a `<link>` and failed; the CSS was loading correctly all
+  along. Counting rules behind an `@import` means descending into each `CSSImportRule`.
+
+### Found while writing the specs
+
+`.macro-menu-button` — the only trigger for the ship macros window — is **commented out** at
+`templates/actor/ship-sheet-sbt.html:132` and appears in no other ship template. So that window
+has no UI route at all: the class was broken *and* unreachable. The spec drives the sheet's
+`_onOpenMacros` handler, which is the path a restored button would take. Decide whether to
+restore the button or drop the window.
+
+### Harness health
+
+A killed run leaves the GM session occupied (Foundry allows one session per user) and, with
+`reuseExistingServer` on locally, the next run hangs 30s in `waitForGameReady` and fails in
+`globalSetup`. Fix: `lsof -ti:30005 | xargs kill`. This bit twice while building the harness.
+
+**Not in CI.** e2e needs a licensed Foundry and a migrated world, so `ci.yml` stays on the
+vitest tier. Run it locally before a release.
