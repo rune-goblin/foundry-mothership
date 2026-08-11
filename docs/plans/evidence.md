@@ -263,3 +263,45 @@ gameplay data**: `source.book` / `version` / `page` / `section` in `mothership-d
 provenance useful to the extraction pipeline and useless at runtime. Gameplay fields — tiers,
 bonuses, prerequisites, damage, costs, descriptions — are what the system needs and what should
 survive the merge.
+
+
+---
+
+## Part 4 — coverage: what the PSG dataset supplies, and what has no source
+
+### 4.1 The character generator has had no data source since the fork
+
+`actor-generator.js:555-583` builds its skill and class lists by scanning `game.items` **and every
+compendium** for `type: "skill"` and `type: "class"`.
+
+- This system ships neither (2.1).
+- The companion `mothership-character-builder` module ships three packs — `character-generator-journal`
+  (JournalEntry), `-macros` (Macro), `-tables` (RollTable) — and **no skill or class documents
+  anywhere**. Grepped: zero files declaring either type.
+
+So the 772-line character generator has always depended on content the GM hand-creates, or that
+lived in the original author's own world. It is UI with no shipped data. `mothership-data` supplies
+exactly the missing half: 42 skills with tier/bonus/prerequisites, plus classes.
+
+### 4.2 Two content tiers, by whether a source exists
+
+| Tier | Datasets | Path |
+|---|---|---|
+| **Derived** — a complete, validated, tested source exists | skills, classes, weapons, armor, equipment, loadouts, trinkets, patches, contractors, pets, panic, wounds, radiation, death, cover, shore-leave, medical-treatments, character-creation | extraction → typed source → generated packs. The system currently ships essentially none of this. |
+| **Rescued** — no rulebook available; the inherited packs are the only copy | all ship content (the 100-item `maintenance` pack, the Bankruptcy / Distress / Maintenance Issues / Megadamage rolltables, the ship macros in `triggered/`); **~35 of the 50 `conditions` items** | clean the inherited documents once, normalise into the same typed source, maintain as source thereafter |
+
+Condition coverage measured by name against the whole PSG dataset: **15 of 50 match**. The
+remainder — `Phobia`, `Suffocating`, `Bit Rot`, `Social Anxiety`, `Hypervigilance`, `Software Bloat`
+and others, several of them android-specific — are not PSG content and share the ships' situation.
+
+### 4.3 Why this matters for sequencing
+
+The derived tier is not a *merge*. There is nothing on the system side to reconcile against — it
+ships no skills, classes, weapons, armour or equipment at all. The extraction can be generated
+wholesale, which is far simpler than merging two partial sets.
+
+The rescued tier is the opposite: it is the only copy, so its cleanup is a one-way door and must be
+an explicit, tested, reviewable transformation rather than a hand edit.
+
+Both tiers should land in **one typed source format, one validator, one pack generator**. After the
+rescue the distinction stops being visible in the codebase — it survives only as provenance.
