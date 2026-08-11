@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "moduleResolution": "bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "types": ["node"],
+    "noEmit": true,
+    // The system's 9,274 lines of legacy JS are importable but not yet type-checked.
+    // Flip checkJs on per-file with // @ts-check, or globally once the conversion starts.
+    "allowJs": true,
+    "checkJs": false
+  },
+  "include": ["test/**/*.ts", "scripts/**/*.ts", "*.config.ts"],
+  "exclude": ["node_modules", "dist"]
+}

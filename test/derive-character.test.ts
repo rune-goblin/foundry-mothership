@@ -12,23 +12,30 @@ const armour = (armorPoints: number, damageReduction = 0, equipped = true): Item
 const condition = (name: string, severity: number): Item =>
   ({ type: 'condition', name, system: { severity } });
 
+// What _deriveCharacter leaves behind: mod/total/damageReduction and the whole netHP
+// block are added by the method, not present on the actor it is handed.
+type DerivedSystem = {
+  stats: { armor: { value: number; mod: number; total: number; damageReduction: number } };
+  health: { value: number; max: number };
+  hits: { value: number; max: number };
+  bleeding: { value: number };
+  netHP: { value: number; min: number; max: number; label: string };
+};
+
 function derive(opts: {
   items?: Item[];
   armorValue?: number;
   health?: { value: number; max: number };
   hits?: { value: number; max: number };
-}) {
-  const actor = {
-    items: opts.items ?? [],
-    system: {
-      stats: { armor: { value: opts.armorValue ?? 0 } },
-      health: opts.health ?? { value: 10, max: 10 },
-      hits: opts.hits ?? { value: 0, max: 2 },
-      bleeding: { value: 0 },
-    },
-  };
-  MothershipActor.prototype._deriveCharacter.call(actor);
-  return actor.system;
+}): DerivedSystem {
+  const system = {
+    stats: { armor: { value: opts.armorValue ?? 0 } },
+    health: opts.health ?? { value: 10, max: 10 },
+    hits: opts.hits ?? { value: 0, max: 2 },
+    bleeding: { value: 0 },
+  } as unknown as DerivedSystem;
+  MothershipActor.prototype._deriveCharacter.call({ items: opts.items ?? [], system });
+  return system;
 }
 
 describe('_deriveCharacter — armour', () => {
