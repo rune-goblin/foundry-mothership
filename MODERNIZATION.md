@@ -442,10 +442,9 @@ file.
 
 ## 5. Risks and open questions
 
-- **Upstream relationship.** This is a fork of `Futil/foundry-mothership`. A rewrite of
-  this scope makes merging upstream fixes impractical. The manifest URLs are repointed
-  (§15); what remains is the *stated* position — say in the README whether this is a hard
-  fork. `authors` still credits the upstream authors, deliberately.
+- ~~**Upstream relationship.**~~ **Decided: this is a hard fork** (§17). The README says so,
+  the manifest URLs are repointed (§15), and `authors` still credits the upstream authors.
+  One thing left open — see the package-id note in §17.
 - **Foundry typings quality.** Item 3 in §3. Generic v14 typings are less mature than the
   PF2e-specific package the template uses. Do not let type coverage block phase 1–2 —
   `checkJs: false` sidesteps it entirely until phase 5.
@@ -1057,3 +1056,51 @@ tree. Fixed by `rmSync`-ing the destination first, which drops the link rather t
 Verified end to end against a scratch data dir: `setup` → 7 symlinks + copied packs; `deploy`
 over the top → **0 symlinks**, contents matching the release include-list, no `_source`, no
 LOCK/LOG, 5 packs with `.ldb` data, and the repo untouched.
+
+
+---
+
+## 17. Hard fork — stated, and the README repaired
+
+**Decided: this is a hard fork of `Futil/foundry-mothership`.** Not a tracking fork; upstream
+changes are not merged, and the divergence is already irreconcilable in both directions — the
+build was replaced (gulp → Vite), the data layer moved to v14 DataModels, the 0e rules and
+compendia were deleted, and the sheets are being rewritten as ApplicationV2 + Svelte.
+
+The README now says this in as many words, and follows the house shape set by
+`mothership-survival-guide`: title, screenshot, fork paragraph, features, an **Installation**
+section with the manifest URL, then licensing.
+
+Also corrected there: it advertised *"Full 1e AND 0e system support"*, which stopped being true
+when §11 removed the 0e branches.
+
+### The screenshot no longer hotlinks upstream
+
+`README.md` embedded its screenshot from `github.com/Futil/…/assets/982251/…` — a live
+dependency on the forked-from repo's asset CDN. It is now `docs/screenshot.jpg`, committed
+here, and **deliberately tinted magenta with a "PLACEHOLDER — replace with your own" banner**
+so it cannot be mistaken for current art. Downscaled 2547px → 1600px and 2.2 MB → 342 KB on
+the way in.
+
+`docs/` is **not** in `release.yml`'s include-list, so the placeholder never ships to users.
+`system.json` declares no `readme`, so Foundry never renders it either — GitHub is the only
+place it is seen.
+
+The only remaining reference to the upstream repo is the attribution link in the fork
+paragraph, which is intentional.
+
+### Still open: the package id collides with upstream
+
+Both this fork and upstream declare `"id": "mosh"`. `mothership-survival-guide` hit the same
+problem and **renamed** — it ships as `mothership-survival-guide` rather than the original's
+id, precisely to stay distinct in the Foundry package registry.
+
+Renaming here is a different order of magnitude and was **not** done. `mosh` keys:
+
+- every `game.settings.get('mosh', …)` and every flag
+- the compendium names content references as `Compendium.mosh.<pack>.<id>`
+- the runtime path `systems/mosh/…` baked into templates, art and macros
+- the folder every existing world built on this system points at
+
+So a rename breaks every existing world and every shipped macro, and needs a migration. Worth
+deciding before any registry submission; not worth doing casually.
