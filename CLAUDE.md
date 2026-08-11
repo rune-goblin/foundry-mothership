@@ -80,10 +80,10 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
 
 ## Not in scope
 
-- **The content-module merge is parked on licensing, not effort** (`MODERNIZATION.md` §19).
-  `mothership-survival-guide` is GPL-3 and is **dropped from the merge** — absorbing it would
-  relicense this MIT system. `mothership-character-builder` declares no licence and is
-  third-party (Naurgul). Don't merge content whose provenance is unsettled.
+- **Both third-party content modules are dropped from the merge** (`MODERNIZATION.md` §19).
+  `mothership-survival-guide` is GPL-3 (absorbing it would relicense this MIT system) and
+  `mothership-character-builder` declares no licence and is Naurgul's. Only rune-goblin's own
+  extraction merges. Don't merge content whose provenance is unsettled.
 
 ## Gotchas
 

@@ -1167,46 +1167,39 @@ Two things the verification caught that a grep would not have:
 
 ---
 
-## 19. The content-module merge — scope decided, licensing is the blocker
+## 19. The content-module merge — both third-party modules dropped
 
-Folding the sibling Mothership content modules into the system has been a parked intention
-since the start. The scope is now decided; the blocker is not technical.
+Folding the sibling Mothership content modules into the system was a parked intention. Both
+third-party ones are now **out**, and the reason is provenance rather than effort.
 
-| Module | Licence as it stands | In the merge? |
+| Module | Licence as it stands | Merged? |
 |---|---|---|
-| `mothership-survival-guide` | **GPL-3** (`LICENSE` file; no `license` in `module.json`) | **No — dropped** |
-| `mothership-character-builder` | **none declared**, authored by **Naurgul** | Blocked — see below |
-| `mothership-data` | none declared, no git remote, no author | Probably fine, verify origin |
+| `mothership-survival-guide` | **GPL-3** (`LICENSE` file), from hollowphoton's `fvtt_mosh_1e_psg` | **No** |
+| `mothership-character-builder` | **none declared**, authored by **Naurgul** | **No** |
+| `mothership-data` | none declared, no git remote, no author — rune-goblin's own extraction | Yes |
 
-### Why the survival guide is out
+**The GPL one would have relicensed the system.** This project is MIT; GPL-3 is copyleft and
+travels one way — MIT code can be taken into a GPL work, GPL code cannot be relicensed MIT. So
+absorbing that module would have made the whole system GPL-3 as a side effect, and the GPL-3
+came from the upstream it forks, so it was never rune-goblin's to change.
 
-This system is **MIT**. GPL-3 is copyleft and travels one way: MIT-licensed code can be taken
-into a GPL work, but GPL-licensed code cannot be relicensed MIT. Merging that module's contents
-would therefore push the combined system to GPL-3 — a relicensing of the whole project as the
-side effect of absorbing one module.
+**The other one looked safer and was not.** No licence is not permissive: with nothing granted,
+nothing is granted. Third-party work with no licence is a *weaker* position to merge from than
+GPL, not a stronger one.
 
-The GPL-3 came from hollowphoton's original `fvtt_mosh_1e_psg`, which this is a fork of, so it
-is not rune-goblin's to relicense. **Decision: leave it as a separate module.** The repository
-is untouched and stays published; it simply is not merged.
+Both repositories are untouched and stay published. They simply stay modules.
 
-### The one that looks safer and is not
+**What merges instead is rune-goblin's own extraction** of the data and ruleset
+(`mothership-data`), which carries no third-party permission problem.
 
-`mothership-character-builder` declares **no licence at all** and credits **Naurgul** — it is
-third-party work forked into the org. No licence is not the same as permissive: with nothing
-granted, nothing is granted. It is a weaker position to merge from than the GPL module, not a
-stronger one, and it needs the author's say-so.
+One thing that is unchanged by any of this: the *content* is Mothership, and shipping it is
+governed by Tuesday Knight Games' third-party policy, not by any module licence. That applies
+however the data was produced, and is the framing the README and `LICENSE.txt` already use —
+unofficial, non-commercial, TKG's IP.
 
-`mothership-data` has no remote and no declared author, which suggests it is original — worth
-confirming before it moves, since "I think we wrote this" is exactly the assumption that makes
-this class of problem.
+### The mechanical consequence, when it happens
 
-### What this means for the merge
-
-Only content whose provenance is settled should move. That is a permissions question for a
-human, not something to resolve by editing a `LICENSE` file. Until then the merge stays parked,
-and the modules stay modules.
-
-Note the mechanical consequence for whatever *does* eventually merge: content referenced as
-`Compendium.<module-id>.<pack>.<id>` becomes `Compendium.mothershiprpg.<pack>.<id>`, so any
-world or macro pointing at the old ids breaks. The same class of break as §18, and worth doing
-in the same window if it is going to happen at all.
+Content referenced as `Compendium.<module-id>.<pack>.<id>` becomes
+`Compendium.mothershiprpg.<pack>.<id>`, so any world or macro pointing at the old ids breaks —
+the same class of break as §18, and best done in the same window as that one if it is going to
+happen at all.
