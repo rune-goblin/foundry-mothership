@@ -14,21 +14,25 @@ Code style: global `~/.claude/CLAUDE.md` — comment only the non-obvious *why*.
 ## Where the project is
 
 Modernization from a dead gulp build to the runegoblin baseline. **Phases 1–3, the test
-harness, phase 4's step 0, the first two conversions and the shared component layer are done;
-the three simple `FormApplication` windows are next.** `MODERNIZATION.md` is the living plan —
-read its status header and §Phase 4 before starting UI work, §10 for the conventions the item
-sheet settled, §20 for the component layer, §21 for the skill sheet, and update it as work lands.
+harness, phase 4's step 0, the shared component layer, the skill sheet and the simple windows
+are done; `creature-settings.js` is next.** `MODERNIZATION.md` is the living plan — read its
+status header and §Phase 4 before starting UI work, §10 for the conventions the item sheet
+settled, §20 for the component layer, §22 for the windows, and update it as work lands.
+
+**Port, verify, ship, and record the compromise.** Conversions deliberately keep AppV1-era
+shapes so each carries no visual risk; a Svelte best-practices audit is queued for after phase 4
+(§23). Don't fix component architecture piecemeal mid-phase — note it in §23 instead.
 
 | Done | Not done |
 |---|---|
-| Vite build, TS tooling, CI | 6 AppV1 sheet classes |
-| DataModels for all 13 types | 4 bare-`FormApplication` windows |
-| Packs from JSON source, 0e removed | 27 Handlebars templates |
-| Svelte 5 wired into build, check, vitest | 5 sheets/windows left to convert |
+| Vite build, TS tooling, CI | 7 AppV1 sheet classes |
+| DataModels for all 13 types | 2 bare-`FormApplication` windows |
+| Packs from JSON source, 0e removed | 24 Handlebars templates |
+| Svelte 5 wired into build, check, vitest | 8 sheets/windows left to convert |
 | 9 item sheets on ApplicationV2 + Svelte | |
 | Shared components in `module/ui/parts/` | |
 | 0e / `firstEdition` rules removed | |
-| 120 vitest + 64 Playwright specs | |
+| 120 vitest + 75 Playwright specs | |
 
 ## Hard rules (override defaults)
 
@@ -52,7 +56,7 @@ npm run deploy           # release rehearsal: link-free copy, same shape as the 
 ./scripts/packs.sh pack  # packs/_source/*.json → LevelDB (close Foundry first)
 npm test                 # 120 vitest specs — the CI tier
 npm run check            # tsc over the .ts surface, then svelte-check over module/ui
-npm run test:e2e         # 64 Playwright specs vs a real headless Foundry
+npm run test:e2e         # 75 Playwright specs vs a real headless Foundry
 ```
 
 A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — both `dist/` and

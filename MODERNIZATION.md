@@ -11,16 +11,20 @@ memory. API claims below were checked in that file.
 ## Start here
 
 **Phases 1–3, the test harness, phase 4's step 0 + first conversion, the 0e removal, the schema
-repairs, the `mothershiprpg` rename, the shared component layer and `skill-sheet.js` are
-complete.**
-**Next: the three simple windows (§Phase 4 item 3), then the rest of the order.**
+repairs, the `mothershiprpg` rename, the shared component layer, `skill-sheet.js` and the
+simple windows are complete.**
+**Next: `creature-settings.js` (§Phase 4 item 4), then the rest of the order.**
+
+**Queued behind phase 4:** an architectural audit migrating the UI to Svelte best practices
+(§23). The conversions deliberately preserve AppV1-era shapes to keep risk at zero; that is a
+compromise with a scheduled end, not the target state.
 
 | | |
 |---|---|
 | Read first | `CLAUDE.md`, then the `foundry-mosh` skill (`.claude/skills/foundry-mosh/`) |
 | The plan | §Phase 4 below — the conversion order, one sheet at a time |
 | Build on | `module/ui/parts/` — the shared primitives (§20), before writing bespoke markup |
-| Verify with | `npm run check && npm test` (120 specs), `npm run test:e2e` (64 specs) |
+| Verify with | `npm run check && npm test` (120 specs), `npm run test:e2e` (75 specs) |
 | State | `master`, tree clean, pushed and tracking `origin/master` |
 
 **Pushed.** The rewritten history is live on `origin/master` (§14) and `master` tracks it, so
@@ -386,10 +390,10 @@ before the risky sheets:
 |---|---|---|---|
 | ~~1~~ | ~~`item-sheet.js` + 8 item templates~~ | 80 | ✅ **done** — see §10. |
 | ~~2~~ | ~~`skill-sheet.js`~~ | 72 | ✅ **done** — see §21. `item-skill-sheet.html` deleted; `item-sheet.js` now survives only for `class-sheet.js`. |
-| 3 | `ship-setup`, `ship-megadamage`, `settings-rolltables` | 73 / 120 / 89 | **Next.** The simple windows. All three still extend the **bare global** `FormApplication`, which CLAUDE.md forbids in new code. `ship-megadamage` also has a stale `data.` path fixed but unverified. |
-| 4 | `creature-settings.js` | 160 | **Resolve the `FIXME` first** — `_updateObject` still does not persist (see §8). Decide what should save, then convert. |
+| ~~3~~ | ~~`ship-setup`, `ship-megadamage`, `settings-rolltables`~~ | 73 / 120 / 89 | ✅ **done** — see §22. `ship-megadamage` was **deleted**, not converted. |
+| 4 | `creature-settings.js` | 160 | **Next. Resolve the `FIXME` first** — `_updateObject` still does not persist (see §8). Decide what should save, then convert. |
 | 5 | `class-sheet.js` | 340 | Mutates the model it renders from; converting it is what unblocks tightening the two free-form `ObjectField`s (§7). |
-| 6 | `ship-sheet.js`, `ship-sheet-sbt.js`, `creature-sheet.js`, `ship-deckplan.js` | 275 / 498 / 661 / 40 | SBT is the **default** ship sheet — check which you are looking at. Schema holes fixed ahead of time (§10). |
+| 6 | `ship-sheet.js`, `ship-sheet-sbt.js`, `creature-sheet.js`, `ship-deckplan.js` | 275 / 498 / 661 / 40 | SBT is the **default** ship sheet — check which you are looking at. Schema holes fixed ahead of time (§10). **`ship-sheet-sbt` owes three things** (§22): kill the document write during render, derive the megadamage list instead of persisting it, and then delete `megadamage.html` + `megadamage.menu.html` from the DataModel *and* `template.json`. |
 | 7 | `actor-generator.js` | 772 | The character generator. Biggest window; drives `class-sheet` data. |
 | 8 | `actor-sheet.js` | 659 | The character sheet — highest risk, most player-visible, do it last with the most conventions in hand. |
 
@@ -1374,3 +1378,115 @@ from the component-layer commit. The agent therefore found no `module/ui/parts/`
 parallel version of it. Only the skill-specific half was merged, re-based onto the committed
 primitives. Worth checking a worktree's merge base before briefing an agent to build *on* work
 that has just landed.
+
+
+---
+
+## 22. The simple windows — two converted, one deleted
+
+Phase 4 item 3. Three windows were queued; only two were worth converting.
+
+```
+module/ui/ship/ShipSetupApp.js           + ShipSetup.svelte
+module/ui/settings/RolltableConfigApp.js + RolltableConfig.svelte
+```
+
+`module/windows/` now holds only `actor-generator.js` and `ship-deckplan.js`; three
+`templates/dialogs/` files are gone.
+
+### `ship-megadamage` was deleted, not converted
+
+The same call as `DLShipMacros` in §10, for the same reason. The SBT ship sheet has its **own**
+`_prepareMegadamage` building the identical circle list into `system.megadamage.html`, rendered
+in the live sidebar Megadamage tab and toggled by its own handler. The popout duplicated all of
+it, and its trigger `.megadamage-menu-button` had been commented out in the template. Converting
+it would have put a second Svelte implementation of the same tracker in front of item 6.
+
+**Check reachability before converting a window.** Both this and `ship-setup` had commented-out
+triggers, which is not visible from the window's own source. Grep the sheet template for the
+selector its listener binds, and confirm the markup is not inside `<!-- -->`.
+
+### `ship-setup` was dormant, not superseded — so it was wired back up
+
+Its trigger was commented out too, but nothing else offers what it does: it rolls the
+Maintenance Issues table `1d5+1` as a used ship's starting condition, which is **not** the live
+`.maintenance-button` (`actor.maintenanceCheck()`). The commented-out "Roll Starting Condition"
+button on the Macros tab is even bound to that wrong handler. So the wrench icon in the
+biography tab was uncommented and the window is now reachable, verified by clicking it in a real
+Foundry.
+
+### The megadamage tracker had never visibly worked
+
+Deleting the popout makes the SBT sheet's copy the only megadamage UI, so it was worth proving
+it works. It did not.
+
+`system.megadamage.hits` is an `ArrayField(StringField)`, so a stored hit is always a **string**.
+Both the render check and the click handler compared it against the **number** jQuery's
+`.data("key")` yields. Measured against a real Foundry: writing `[3]` stores `["3"]`, and the
+sheet then renders `filledCount: 0, hollowCount: 9` — every taken hit drawn hollow. The same
+miscompare in the handler meant re-clicking a set hit **appended a duplicate** rather than
+clearing it. `actor.js:1231` was unaffected: `Math.max` coerces.
+
+Fixed by coercing on both sides, and the handler now builds a new array instead of splicing the
+live model's. Pinned by `test/e2e/ship-megadamage.spec.ts` (4 specs), which asserts on the
+generated `megadamage.html` rather than the DOM so it stays meaningful across item 6.
+
+**This is a stopgap and item 6 owes the real fix.** The sheet persists rendered HTML into the
+document *while rendering* (`await this.object.update({"system.megadamage.html": …})` inside
+`getData`), which is why `megadamage.html` exists as a schema field at all — a Handlebars
+template can only render a precomputed string. In runes the list is `$derived` from `hits` and
+the table entries, nothing is written during render, both HTML fields become dead, and the type
+bug stops being possible because there is one coercion point instead of two. That is item 6's
+job, not a piecemeal edit to an AppV1 sheet mid-phase.
+
+The render-write also has a testing consequence worth knowing: the sheet re-renders on every
+megadamage change, so Playwright never sees a circle "stable" enough to click. Dispatching the
+delegated `mousedown` the handler actually listens for works and is not flaky.
+
+### Four localization keys never existed
+
+`Mosh.ShipSetup`, `Mosh.RollStartingCondition`, `Mosh.Finish` and `Mosh.MegadamageEffects` were
+referenced by these templates but present in **neither** `lang/en.json` nor `lang/pt-BR.json`, so
+the buttons rendered their raw key strings. Nobody had noticed because neither window was
+reachable. Added to both files.
+
+### Two things the review caught in the agents' work
+
+- **`ship-setup`'s call site passed `top`/`left` flat.** AppV1 read those directly; ApplicationV2
+  reads `options.position` and ignores anything else, so the popout would have opened centred
+  instead of beside the sheet. Nested.
+- **The worktree base.** Unlike §21's run, all three worktrees were correctly based on `master`
+  — the brief told each agent to check `git rev-parse master` and `git reset --hard master`
+  before starting. That is now the standing instruction for a worktree agent building on work
+  that has just landed.
+
+### Verified
+
+`npm run check` (0 errors, 0 warnings) · **120 vitest** · **75 Playwright** · build.
+
+`registerMenu` accepting an ApplicationV2 was the one real risk in the rolltable window and was
+checked in the installed `foundry.mjs` before briefing: it takes a `FormApplication` **or** an
+`ApplicationV2` subclass and throws otherwise. The spec drives the real path —
+`game.settings.sheet` → the system tab → the submenu button — rather than constructing the class.
+
+
+---
+
+## 23. Queued — the Svelte architecture audit
+
+**After phase 4, not during it.** Every conversion so far deliberately preserves AppV1-era
+shapes so that a conversion carries no visual or behavioural risk: the primitives emit the global
+class names from the hand-authored `css/mosh.css` (§13's hybrid decision, §20), and designs
+inherited from Handlebars are ported rather than rethought.
+
+Those are compromises with a scheduled end. What the audit should revisit, as it accumulates:
+
+- **The hybrid CSS decision itself.** §13 parked "dismantle the 247-selector stylesheet into
+  scoped styles" as a styling project with real visual risk, to revisit once the component set is
+  stable. That is the audit.
+- **Presentation persisted into documents.** `ship-sheet-sbt` writes `megadamage.html` during
+  render (§22); `class-sheet.js` writes `from_list_names` and `skills_granted_object` onto the
+  model while rendering (§Phase 4 hazards). Both should be `$derived`, and the schema fields that
+  exist only to hold rendered strings should go.
+- **Anything else a conversion flags.** The rule during phase 4 is: port, verify, ship, and
+  **record** the compromise here — do not fix component architecture piecemeal mid-phase.

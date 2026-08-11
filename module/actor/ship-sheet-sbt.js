@@ -5,7 +5,6 @@ import { fromIdUuid } from "../mosh.js";
  * @extends {ActorSheet}
  */
 import { DLShipDeckplan } from "../windows/ship-deckplan.js";
-import { DLShipMegaDamage } from "../windows/ship-megadamage.js";
 import { ShipSetupApp } from "../ui/ship/ShipSetupApp.js";
 
 export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
@@ -40,17 +39,13 @@ export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
 
     _onOpenSetup(event) {
         event.preventDefault();
+        // V1 took top/left flat; ApplicationV2 reads them off options.position and ignores
+        // anything else, which would silently centre the popout instead.
         new ShipSetupApp(this.actor, {
-            top: this.position.top + 40,
-            left: this.position.left + (this.position.width - 400) / 2
-        }).render({force: true});
-    }
-
-    _onOpenMegadamage(event) {
-        event.preventDefault();
-        new DLShipMegaDamage(this.actor, {
-            top: this.position.top + 40,
-            left: this.position.left + (this.position.width - 400) / 2
+            position: {
+                top: this.position.top + 40,
+                left: this.position.left + (this.position.width - 400) / 2
+            }
         }).render({force: true});
     }
 
@@ -181,7 +176,9 @@ export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
         for (const entry of entries) {
 
             // Megadamage - Only Active
-            if (index != 0 && actorData.megadamage.hits.includes(index)) {
+            // hits is an ArrayField(StringField), so a stored hit is always a string. Comparing
+            // it to the numeric index matched nothing and every taken hit rendered hollow.
+            if (index != 0 && actorData.megadamage.hits.includes(String(index))) {
                 // megadamageHTML += `<i class="fa-solid fa-wrench megadamage-button rollable" data-key="${index}"></i> &nbsp`;
                 megadamageHTML += `<i class="fas fa-circle megadamage-button rollable" data-key="${index}"></i> &nbsp`;
                 megadamageHTML += `<b>${index} |</b> ${entry[1].description} <br/> <br/>`;
@@ -228,23 +225,17 @@ export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
 
 
         html.on('mousedown', '.megadamage-button', ev => {
-            const data = this.object;
-
-            const div = $(ev.currentTarget);
-            const targetKey = div.data("key");
-
-            if (data.system.megadamage.hits.includes(targetKey)) {
-                const index = data.system.megadamage.hits.indexOf(targetKey);
-                data.system.megadamage.hits.splice(index, 1);
-            } else {
-                data.system.megadamage.hits.push(targetKey);
-            }
+            // jQuery coerces a numeric data-key to a Number, but hits stores strings. The old
+            // comparison never matched, so re-clicking a taken hit appended a duplicate instead
+            // of clearing it. Build a new array rather than splicing the live model's.
+            const targetKey = String($(ev.currentTarget).data("key"));
+            const hits = this.object.system.megadamage.hits;
 
             this.object.update({
-                "system.megadamage.hits": data.system.megadamage.hits
+                "system.megadamage.hits": hits.includes(targetKey)
+                    ? hits.filter(hit => hit !== targetKey)
+                    : [...hits, targetKey]
             });
-
-            this._prepareMegadamage(data.system);
         });
 
         // Create inventory item.
@@ -350,7 +341,6 @@ export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
         html.find('.setup-menu-button').click(ev => this._onOpenSetup(ev));
 
         //Megadamage Menu Button
-        html.find('.megadamage-menu-button').click(ev => this._onOpenMegadamage(ev));
 
         //Megadamage Menu Button
         // html.find('.megadamage-sidebar-button').click(ev => {
