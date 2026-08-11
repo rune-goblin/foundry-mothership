@@ -6,7 +6,7 @@ import { fromIdUuid } from "../mosh.js";
  */
 import { DLShipDeckplan } from "../windows/ship-deckplan.js";
 import { DLShipMegaDamage } from "../windows/ship-megadamage.js";
-import { DLShipSetup } from "../windows/ship-setup.js";
+import { ShipSetupApp } from "../ui/ship/ShipSetupApp.js";
 
 export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
 
@@ -40,7 +40,7 @@ export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
 
     _onOpenSetup(event) {
         event.preventDefault();
-        new DLShipSetup(this.actor, {
+        new ShipSetupApp(this.actor, {
             top: this.position.top + 40,
             left: this.position.left + (this.position.width - 400) / 2
         }).render({force: true});
