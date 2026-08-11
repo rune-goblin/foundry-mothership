@@ -2,9 +2,9 @@
   "_id": "NuzL7Yi7PvUOeWsj",
   "name": "Phobia",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/frightened.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/frightened.png",
   "system": {
-    "description": "<p>Gain a new permanent phobia. Whenever you encounter this phobia make a Fear Save at Disadvantage.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.wVhApjRP5MXue2kh]{Fear Save [-]}</p>",
+    "description": "<p>Gain a new permanent phobia. Whenever you encounter this phobia make a Fear Save at Disadvantage.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.wVhApjRP5MXue2kh]{Fear Save [-]}</p>",
     "severity": 1,
     "treatment": {
       "value": 0,

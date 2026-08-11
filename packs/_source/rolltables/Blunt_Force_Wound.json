@@ -1,7 +1,7 @@
 {
   "_id": "31YibfjueXuZdNLb",
   "name": "Blunt Force Wound",
-  "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_blunt_force.png",
   "description": "<p>Whenever you gain a Blunt Force Wound, roll on this table to determine the effect. <strong>Flesh Wounds</strong> are small inconveniences. <strong>Minor/Major Injuries</strong> cause lasting issues which require medical treatment. <strong>Lethal Injuries</strong> can kill you if not dealt with immediately. <strong>Fatal Injuries</strong> can kill outright. <strong>Bleeding</strong> wounds, if not treated can quickly overwhelm you.</p>",
   "formula": "1d10-1",
   "replacement": true,
@@ -10,7 +10,7 @@
     {
       "_id": "kGDBRdD9azQLJRDl",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_blunt_force.png",
       "weight": 1,
       "range": [
         0,
@@ -36,7 +36,7 @@
     {
       "_id": "mYsLkuttsbN0PPzE",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_blunt_force.png",
       "weight": 1,
       "range": [
         1,
@@ -62,7 +62,7 @@
     {
       "_id": "RnmOw1OvhVaYQsJV",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_blunt_force.png",
       "weight": 1,
       "range": [
         2,
@@ -88,7 +88,7 @@
     {
       "_id": "rCPAVwvuRI5PDapO",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_blunt_force.png",
       "weight": 1,
       "range": [
         3,
@@ -114,7 +114,7 @@
     {
       "_id": "gYfGKit1I8vIlXas",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_blunt_force.png",
       "weight": 1,
       "range": [
         4,
@@ -140,7 +140,7 @@
     {
       "_id": "Xvo8mQoXzQb18gms",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_blunt_force.png",
       "weight": 1,
       "range": [
         5,
@@ -166,7 +166,7 @@
     {
       "_id": "AiacUbJlw1slbsW3",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_blunt_force.png",
       "weight": 1,
       "range": [
         6,
@@ -192,7 +192,7 @@
     {
       "_id": "bxD3uLX6GcVG7kwG",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_blunt_force.png",
       "weight": 1,
       "range": [
         7,
@@ -218,7 +218,7 @@
     {
       "_id": "5WHDRIu6o2xp1Vml",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_blunt_force.png",
       "weight": 1,
       "range": [
         8,
@@ -244,7 +244,7 @@
     {
       "_id": "NzrMxLpPo52Ayoq7",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_blunt_force.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_blunt_force.png",
       "weight": 1,
       "range": [
         9,
@@ -262,7 +262,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Fatal Injury:</strong> Spine or neck broken. Death Save.<br><br>@UUID[Compendium.mosh.macros_hotbar_1e.Macro.NsRHfRuuNGPfkYVf]{Death Save}",
+      "description": "<strong>Fatal Injury:</strong> Spine or neck broken. Death Save.<br><br>@UUID[Compendium.mothershiprpg.macros_hotbar_1e.Macro.NsRHfRuuNGPfkYVf]{Death Save}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!31YibfjueXuZdNLb.NzrMxLpPo52Ayoq7"

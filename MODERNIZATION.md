@@ -1089,18 +1089,64 @@ place it is seen.
 The only remaining reference to the upstream repo is the attribution link in the fork
 paragraph, which is intentional.
 
-### Still open: the package id collides with upstream
+### The package id collided with upstream — renamed, see §18
 
-Both this fork and upstream declare `"id": "mosh"`. `mothership-survival-guide` hit the same
-problem and **renamed** — it ships as `mothership-survival-guide` rather than the original's
-id, precisely to stay distinct in the Foundry package registry.
 
-Renaming here is a different order of magnitude and was **not** done. `mosh` keys:
+---
 
-- every `game.settings.get('mosh', …)` and every flag
-- the compendium names content references as `Compendium.mosh.<pack>.<id>`
-- the runtime path `systems/mosh/…` baked into templates, art and macros
-- the folder every existing world built on this system points at
+## 18. `mosh` → `mothershiprpg`
 
-So a rename breaks every existing world and every shipped macro, and needs a migration. Worth
-deciding before any registry submission; not worth doing casually.
+The system ships as **`mothershiprpg`**, titled **Mothership (Unofficial)**, version **0.0.0**.
+
+### Why not `mosh`, and why not `mothership`
+
+Checked against the live registry, with `pf2e`/`dnd5e` as controls because the first endpoint
+tried returned 404 for everything and would have given a false "available":
+
+| id | `foundryvtt.com/packages/…` | |
+|---|---|---|
+| `mosh` | **200** | "MoSh - Unofficial Mothership" — upstream's own registration |
+| `mothership` | **200** | "(0.6.6 Only) Mothership RPG (unofficial)" — a *different* system |
+| `mothershiprpg` | 404 | free |
+
+So `mosh` was already taken by the package this forked from, and `mothership` by an unrelated
+one. Two systems sharing an id also collide locally — both install to the same
+`Data/systems/<id>` — so this was never only a registry concern.
+
+### What moved, and what deliberately did not
+
+| Changed | Kept |
+|---|---|
+| `id`, `title`, `version`, `esmodules`, `styles`, `download` | `game.mothership` — the public API |
+| 193 `game.settings.*('mothershiprpg', …)` scopes | 196 `.mosh` CSS class names |
+| 7 `registerSheet("mothershiprpg", …)` | `Mosh.*` localization keys |
+| 636 `systems/mothershiprpg/…` runtime paths | `css/mosh.css`, `module/mosh.js` filenames |
+| 353 `Compendium.mothershiprpg.…` references | |
+| `SYSTEM_ID` in `foundry-data.ts`, `packs.sh`, `setup-test-env.ts`, the e2e fixtures | |
+
+**The API stays `game.mothership`.** 208 shipped compendium macros call it, the id is a
+registry-uniqueness choice rather than a brand, and `game.mothershiprpg` reads badly. The CSS
+classes and lang keys are internal with no external contract; renaming them is churn with
+visual risk, and the sheets are mid-conversion to Svelte.
+
+### Consequences, and the two traps hit on the way
+
+**Every world made on `mosh` is unlaunchable.** Foundry has no rename migration: a world's
+`world.json` names its system, and there is no installed `mosh` any more. Accepted — new worlds
+will be made. `version: 0.0.0` compounds it: Foundry also refuses a world whose recorded
+`systemVersion` is *newer* than the installed system, so even after repointing `system`, a world
+stamped `0.6.1` still will not launch. Anyone wanting old worlds to open would need a version
+above 0.6.1 instead.
+
+`setup-test-env.ts` now rewrites both fields in the **clone**, so the harness runs against a
+pre-rename world without touching the original.
+
+Two things the verification caught that a grep would not have:
+
+- **`template.json` and `system.json` were missed by the sweep** — both are root-level files and
+  neither was in the rewrite roots, so the ship artwork paths and the three system media paths
+  kept pointing at a system id that no longer existed. The DataModel equivalence spec failed on
+  exactly that, which is what it is for.
+- **`SYSTEM_ID` is not in scope inside `page.evaluate`.** Substituting the imported constant into
+  browser-side callbacks compiled fine and threw at runtime. The specs now read `game.system.id`
+  from the page instead, which is self-checking.

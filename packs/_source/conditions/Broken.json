@@ -2,7 +2,7 @@
   "_id": "ZXyoVuMAsEDmU5Qi",
   "name": "Broken",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/deflated.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/deflated.png",
   "system": {
     "description": "<p>Make a Panic Check whenever a nearby crew member fails a Save.</p>",
     "severity": 1,

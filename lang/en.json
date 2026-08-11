@@ -96,8 +96,8 @@
           "human": "Stress Gained"
         },
         "increaseImg": {
-          "android": "systems/mosh/images/icons/ui/macros/gain_stress.png",
-          "human": "systems/mosh/images/icons/ui/macros/gain_stress.png"
+          "android": "systems/mothershiprpg/images/icons/ui/macros/gain_stress.png",
+          "human": "systems/mothershiprpg/images/icons/ui/macros/gain_stress.png"
         },
         "hitCeiling": {
           "android": "System performance grinds to a halt.",
@@ -116,8 +116,8 @@
           "human": "Stress Relieved"
         },
         "decreaseImg": {
-          "android": "systems/mosh/images/icons/ui/macros/relieve_stress.png",
-          "human": "systems/mosh/images/icons/ui/macros/relieve_stress.png"
+          "android": "systems/mothershiprpg/images/icons/ui/macros/relieve_stress.png",
+          "human": "systems/mothershiprpg/images/icons/ui/macros/relieve_stress.png"
         },
         "hitFloor": {
           "android": "You attain perfect focus and clarity. ",
@@ -138,8 +138,8 @@
           "human": "Calm Gained"
         },
         "increaseImg": {
-          "android": "systems/mosh/images/icons/ui/macros/relieve_stress.png",
-          "human": "systems/mosh/images/icons/ui/macros/relieve_stress.png"
+          "android": "systems/mothershiprpg/images/icons/ui/macros/relieve_stress.png",
+          "human": "systems/mothershiprpg/images/icons/ui/macros/relieve_stress.png"
         },
         "hitCeiling": {
           "android": "You attain perfect focus and clarity.",
@@ -158,8 +158,8 @@
           "human": "Calm Lost"
         },
         "decreaseImg": {
-          "android": "systems/mosh/images/icons/ui/macros/gain_stress.png",
-          "human": "systems/mosh/images/icons/ui/macros/gain_stress.png"
+          "android": "systems/mothershiprpg/images/icons/ui/macros/gain_stress.png",
+          "human": "systems/mothershiprpg/images/icons/ui/macros/gain_stress.png"
         },
         "hitFloor": {
           "android": "System performance grinds to a halt.",
@@ -180,8 +180,8 @@
           "human": "Health Gained"
         },
         "increaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/health.png",
-          "human": "systems/mosh/images/icons/ui/attributes/health.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/health.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/health.png"
         },
         "hitCeiling": {
           "android": "You are now at full health.",
@@ -200,8 +200,8 @@
           "human": "Health Lost"
         },
         "decreaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/health.png",
-          "human": "systems/mosh/images/icons/ui/attributes/health.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/health.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/health.png"
         },
         "hitFloor": {
           "android": "Your pain receptors indicate core damage.",
@@ -214,24 +214,24 @@
       },
       "hits": {
         "increase": {
-          "android": "@UUID[Compendium.mosh.macros_hotbar_1e.ZzKgfEmRdvDfyBMS]{Make a Wound Check}",
-          "human": "@UUID[Compendium.mosh.macros_hotbar_1e.ZzKgfEmRdvDfyBMS]{Make a Wound Check}"
+          "android": "@UUID[Compendium.mothershiprpg.macros_hotbar_1e.ZzKgfEmRdvDfyBMS]{Make a Wound Check}",
+          "human": "@UUID[Compendium.mothershiprpg.macros_hotbar_1e.ZzKgfEmRdvDfyBMS]{Make a Wound Check}"
         },
         "increaseHeader": {
           "android": "Damaged",
           "human": "Wounded"
         },
         "increaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/health.png",
-          "human": "systems/mosh/images/icons/ui/attributes/health.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/health.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/health.png"
         },
         "hitCeiling": {
-          "android": "The end draws near . . .<br><br>@UUID[Compendium.mosh.macros_hotbar_1e.NsRHfRuuNGPfkYVf]{Make a Death Save}",
-          "human": "The end draws near . . .<br><br>@UUID[Compendium.mosh.macros_hotbar_1e.NsRHfRuuNGPfkYVf]{Make a Death Save}"
+          "android": "The end draws near . . .<br><br>@UUID[Compendium.mothershiprpg.macros_hotbar_1e.NsRHfRuuNGPfkYVf]{Make a Death Save}",
+          "human": "The end draws near . . .<br><br>@UUID[Compendium.mothershiprpg.macros_hotbar_1e.NsRHfRuuNGPfkYVf]{Make a Death Save}"
         },
         "pastCeiling": {
-          "android": "The end draws near . . .<br><br>@UUID[Compendium.mosh.macros_hotbar_1e.NsRHfRuuNGPfkYVf]{Make a Death Save}",
-          "human": "The end draws near . . .<br><br>@UUID[Compendium.mosh.macros_hotbar_1e.NsRHfRuuNGPfkYVf]{Make a Death Save}"
+          "android": "The end draws near . . .<br><br>@UUID[Compendium.mothershiprpg.macros_hotbar_1e.NsRHfRuuNGPfkYVf]{Make a Death Save}",
+          "human": "The end draws near . . .<br><br>@UUID[Compendium.mothershiprpg.macros_hotbar_1e.NsRHfRuuNGPfkYVf]{Make a Death Save}"
         },
         "decrease": {
           "android": "System resources free up and you feel energized.",
@@ -242,8 +242,8 @@
           "human": "Mended"
         },
         "decreaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/health.png",
-          "human": "systems/mosh/images/icons/ui/attributes/health.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/health.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/health.png"
         },
         "hitFloor": {
           "android": "You are now at full health.",
@@ -268,8 +268,8 @@
           "human": "Strength Gained"
         },
         "increaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/strength.png",
-          "human": "systems/mosh/images/icons/ui/attributes/strength.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/strength.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/strength.png"
         },
         "hitCeiling": {
           "android": "You are now at maximum strength.",
@@ -288,8 +288,8 @@
           "human": "Strength Lost"
         },
         "decreaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/strength.png",
-          "human": "systems/mosh/images/icons/ui/attributes/strength.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/strength.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/strength.png"
         },
         "hitFloor": {
           "android": "You have no strength left.",
@@ -314,8 +314,8 @@
           "human": "Speed Gained"
         },
         "increaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/speed.png",
-          "human": "systems/mosh/images/icons/ui/attributes/speed.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/speed.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/speed.png"
         },
         "hitCeiling": {
           "android": "You are now at maximum speed.",
@@ -334,8 +334,8 @@
           "human": "Speed Lost"
         },
         "decreaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/speed.png",
-          "human": "systems/mosh/images/icons/ui/attributes/speed.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/speed.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/speed.png"
         },
         "hitFloor": {
           "android": "You feel completely lethargic.",
@@ -360,8 +360,8 @@
           "human": "Intellect Gained"
         },
         "increaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/intellect.png",
-          "human": "systems/mosh/images/icons/ui/attributes/intellect.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/intellect.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/intellect.png"
         },
         "hitCeiling": {
           "android": "You are now at maximum intellect.",
@@ -380,8 +380,8 @@
           "human": "Intellect Lost"
         },
         "decreaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/intellect.png",
-          "human": "systems/mosh/images/icons/ui/attributes/intellect.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/intellect.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/intellect.png"
         },
         "hitFloor": {
           "android": "You feel utterly confused.",
@@ -406,8 +406,8 @@
           "human": "Combat Gained"
         },
         "increaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/combat.png",
-          "human": "systems/mosh/images/icons/ui/attributes/combat.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/combat.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/combat.png"
         },
         "hitCeiling": {
           "android": "You are now at maximum combat.",
@@ -426,8 +426,8 @@
           "human": "Combat Lost"
         },
         "decreaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/combat.png",
-          "human": "systems/mosh/images/icons/ui/attributes/combat.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/combat.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/combat.png"
         },
         "hitFloor": {
           "android": "You can't imagine fighting anymore.",
@@ -452,8 +452,8 @@
           "human": "Instinct Gained"
         },
         "increaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/instinct.png",
-          "human": "systems/mosh/images/icons/ui/attributes/instinct.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/instinct.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/instinct.png"
         },
         "hitCeiling": {
           "android": "You are now at maximum instinct.",
@@ -472,8 +472,8 @@
           "human": "Instinct Lost"
         },
         "decreaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/instinct.png",
-          "human": "systems/mosh/images/icons/ui/attributes/instinct.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/instinct.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/instinct.png"
         },
         "hitFloor": {
           "android": "You've lost your instincts.",
@@ -498,8 +498,8 @@
           "human": "Loyalty Gained"
         },
         "increaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/loyalty.png",
-          "human": "systems/mosh/images/icons/ui/attributes/loyalty.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/loyalty.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/loyalty.png"
         },
         "hitCeiling": {
           "android": "You are now at maximum loyalty.",
@@ -518,8 +518,8 @@
           "human": "Loyalty Lost"
         },
         "decreaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/loyalty.png",
-          "human": "systems/mosh/images/icons/ui/attributes/loyalty.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/loyalty.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/loyalty.png"
         },
         "hitFloor": {
           "android": "You only care about yourself.",
@@ -544,8 +544,8 @@
           "human": "Sanity Increased"
         },
         "increaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/sanity.png",
-          "human": "systems/mosh/images/icons/ui/attributes/sanity.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/sanity.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/sanity.png"
         },
         "hitCeiling": {
           "android": "You are now at maximum sanity.",
@@ -564,8 +564,8 @@
           "human": "Sanity Lost"
         },
         "decreaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/sanity.png",
-          "human": "systems/mosh/images/icons/ui/attributes/sanity.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/sanity.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/sanity.png"
         },
         "hitFloor": {
           "android": "You've lost your mind.",
@@ -590,8 +590,8 @@
           "human": "Bravery Improved"
         },
         "increaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/fear.png",
-          "human": "systems/mosh/images/icons/ui/attributes/fear.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/fear.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/fear.png"
         },
         "hitCeiling": {
           "android": "You are now at maximum fear.",
@@ -610,8 +610,8 @@
           "human": "Bravery Lost"
         },
         "decreaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/fear.png",
-          "human": "systems/mosh/images/icons/ui/attributes/fear.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/fear.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/fear.png"
         },
         "hitFloor": {
           "android": "You are afraid of everything.",
@@ -636,8 +636,8 @@
           "human": "Body Strengthened"
         },
         "increaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/body.png",
-          "human": "systems/mosh/images/icons/ui/attributes/body.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/body.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/body.png"
         },
         "hitCeiling": {
           "android": "You are now at maximum body.",
@@ -656,8 +656,8 @@
           "human": "Body Weakened"
         },
         "decreaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/body.png",
-          "human": "systems/mosh/images/icons/ui/attributes/body.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/body.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/body.png"
         },
         "hitFloor": {
           "android": "Your body feels weak and fragile.",
@@ -682,8 +682,8 @@
           "human": "Armor Gained"
         },
         "increaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/armor.png",
-          "human": "systems/mosh/images/icons/ui/attributes/armor.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/armor.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/armor.png"
         },
         "hitCeiling": {
           "android": "You are now at maximum armor.",
@@ -702,8 +702,8 @@
           "human": "Armor Lost"
         },
         "decreaseImg": {
-          "android": "systems/mosh/images/icons/ui/attributes/armor.png",
-          "human": "systems/mosh/images/icons/ui/attributes/armor.png"
+          "android": "systems/mothershiprpg/images/icons/ui/attributes/armor.png",
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/armor.png"
         },
         "hitFloor": {
           "android": "Nothing protects you now.",
@@ -725,7 +725,7 @@
           "human": "Thrusters Enhanced"
         },
         "increaseImg": {
-          "human": "systems/mosh/images/icons/ui/attributes/thrusters.png"
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/thrusters.png"
         },
         "hitCeiling": {
           "human": "Your thrusters are at maximum."
@@ -740,7 +740,7 @@
           "human": "Thrusters Impaired"
         },
         "decreaseImg": {
-          "human": "systems/mosh/images/icons/ui/attributes/thrusters.png"
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/thrusters.png"
         },
         "hitFloor": {
           "human": "You've lost your thrusters."
@@ -760,7 +760,7 @@
           "human": "Battle Enhanced"
         },
         "increaseImg": {
-          "human": "systems/mosh/images/icons/ui/attributes/battle.png"
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/battle.png"
         },
         "hitCeiling": {
           "human": "Your targeting systems are at maximum."
@@ -775,7 +775,7 @@
           "human": "Battle Impaired"
         },
         "decreaseImg": {
-          "human": "systems/mosh/images/icons/ui/attributes/battle.png"
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/battle.png"
         },
         "hitFloor": {
           "human": "You've lost your targeting systems."
@@ -795,7 +795,7 @@
           "human": "Systems Enhanced"
         },
         "increaseImg": {
-          "human": "systems/mosh/images/icons/ui/attributes/battle.png"
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/battle.png"
         },
         "hitCeiling": {
           "human": "Your ship's systems are at maximum."
@@ -810,7 +810,7 @@
           "human": "Systems Impaired"
         },
         "decreaseImg": {
-          "human": "systems/mosh/images/icons/ui/attributes/battle.png"
+          "human": "systems/mothershiprpg/images/icons/ui/attributes/battle.png"
         },
         "hitFloor": {
           "human": "You've lost your ship's systems."
@@ -823,64 +823,64 @@
     "macro": {
       "wound": {
         "bleeding": {
-          "android": "@UUID[Compendium.mosh.macros_triggered_1e.1DD8i6eCS6nx2Ip0]{Bleeding}",
-          "human": "@UUID[Compendium.mosh.macros_triggered_1e.1DD8i6eCS6nx2Ip0]{Bleeding}"
+          "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.1DD8i6eCS6nx2Ip0]{Bleeding}",
+          "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.1DD8i6eCS6nx2Ip0]{Bleeding}"
         },
         "bleeding_dis": {
-          "android": "@UUID[Compendium.mosh.macros_triggered_1e.xr2o2PU5vdrR6fxQ]{Bleeding [-]}",
-          "human": "@UUID[Compendium.mosh.macros_triggered_1e.xr2o2PU5vdrR6fxQ]{Bleeding [-]}"
+          "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.xr2o2PU5vdrR6fxQ]{Bleeding [-]}",
+          "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.xr2o2PU5vdrR6fxQ]{Bleeding [-]}"
         },
         "bleeding_adv": {
-          "android": "@UUID[Compendium.mosh.macros_triggered_1e.tFcWNddtZvlv7tsg]{Bleeding [+]}",
-          "human": "@UUID[Compendium.mosh.macros_triggered_1e.tFcWNddtZvlv7tsg]{Bleeding [+]}"
+          "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.tFcWNddtZvlv7tsg]{Bleeding [+]}",
+          "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.tFcWNddtZvlv7tsg]{Bleeding [+]}"
         },
         "blunt_force": {
-          "android": "@UUID[Compendium.mosh.macros_triggered_1e.TAjlQjA5AAy3qYL3]{Blunt Force}",
-          "human": "@UUID[Compendium.mosh.macros_triggered_1e.TAjlQjA5AAy3qYL3]{Blunt Force}"
+          "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.TAjlQjA5AAy3qYL3]{Blunt Force}",
+          "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.TAjlQjA5AAy3qYL3]{Blunt Force}"
         },
         "blunt_force_dis": {
-          "android": "@UUID[Compendium.mosh.macros_triggered_1e.k0zf8ZGivRguc0wb]{Blunt Force [-]}",
-          "human": "@UUID[Compendium.mosh.macros_triggered_1e.k0zf8ZGivRguc0wb]{Blunt Force [-]}"
+          "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.k0zf8ZGivRguc0wb]{Blunt Force [-]}",
+          "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.k0zf8ZGivRguc0wb]{Blunt Force [-]}"
         },
         "blunt_force_adv": {
-          "android": "@UUID[Compendium.mosh.macros_triggered_1e.oL3GH0HoEPlP8vzG]{Blunt Force [+]}",
-          "human": "@UUID[Compendium.mosh.macros_triggered_1e.oL3GH0HoEPlP8vzG]{Blunt Force [+]}"
+          "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.oL3GH0HoEPlP8vzG]{Blunt Force [+]}",
+          "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.oL3GH0HoEPlP8vzG]{Blunt Force [+]}"
         },
         "fire_explosives": {
-          "android": "@UUID[Compendium.mosh.macros_triggered_1e.bZi1qKmcKLFvnhZ2]{Fire & Explosives}",
-          "human": "@UUID[Compendium.mosh.macros_triggered_1e.bZi1qKmcKLFvnhZ2]{Fire & Explosives}"
+          "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.bZi1qKmcKLFvnhZ2]{Fire & Explosives}",
+          "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.bZi1qKmcKLFvnhZ2]{Fire & Explosives}"
         },
         "fire_explosives_dis": {
-          "android": "@UUID[Compendium.mosh.macros_triggered_1e.7rYhbDAaFeok1Daq]{Fire & Explosives [-]}",
-          "human": "@UUID[Compendium.mosh.macros_triggered_1e.7rYhbDAaFeok1Daq]{Fire & Explosives [-]}"
+          "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.7rYhbDAaFeok1Daq]{Fire & Explosives [-]}",
+          "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.7rYhbDAaFeok1Daq]{Fire & Explosives [-]}"
         },
         "fire_explosives_adv": {
-          "android": "@UUID[Compendium.mosh.macros_triggered_1e.dJnQKDf0AlwK27QD]{Fire & Explosives [+]}",
-          "human": "@UUID[Compendium.mosh.macros_triggered_1e.dJnQKDf0AlwK27QD]{Fire & Explosives [+]}"
+          "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.dJnQKDf0AlwK27QD]{Fire & Explosives [+]}",
+          "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.dJnQKDf0AlwK27QD]{Fire & Explosives [+]}"
         },
         "gore_massive": {
-          "android": "@UUID[Compendium.mosh.macros_triggered_1e.S9nnHKWYGSQmjQdp]{Gore}",
-          "human": "@UUID[Compendium.mosh.macros_triggered_1e.S9nnHKWYGSQmjQdp]{Gore}"
+          "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.S9nnHKWYGSQmjQdp]{Gore}",
+          "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.S9nnHKWYGSQmjQdp]{Gore}"
         },
         "gore_massive_dis": {
-          "android": "@UUID[Compendium.mosh.macros_triggered_1e.eQPuDgwv8evetFIk]{Gore [-]}",
-          "human": "@UUID[Compendium.mosh.macros_triggered_1e.eQPuDgwv8evetFIk]{Gore [-]}"
+          "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.eQPuDgwv8evetFIk]{Gore [-]}",
+          "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.eQPuDgwv8evetFIk]{Gore [-]}"
         },
         "gore_massive_adv": {
-          "android": "@UUID[Compendium.mosh.macros_triggered_1e.DuVjNlE4lsnR7Emc]{Gore [+]}",
-          "human": "@UUID[Compendium.mosh.macros_triggered_1e.DuVjNlE4lsnR7Emc]{Gore [+]}"
+          "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.DuVjNlE4lsnR7Emc]{Gore [+]}",
+          "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.DuVjNlE4lsnR7Emc]{Gore [+]}"
         },
         "gunshot": {
-          "android": "@UUID[Compendium.mosh.macros_triggered_1e.XgCOLv9UunBddUyW]{Gunshot}",
-          "human": "@UUID[Compendium.mosh.macros_triggered_1e.XgCOLv9UunBddUyW]{Gunshot}"
+          "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.XgCOLv9UunBddUyW]{Gunshot}",
+          "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.XgCOLv9UunBddUyW]{Gunshot}"
         },
         "gunshot_dis": {
-          "android": "@UUID[Compendium.mosh.macros_triggered_1e.LTpa1ZYVZl4m9k6z]{Gunshot [-]}",
-          "human": "@UUID[Compendium.mosh.macros_triggered_1e.LTpa1ZYVZl4m9k6z]{Gunshot [-]}"
+          "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.LTpa1ZYVZl4m9k6z]{Gunshot [-]}",
+          "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.LTpa1ZYVZl4m9k6z]{Gunshot [-]}"
         },
         "gunshot_adv": {
-          "android": "@UUID[Compendium.mosh.macros_triggered_1e.fnVATRHYJEUlS3pR]{Gunshot [+]}",
-          "human": "@UUID[Compendium.mosh.macros_triggered_1e.fnVATRHYJEUlS3pR]{Gunshot [+]}"
+          "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.fnVATRHYJEUlS3pR]{Gunshot [+]}",
+          "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.fnVATRHYJEUlS3pR]{Gunshot [+]}"
         }
       }
     },
@@ -1077,7 +1077,7 @@
     "HEARTATTACKSHORTCIRCUITANDROIDS": "HEART ATTACK / SHORT CIRCUIT (ANDROIDS).",
     "SHORTCIRCUIT": "SHORT CIRCUIT.",
     "HEARTATTACK": "HEART ATTACK.",
-    "Gain1d10Calmk2TtLFOG9mGaWVx31d10Calm":" Gain 1d10 Calm.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.k2TtLFOG9mGaWVx3]{+1d10 Calm}",
+    "Gain1d10Calmk2TtLFOG9mGaWVx31d10Calm":" Gain 1d10 Calm.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.k2TtLFOG9mGaWVx3]{+1d10 Calm}",
     "SelectAStat": "Select a Stat",
     "ChooseTheStatForSkillCheck": "Choose the Stat that best suits the nature of this Skill Check. You will add your skill bonus to the Stat value for this roll",
     "GivingYouAHigherNumber": "(giving you a higher number to roll under).",

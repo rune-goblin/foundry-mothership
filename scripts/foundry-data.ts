@@ -4,7 +4,7 @@ import { existsSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 
-export const SYSTEM_ID = 'mosh';
+export const SYSTEM_ID = 'mothershiprpg';
 
 export function detectFoundryData(): string | undefined {
   if (process.env.FOUNDRY_DATA) return process.env.FOUNDRY_DATA;

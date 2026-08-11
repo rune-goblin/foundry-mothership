@@ -1,7 +1,7 @@
 {
   "_id": "ata3fRz3uoPfNCLh",
   "name": "Bleeding Wound",
-  "img": "systems/mosh/images/icons/ui/rolltables/wounds_bleeding.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
   "description": "<p>Whenever you gain a Bleeding Wound, roll on this table to determine the effect. <strong>Flesh Wounds</strong> are small inconveniences. <strong>Minor/Major Injuries</strong> cause lasting issues which require medical treatment. <strong>Lethal Injuries</strong> can kill you if not dealt with immediately. <strong>Fatal Injuries</strong> can kill outright. <strong>Bleeding</strong> wounds, if not treated can quickly overwhelm you.</p>",
   "formula": "1d10-1",
   "replacement": true,
@@ -10,7 +10,7 @@
     {
       "_id": "58jsAYGMOoYV0aXe",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_bleeding.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
       "weight": 1,
       "range": [
         0,
@@ -36,7 +36,7 @@
     {
       "_id": "qVUXginkyIDKa6fe",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_bleeding.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
       "weight": 1,
       "range": [
         1,
@@ -54,7 +54,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Minor Injury:</strong> Lots of blood. Those Close gain 1 Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.dvJR9DYXI2kV0BbR]{+1 Stress}",
+      "description": "<strong>Minor Injury:</strong> Lots of blood. Those Close gain 1 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.dvJR9DYXI2kV0BbR]{+1 Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ata3fRz3uoPfNCLh.qVUXginkyIDKa6fe"
@@ -62,7 +62,7 @@
     {
       "_id": "uvF7ftDjXr9excYX",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_bleeding.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
       "weight": 1,
       "range": [
         2,
@@ -88,7 +88,7 @@
     {
       "_id": "5ED6Ynmibq9pKDEk",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_bleeding.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
       "weight": 1,
       "range": [
         3,
@@ -106,7 +106,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Minor Injury:</strong> Laceration. Bleeding +1.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.BH7tgbDVH6jdcZ4u]{+1 Bleeding}",
+      "description": "<strong>Minor Injury:</strong> Laceration. Bleeding +1.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.BH7tgbDVH6jdcZ4u]{+1 Bleeding}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ata3fRz3uoPfNCLh.5ED6Ynmibq9pKDEk"
@@ -114,7 +114,7 @@
     {
       "_id": "hO9e9wmIsTXWfZns",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_bleeding.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
       "weight": 1,
       "range": [
         4,
@@ -132,7 +132,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Minor Injury:</strong> Major cut. Bleeding +2.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.IIVNXuhckFQfzXah]{+2 Bleeding}",
+      "description": "<strong>Minor Injury:</strong> Major cut. Bleeding +2.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.IIVNXuhckFQfzXah]{+2 Bleeding}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ata3fRz3uoPfNCLh.hO9e9wmIsTXWfZns"
@@ -140,7 +140,7 @@
     {
       "_id": "8eTGRuBUdp9s2Z46",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_bleeding.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
       "weight": 1,
       "range": [
         5,
@@ -158,7 +158,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Major Injury:</strong> Fingers/toes severed. Bleeding +3.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.LawygQJAPu8XEnSc]{+3 Bleeding}",
+      "description": "<strong>Major Injury:</strong> Fingers/toes severed. Bleeding +3.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.LawygQJAPu8XEnSc]{+3 Bleeding}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ata3fRz3uoPfNCLh.8eTGRuBUdp9s2Z46"
@@ -166,7 +166,7 @@
     {
       "_id": "FZ9GwrHFQJUmHQ7k",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_bleeding.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
       "weight": 1,
       "range": [
         6,
@@ -184,7 +184,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Major Injury:</strong> Hand/foot severed. Bleeding +4.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.QkCJK7Vmda5bGAA7]{+4 Bleeding}",
+      "description": "<strong>Major Injury:</strong> Hand/foot severed. Bleeding +4.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.QkCJK7Vmda5bGAA7]{+4 Bleeding}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ata3fRz3uoPfNCLh.FZ9GwrHFQJUmHQ7k"
@@ -192,7 +192,7 @@
     {
       "_id": "kLAtlJUE9QfCX38s",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_bleeding.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
       "weight": 1,
       "range": [
         7,
@@ -210,7 +210,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Lethal Injury:</strong> Limb severed. Bleeding +5. Death Save in [[/r 1d10]] rounds.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.CZ2gqnRHcOpCLlG0]{+5 Bleeding}",
+      "description": "<strong>Lethal Injury:</strong> Limb severed. Bleeding +5. Death Save in [[/r 1d10]] rounds.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.CZ2gqnRHcOpCLlG0]{+5 Bleeding}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ata3fRz3uoPfNCLh.kLAtlJUE9QfCX38s"
@@ -218,7 +218,7 @@
     {
       "_id": "806d8NZZaysIHJvm",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_bleeding.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
       "weight": 1,
       "range": [
         8,
@@ -236,7 +236,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Lethal Injury:</strong> Major artery cut. Bleeding +6. Death Save in [[/r 1d10]] rounds.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.Tx19z2BhTY6onldp]{+6 Bleeding}",
+      "description": "<strong>Lethal Injury:</strong> Major artery cut. Bleeding +6. Death Save in [[/r 1d10]] rounds.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.Tx19z2BhTY6onldp]{+6 Bleeding}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ata3fRz3uoPfNCLh.806d8NZZaysIHJvm"
@@ -244,7 +244,7 @@
     {
       "_id": "439gBR7gGeLatpfl",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_bleeding.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
       "weight": 1,
       "range": [
         9,
@@ -262,7 +262,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Fatal Injury:</strong> Throat slit or heart pierced. Death Save.<br><br>@UUID[Compendium.mosh.macros_hotbar_1e.Macro.NsRHfRuuNGPfkYVf]{Death Save}",
+      "description": "<strong>Fatal Injury:</strong> Throat slit or heart pierced. Death Save.<br><br>@UUID[Compendium.mothershiprpg.macros_hotbar_1e.Macro.NsRHfRuuNGPfkYVf]{Death Save}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ata3fRz3uoPfNCLh.439gBR7gGeLatpfl"

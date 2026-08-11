@@ -1,8 +1,8 @@
 {
   "_id": "XLEhMV9SnSfeEE7E",
-  "name": "Clogged Air Filtration. Crew capacity cut in half.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.DUuRY7kHKd7n5luv]{-50% Crew Capacity}",
+  "name": "Clogged Air Filtration. Crew capacity cut in half.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.DUuRY7kHKd7n5luv]{-50% Crew Capacity}",
   "type": "repair",
-  "img": "systems/mosh/images/icons/ui/rolltables/maintenance_issues.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/maintenance_issues.png",
   "system": {
     "description": "<p>Maintenance Issue</p>",
     "quantity": 1,

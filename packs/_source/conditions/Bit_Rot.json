@@ -2,7 +2,7 @@
   "_id": "H1dqOrGg0voG2DmC",
   "name": "Bit Rot",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/data_loss.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/data_loss.png",
   "system": {
     "description": "<p>Whenever you would recover Calm, recover half as much instead.</p>",
     "severity": 1,

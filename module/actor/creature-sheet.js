@@ -10,7 +10,7 @@ export class MothershipCreatureSheet extends foundry.appv1.sheets.ActorSheet {
     static get defaultOptions() {
         var options = {
             classes: ["mosh", "sheet", "actor", "creature"],
-            template: "systems/mosh/templates/actor/creature-sheet.html",
+            template: "systems/mothershiprpg/templates/actor/creature-sheet.html",
             width: 820,
             height: 770,
             tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "character" }],
@@ -79,9 +79,9 @@ export class MothershipCreatureSheet extends foundry.appv1.sheets.ActorSheet {
         if (data.data.system.settings == null) {
             data.data.system.settings = {};
         }
-        data.data.system.settings.useCalm = game.settings.get("mosh", "useCalm");
-        data.data.system.settings.hideWeight = game.settings.get("mosh", "hideWeight");
-        data.data.system.settings.androidPanic = game.settings.get("mosh", "androidPanic");
+        data.data.system.settings.useCalm = game.settings.get("mothershiprpg", "useCalm");
+        data.data.system.settings.hideWeight = game.settings.get("mothershiprpg", "hideWeight");
+        data.data.system.settings.androidPanic = game.settings.get("mothershiprpg", "androidPanic");
 
         data.data.enriched = [];
         data.data.enriched.description = await foundry.applications.ux.TextEditor.implementation.enrichHTML(data.data.system.description, {async: true});

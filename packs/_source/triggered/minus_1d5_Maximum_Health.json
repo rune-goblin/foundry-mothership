@@ -4,7 +4,7 @@
   "type": "script",
   "scope": "global",
   "img": "icons/svg/d10-grey.svg",
-  "command": "game.mosh.initModifyActor('system.health.max',null,'-1d5',true);",
+  "command": "game.mothership.initModifyActor('system.health.max',null,'-1d5',true);",
   "folder": null,
   "flags": {},
   "_stats": {

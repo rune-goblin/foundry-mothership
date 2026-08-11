@@ -2,7 +2,7 @@
   "_id": "5d220ZzrEV3qx6Fy",
   "name": "Worn out fuel injection nozzles.",
   "type": "repair",
-  "img": "systems/mosh/images/icons/ui/rolltables/maintenance_issues.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/maintenance_issues.png",
   "system": {
     "description": "<p>Maintenance Issue</p>",
     "quantity": 1,

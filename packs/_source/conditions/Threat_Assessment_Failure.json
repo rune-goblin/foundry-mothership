@@ -2,7 +2,7 @@
   "_id": "HZBI88iwvtQVWKOR",
   "name": "Threat Assessment Failure",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/death_wish.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/death_wish.png",
   "system": {
     "description": "<p>You lose the ability to discern friend from foe, treating all vaguely-humanoid entities as you would members of your crew.</p>",
     "severity": 1,

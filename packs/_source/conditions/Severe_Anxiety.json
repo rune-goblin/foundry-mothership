@@ -2,7 +2,7 @@
   "_id": "CPRLqpW9inXDLYjS",
   "name": "Severe Anxiety",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/anxiety.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/anxiety.png",
   "system": {
     "description": "<p>Lose double Calm from all sources.</p>",
     "severity": 1,

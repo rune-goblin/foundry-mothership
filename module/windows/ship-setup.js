@@ -3,7 +3,7 @@ export class DLShipSetup extends FormApplication {
         const options = super.defaultOptions;
         options.id = 'sheet-modifiers';
         options.classes = ["mosh", "sheet", "actor", "ship"];
-        options.template = 'systems/mosh/templates/dialogs/ship-setup-dialog.html';
+        options.template = 'systems/mothershiprpg/templates/dialogs/ship-setup-dialog.html';
         options.width = 320;
         options.height = 'auto';
         options.resizeable = false;

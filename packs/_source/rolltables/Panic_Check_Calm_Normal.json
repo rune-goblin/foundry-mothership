@@ -1,7 +1,7 @@
 {
   "_id": "MOYI6Ntj5OVFYk06",
   "name": "Panic Check (Calm, Normal)",
-  "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
   "description": "<p>Eventually, Stress, Damage and emotional wear and tear will bring you to your breaking point. When that happens there’s a chance that you’ll lose control and Panic. To determine whether you are able to keep your cool under extreme pressure, make a <strong>Panic Check</strong>. While the results are primarily negative there is the possibility of grace under fire.</p>",
   "formula": "1d100",
   "replacement": true,
@@ -10,7 +10,7 @@
     {
       "_id": "DHvObevFoNX6o7Dc",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         1,
@@ -28,7 +28,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Psychological Collapse.</strong> You become permanently, irreparably insane. Your character is now played by the Warden. All nearby player characters must immediately make Panic Checks.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.FTB2KHEbe7ApCilw]{+1 Insane}<br><br>@UUID[Compendium.mosh.macros_hotbar_1e.Macro.IgWvaabVqzKDzLL4]{Make a Panic Check}",
+      "description": "<strong>Psychological Collapse.</strong> You become permanently, irreparably insane. Your character is now played by the Warden. All nearby player characters must immediately make Panic Checks.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.FTB2KHEbe7ApCilw]{+1 Insane}<br><br>@UUID[Compendium.mothershiprpg.macros_hotbar_1e.Macro.IgWvaabVqzKDzLL4]{Make a Panic Check}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.DHvObevFoNX6o7Dc"
@@ -36,7 +36,7 @@
     {
       "_id": "d0Li0aJSeRsHZzAe",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         40,
@@ -62,7 +62,7 @@
     {
       "_id": "C5gfNr1IccewP9MP",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         60,
@@ -80,7 +80,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Temporary Insanity.</strong> You become insane. Your character is played by the Warden <em>(or by you but you must act destructively and against the interests of the rest of your team or else the Warden takes over)</em> until they sleep at least 6 hours and succeed on a Sanity Save.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.TkMfT4RIczQb56j2]{Sanity Save}",
+      "description": "<strong>Temporary Insanity.</strong> You become insane. Your character is played by the Warden <em>(or by you but you must act destructively and against the interests of the rest of your team or else the Warden takes over)</em> until they sleep at least 6 hours and succeed on a Sanity Save.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.TkMfT4RIczQb56j2]{Sanity Save}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.C5gfNr1IccewP9MP"
@@ -88,7 +88,7 @@
     {
       "_id": "7oGjaJ87muIkWXqj",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         65,
@@ -106,7 +106,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Heart Attack.</strong> Death in [[/r 1d10]] minutes unless you get medical attention. -1d10 to your Body save.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.nT2AsZwrYhJyxizF]{-1d10 Body Save}",
+      "description": "<strong>Heart Attack.</strong> Death in [[/r 1d10]] minutes unless you get medical attention. -1d10 to your Body save.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.nT2AsZwrYhJyxizF]{-1d10 Body Save}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.7oGjaJ87muIkWXqj"
@@ -114,7 +114,7 @@
     {
       "_id": "NGDxlqtHo0hrg0a7",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         70,
@@ -132,7 +132,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Psychotic Episodes.</strong> Once per session, the Warden may take over your character for one round. The first one happens immediately.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.er0IZXOSuF28Po1h]{+1 Psychotic Episodes}",
+      "description": "<strong>Psychotic Episodes.</strong> Once per session, the Warden may take over your character for one round. The first one happens immediately.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.er0IZXOSuF28Po1h]{+1 Psychotic Episodes}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.NGDxlqtHo0hrg0a7"
@@ -140,7 +140,7 @@
     {
       "_id": "cnidPS821nyDmk3O",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         71,
@@ -158,7 +158,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Broken.</strong> Make a Panic roll whenever a nearby crew member fails a save.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.8VoaVAl39Xs0pDcr]{+1 Broken}",
+      "description": "<strong>Broken.</strong> Make a Panic roll whenever a nearby crew member fails a save.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.8VoaVAl39Xs0pDcr]{+1 Broken}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.cnidPS821nyDmk3O"
@@ -166,7 +166,7 @@
     {
       "_id": "C7T1ZNN81SUwOLXX",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         72,
@@ -184,7 +184,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Severe Anxiety.</strong> Lose double Calm from all sources.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.LAXDz9nMvSSO3qzZ]{+1 Severe Anxiety}",
+      "description": "<strong>Severe Anxiety.</strong> Lose double Calm from all sources.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.LAXDz9nMvSSO3qzZ]{+1 Severe Anxiety}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.C7T1ZNN81SUwOLXX"
@@ -192,7 +192,7 @@
     {
       "_id": "tvVo2JPXGBq8EXtg",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         73,
@@ -210,7 +210,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Anhedonia.</strong> Whenever you would recover Calm, recover half as much Calm instead.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.hzxRycVkMhNS6gyJ]{+1 Anhedonia}",
+      "description": "<strong>Anhedonia.</strong> Whenever you would recover Calm, recover half as much Calm instead.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.hzxRycVkMhNS6gyJ]{+1 Anhedonia}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.tvVo2JPXGBq8EXtg"
@@ -218,7 +218,7 @@
     {
       "_id": "TLAoXEhAAp5elKQi",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         74,
@@ -236,7 +236,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Losing Your Grip.</strong> Whenever you make a Sanity save, roll under your Sanity or your Calm, whichever is lower.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.4Ak3WH8lzzkds6yo]{+1 Losing Your Grip}",
+      "description": "<strong>Losing Your Grip.</strong> Whenever you make a Sanity save, roll under your Sanity or your Calm, whichever is lower.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.4Ak3WH8lzzkds6yo]{+1 Losing Your Grip}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.TLAoXEhAAp5elKQi"
@@ -244,7 +244,7 @@
     {
       "_id": "wT4c4kj33ehIfCdL",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         75,
@@ -262,7 +262,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Panicky.</strong> Whenever you make a Fear save, roll under your Fear or your Calm, whichever is lower.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.lto7Vq1jb7DBScuu]{+1 Panicky}",
+      "description": "<strong>Panicky.</strong> Whenever you make a Fear save, roll under your Fear or your Calm, whichever is lower.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.lto7Vq1jb7DBScuu]{+1 Panicky}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.wT4c4kj33ehIfCdL"
@@ -270,7 +270,7 @@
     {
       "_id": "ERv7ngjr6h6PSJl2",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         76,
@@ -288,7 +288,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>The Shakes.</strong> You can’t keep your hands steady any more. Disadvantage on ranged attacks and all tasks requiring fine motor skills. Drugs may be able to help with this.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.DsmTMGHs92cmwlVk]{+1 The Shakes}",
+      "description": "<strong>The Shakes.</strong> You can’t keep your hands steady any more. Disadvantage on ranged attacks and all tasks requiring fine motor skills. Drugs may be able to help with this.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.DsmTMGHs92cmwlVk]{+1 The Shakes}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.ERv7ngjr6h6PSJl2"
@@ -296,7 +296,7 @@
     {
       "_id": "BLhsVH6uXPsw9nUb",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         77,
@@ -314,7 +314,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Recurring Nightmares.</strong> Every time you rest, make a Fear save. If you fail, lose 1d10 Calm and do not heal. The Warden will describe your nightmare.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.AqZ9JqENaPSmFQbK]{+1 Recurring Nightmares}",
+      "description": "<strong>Recurring Nightmares.</strong> Every time you rest, make a Fear save. If you fail, lose 1d10 Calm and do not heal. The Warden will describe your nightmare.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.AqZ9JqENaPSmFQbK]{+1 Recurring Nightmares}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.BLhsVH6uXPsw9nUb"
@@ -322,7 +322,7 @@
     {
       "_id": "0kZQtWxO9P1voycZ",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         78,
@@ -340,7 +340,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Emotional Detachment.</strong> You now lose half the Calm <em>(rounded up)</em> you normally would from all sources but you gain the Panic Effect of an Android, in addition to that of your own class. If you are an Android, gain the Panic Effect of a Marine.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.tdQu2wnAXXXcXfrO]{+1 Emotional Detachment}",
+      "description": "<strong>Emotional Detachment.</strong> You now lose half the Calm <em>(rounded up)</em> you normally would from all sources but you gain the Panic Effect of an Android, in addition to that of your own class. If you are an Android, gain the Panic Effect of a Marine.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.tdQu2wnAXXXcXfrO]{+1 Emotional Detachment}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.0kZQtWxO9P1voycZ"
@@ -348,7 +348,7 @@
     {
       "_id": "ToerE4a77WZvWJOS",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         79,
@@ -366,7 +366,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Social Anxiety.</strong> Lose 1d10 Calm whenever you converse with someone new.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.HhofJYVhx3ovuyAw]{+1 Social Anxiety}",
+      "description": "<strong>Social Anxiety.</strong> Lose 1d10 Calm whenever you converse with someone new.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.HhofJYVhx3ovuyAw]{+1 Social Anxiety}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.ToerE4a77WZvWJOS"
@@ -374,7 +374,7 @@
     {
       "_id": "GkdxvyW9kCKOcmnF",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         80,
@@ -392,7 +392,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Escapism.</strong> You always have Disadvantage on Body Saves to prevent Addiction.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.sSYIhNQhEiWTs1ip]{+1 Escapism}",
+      "description": "<strong>Escapism.</strong> You always have Disadvantage on Body Saves to prevent Addiction.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.sSYIhNQhEiWTs1ip]{+1 Escapism}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.GkdxvyW9kCKOcmnF"
@@ -400,7 +400,7 @@
     {
       "_id": "V3glomGRXiHjnoZj",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         81,
@@ -418,7 +418,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Hypervigilance.</strong> Gain Advantage on all surprise rolls but lose 1d10 Calm every day.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.dSQgoBV6zSeQ1tqF]{+1 Hypervigilance}",
+      "description": "<strong>Hypervigilance.</strong> Gain Advantage on all surprise rolls but lose 1d10 Calm every day.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.dSQgoBV6zSeQ1tqF]{+1 Hypervigilance}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.V3glomGRXiHjnoZj"
@@ -426,7 +426,7 @@
     {
       "_id": "8Sv4YzhD3Zl5eBJo",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         82,
@@ -444,7 +444,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>General Anxiety.</strong> Your Maximum Calm decreases by 1d10.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.J61Srent4vEthGAn]{-1d10 Maximum Calm}",
+      "description": "<strong>General Anxiety.</strong> Your Maximum Calm decreases by 1d10.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.J61Srent4vEthGAn]{-1d10 Maximum Calm}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.8Sv4YzhD3Zl5eBJo"
@@ -452,7 +452,7 @@
     {
       "_id": "yUDq43zxZKgnCWwB",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         83,
@@ -470,7 +470,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Mild Anxiety.</strong> Your Maximum Calm decreases by 2.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.eoGfi5JdPASUUJU4]{-2 Maximum Calm}",
+      "description": "<strong>Mild Anxiety.</strong> Your Maximum Calm decreases by 2.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.eoGfi5JdPASUUJU4]{-2 Maximum Calm}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.yUDq43zxZKgnCWwB"
@@ -478,7 +478,7 @@
     {
       "_id": "GJKxSWI2bxXyCNxT",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         84,
@@ -496,7 +496,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Crippling Fear.</strong> Gain a new Phobia, determined by the Warden. Whenever you encounter this phobia make a Fear save at Disadvantage or lose 1d10 Calm.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.RTL29CqdaAriGSTS]{+1 Phobia}",
+      "description": "<strong>Crippling Fear.</strong> Gain a new Phobia, determined by the Warden. Whenever you encounter this phobia make a Fear save at Disadvantage or lose 1d10 Calm.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.RTL29CqdaAriGSTS]{+1 Phobia}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.GJKxSWI2bxXyCNxT"
@@ -504,7 +504,7 @@
     {
       "_id": "TOqb2JnInEfFipaR",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         85,
@@ -530,7 +530,7 @@
     {
       "_id": "AP8XSxwSK8fugXyc",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         86,
@@ -548,7 +548,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Outburst.</strong> Suddenly shout, cry out, slam your fist against a wall, etc., making a loud noise. Nearby crew members lose 1d10 Calm.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.jHyqXb2yDFTNWxpy]{-1d10 Calm}",
+      "description": "<strong>Outburst.</strong> Suddenly shout, cry out, slam your fist against a wall, etc., making a loud noise. Nearby crew members lose 1d10 Calm.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.jHyqXb2yDFTNWxpy]{-1d10 Calm}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.AP8XSxwSK8fugXyc"
@@ -556,7 +556,7 @@
     {
       "_id": "HylewV0kpxfLH6T9",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         87,
@@ -582,7 +582,7 @@
     {
       "_id": "KXtQ6JklVOBolFHf",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         88,
@@ -600,7 +600,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Cowardice.</strong> Lose 1d10 Calm. For the rest of the session, you must make a Fear save to engage in combat.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.b0jk4XwP7by8a3uc]{+1 Coward}",
+      "description": "<strong>Cowardice.</strong> Lose 1d10 Calm. For the rest of the session, you must make a Fear save to engage in combat.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.b0jk4XwP7by8a3uc]{+1 Coward}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.KXtQ6JklVOBolFHf"
@@ -608,7 +608,7 @@
     {
       "_id": "C0rWCutnv8a4X46J",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         89,
@@ -626,7 +626,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Hallucinations.</strong> For the next [[/r 1d10]] hours <em>(determined secretly)</em>, you have trouble distinguishing between reality and fantasy.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.Z7XPRgpTQqqi4M1n]{+1 Hallucinations}",
+      "description": "<strong>Hallucinations.</strong> For the next [[/r 1d10]] hours <em>(determined secretly)</em>, you have trouble distinguishing between reality and fantasy.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.Z7XPRgpTQqqi4M1n]{+1 Hallucinations}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.C0rWCutnv8a4X46J"
@@ -634,7 +634,7 @@
     {
       "_id": "jIaGDvdasADYuAw1",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         90,
@@ -652,7 +652,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Nervous Twitch.</strong> Lose 1d10 Calm. The nearest crew member also loses 1d5 Calm.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.jHyqXb2yDFTNWxpy]{-1d10 Calm}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.AvKZE5IFubIaAIUy]{-1d5 Calm}",
+      "description": "<strong>Nervous Twitch.</strong> Lose 1d10 Calm. The nearest crew member also loses 1d5 Calm.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.jHyqXb2yDFTNWxpy]{-1d10 Calm}<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.AvKZE5IFubIaAIUy]{-1d5 Calm}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.jIaGDvdasADYuAw1"
@@ -660,7 +660,7 @@
     {
       "_id": "sCo5Gi5YZJJF4Gp3",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         93,
@@ -678,7 +678,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Overwhelmed.</strong> Lose 1d10 Calm.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.jHyqXb2yDFTNWxpy]{-1d10 Calm}",
+      "description": "<strong>Overwhelmed.</strong> Lose 1d10 Calm.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.jHyqXb2yDFTNWxpy]{-1d10 Calm}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.sCo5Gi5YZJJF4Gp3"
@@ -686,7 +686,7 @@
     {
       "_id": "QssxAQ8lw7rba9Us",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         97,
@@ -704,7 +704,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Moment of Panic.</strong> Lose 1d5 Calm.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.AvKZE5IFubIaAIUy]{-1d5 Calm}",
+      "description": "<strong>Moment of Panic.</strong> Lose 1d5 Calm.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.AvKZE5IFubIaAIUy]{-1d5 Calm}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.QssxAQ8lw7rba9Us"
@@ -712,7 +712,7 @@
     {
       "_id": "FmhTD6OzbqsJsaD3",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         100,
@@ -730,7 +730,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Heart Races.</strong> Lose 1 Calm.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.qbq694JMbXeZrHjj]{-1 Calm}",
+      "description": "<strong>Heart Races.</strong> Lose 1 Calm.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.qbq694JMbXeZrHjj]{-1 Calm}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!MOYI6Ntj5OVFYk06.FmhTD6OzbqsJsaD3"

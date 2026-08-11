@@ -15,7 +15,7 @@ const COMPARATORS = {
 export function compare(varType, varOne, comparator, varTwo) {
   const op = COMPARATORS[comparator];
   if (!op) {
-    console.warn(`mosh | unknown comparator '${comparator}' in compare helper`);
+    console.warn(`mothership | unknown comparator '${comparator}' in compare helper`);
     return false;
   }
   // The old eval quoted both operands for 'str' and left them bare for 'int', so the

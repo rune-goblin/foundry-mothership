@@ -3,7 +3,7 @@ import { rolltableConfig } from "./windows/settings-rolltables.js";
 export const registerSettings = function () {
   
 
-  game.settings.register('mosh', 'macroTarget', {
+  game.settings.register('mothershiprpg', 'macroTarget', {
     name: "Macro Target",
     hint: "Who should be the target for macros?",
     default: "character",
@@ -20,7 +20,7 @@ export const registerSettings = function () {
     }
   });
 
-  game.settings.register('mosh', 'critDamage', {
+  game.settings.register('mothershiprpg', 'critDamage', {
     name: "Critical Hit Damage",
     hint: "What should the damage be on a critical hit?",
     default: "advantage",
@@ -41,7 +41,7 @@ export const registerSettings = function () {
     }
   });
 
-  game.settings.register('mosh', 'damageDiceTheme', {
+  game.settings.register('mothershiprpg', 'damageDiceTheme', {
     name: "Damage Dice Theme",
     hint: "If DiceSoNice is installed, what theme should be applied to damage dice?",
     default: "damage",
@@ -54,7 +54,7 @@ export const registerSettings = function () {
     }
   });
 
-  game.settings.register('mosh', 'panicDieTheme', {
+  game.settings.register('mothershiprpg', 'panicDieTheme', {
     name: "Panic Die Theme",
     hint: "If DiceSoNice is installed, what theme should be applied to the panic die?",
     default: "panic",
@@ -67,7 +67,7 @@ export const registerSettings = function () {
     }
   });
 
-  game.settings.register('mosh', 'hideWeight', {
+  game.settings.register('mothershiprpg', 'hideWeight', {
     name: "Hide Weight",
     hint: "Hide the weight mechanic in the items list for players and ships?",
     default: true,
@@ -80,7 +80,7 @@ export const registerSettings = function () {
     }
   });
   
-  game.settings.register('mosh', 'useCalm', {
+  game.settings.register('mothershiprpg', 'useCalm', {
     name: "Use Calm?",
     hint: "Uses the traaa.sh Calm system instead of Stress.",
     default: false,
@@ -199,7 +199,7 @@ export const registerSettings = function () {
     }
   });
 
-  game.settings.register('mosh', 'androidPanic', {
+  game.settings.register('mothershiprpg', 'androidPanic', {
     name: "Use Android Panic Tables?",
     hint: "Adds android-specific tables for Panic and Calm checks.",
     default: false,
@@ -212,7 +212,7 @@ export const registerSettings = function () {
     }
   });
 
-  game.settings.register('mosh', 'autoStress', {
+  game.settings.register('mothershiprpg', 'autoStress', {
     name: "Auto Stress Gain on Failures?",
     hint: "Automatically handles stress gain on a failed roll.",
     default: true,
@@ -225,7 +225,7 @@ export const registerSettings = function () {
     }
   });
 
-  game.settings.registerMenu('mosh', 'rolltableSelector', {
+  game.settings.registerMenu('mothershiprpg', 'rolltableSelector', {
     name: "Rolltable Configuration",
     label: "Choose Tables",
     hint: "Customize which rolltables are used.",
@@ -233,98 +233,98 @@ export const registerSettings = function () {
     type: rolltableConfig
   });
 
-  game.settings.register('mosh', 'table1ePanicStressNormal', {
+  game.settings.register('mothershiprpg', 'table1ePanicStressNormal', {
     scope: 'world',
     config: false,
     type: String,
     default: "ypcoikqHLhnc9tNs"
   });
 
-  game.settings.register('mosh', 'table1ePanicStressAndroid', {
+  game.settings.register('mothershiprpg', 'table1ePanicStressAndroid', {
     scope: 'world',
     config: false,
     type: String,
     default: "aBnY19jlhPXzibCt"
   });
 
-  game.settings.register('mosh', 'table1ePanicCalmNormal', {
+  game.settings.register('mothershiprpg', 'table1ePanicCalmNormal', {
     scope: 'world',
     config: false,
     type: String,
     default: "MOYI6Ntj5OVFYk06"
   });
 
-  game.settings.register('mosh', 'table1ePanicCalmAndroid', {
+  game.settings.register('mothershiprpg', 'table1ePanicCalmAndroid', {
     scope: 'world',
     config: false,
     type: String,
     default: "GCtYeCCQVQJ5M6SE"
   });
 
-  game.settings.register('mosh', 'table1eWoundBluntForce', {
+  game.settings.register('mothershiprpg', 'table1eWoundBluntForce', {
     scope: 'world',
     config: false,
     type: String,
     default: "31YibfjueXuZdNLb"
   });
 
-  game.settings.register('mosh', 'table1eWoundBleeding', {
+  game.settings.register('mothershiprpg', 'table1eWoundBleeding', {
     scope: 'world',
     config: false,
     type: String,
     default: "ata3fRz3uoPfNCLh"
   });
 
-  game.settings.register('mosh', 'table1eWoundGunshot', {
+  game.settings.register('mothershiprpg', 'table1eWoundGunshot', {
     scope: 'world',
     config: false,
     type: String,
     default: "XjDU2xFOWEasaZK0"
   });
 
-  game.settings.register('mosh', 'table1eWoundFireExplosives', {
+  game.settings.register('mothershiprpg', 'table1eWoundFireExplosives', {
     scope: 'world',
     config: false,
     type: String,
     default: "lqiaWwh5cGcJhvnu"
   });
 
-  game.settings.register('mosh', 'table1eWoundGoreMassive', {
+  game.settings.register('mothershiprpg', 'table1eWoundGoreMassive', {
     scope: 'world',
     config: false,
     type: String,
     default: "uVfC1CqYdojaJ7yR"
   });
 
-  game.settings.register('mosh', 'table1eDeath', {
+  game.settings.register('mothershiprpg', 'table1eDeath', {
     scope: 'world',
     config: false,
     type: String,
     default: "W36WFIpCfMknKgHy"
   });
 
-  game.settings.register('mosh', 'table1eDistressSignal', {
+  game.settings.register('mothershiprpg', 'table1eDistressSignal', {
     scope: 'world',
     config: false,
     type: String,
     default: "UxAjAqUTjYTcCbS8"
   });
 
-  game.settings.register('mosh', 'table1eMegadamageEffects', {
+  game.settings.register('mothershiprpg', 'table1eMegadamageEffects', {
     scope: 'world',
     config: false,
     type: String,
     default: "AqGWwoWXzijFs427"
   });
 
-  game.settings.register('mosh', 'table1eMaintenance', {
+  game.settings.register('mothershiprpg', 'table1eMaintenance', {
     scope: 'world',
     config: false,
     type: String,
     default: "kqz8GsFVPfjvqO0N"
   });
 
-  game.settings.register('mosh', 'table1eBankruptcy', {
+  game.settings.register('mothershiprpg', 'table1eBankruptcy', {
     scope: 'world',
     config: false,
     type: String,

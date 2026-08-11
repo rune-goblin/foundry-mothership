@@ -2,7 +2,7 @@
   "_id": "PTK6ds7eJvJDonbp",
   "name": "Deviant Logic Core",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/logic_core.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/logic_core.png",
   "system": {
     "description": "<p>Whenever you make a Fear save, roll under your Fear or your Calm, whichever is lower.</p>",
     "severity": 1,

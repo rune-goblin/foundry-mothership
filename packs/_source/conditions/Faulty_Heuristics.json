@@ -2,7 +2,7 @@
   "_id": "uPVp78kHmvMSYx2F",
   "name": "Faulty Heuristics",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/faulty_heuristics.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/faulty_heuristics.png",
   "system": {
     "description": "<p>Whenever you make a Sanity save, roll under your Sanity or your Calm, whichever is lower.</p>",
     "severity": 1,

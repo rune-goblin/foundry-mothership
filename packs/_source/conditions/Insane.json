@@ -2,7 +2,7 @@
   "_id": "0ZAwhewvLBwX3opf",
   "name": "Insane",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/spiraling.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/spiraling.png",
   "system": {
     "description": "<p>You become permanently, irreparably insane. Your character is now played by the Warden.</p>",
     "severity": 1,

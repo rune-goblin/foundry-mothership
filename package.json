@@ -1,6 +1,6 @@
 {
-  "name": "mosh",
-  "version": "0.6.1",
+  "name": "mothershiprpg",
+  "version": "0.0.0",
   "description": "MoSh - the unofficial Mothership system for Foundry VTT",
   "type": "module",
   "private": true,

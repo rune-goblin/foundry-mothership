@@ -2,9 +2,9 @@
   "_id": "a87x3Hk72ymOx5rf",
   "name": "Turing Test Failure",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/turing_test_failure.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/turing_test_failure.png",
   "system": {
-    "description": "<p>Have difficulty expressing humanity. Party members make a Fear Save whenever you show up.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.R2KizR1soAhFYDZm]{Fear Save}</p>",
+    "description": "<p>Have difficulty expressing humanity. Party members make a Fear Save whenever you show up.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.R2KizR1soAhFYDZm]{Fear Save}</p>",
     "severity": 1,
     "treatment": {
       "value": 0,

@@ -241,8 +241,8 @@
         "value": 1
       },
       "images" : {
-        "layout" : "systems/mosh/images/Galloway_Top.png",
-        "beauty" : "systems/mosh/images/Galloway_Top.png"
+        "layout" : "systems/mothershiprpg/images/Galloway_Top.png",
+        "beauty" : "systems/mothershiprpg/images/Galloway_Top.png"
       },
       "runSetup" : true,
       "megadamage" : {

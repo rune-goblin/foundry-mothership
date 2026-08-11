@@ -3,7 +3,7 @@ export class DLActorGenerator extends FormApplication {
       const options = super.defaultOptions;
       options.id = 'sheet-modifiers';
       options.classes = ["mosh", "sheet", "actor", "character"];
-      options.template = 'systems/mosh/templates/dialogs/actor-generator-dialog.html';
+      options.template = 'systems/mothershiprpg/templates/dialogs/actor-generator-dialog.html';
       options.width = 800;
       options.height = "auto";
       options.dragDrop = [{ dragSelector: null, dropSelector: ".dropitem" }];
@@ -265,23 +265,23 @@ export class DLActorGenerator extends FormApplication {
    async popUpSkillOptions(skillPopupOptions) {
 
       for (let i = 0; i < skillPopupOptions.master_full_set; i++) {
-         await this.showSkillDialog('systems/mosh/templates/dialogs/actor-generator/actor-generator-skill-option-full-master-dialog.html');
+         await this.showSkillDialog('systems/mothershiprpg/templates/dialogs/actor-generator/actor-generator-skill-option-full-master-dialog.html');
 
       }
       for (let i = 0; i < skillPopupOptions.expert_full_set; i++) {
-         await this.showSkillDialog('systems/mosh/templates/dialogs/actor-generator/actor-generator-skill-option-full-expert-dialog.html');
+         await this.showSkillDialog('systems/mothershiprpg/templates/dialogs/actor-generator/actor-generator-skill-option-full-expert-dialog.html');
 
       }
       for (let i = 0; i < skillPopupOptions.trained; i++) {
-         await this.showSkillDialog('systems/mosh/templates/dialogs/actor-generator/actor-generator-skill-option-single-dialog.html', "Trained");
+         await this.showSkillDialog('systems/mothershiprpg/templates/dialogs/actor-generator/actor-generator-skill-option-single-dialog.html', "Trained");
 
       }
       for (let i = 0; i < skillPopupOptions.expert; i++) {
-         await this.showSkillDialog('systems/mosh/templates/dialogs/actor-generator/actor-generator-skill-option-single-dialog.html', "Expert");
+         await this.showSkillDialog('systems/mothershiprpg/templates/dialogs/actor-generator/actor-generator-skill-option-single-dialog.html', "Expert");
 
       }
       for (let i = 0; i < skillPopupOptions.master; i++) {
-         await this.showSkillDialog('systems/mosh/templates/dialogs/actor-generator/actor-generator-skill-option-single-dialog.html', "Master");
+         await this.showSkillDialog('systems/mothershiprpg/templates/dialogs/actor-generator/actor-generator-skill-option-single-dialog.html', "Master");
 
       }
       //console.log(existingSkills);
@@ -371,7 +371,7 @@ export class DLActorGenerator extends FormApplication {
    async showOptionsDialog(list_option_skills_or) {
       let popupData = {options:list_option_skills_or};
 
-      let popUpContent = await foundry.applications.handlebars.renderTemplate("systems/mosh/templates/dialogs/actor-generator/actor-generator-skill-option-choice-dialog.html", popupData);
+      let popUpContent = await foundry.applications.handlebars.renderTemplate("systems/mothershiprpg/templates/dialogs/actor-generator/actor-generator-skill-option-choice-dialog.html", popupData);
       
       return new Promise((resolve) => {
          if(list_option_skills_or.length == 0){

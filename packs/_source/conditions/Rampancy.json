@@ -2,7 +2,7 @@
   "_id": "lXoBqGW2eCK0b1tX",
   "name": "Rampancy",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/confused.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/confused.png",
   "system": {
     "description": "<p>Once per session, the Warden may take over your character for one round. These episodes double in duration <em>(or become twice as frequent)</em> each session.</p>",
     "severity": 1,

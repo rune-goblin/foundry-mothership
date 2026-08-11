@@ -1,7 +1,7 @@
 {
   "_id": "AqGWwoWXzijFs427",
   "name": "Megadamage Effects",
-  "img": "systems/mosh/images/icons/ui/rolltables/megadamage_effects.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/megadamage_effects.png",
   "description": "<p><strong>Megadamage (MDMG)</strong> is like a character’s Damage and Wounds rolled into one. Whenever your ship takes MDMG, add it to any previous MDMG incurred, mark the new total on the tracker, and apply the listed effect. If your ship ever has 9 or more total MDMG, it is destroyed. Your ship ignores all MDMG less than its Hull. If the ship ever takes MDMG greater than or equal to its Hull in one hit, the hull is destroyed and the ship suffers any remaining MDMG.</p>",
   "formula": "1d10-1",
   "replacement": true,
@@ -10,7 +10,7 @@
     {
       "_id": "ENq0mvm5iqtMh1ft",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/megadamage_effects.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/megadamage_effects.png",
       "weight": 1,
       "range": [
         0,
@@ -36,7 +36,7 @@
     {
       "_id": "yVzV5Y0tNWSqPVpS",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/megadamage_effects.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/megadamage_effects.png",
       "weight": 1,
       "range": [
         1,
@@ -62,7 +62,7 @@
     {
       "_id": "Vnfbw2I9XRvrjKQ0",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/megadamage_effects.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/megadamage_effects.png",
       "weight": 1,
       "range": [
         2,
@@ -88,7 +88,7 @@
     {
       "_id": "qPV5sasqyDgWwNiW",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/megadamage_effects.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/megadamage_effects.png",
       "weight": 1,
       "range": [
         3,
@@ -114,7 +114,7 @@
     {
       "_id": "kGOebdOLWOZBekvw",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/megadamage_effects.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/megadamage_effects.png",
       "weight": 1,
       "range": [
         4,
@@ -140,7 +140,7 @@
     {
       "_id": "etnepA2VTtuv2iyc",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/megadamage_effects.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/megadamage_effects.png",
       "weight": 1,
       "range": [
         5,
@@ -166,7 +166,7 @@
     {
       "_id": "ay9hN3EYsAJOKUeZ",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/megadamage_effects.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/megadamage_effects.png",
       "weight": 1,
       "range": [
         6,
@@ -192,7 +192,7 @@
     {
       "_id": "gNqK1zdrt9AUacUg",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/megadamage_effects.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/megadamage_effects.png",
       "weight": 1,
       "range": [
         7,
@@ -218,7 +218,7 @@
     {
       "_id": "kmZfxrotglCOUw8M",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/megadamage_effects.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/megadamage_effects.png",
       "weight": 1,
       "range": [
         8,
@@ -244,7 +244,7 @@
     {
       "_id": "A3XHL5OaSekv3OF3",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/megadamage_effects.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/megadamage_effects.png",
       "weight": 1,
       "range": [
         9,

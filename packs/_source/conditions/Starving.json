@@ -2,9 +2,9 @@
   "_id": "6zDq1nvEr3AYLcLn",
   "name": "Starving",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/starving.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/starving.png",
   "system": {
-    "description": "<p>Humans can survive roughly 3 weeks without food. <strong>After 24 hours without food, you’re at Disadvantage to all rolls.</strong><br><br>For the bare minimum of survival you need 1 liter of water a day. However, at this level, any strenuous activity <em>(e.g., running, combat, making mechanical repairs)</em> forces you to make a Body Save or pass out. <strong>When water is scarce and you’re tracking it this closely, you’re at Disadvantage on all rolls.</strong><br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.X3gqTFFwMe7AudiS]{Body Save}</p>",
+    "description": "<p>Humans can survive roughly 3 weeks without food. <strong>After 24 hours without food, you’re at Disadvantage to all rolls.</strong><br><br>For the bare minimum of survival you need 1 liter of water a day. However, at this level, any strenuous activity <em>(e.g., running, combat, making mechanical repairs)</em> forces you to make a Body Save or pass out. <strong>When water is scarce and you’re tracking it this closely, you’re at Disadvantage on all rolls.</strong><br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.X3gqTFFwMe7AudiS]{Body Save}</p>",
     "severity": 1,
     "treatment": {
       "value": 0,

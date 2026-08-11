@@ -2,7 +2,7 @@
   "_id": "olC4JytslvUrQN8g",
   "name": "Haunted",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/haunted.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/haunted.png",
   "system": {
     "description": "<p>Something starts visiting you at night. In your dreams. Out of the corner of your eye. And soon it will start making demands.</p>",
     "severity": 1,

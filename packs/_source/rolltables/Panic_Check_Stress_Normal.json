@@ -1,7 +1,7 @@
 {
   "_id": "ypcoikqHLhnc9tNs",
   "name": "Panic Check (Stress, Normal)",
-  "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
   "description": "<p>Stress, Damage, and emotional wear and tear eventually bring characters to their breaking point. When that happens, there’s a chance they Panic. You determine this by making a <strong>Panic Check</strong>. Some results of the Panic Table are so severe that they leave a lasting impression on you. These are called <strong>Conditions</strong>, and they affect you until you are able to treat them.</p>",
   "formula": "1d20",
   "replacement": true,
@@ -10,7 +10,7 @@
     {
       "_id": "C3v1mSfDXIklIAUB",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         1,
@@ -28,7 +28,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>ADRENALINE RUSH.</strong> [+] on all rolls for the next [[/r 2d10]] minutes. Reduce Stress by 1d5.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.AvKZE5IFubIaAIUy]{-1d5 Stress}",
+      "description": "<strong>ADRENALINE RUSH.</strong> [+] on all rolls for the next [[/r 2d10]] minutes. Reduce Stress by 1d5.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.AvKZE5IFubIaAIUy]{-1d5 Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.C3v1mSfDXIklIAUB"
@@ -36,7 +36,7 @@
     {
       "_id": "U9WjdvVrVvGEWA9e",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         2,
@@ -54,7 +54,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>NERVOUS.</strong> Gain 1 Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.dvJR9DYXI2kV0BbR]{+1 Stress}",
+      "description": "<strong>NERVOUS.</strong> Gain 1 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.dvJR9DYXI2kV0BbR]{+1 Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.U9WjdvVrVvGEWA9e"
@@ -62,7 +62,7 @@
     {
       "_id": "qrw2SQ9MMwmmz5U1",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         3,
@@ -80,7 +80,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>JUMPY.</strong> Gain 1 Stress. All Close crewmembers gain 2 Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.dvJR9DYXI2kV0BbR]{+1 Stress}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.6jjFVScyiaBvN8kX]{+2 Stress}",
+      "description": "<strong>JUMPY.</strong> Gain 1 Stress. All Close crewmembers gain 2 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.dvJR9DYXI2kV0BbR]{+1 Stress}<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.6jjFVScyiaBvN8kX]{+2 Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.qrw2SQ9MMwmmz5U1"
@@ -88,7 +88,7 @@
     {
       "_id": "xfR9AtZFClqK4Tkk",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         4,
@@ -106,7 +106,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>OVERWHELMED.</strong> [-] on all rolls for the next [[/r 1d10]] minutes. Increase Minimum Stress by 1.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.BmEHWH7YxV9qb21p]{+1 Minimum Stress}",
+      "description": "<strong>OVERWHELMED.</strong> [-] on all rolls for the next [[/r 1d10]] minutes. Increase Minimum Stress by 1.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.BmEHWH7YxV9qb21p]{+1 Minimum Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.xfR9AtZFClqK4Tkk"
@@ -114,7 +114,7 @@
     {
       "_id": "6O6QNEIIVFSTifl6",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         5,
@@ -132,7 +132,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>COWARD.</strong> Gain a new <strong>Condition:</strong> You must make a Fear Save to engage in violence, otherwise you flee.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.b0jk4XwP7by8a3uc]{+1 Coward}",
+      "description": "<strong>COWARD.</strong> Gain a new <strong>Condition:</strong> You must make a Fear Save to engage in violence, otherwise you flee.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.b0jk4XwP7by8a3uc]{+1 Coward}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.6O6QNEIIVFSTifl6"
@@ -140,7 +140,7 @@
     {
       "_id": "HclQqfxT8Q9NShBa",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         6,
@@ -158,7 +158,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>FRIGHTENED.</strong> Gain a new <strong>Condition:</strong> When encountering what frightened you, make a Fear Save [-] or gain 1d5 Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.BEQvMZ5N7QOBqnId]{+1 Frightened}",
+      "description": "<strong>FRIGHTENED.</strong> Gain a new <strong>Condition:</strong> When encountering what frightened you, make a Fear Save [-] or gain 1d5 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.BEQvMZ5N7QOBqnId]{+1 Frightened}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.HclQqfxT8Q9NShBa"
@@ -166,7 +166,7 @@
     {
       "_id": "j1jjGls1snJ3uCWS",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         7,
@@ -184,7 +184,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>NIGHTMARES.</strong> Gain a new <strong>Condition:</strong> Sleep is difficult, gain [-] on Rest Saves.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.AZbaGWu663wio9mI]{+1 Nightmares}",
+      "description": "<strong>NIGHTMARES.</strong> Gain a new <strong>Condition:</strong> Sleep is difficult, gain [-] on Rest Saves.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.AZbaGWu663wio9mI]{+1 Nightmares}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.j1jjGls1snJ3uCWS"
@@ -192,7 +192,7 @@
     {
       "_id": "qnBXWm15pc7Kn7bf",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         8,
@@ -210,7 +210,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>LOSS OF CONFIDENCE.</strong> Gain a new <strong>Condition:</strong> Choose one Skill and lose that Skill’s bonus.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.54Krt3opbJe1WATH]{+1 Loss of Confidence}",
+      "description": "<strong>LOSS OF CONFIDENCE.</strong> Gain a new <strong>Condition:</strong> Choose one Skill and lose that Skill’s bonus.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.54Krt3opbJe1WATH]{+1 Loss of Confidence}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.qnBXWm15pc7Kn7bf"
@@ -218,7 +218,7 @@
     {
       "_id": "5YQKw63GB18XUYDp",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         9,
@@ -236,7 +236,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>DEFLATED.</strong> Gain a new <strong>Condition:</strong> Whenever a Close crewmember fails a Save, gain 1 Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.2aD5avpn35wdzdm5]{+1 Deflated}",
+      "description": "<strong>DEFLATED.</strong> Gain a new <strong>Condition:</strong> Whenever a Close crewmember fails a Save, gain 1 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.2aD5avpn35wdzdm5]{+1 Deflated}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.5YQKw63GB18XUYDp"
@@ -244,7 +244,7 @@
     {
       "_id": "FpTmgA9FxG4W1x0a",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         10,
@@ -262,7 +262,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>DOOMED.</strong> Gain a new <strong>Condition:</strong> You feel cursed and unlucky. All Critical Successes are instead Critical Failures.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.8IPhlAuMEQJC6zxA]{+1 Doomed}",
+      "description": "<strong>DOOMED.</strong> Gain a new <strong>Condition:</strong> You feel cursed and unlucky. All Critical Successes are instead Critical Failures.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.8IPhlAuMEQJC6zxA]{+1 Doomed}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.FpTmgA9FxG4W1x0a"
@@ -270,7 +270,7 @@
     {
       "_id": "6qInELrRmGGogpkW",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         11,
@@ -288,7 +288,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>SUSPICIOUS.</strong> For the next week, whenever someone joins the crew <em>(even if they only left for a short period of time),</em> make a Fear Save or gain 1 Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.5K7wZEvEXjOH4IM7]{+1 Suspicious}",
+      "description": "<strong>SUSPICIOUS.</strong> For the next week, whenever someone joins the crew <em>(even if they only left for a short period of time),</em> make a Fear Save or gain 1 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.5K7wZEvEXjOH4IM7]{+1 Suspicious}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.6qInELrRmGGogpkW"
@@ -296,7 +296,7 @@
     {
       "_id": "SjCav3ZLlpQ9fyo3",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         12,
@@ -314,7 +314,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>HAUNTED.</strong> Gain a new <strong>Condition:</strong> Something starts visiting you at night. In your dreams. Out of the corner of your eye. And soon it will start making demands.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.Eo56QFyTeoCcFmD8]{+1 Haunted}",
+      "description": "<strong>HAUNTED.</strong> Gain a new <strong>Condition:</strong> Something starts visiting you at night. In your dreams. Out of the corner of your eye. And soon it will start making demands.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.Eo56QFyTeoCcFmD8]{+1 Haunted}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.SjCav3ZLlpQ9fyo3"
@@ -322,7 +322,7 @@
     {
       "_id": "2aJpNteB4MaFIbVn",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         13,
@@ -340,7 +340,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>DEATH WISH.</strong> For the next 24 hours, whenever encountering a stranger or known enemy, make a Sanity Save or immediately attack them.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.Yh2CTFXfWMe9o2lv]{+1 Death Wish}",
+      "description": "<strong>DEATH WISH.</strong> For the next 24 hours, whenever encountering a stranger or known enemy, make a Sanity Save or immediately attack them.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.Yh2CTFXfWMe9o2lv]{+1 Death Wish}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.2aJpNteB4MaFIbVn"
@@ -348,7 +348,7 @@
     {
       "_id": "g6JDKtnXUFWlTPMV",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         14,
@@ -366,7 +366,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>PROPHETIC VISION.</strong> You immediately experience an intense hallucination or vision of an impending terror or horrific event. Increase Minimum Stress by 2.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.bFPoNLOGusT1ocqt]{+2 Minimum Stress}",
+      "description": "<strong>PROPHETIC VISION.</strong> You immediately experience an intense hallucination or vision of an impending terror or horrific event. Increase Minimum Stress by 2.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.bFPoNLOGusT1ocqt]{+2 Minimum Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.g6JDKtnXUFWlTPMV"
@@ -374,7 +374,7 @@
     {
       "_id": "wFbLrig0F2WSM6hM",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         15,
@@ -392,7 +392,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>CATATONIC.</strong> Become unresponsive and unmoving for [[/r 2d10]] minutes. Reduce Stress by 1d10.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.jHyqXb2yDFTNWxpy]{-1d10 Stress}",
+      "description": "<strong>CATATONIC.</strong> Become unresponsive and unmoving for [[/r 2d10]] minutes. Reduce Stress by 1d10.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.jHyqXb2yDFTNWxpy]{-1d10 Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.wFbLrig0F2WSM6hM"
@@ -400,7 +400,7 @@
     {
       "_id": "mN1KTYh1TcDKLMjj",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         16,
@@ -418,7 +418,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>RAGE.</strong> [+] on all Damage rolls for the next [[/r 1d10]] hours. All crewmembers gain 1 Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.dvJR9DYXI2kV0BbR]{+1 Stress}",
+      "description": "<strong>RAGE.</strong> [+] on all Damage rolls for the next [[/r 1d10]] hours. All crewmembers gain 1 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.dvJR9DYXI2kV0BbR]{+1 Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.mN1KTYh1TcDKLMjj"
@@ -426,7 +426,7 @@
     {
       "_id": "fFp8wFcomRNUgtdP",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         17,
@@ -444,7 +444,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>SPIRALING.</strong> Gain a new <strong>Condition:</strong> Panic Checks are at [-].<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.3AjUWUSRvYy8Mwji]{+1 Spiraling}",
+      "description": "<strong>SPIRALING.</strong> Gain a new <strong>Condition:</strong> Panic Checks are at [-].<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.3AjUWUSRvYy8Mwji]{+1 Spiraling}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.fFp8wFcomRNUgtdP"
@@ -452,7 +452,7 @@
     {
       "_id": "RI06IV89j3Bxtxkz",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         18,
@@ -470,7 +470,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>COMPOUNDING PROBLEMS.</strong> Roll twice on this table. Increase your Minimum Stress by 1.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.2DnKZpyj03HvpeCy]{Roll on Panic Table}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.BmEHWH7YxV9qb21p]{+1 Minimum Stress}",
+      "description": "<strong>COMPOUNDING PROBLEMS.</strong> Roll twice on this table. Increase your Minimum Stress by 1.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.2DnKZpyj03HvpeCy]{Roll on Panic Table}<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.BmEHWH7YxV9qb21p]{+1 Minimum Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.RI06IV89j3Bxtxkz"
@@ -478,7 +478,7 @@
     {
       "_id": "zJkYrssfrdWBSeRm",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         19,
@@ -496,7 +496,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>HEART ATTACK / SHORT CIRCUIT (ANDROIDS).</strong> Reduce Maximum Wounds by 1. Gain [-] on all rolls for [[/r 1d10]] hours. Increase your Minimum Stress by 1.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.qD8Mvegkf3zVarFr]{-1 Maximum Wound}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.BmEHWH7YxV9qb21p]{+1 Minimum Stress}",
+      "description": "<strong>HEART ATTACK / SHORT CIRCUIT (ANDROIDS).</strong> Reduce Maximum Wounds by 1. Gain [-] on all rolls for [[/r 1d10]] hours. Increase your Minimum Stress by 1.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.qD8Mvegkf3zVarFr]{-1 Maximum Wound}<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.BmEHWH7YxV9qb21p]{+1 Minimum Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!ypcoikqHLhnc9tNs.zJkYrssfrdWBSeRm"
@@ -504,7 +504,7 @@
     {
       "_id": "uluHEycHi6Ul2GMj",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         20,

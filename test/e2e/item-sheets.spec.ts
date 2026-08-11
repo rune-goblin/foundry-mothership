@@ -125,7 +125,7 @@ test.describe('item sheets', () => {
     await expect(gmPage.locator(`#${weapon.appId} input[name="system.antiArmor"]`)).toHaveCount(1);
     await expect(gmPage.locator(`#${weapon.appId} input[name="system.woundEffect"]`)).toHaveCount(1);
 
-    const removed = await gmPage.evaluate(() => (window as any).game.settings.settings.has('mosh.firstEdition'));
+    const removed = await gmPage.evaluate(() => (window as any).game.settings.settings.has('mothershiprpg.firstEdition'));
     expect(removed).toBe(false);
   });
 });

@@ -2,7 +2,7 @@
   "_id": "IR1sWnYXniMg9TdP",
   "name": "Malfunctioning escape pods.",
   "type": "repair",
-  "img": "systems/mosh/images/icons/ui/rolltables/maintenance_issues.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/maintenance_issues.png",
   "system": {
     "description": "<p>Maintenance Issue</p>",
     "quantity": 1,

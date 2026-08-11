@@ -2,9 +2,9 @@
   "_id": "8lOkseRbg09YFvv7",
   "name": "Suspicious",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/suspicious.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/suspicious.png",
   "system": {
-    "description": "<p>For the next week, whenever someone joins the crew <em>(even if they only left for a short period of time),</em> make a Fear Save or gain 1 Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.R2KizR1soAhFYDZm]{Fear Save}</p>",
+    "description": "<p>For the next week, whenever someone joins the crew <em>(even if they only left for a short period of time),</em> make a Fear Save or gain 1 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.R2KizR1soAhFYDZm]{Fear Save}</p>",
     "severity": 1,
     "treatment": {
       "value": 0,

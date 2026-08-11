@@ -2,7 +2,7 @@
   "_id": "kbbVOYgjwzoODs7N",
   "name": "Loss of Confidence",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/loss_of_confidence.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/loss_of_confidence.png",
   "system": {
     "description": "<p>Choose one Skill and lose that Skill’s bonus.</p>",
     "severity": 1,

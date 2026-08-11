@@ -59,9 +59,11 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
 
 ## This repo's specifics
 
-- **System id `mosh`** — keys settings, flags, pack names (`mosh.<pack>`), and the runtime
-  path `systems/mosh/…` that templates and art use.
-- **`game.mosh` is the public API** (`rollItemMacro`, `initRollTable`, `initRollCheck`, …).
+- **System id `mothershiprpg`** (§18) — keys settings, flags, pack names
+  (`mothershiprpg.<pack>`), and the runtime path `systems/mothershiprpg/…`. **The public API is
+  `game.mothership`**, deliberately not the id: 208 shipped macros call it. The `.mosh` CSS
+  classes and `Mosh.*` lang keys are internal and kept.
+- **`game.mothership` is the public API** (`rollItemMacro`, `initRollTable`, `initRollCheck`, …).
   **Shipped compendium macros call it** — grep `packs/_source/` before changing a signature.
 - **Strings** live in `lang/en.json` under `Mosh.*`; there is a `pt-BR` translation too.
 - **`css/mosh.css` is hand-authored, not compiled.** There is no SCSS step (the `scss/` tree

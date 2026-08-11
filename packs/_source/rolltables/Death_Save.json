@@ -1,7 +1,7 @@
 {
   "_id": "W36WFIpCfMknKgHy",
   "name": "Death Save",
-  "img": "systems/mosh/images/icons/ui/rolltables/death_save.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/death_save.png",
   "description": "<p>Your character is incapacitated when you receive a fatal wound, or once your Current Wounds equal your Maximum Wounds. As soon as someone spends a turn checking your vitals, make a <strong>Death Save</strong> to reveal your fate. If your death seems imminent, make your last moments count: save someone’s life, solve an important mystery, or give the others time to escape.</p>",
   "formula": "1d10-1",
   "replacement": true,
@@ -10,7 +10,7 @@
     {
       "_id": "4TFF3HjlrKsOCyT5",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/death_save.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/death_save.png",
       "weight": 1,
       "range": [
         0,
@@ -28,7 +28,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>You are unconscious.</strong> You wake up in [[/r 2d10]] minutes. Reduce your Maximum Health by 1d5.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.yYujq1tBZPqGrQlh]{-1d5 Maximum Health}",
+      "description": "<strong>You are unconscious.</strong> You wake up in [[/r 2d10]] minutes. Reduce your Maximum Health by 1d5.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.yYujq1tBZPqGrQlh]{-1d5 Maximum Health}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!W36WFIpCfMknKgHy.4TFF3HjlrKsOCyT5"
@@ -36,7 +36,7 @@
     {
       "_id": "C0ht8FBreWQjhNi7",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/death_save.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/death_save.png",
       "weight": 1,
       "range": [
         1,
@@ -62,7 +62,7 @@
     {
       "_id": "WTOIWYApDTqwAHu6",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/death_save.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/death_save.png",
       "weight": 1,
       "range": [
         3,
@@ -88,7 +88,7 @@
     {
       "_id": "ygaJ1Gc5LuuXbJZq",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/death_save.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/death_save.png",
       "weight": 1,
       "range": [
         5,

@@ -2,9 +2,9 @@
   "_id": "Bt2rl2c5jGyt3QAr",
   "name": "Spiraling",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/spiraling.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/spiraling.png",
   "system": {
-    "description": "<p>Panic Checks are at [-].<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.EwZbGIwHB3JuRvx5]{Panic Check [-]}</p>",
+    "description": "<p>Panic Checks are at [-].<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.EwZbGIwHB3JuRvx5]{Panic Check [-]}</p>",
     "severity": 1,
     "treatment": {
       "value": 0,

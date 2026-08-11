@@ -4,7 +4,7 @@
   "type": "script",
   "scope": "global",
   "img": "icons/svg/d10-grey.svg",
-  "command": "game.mosh.initModifyItem('z0avrplKe6M0RcXk',1);",
+  "command": "game.mothership.initModifyItem('z0avrplKe6M0RcXk',1);",
   "folder": null,
   "flags": {},
   "_stats": {

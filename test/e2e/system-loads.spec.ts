@@ -8,14 +8,14 @@ test.describe('system loads', () => {
       const g = (window as any).game;
       return {
         system: g.system.id,
-        mosh: Object.keys(g.mosh ?? {}).sort(),
+        api: Object.keys(g.mothership ?? {}).sort(),
         actorClass: g.actors?.documentClass?.name ?? null,
       };
     });
     expect(api.system).toBe(SYSTEM_ID);
-    // mosh.js hangs the macro entry points off game.mosh during init.
-    expect(api.mosh).toContain('rollItemMacro');
-    expect(api.mosh).toContain('initRollTable');
+    // mosh.js hangs the macro entry points off game.mothership during init.
+    expect(api.api).toContain('rollItemMacro');
+    expect(api.api).toContain('initRollTable');
     expect(api.actorClass).toBe('MothershipActor');
   });
 
@@ -42,7 +42,7 @@ test.describe('system loads', () => {
       return { imports, moshRules };
     });
 
-    expect(css.imports.some((h) => h.includes(`systems/${SYSTEM_ID}/dist/mosh.css`))).toBe(true);
+    expect(css.imports.some((h) => h.includes(`systems/${SYSTEM_ID}/dist/mothershiprpg.css`))).toBe(true);
     // The hand-authored stylesheet carries 247 selectors, most of them under `.mosh`.
     expect(css.moshRules).toBeGreaterThan(100);
   });
@@ -59,11 +59,12 @@ test.describe('system loads', () => {
   });
 
   test('no 0e compendium is registered any more', async ({ gmPage }) => {
-    const packs = await gmPage.evaluate(() =>
-      (Array.from((window as any).game.packs.values()) as any[])
-        .filter((p) => p.metadata.packageName === 'mosh')
-        .map((p) => p.metadata.name),
-    );
+    const packs = await gmPage.evaluate(() => {
+      const g = (window as any).game;
+      return (Array.from(g.packs.values()) as any[])
+        .filter((p) => p.metadata.packageName === g.system.id)
+        .map((p) => p.metadata.name);
+    });
     expect(packs.filter((n: string) => n.endsWith('_0e'))).toEqual([]);
     expect(packs.sort()).toEqual([
       'conditions_1e', 'items_maintenance_1e', 'macros_hotbar_1e', 'macros_triggered_1e', 'rolltables_1e',

@@ -2,9 +2,9 @@
   "_id": "srws3n4rpl4oCj83",
   "name": "Death Wish",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/death_wish.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/death_wish.png",
   "system": {
-    "description": "<p>For the next 24 hours, whenever you encounter a stranger or known enemy, make a Sanity Save or immediately attack them.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.TkMfT4RIczQb56j2]{Sanity Save}</p>",
+    "description": "<p>For the next 24 hours, whenever you encounter a stranger or known enemy, make a Sanity Save or immediately attack them.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.TkMfT4RIczQb56j2]{Sanity Save}</p>",
     "severity": 1,
     "treatment": {
       "value": 0,

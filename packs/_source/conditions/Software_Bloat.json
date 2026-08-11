@@ -2,7 +2,7 @@
   "_id": "dA6COSDLbpmKdOkm",
   "name": "Software Bloat",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/software_bloat.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/software_bloat.png",
   "system": {
     "description": "<p>Lose double Calm from all sources.</p>",
     "severity": 1,

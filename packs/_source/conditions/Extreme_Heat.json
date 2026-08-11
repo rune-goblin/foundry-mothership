@@ -2,9 +2,9 @@
   "_id": "9DsSQajDLqPGpK2i",
   "name": "Extreme Heat",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/extreme_heat.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/extreme_heat.png",
   "system": {
-    "description": "<p>In most cases, a hot climate has no notable effects. However, in places of extreme heat, you should make Body Saves every hour or succumb to the Extreme Heat.<br><br>Extreme heat over 100ºF/40ºC can cause heat stroke and kill within hours. Victims must move to a cooler location immediately to get their temperature down.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.X3gqTFFwMe7AudiS]{Body Save}</p>",
+    "description": "<p>In most cases, a hot climate has no notable effects. However, in places of extreme heat, you should make Body Saves every hour or succumb to the Extreme Heat.<br><br>Extreme heat over 100ºF/40ºC can cause heat stroke and kill within hours. Victims must move to a cooler location immediately to get their temperature down.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.X3gqTFFwMe7AudiS]{Body Save}</p>",
     "severity": 1,
     "treatment": {
       "value": 0,

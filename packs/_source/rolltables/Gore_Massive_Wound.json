@@ -1,7 +1,7 @@
 {
   "_id": "uVfC1CqYdojaJ7yR",
   "name": "Gore & Massive Wound",
-  "img": "systems/mosh/images/icons/ui/rolltables/wounds_gore_&_massive.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
   "description": "<p>Whenever you gain a Gore &amp; Massive Wound, roll on this table to determine the effect. <strong>Flesh Wounds</strong> are small inconveniences. <strong>Minor/Major Injuries</strong> cause lasting issues which require medical treatment. <strong>Lethal Injuries</strong> can kill you if not dealt with immediately. <strong>Fatal Injuries</strong> can kill outright. <strong>Bleeding</strong> wounds, if not treated can quickly overwhelm you.</p>",
   "formula": "1d10-1",
   "replacement": true,
@@ -10,7 +10,7 @@
     {
       "_id": "aJN3DtKVY9bG3ubv",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_gore_&_massive.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
       "weight": 1,
       "range": [
         0,
@@ -36,7 +36,7 @@
     {
       "_id": "Lf5EQIYpu4DXFQix",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_gore_&_massive.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
       "weight": 1,
       "range": [
         1,
@@ -54,7 +54,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Minor Injury:</strong> Awesome scar. +1 Minimum Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.BmEHWH7YxV9qb21p]{+1 Minimum Stress}",
+      "description": "<strong>Minor Injury:</strong> Awesome scar. +1 Minimum Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.BmEHWH7YxV9qb21p]{+1 Minimum Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!uVfC1CqYdojaJ7yR.Lf5EQIYpu4DXFQix"
@@ -62,7 +62,7 @@
     {
       "_id": "1NnoNAENwZjlIxh8",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_gore_&_massive.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
       "weight": 1,
       "range": [
         2,
@@ -88,7 +88,7 @@
     {
       "_id": "8iAPqxJpCEgQJXq6",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_gore_&_massive.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
       "weight": 1,
       "range": [
         3,
@@ -114,7 +114,7 @@
     {
       "_id": "NcPFW20iV54oar6P",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_gore_&_massive.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
       "weight": 1,
       "range": [
         4,
@@ -132,7 +132,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Minor Injury:</strong> Ripped off flesh. -1d10 Strength.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.V3L1iRkWwyTzCZK9]{-1d10 Strength}",
+      "description": "<strong>Minor Injury:</strong> Ripped off flesh. -1d10 Strength.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.V3L1iRkWwyTzCZK9]{-1d10 Strength}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!uVfC1CqYdojaJ7yR.NcPFW20iV54oar6P"
@@ -140,7 +140,7 @@
     {
       "_id": "QP4863dIgMJ28XWs",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_gore_&_massive.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
       "weight": 1,
       "range": [
         5,
@@ -166,7 +166,7 @@
     {
       "_id": "ayHuDn1OuCcbgCZt",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_gore_&_massive.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
       "weight": 1,
       "range": [
         6,
@@ -184,7 +184,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Major Injury:</strong> Limb severed. Bleeding +5.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.CZ2gqnRHcOpCLlG0]{+5 Bleeding}",
+      "description": "<strong>Major Injury:</strong> Limb severed. Bleeding +5.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.CZ2gqnRHcOpCLlG0]{+5 Bleeding}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!uVfC1CqYdojaJ7yR.ayHuDn1OuCcbgCZt"
@@ -192,7 +192,7 @@
     {
       "_id": "h2hZbBnnY5DVnyLL",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_gore_&_massive.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
       "weight": 1,
       "range": [
         7,
@@ -210,7 +210,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Lethal Injury:</strong> Impaled. Bleeding +6. Death Save in [[/r 1d10]] rounds.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.Tx19z2BhTY6onldp]{+6 Bleeding}",
+      "description": "<strong>Lethal Injury:</strong> Impaled. Bleeding +6. Death Save in [[/r 1d10]] rounds.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.Tx19z2BhTY6onldp]{+6 Bleeding}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!uVfC1CqYdojaJ7yR.h2hZbBnnY5DVnyLL"
@@ -218,7 +218,7 @@
     {
       "_id": "JB623Z5gI9hP5cOs",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_gore_&_massive.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
       "weight": 1,
       "range": [
         8,
@@ -236,7 +236,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Lethal Injury:</strong> Guts spooled on floor. Bleeding +7. Death Save in [[/r 1d10]] rounds.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.ZJaVFBB0Kslv1k4f]{+7 Bleeding}",
+      "description": "<strong>Lethal Injury:</strong> Guts spooled on floor. Bleeding +7. Death Save in [[/r 1d10]] rounds.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.ZJaVFBB0Kslv1k4f]{+7 Bleeding}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!uVfC1CqYdojaJ7yR.JB623Z5gI9hP5cOs"
@@ -244,7 +244,7 @@
     {
       "_id": "9LPNxRgcnpZHjENW",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/wounds_gore_&_massive.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
       "weight": 1,
       "range": [
         9,

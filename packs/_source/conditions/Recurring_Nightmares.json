@@ -2,9 +2,9 @@
   "_id": "S2kZpUl3nNPS4wNS",
   "name": "Recurring Nightmares",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/nightmares.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/nightmares.png",
   "system": {
-    "description": "<p>Every time you rest, make a Fear save. If you fail, lose 1d10 Calm and do not heal. The Warden will describe your nightmare.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.jHyqXb2yDFTNWxpy]{-1d10 Calm}</p>",
+    "description": "<p>Every time you rest, make a Fear save. If you fail, lose 1d10 Calm and do not heal. The Warden will describe your nightmare.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.jHyqXb2yDFTNWxpy]{-1d10 Calm}</p>",
     "severity": 1,
     "treatment": {
       "value": 0,

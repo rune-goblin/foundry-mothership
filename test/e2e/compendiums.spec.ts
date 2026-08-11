@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures/foundry-clients.ts';
+import { test, expect, SYSTEM_ID } from './fixtures/foundry-clients.ts';
 
 // The 0e removal was a repair as much as a simplification: five `table0e*` settings still pointed
 // at rolltables phase 3 had deleted with the 0e compendia, so the 0e panic check and death save
@@ -7,7 +7,7 @@ test('every rolltable setting resolves to a real document', async ({ gmPage }) =
   const { checked, unresolved } = await gmPage.evaluate(async () => {
     const g = (window as any).game;
     const keys = [...g.settings.settings.keys()].filter(
-      (k: string) => k.startsWith('mosh.table') && typeof g.settings.get(...k.split(/\.(.*)/s, 2)) === 'string',
+      (k: string) => k.startsWith(`${g.system.id}.table`) && typeof g.settings.get(...k.split(/\.(.*)/s, 2)) === 'string',
     );
     const bad: string[] = [];
     for (const key of keys) {
@@ -43,7 +43,7 @@ test.describe('compendium packs', () => {
       const g = (window as any).game;
       const out: Record<string, number> = {};
       for (const pack of g.packs.values()) {
-        if (pack.metadata.packageName !== 'mosh') continue;
+        if (pack.metadata.packageName !== g.system.id) continue;
         out[pack.metadata.name] = (await pack.getIndex()).size;
       }
       return out;
@@ -54,7 +54,8 @@ test.describe('compendium packs', () => {
   test('a macro document round-tripped its command intact', async ({ gmPage }) => {
     // The +/- pairs are the ones the pack filenames had to keep distinct.
     const commands = await gmPage.evaluate(async () => {
-      const pack = (window as any).game.packs.get('mosh.macros_triggered_1e');
+      const g = (window as any).game;
+      const pack = g.packs.get(`${g.system.id}.macros_triggered_1e`);
       const docs = await pack.getDocuments();
       const find = (name: string) => docs.find((d: any) => d.name === name)?.command ?? null;
       return { plus: find('+1 Stress'), minus: find('-1 Stress') };
@@ -68,7 +69,8 @@ test.describe('compendium packs', () => {
     // These were the two macros where the deleted _macros/ copies had drifted stale, hardcoding
     // a rolltable id instead of reading the setting.
     const command = await gmPage.evaluate(async () => {
-      const pack = (window as any).game.packs.get('mosh.macros_triggered_1e');
+      const g = (window as any).game;
+      const pack = g.packs.get(`${g.system.id}.macros_triggered_1e`);
       const docs = await pack.getDocuments();
       return docs.find((d: any) => d.name === 'Roll on Android Panic Table')?.command ?? null;
     });
@@ -81,7 +83,7 @@ test.describe('compendium packs', () => {
       const g = (window as any).game;
       const found: string[] = [];
       for (const pack of g.packs.values()) {
-        if (pack.metadata.packageName !== 'mosh') continue;
+        if (pack.metadata.packageName !== g.system.id) continue;
         for (const doc of await pack.getDocuments()) {
           if (JSON.stringify(doc.toObject()).includes('_0e')) found.push(`${pack.metadata.name}/${doc.name}`);
         }

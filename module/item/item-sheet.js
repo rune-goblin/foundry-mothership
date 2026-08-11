@@ -21,7 +21,7 @@ export class MothershipItemSheet extends foundry.appv1.sheets.ItemSheet {
 
   /** @override */
   get template() {
-    const path = "systems/mosh/templates/item";
+    const path = "systems/mothershiprpg/templates/item";
     // Return a single sheet for all item types.
     return `${path}/item-${this.item.type}-sheet.html`;
     // Alternatively, you could use the following return statement to do a
@@ -47,9 +47,9 @@ export class MothershipItemSheet extends foundry.appv1.sheets.ItemSheet {
     if (data.data.system.settings == null) {
       data.data.system.settings = {};
     }
-    data.data.system.settings.useCalm = game.settings.get("mosh", "useCalm");
-    data.data.system.settings.hideWeight = game.settings.get("mosh", "hideWeight");
-    data.data.system.settings.androidPanic = game.settings.get("mosh", "androidPanic");
+    data.data.system.settings.useCalm = game.settings.get("mothershiprpg", "useCalm");
+    data.data.system.settings.hideWeight = game.settings.get("mothershiprpg", "hideWeight");
+    data.data.system.settings.androidPanic = game.settings.get("mothershiprpg", "androidPanic");
 
     data.data.enriched = [];
     data.data.enriched.description = await foundry.applications.ux.TextEditor.implementation.enrichHTML(data.data.system.description, {async: true});

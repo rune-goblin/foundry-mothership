@@ -2,7 +2,7 @@
   "_id": "AQt9nXy6S0Ev50r7",
   "name": "Leaking hydraulic systems.",
   "type": "repair",
-  "img": "systems/mosh/images/icons/ui/rolltables/maintenance_issues.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/maintenance_issues.png",
   "system": {
     "description": "<p>Maintenance Issue</p>",
     "quantity": 1,

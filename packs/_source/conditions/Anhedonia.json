@@ -2,7 +2,7 @@
   "_id": "JM9PnNw2HVWcAfOX",
   "name": "Anhedonia",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/exhausted.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/exhausted.png",
   "system": {
     "description": "<p>Whenever you would recover Calm, recover half as much Calm instead.</p>",
     "severity": 1,

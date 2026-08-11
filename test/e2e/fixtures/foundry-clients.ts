@@ -8,7 +8,7 @@ declare global {
   var ui: any;
 }
 
-export const SYSTEM_ID = 'mosh';
+export const SYSTEM_ID = 'mothershiprpg';
 
 /** Drive Foundry's /join screen to log this context in as a specific user. */
 export async function joinAs(page: Page, userId: string, password = ''): Promise<void> {

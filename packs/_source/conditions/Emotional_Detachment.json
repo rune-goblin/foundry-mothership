@@ -2,7 +2,7 @@
   "_id": "iiiAIZvpfUUNai74",
   "name": "Emotional Detachment",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/detached.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/detached.png",
   "system": {
     "description": "<p>You now lose half the Calm <em>(rounded up)</em> you normally would from all sources but you gain the Panic Effect of an Android, in addition to that of your own class. If you are an Android, gain the Panic Effect of a Marine.</p>",
     "severity": 1,

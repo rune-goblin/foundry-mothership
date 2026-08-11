@@ -2,9 +2,9 @@
   "_id": "tGYYK71q2QxnPtpL",
   "name": "Hypervigilance",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/hypervigilance.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/hypervigilance.png",
   "system": {
-    "description": "<p>Gain Advantage on all surprise rolls but lose 1d10 Calm every day.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.jHyqXb2yDFTNWxpy]{-1d10 Calm}</p>",
+    "description": "<p>Gain Advantage on all surprise rolls but lose 1d10 Calm every day.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.jHyqXb2yDFTNWxpy]{-1d10 Calm}</p>",
     "severity": 1,
     "treatment": {
       "value": 0,

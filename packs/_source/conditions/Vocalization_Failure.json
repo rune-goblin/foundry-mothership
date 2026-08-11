@@ -2,7 +2,7 @@
   "_id": "ZO4f9gvaiVSKDmRC",
   "name": "Vocalization Failure",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/vocalization_failure.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/vocalization_failure.png",
   "system": {
     "description": "<p>Intermittently shrieks like a fax machine under duress. Lapses into morse code, cannot communicate or sneak.</p>",
     "severity": 1,

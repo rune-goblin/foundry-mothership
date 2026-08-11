@@ -2,7 +2,7 @@
   "_id": "qejBMjd8niz1y3Zi",
   "name": "Escapism",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/addicted.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/addicted.png",
   "system": {
     "description": "<p>You always have Disadvantage on Body Saves to prevent Addiction.</p>",
     "severity": 1,

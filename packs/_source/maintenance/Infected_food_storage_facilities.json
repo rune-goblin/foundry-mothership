@@ -2,7 +2,7 @@
   "_id": "vMRVXZxu6ozj0iw2",
   "name": "Infected food storage facilities.",
   "type": "repair",
-  "img": "systems/mosh/images/icons/ui/rolltables/maintenance_issues.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/maintenance_issues.png",
   "system": {
     "description": "<p>Maintenance Issue</p>",
     "quantity": 1,

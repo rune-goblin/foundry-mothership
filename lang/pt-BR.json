@@ -96,8 +96,8 @@
           "human": "Estresse Ganhado"
         },
         "increaseImg": {
-          "android": "systems/mosh/images/icons/ui/macros/gain_stress.png",
-          "human": "systems/mosh/images/icons/ui/macros/gain_stress.png"
+          "android": "systems/mothershiprpg/images/icons/ui/macros/gain_stress.png",
+          "human": "systems/mothershiprpg/images/icons/ui/macros/gain_stress.png"
         },
         "hitCeiling": {
           "android": "O desempenho do sistema chega a um ponto de falha.",
@@ -116,8 +116,8 @@
           "human": "Estresse Aliviado"
         },
         "decreaseImg": {
-          "android": "systems/mosh/images/icons/ui/macros/relieve_stress.png",
-          "human": "systems/mosh/images/icons/ui/macros/relieve_stress.png"
+          "android": "systems/mothershiprpg/images/icons/ui/macros/relieve_stress.png",
+          "human": "systems/mothershiprpg/images/icons/ui/macros/relieve_stress.png"
         },
         "hitFloor": {
           "android": "Você atinge foco e clareza perfeitos.",
@@ -138,8 +138,8 @@
             "human": "Calma Ganha"
           },
           "increaseImg": {
-            "android": "systems/mosh/images/icons/ui/macros/relieve_stress.png",
-            "human": "systems/mosh/images/icons/ui/macros/relieve_stress.png"
+            "android": "systems/mothershiprpg/images/icons/ui/macros/relieve_stress.png",
+            "human": "systems/mothershiprpg/images/icons/ui/macros/relieve_stress.png"
           },
           "hitCeiling": {
             "android": "Você atinge foco e clareza perfeitos.",
@@ -158,8 +158,8 @@
             "human": "Calma Perdida"
           },
           "decreaseImg": {
-            "android": "systems/mosh/images/icons/ui/macros/gain_stress.png",
-            "human": "systems/mosh/images/icons/ui/macros/gain_stress.png"
+            "android": "systems/mothershiprpg/images/icons/ui/macros/gain_stress.png",
+            "human": "systems/mothershiprpg/images/icons/ui/macros/gain_stress.png"
           },
           "hitFloor": {
             "android": "O desempenho do sistema chega a um ponto de falha.",
@@ -180,8 +180,8 @@
             "human": "Vida Ganha"
           },
           "increaseImg": {
-            "android": "systems/mosh/images/icons/ui/attributes/health.png",
-            "human": "systems/mosh/images/icons/ui/attributes/health.png"
+            "android": "systems/mothershiprpg/images/icons/ui/attributes/health.png",
+            "human": "systems/mothershiprpg/images/icons/ui/attributes/health.png"
           },
           "hitCeiling": {
             "android": "Você agora está com a vida cheia.",
@@ -200,8 +200,8 @@
             "human": "Vida Perdida"
           },
           "decreaseImg": {
-            "android": "systems/mosh/images/icons/ui/attributes/health.png",
-            "human": "systems/mosh/images/icons/ui/attributes/health.png"
+            "android": "systems/mothershiprpg/images/icons/ui/attributes/health.png",
+            "human": "systems/mothershiprpg/images/icons/ui/attributes/health.png"
           },
           "hitFloor": {
             "android": "Seus receptores de dor indicam danos no núcleo.",
@@ -214,24 +214,24 @@
         },
           "hits": {
             "increase": {
-              "android": "@UUID[Compendium.mosh.macros_hotbar_1e.ZzKgfEmRdvDfyBMS]{Faça um Teste de Ferimento}",
-              "human": "@UUID[Compendium.mosh.macros_hotbar_1e.ZzKgfEmRdvDfyBMS]{Faça um Teste de Ferimento}"
+              "android": "@UUID[Compendium.mothershiprpg.macros_hotbar_1e.ZzKgfEmRdvDfyBMS]{Faça um Teste de Ferimento}",
+              "human": "@UUID[Compendium.mothershiprpg.macros_hotbar_1e.ZzKgfEmRdvDfyBMS]{Faça um Teste de Ferimento}"
             },
             "increaseHeader": {
               "android": "Dano",
               "human": "Ferido"
             },
             "increaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/health.png",
-              "human": "systems/mosh/images/icons/ui/attributes/health.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/health.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/health.png"
             },
             "hitCeiling": {
-              "android": "O fim está próximo...<br><br>@UUID[Compendium.mosh.macros_hotbar_1e.NsRHfRuuNGPfkYVf]{Faça uma Salvaguarda de Morte}",
-              "human": "O fim está próximo...<br><br>@UUID[Compendium.mosh.macros_hotbar_1e.NsRHfRuuNGPfkYVf]{Faça uma Salvaguarda de Morte}"
+              "android": "O fim está próximo...<br><br>@UUID[Compendium.mothershiprpg.macros_hotbar_1e.NsRHfRuuNGPfkYVf]{Faça uma Salvaguarda de Morte}",
+              "human": "O fim está próximo...<br><br>@UUID[Compendium.mothershiprpg.macros_hotbar_1e.NsRHfRuuNGPfkYVf]{Faça uma Salvaguarda de Morte}"
             },
             "pastCeiling": {
-              "android": "O fim está próximo...<br><br>@UUID[Compendium.mosh.macros_hotbar_1e.NsRHfRuuNGPfkYVf]{Faça uma Salvaguarda de Morte}",
-              "human": "O fim está próximo...<br><br>@UUID[Compendium.mosh.macros_hotbar_1e.NsRHfRuuNGPfkYVf]{Faça uma Salvaguarda de Morte}"
+              "android": "O fim está próximo...<br><br>@UUID[Compendium.mothershiprpg.macros_hotbar_1e.NsRHfRuuNGPfkYVf]{Faça uma Salvaguarda de Morte}",
+              "human": "O fim está próximo...<br><br>@UUID[Compendium.mothershiprpg.macros_hotbar_1e.NsRHfRuuNGPfkYVf]{Faça uma Salvaguarda de Morte}"
             },
             "decrease": {
               "android": "Os recursos do sistema se estabilizam e você se sente energizado.",
@@ -242,8 +242,8 @@
               "human": "Curado"
             },
             "decreaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/health.png",
-              "human": "systems/mosh/images/icons/ui/attributes/health.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/health.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/health.png"
             },
             "hitFloor": {
               "android": "Agora você está com a saúde plena.",
@@ -268,8 +268,8 @@
               "human": "Força Ganha"
             },
             "increaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/strength.png",
-              "human": "systems/mosh/images/icons/ui/attributes/strength.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/strength.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/strength.png"
             },
             "hitCeiling": {
               "android": "Agora você está com força máxima.",
@@ -288,8 +288,8 @@
               "human": "Força Perdida"
             },
             "decreaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/strength.png",
-              "human": "systems/mosh/images/icons/ui/attributes/strength.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/strength.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/strength.png"
             },
             "hitFloor": {
               "android": "Você não tem mais força.",
@@ -314,8 +314,8 @@
               "human": "Velocidade Ganha"
             },
             "increaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/speed.png",
-              "human": "systems/mosh/images/icons/ui/attributes/speed.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/speed.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/speed.png"
             },
             "hitCeiling": {
               "android": "Agora você está com velocidade máxima.",
@@ -334,8 +334,8 @@
               "human": "Velocidade Perdida"
             },
             "decreaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/speed.png",
-              "human": "systems/mosh/images/icons/ui/attributes/speed.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/speed.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/speed.png"
             },
             "hitFloor": {
               "android": "Você se sente completamente letárgico.",
@@ -360,8 +360,8 @@
               "human": "Intelecto Ganha"
             },
             "increaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/intellect.png",
-              "human": "systems/mosh/images/icons/ui/attributes/intellect.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/intellect.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/intellect.png"
             },
             "hitCeiling": {
               "android": "Agora você está com intelecto máximo.",
@@ -380,8 +380,8 @@
               "human": "Intelecto Perdido"
             },
             "decreaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/intellect.png",
-              "human": "systems/mosh/images/icons/ui/attributes/intellect.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/intellect.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/intellect.png"
             },
             "hitFloor": {
               "android": "Você se sente totalmente confuso.",
@@ -406,8 +406,8 @@
               "human": "Combate Ganhado"
             },
             "increaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/combat.png",
-              "human": "systems/mosh/images/icons/ui/attributes/combat.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/combat.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/combat.png"
             },
             "hitCeiling": {
               "android": "Agora você está no combate máximo.",
@@ -426,8 +426,8 @@
               "human": "Combate Perdido"
             },
             "decreaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/combat.png",
-              "human": "systems/mosh/images/icons/ui/attributes/combat.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/combat.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/combat.png"
             },
             "hitFloor": {
               "android": "Você não consegue mais imaginar lutar.",
@@ -452,8 +452,8 @@
               "human": "Instinto Ganhado"
             },
             "increaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/instinct.png",
-              "human": "systems/mosh/images/icons/ui/attributes/instinct.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/instinct.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/instinct.png"
             },
             "hitCeiling": {
               "android": "Agora você está com instinto máximo.",
@@ -472,8 +472,8 @@
               "human": "Instinto Perdido"
             },
             "decreaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/instinct.png",
-              "human": "systems/mosh/images/icons/ui/attributes/instinct.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/instinct.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/instinct.png"
             },
             "hitFloor": {
               "android": "Você perdeu seus instintos.",
@@ -498,8 +498,8 @@
               "human": "Lealdade Ganhada"
             },
             "increaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/loyalty.png",
-              "human": "systems/mosh/images/icons/ui/attributes/loyalty.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/loyalty.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/loyalty.png"
             },
             "hitCeiling": {
               "android": "Agora você está com lealdade máxima.",
@@ -518,8 +518,8 @@
               "human": "Lealdade Perdida"
             },
             "decreaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/loyalty.png",
-              "human": "systems/mosh/images/icons/ui/attributes/loyalty.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/loyalty.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/loyalty.png"
             },
             "hitFloor": {
               "android": "Você só se importa consigo mesmo.",
@@ -544,8 +544,8 @@
               "human": "Sanidade Aumentada"
             },
             "increaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/sanity.png",
-              "human": "systems/mosh/images/icons/ui/attributes/sanity.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/sanity.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/sanity.png"
             },
             "hitCeiling": {
               "android": "Agora você está com sanidade máxima.",
@@ -564,8 +564,8 @@
               "human": "Sanidade Perdida"
             },
             "decreaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/sanity.png",
-              "human": "systems/mosh/images/icons/ui/attributes/sanity.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/sanity.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/sanity.png"
             },
             "hitFloor": {
               "android": "Você perdeu a sanidade.",
@@ -590,8 +590,8 @@
               "human": "Coragem Melhorada"
             },
             "increaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/fear.png",
-              "human": "systems/mosh/images/icons/ui/attributes/fear.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/fear.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/fear.png"
             },
             "hitCeiling": {
               "android": "Agora você está com medo máximo.",
@@ -610,8 +610,8 @@
               "human": "Coragem Perdida"
             },
             "decreaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/fear.png",
-              "human": "systems/mosh/images/icons/ui/attributes/fear.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/fear.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/fear.png"
             },
             "hitFloor": {
               "android": "Você tem medo de tudo.",
@@ -636,8 +636,8 @@
               "human": "Corpo Fortalecido"
             },
             "increaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/body.png",
-              "human": "systems/mosh/images/icons/ui/attributes/body.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/body.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/body.png"
             },
             "hitCeiling": {
               "android": "Agora você está com corpo máximo.",
@@ -656,8 +656,8 @@
               "human": "Corpo Enfraquecido"
             },
             "decreaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/body.png",
-              "human": "systems/mosh/images/icons/ui/attributes/body.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/body.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/body.png"
             },
             "hitFloor": {
               "android": "Seu corpo está fraco e frágil.",
@@ -682,8 +682,8 @@
               "human": "Armadura Ganha"
             },
             "increaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/armor.png",
-              "human": "systems/mosh/images/icons/ui/attributes/armor.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/armor.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/armor.png"
             },
             "hitCeiling": {
               "android": "Agora você está com armadura máxima.",
@@ -702,8 +702,8 @@
               "human": "Armadura Perdida"
             },
             "decreaseImg": {
-              "android": "systems/mosh/images/icons/ui/attributes/armor.png",
-              "human": "systems/mosh/images/icons/ui/attributes/armor.png"
+              "android": "systems/mothershiprpg/images/icons/ui/attributes/armor.png",
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/armor.png"
             },
             "hitFloor": {
               "android": "Nada mais te protege agora.",
@@ -725,7 +725,7 @@
               "human": "Propulsores Aumentados"
             },
             "increaseImg": {
-              "human": "systems/mosh/images/icons/ui/attributes/thrusters.png"
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/thrusters.png"
             },
             "hitCeiling": {
               "human": "Seus propulsores estão no máximo."
@@ -740,7 +740,7 @@
               "human": "Propulsores Prejudicados"
             },
             "decreaseImg": {
-              "human": "systems/mosh/images/icons/ui/attributes/thrusters.png"
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/thrusters.png"
             },
             "hitFloor": {
               "human": "Você perdeu seus propulsores."
@@ -760,7 +760,7 @@
               "human": "Combate Aumentado"
             },
             "increaseImg": {
-              "human": "systems/mosh/images/icons/ui/attributes/battle.png"
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/battle.png"
             },
             "hitCeiling": {
               "human": "Seus sistemas de mira estão no máximo."
@@ -775,7 +775,7 @@
               "human": "Combate Prejudicado"
             },
             "decreaseImg": {
-              "human": "systems/mosh/images/icons/ui/attributes/battle.png"
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/battle.png"
             },
             "hitFloor": {
               "human": "Você perdeu seus sistemas de mira."
@@ -795,7 +795,7 @@
               "human": "Sistemas Aumentados"
             },
             "increaseImg": {
-              "human": "systems/mosh/images/icons/ui/attributes/battle.png"
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/battle.png"
             },
             "hitCeiling": {
               "human": "Seus sistemas da sua nave estão no máximo."
@@ -810,7 +810,7 @@
               "human": "Sistemas Prejudicados"
             },
             "decreaseImg": {
-              "human": "systems/mosh/images/icons/ui/attributes/battle.png"
+              "human": "systems/mothershiprpg/images/icons/ui/attributes/battle.png"
             },
             "hitFloor": {
               "human": "Você perdeu os sistemas da sua nave."
@@ -823,64 +823,64 @@
           "macro": {
             "wound": {
               "bleeding": {
-                "android": "@UUID[Compendium.mosh.macros_triggered_1e.1DD8i6eCS6nx2Ip0]{Sangramento}",
-                "human": "@UUID[Compendium.mosh.macros_triggered_1e.1DD8i6eCS6nx2Ip0]{Sangramento}"
+                "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.1DD8i6eCS6nx2Ip0]{Sangramento}",
+                "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.1DD8i6eCS6nx2Ip0]{Sangramento}"
               },
               "bleeding_dis": {
-                "android": "@UUID[Compendium.mosh.macros_triggered_1e.xr2o2PU5vdrR6fxQ]{Sangramento [-]}",
-                "human": "@UUID[Compendium.mosh.macros_triggered_1e.xr2o2PU5vdrR6fxQ]{Sangramento [-]}"
+                "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.xr2o2PU5vdrR6fxQ]{Sangramento [-]}",
+                "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.xr2o2PU5vdrR6fxQ]{Sangramento [-]}"
               },
               "bleeding_adv": {
-                "android": "@UUID[Compendium.mosh.macros_triggered_1e.tFcWNddtZvlv7tsg]{Sangramento [+]}",
-                "human": "@UUID[Compendium.mosh.macros_triggered_1e.tFcWNddtZvlv7tsg]{Sangramento [+]}"
+                "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.tFcWNddtZvlv7tsg]{Sangramento [+]}",
+                "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.tFcWNddtZvlv7tsg]{Sangramento [+]}"
               },
               "blunt_force": {
-                "android": "@UUID[Compendium.mosh.macros_triggered_1e.TAjlQjA5AAy3qYL3]{Força Contundente}",
-                "human": "@UUID[Compendium.mosh.macros_triggered_1e.TAjlQjA5AAy3qYL3]{Força Contundente}"
+                "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.TAjlQjA5AAy3qYL3]{Força Contundente}",
+                "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.TAjlQjA5AAy3qYL3]{Força Contundente}"
               },
               "blunt_force_dis": {
-                "android": "@UUID[Compendium.mosh.macros_triggered_1e.k0zf8ZGivRguc0wb]{Força Contundente [-]}",
-                "human": "@UUID[Compendium.mosh.macros_triggered_1e.k0zf8ZGivRguc0wb]{Força Contundente [-]}"
+                "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.k0zf8ZGivRguc0wb]{Força Contundente [-]}",
+                "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.k0zf8ZGivRguc0wb]{Força Contundente [-]}"
               },
               "blunt_force_adv": {
-                "android": "@UUID[Compendium.mosh.macros_triggered_1e.oL3GH0HoEPlP8vzG]{Força Contundente [+]}",
-                "human": "@UUID[Compendium.mosh.macros_triggered_1e.oL3GH0HoEPlP8vzG]{Força Contundente [+]}"
+                "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.oL3GH0HoEPlP8vzG]{Força Contundente [+]}",
+                "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.oL3GH0HoEPlP8vzG]{Força Contundente [+]}"
               },
               "fire_explosives": {
-                "android": "@UUID[Compendium.mosh.macros_triggered_1e.bZi1qKmcKLFvnhZ2]{Fogo & Explosivos}",
-                "human": "@UUID[Compendium.mosh.macros_triggered_1e.bZi1qKmcKLFvnhZ2]{Fogo & Explosivos}"
+                "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.bZi1qKmcKLFvnhZ2]{Fogo & Explosivos}",
+                "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.bZi1qKmcKLFvnhZ2]{Fogo & Explosivos}"
               },
               "fire_explosives_dis": {
-                "android": "@UUID[Compendium.mosh.macros_triggered_1e.7rYhbDAaFeok1Daq]{Fogo & Explosivos [-]}",
-                "human": "@UUID[Compendium.mosh.macros_triggered_1e.7rYhbDAaFeok1Daq]{Fogo & Explosivos [-]}"
+                "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.7rYhbDAaFeok1Daq]{Fogo & Explosivos [-]}",
+                "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.7rYhbDAaFeok1Daq]{Fogo & Explosivos [-]}"
               },
               "fire_explosives_adv": {
-                "android": "@UUID[Compendium.mosh.macros_triggered_1e.dJnQKDf0AlwK27QD]{Fogo & Explosivos [+]}",
-                "human": "@UUID[Compendium.mosh.macros_triggered_1e.dJnQKDf0AlwK27QD]{Fogo & Explosivos [+]}"
+                "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.dJnQKDf0AlwK27QD]{Fogo & Explosivos [+]}",
+                "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.dJnQKDf0AlwK27QD]{Fogo & Explosivos [+]}"
               },
               "gore_massive": {
-                "android": "@UUID[Compendium.mosh.macros_triggered_1e.S9nnHKWYGSQmjQdp]{Carniça}",
-                "human": "@UUID[Compendium.mosh.macros_triggered_1e.S9nnHKWYGSQmjQdp]{Carniça}"
+                "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.S9nnHKWYGSQmjQdp]{Carniça}",
+                "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.S9nnHKWYGSQmjQdp]{Carniça}"
               },
               "gore_massive_dis": {
-                "android": "@UUID[Compendium.mosh.macros_triggered_1e.eQPuDgwv8evetFIk]{Carniça [-]}",
-                "human": "@UUID[Compendium.mosh.macros_triggered_1e.eQPuDgwv8evetFIk]{Carniça [-]}"
+                "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.eQPuDgwv8evetFIk]{Carniça [-]}",
+                "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.eQPuDgwv8evetFIk]{Carniça [-]}"
               },
               "gore_massive_adv": {
-                "android": "@UUID[Compendium.mosh.macros_triggered_1e.DuVjNlE4lsnR7Emc]{Carniça [+]}",
-                "human": "@UUID[Compendium.mosh.macros_triggered_1e.DuVjNlE4lsnR7Emc]{Carniça [+]}"
+                "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.DuVjNlE4lsnR7Emc]{Carniça [+]}",
+                "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.DuVjNlE4lsnR7Emc]{Carniça [+]}"
               },
               "gunshot": {
-                "android": "@UUID[Compendium.mosh.macros_triggered_1e.XgCOLv9UunBddUyW]{Disparo de Arma}",
-                "human": "@UUID[Compendium.mosh.macros_triggered_1e.XgCOLv9UunBddUyW]{Disparo de Arma}"
+                "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.XgCOLv9UunBddUyW]{Disparo de Arma}",
+                "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.XgCOLv9UunBddUyW]{Disparo de Arma}"
               },
               "gunshot_dis": {
-                "android": "@UUID[Compendium.mosh.macros_triggered_1e.LTpa1ZYVZl4m9k6z]{Disparo de Arma [-]}",
-                "human": "@UUID[Compendium.mosh.macros_triggered_1e.LTpa1ZYVZl4m9k6z]{Disparo de Arma [-]}"
+                "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.LTpa1ZYVZl4m9k6z]{Disparo de Arma [-]}",
+                "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.LTpa1ZYVZl4m9k6z]{Disparo de Arma [-]}"
               },
               "gunshot_adv": {
-                "android": "@UUID[Compendium.mosh.macros_triggered_1e.fnVATRHYJEUlS3pR]{Disparo de Arma [+]}",
-                "human": "@UUID[Compendium.mosh.macros_triggered_1e.fnVATRHYJEUlS3pR]{Disparo de Arma [+]}"
+                "android": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.fnVATRHYJEUlS3pR]{Disparo de Arma [+]}",
+                "human": "@UUID[Compendium.mothershiprpg.macros_triggered_1e.fnVATRHYJEUlS3pR]{Disparo de Arma [+]}"
               }
             }
           },
@@ -1077,7 +1077,7 @@
           "HEARTATTACKSHORTCIRCUITANDROIDS": "ATAQUE CARDÍACO / CURTO-CIRCUITO (ANDRÓIDES).",
           "SHORTCIRCUIT": "CURTO-CIRCUITO.",
           "HEARTATTACK": "ATAQUE CARDÍACO.",
-          "Gain1d10Calmk2TtLFOG9mGaWVx31d10Calm": "Ganhar 1d10 Calma.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.k2TtLFOG9mGaWVx3]{+1d10 Calma}",
+          "Gain1d10Calmk2TtLFOG9mGaWVx31d10Calm": "Ganhar 1d10 Calma.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.k2TtLFOG9mGaWVx3]{+1d10 Calma}",
           "SelectAStat": "Selecione um Atributo",
           "ChooseTheStatForSkillCheck": "Escolha o Atributo que melhor se adequa à natureza desta Verificação de Habilidade. Você adicionará o bônus da habilidade ao valor do Atributo para esta rolagem",
           "GivingYouAHigherNumber": "(lhe dando um número maior para rolar abaixo).",

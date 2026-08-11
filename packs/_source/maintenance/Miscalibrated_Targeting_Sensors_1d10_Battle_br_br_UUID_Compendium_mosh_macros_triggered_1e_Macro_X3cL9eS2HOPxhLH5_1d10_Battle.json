@@ -1,8 +1,8 @@
 {
   "_id": "3Ptitg8HBZfl2CXN",
-  "name": "Miscalibrated Targeting Sensors. -1d10 Battle.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.X3cL9eS2HOPxhLH5]{-1d10 Battle}",
+  "name": "Miscalibrated Targeting Sensors. -1d10 Battle.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.X3cL9eS2HOPxhLH5]{-1d10 Battle}",
   "type": "repair",
-  "img": "systems/mosh/images/icons/ui/rolltables/maintenance_issues.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/maintenance_issues.png",
   "system": {
     "description": "<p>Maintenance Issue</p>",
     "quantity": 1,

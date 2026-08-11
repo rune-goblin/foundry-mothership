@@ -2,7 +2,7 @@
   "_id": "kiJyYYxzy5TdjTfS",
   "name": "Twitchy",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/the_shakes.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/the_shakes.png",
   "system": {
     "description": "<p>Your manual tasks have Disadvantage.</p>",
     "severity": 1,

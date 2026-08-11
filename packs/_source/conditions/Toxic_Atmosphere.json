@@ -2,9 +2,9 @@
   "_id": "TCB5GnuGt45WbPsw",
   "name": "Toxic Atmosphere",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/toxic_atmosphere.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/toxic_atmosphere.png",
   "system": {
-    "description": "<p>Planets with Toxic atmospheres require special gear to explore, otherwise there is the risk of harm or even death.<br><br>The planet’s atmosphere is not fit to breathe, but is otherwise safe. A rebreather or armor with its own oxygen supply is required. Without these, <strong>characters take 1d10 DMG per round, Body Save for half.</strong><br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.X3gqTFFwMe7AudiS]{Body Save}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.w3ttEaXP7yp25M5Q]{-1d10 Health}</p>",
+    "description": "<p>Planets with Toxic atmospheres require special gear to explore, otherwise there is the risk of harm or even death.<br><br>The planet’s atmosphere is not fit to breathe, but is otherwise safe. A rebreather or armor with its own oxygen supply is required. Without these, <strong>characters take 1d10 DMG per round, Body Save for half.</strong><br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.X3gqTFFwMe7AudiS]{Body Save}<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.w3ttEaXP7yp25M5Q]{-1d10 Health}</p>",
     "severity": 1,
     "treatment": {
       "value": 0,

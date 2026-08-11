@@ -2,7 +2,7 @@
   "_id": "1HNvL7XEUcMQbLps",
   "name": "Miscalibrated Thruster Gimbal System.",
   "type": "repair",
-  "img": "systems/mosh/images/icons/ui/rolltables/maintenance_issues.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/maintenance_issues.png",
   "system": {
     "description": "<p>Maintenance Issue</p>",
     "quantity": 1,

@@ -1,13 +1,13 @@
 {
-  "id": "mosh",
-  "title": "MoSh - Unofficial Mothership",
+  "id": "mothershiprpg",
+  "title": "Mothership (Unofficial)",
   "description": "The unofficial Mothership system for FoundryVTT.",
-  "version": "0.6.1",
+  "version": "0.0.0",
   "esmodules": [
-    "dist/mosh.js"
+    "dist/mothershiprpg.js"
   ],
   "styles": [
-    "dist/mosh.css"
+    "dist/mothershiprpg.css"
   ],
   "packs": [
     {
@@ -79,11 +79,11 @@
     },
     {
       "type": "setup",
-      "url": "systems/mosh/images/icons/ui/system/mosh-repo.webp",
-      "thumbnail": "systems/mosh/images/icons/ui/system/mosh-thumbnail.webp"
+      "url": "systems/mothershiprpg/images/icons/ui/system/mosh-repo.webp",
+      "thumbnail": "systems/mothershiprpg/images/icons/ui/system/mosh-thumbnail.webp"
     }
   ],
-  "background": "systems/mosh/images/icons/ui/system/mosh-background.webp",
+  "background": "systems/mothershiprpg/images/icons/ui/system/mosh-background.webp",
   "languages": [
     {
       "lang": "en",
@@ -105,7 +105,7 @@
   "secondaryTokenAttribute": "other.stress",
   "url": "https://github.com/rune-goblin/foundry-mothership",
   "manifest": "https://github.com/rune-goblin/foundry-mothership/releases/latest/download/system.json",
-  "download": "https://github.com/rune-goblin/foundry-mothership/releases/latest/download/mosh.zip",
+  "download": "https://github.com/rune-goblin/foundry-mothership/releases/latest/download/mothershiprpg.zip",
   "license": "LICENSE.txt",
   "authors": [
     {

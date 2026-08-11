@@ -1,8 +1,8 @@
 {
   "_id": "7GqbGIOzA9vYOPiI",
-  "name": "Lemon. Maintenance Checks at [-].<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.C04VbNoj8LgfY8QK]{Maintenance Check [-]}",
+  "name": "Lemon. Maintenance Checks at [-].<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.C04VbNoj8LgfY8QK]{Maintenance Check [-]}",
   "type": "repair",
-  "img": "systems/mosh/images/icons/ui/rolltables/maintenance_issues.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/maintenance_issues.png",
   "system": {
     "description": "<p>Maintenance Issue</p>",
     "quantity": 1,

@@ -1,7 +1,7 @@
 {
   "_id": "aBnY19jlhPXzibCt",
   "name": "Panic Check (Stress, Android)",
-  "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
   "description": "<p>Stress, Damage, and emotional wear and tear eventually bring characters to their breaking point. When that happens, there’s a chance they Panic. You determine this by making a <strong>Panic Check</strong>. Some results of the Panic Table are so severe that they leave a lasting impression on you. These are called <strong>Conditions</strong>, and they affect you until you are able to treat them.</p>",
   "formula": "1d20",
   "replacement": true,
@@ -10,7 +10,7 @@
     {
       "_id": "Uf9xMdlmk2RS9ev8",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         1,
@@ -28,7 +28,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Segfault:</strong> Gain 1 Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.dvJR9DYXI2kV0BbR]{+1 Stress}",
+      "description": "<strong>Segfault:</strong> Gain 1 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.dvJR9DYXI2kV0BbR]{+1 Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!aBnY19jlhPXzibCt.Uf9xMdlmk2RS9ev8"
@@ -36,7 +36,7 @@
     {
       "_id": "THtp1wYhy7Fmggo2",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         2,
@@ -62,7 +62,7 @@
     {
       "_id": "jqRITpf8XIo4LX4y",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         3,
@@ -88,7 +88,7 @@
     {
       "_id": "dSTOHakBOy4i4nFx",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         4,
@@ -106,7 +106,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Organizes Objects into Geometric Patterns:</strong> Everyone else gains 1 Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.dvJR9DYXI2kV0BbR]{+1 Stress}",
+      "description": "<strong>Organizes Objects into Geometric Patterns:</strong> Everyone else gains 1 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.dvJR9DYXI2kV0BbR]{+1 Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!aBnY19jlhPXzibCt.dSTOHakBOy4i4nFx"
@@ -114,7 +114,7 @@
     {
       "_id": "fYipAsps5SAM3API",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         5,
@@ -132,7 +132,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Inventories Particles of Dust by Grade:</strong> Cannot engage in other tasks, everyone else gains 2 Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.6jjFVScyiaBvN8kX]{+2 Stress}",
+      "description": "<strong>Inventories Particles of Dust by Grade:</strong> Cannot engage in other tasks, everyone else gains 2 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.6jjFVScyiaBvN8kX]{+2 Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!aBnY19jlhPXzibCt.fYipAsps5SAM3API"
@@ -140,7 +140,7 @@
     {
       "_id": "hr4dgIk8AxDJrs9A",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         6,
@@ -158,7 +158,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Vocalization Failure:</strong> Intermittently shrieks like a fax machine under duress. Lapses into morse code, cannot communicate or sneak. Everyone else gains 2 Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.bJWFhod0YA8ln8H8]{+1 Vocalization Failure}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.6jjFVScyiaBvN8kX]{+2 Stress}",
+      "description": "<strong>Vocalization Failure:</strong> Intermittently shrieks like a fax machine under duress. Lapses into morse code, cannot communicate or sneak. Everyone else gains 2 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.bJWFhod0YA8ln8H8]{+1 Vocalization Failure}<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.6jjFVScyiaBvN8kX]{+2 Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!aBnY19jlhPXzibCt.hr4dgIk8AxDJrs9A"
@@ -166,7 +166,7 @@
     {
       "_id": "lGlPWoSKPLuQiFNv",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         7,
@@ -184,7 +184,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Incorrectly States Odds:</strong> <em>(insists impossible tasks are trivial, trivial tasks are impossible)</em> ... for the next 2d10 hours. Distracting. Anyone attempting a complex task must make a Fear save or gain 1d10 Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.k2TtLFOG9mGaWVx3]{+1d10 Stress}",
+      "description": "<strong>Incorrectly States Odds:</strong> <em>(insists impossible tasks are trivial, trivial tasks are impossible)</em> ... for the next 2d10 hours. Distracting. Anyone attempting a complex task must make a Fear save or gain 1d10 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.k2TtLFOG9mGaWVx3]{+1d10 Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!aBnY19jlhPXzibCt.lGlPWoSKPLuQiFNv"
@@ -192,7 +192,7 @@
     {
       "_id": "qP73NbUa2ybPiS3B",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         8,
@@ -210,7 +210,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Repetitive Twitchy Motions:</strong> Your manual tasks have Disadvantage, everyone else gains 2 Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.6jjFVScyiaBvN8kX]{+2 Stress}",
+      "description": "<strong>Repetitive Twitchy Motions:</strong> Your manual tasks have Disadvantage, everyone else gains 2 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.6jjFVScyiaBvN8kX]{+2 Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!aBnY19jlhPXzibCt.qP73NbUa2ybPiS3B"
@@ -218,7 +218,7 @@
     {
       "_id": "1QRCUzUTpJzzUEju",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         9,
@@ -236,7 +236,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Loses Any Expressiveness:</strong> Discusses the irrationality of others Phobias, seeks to trigger them.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.9sKO5WUBwCW1YbR3]{+1 Ethical Directive Misread}",
+      "description": "<strong>Loses Any Expressiveness:</strong> Discusses the irrationality of others Phobias, seeks to trigger them.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.9sKO5WUBwCW1YbR3]{+1 Ethical Directive Misread}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!aBnY19jlhPXzibCt.1QRCUzUTpJzzUEju"
@@ -244,7 +244,7 @@
     {
       "_id": "2nVqX6tEjYSvwMEL",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         10,
@@ -262,7 +262,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Unreasonable Adherence to the Present Course of Action:</strong> Take 1d10 damage from repetitive motion injury. Everyone else makes Fear save or gains 1d5 Stress.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.w3ttEaXP7yp25M5Q]{-1d10 Health}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.luNKvwmm2tjUJhT6]{+1d5 Stress}",
+      "description": "<strong>Unreasonable Adherence to the Present Course of Action:</strong> Take 1d10 damage from repetitive motion injury. Everyone else makes Fear save or gains 1d5 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.w3ttEaXP7yp25M5Q]{-1d10 Health}<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.luNKvwmm2tjUJhT6]{+1d5 Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!aBnY19jlhPXzibCt.2nVqX6tEjYSvwMEL"
@@ -270,7 +270,7 @@
     {
       "_id": "NPfdalo4T5YQGgOa",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         11,
@@ -288,7 +288,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Becomes Nihilistically Worshipful of the Source of Danger:</strong> Everyone else has Disadvantage on rolls against it. Everyone else takes a Fear save when failing to act against danger or gains a Phobia.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.wHcA2ub6CobipsfR]{+1 Worship Danger}",
+      "description": "<strong>Becomes Nihilistically Worshipful of the Source of Danger:</strong> Everyone else has Disadvantage on rolls against it. Everyone else takes a Fear save when failing to act against danger or gains a Phobia.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.wHcA2ub6CobipsfR]{+1 Worship Danger}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!aBnY19jlhPXzibCt.NPfdalo4T5YQGgOa"
@@ -296,7 +296,7 @@
     {
       "_id": "AlC7dIwBOtFBoOFh",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         12,
@@ -314,7 +314,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Killswitch Engaged:</strong> Go berserk, will not withdraw from combat regardless of situation, will not adhere to tactics.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.tQltbIC9ahDwNsTp]{+1 Killswitch Engaged}",
+      "description": "<strong>Killswitch Engaged:</strong> Go berserk, will not withdraw from combat regardless of situation, will not adhere to tactics.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.tQltbIC9ahDwNsTp]{+1 Killswitch Engaged}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!aBnY19jlhPXzibCt.AlC7dIwBOtFBoOFh"
@@ -322,7 +322,7 @@
     {
       "_id": "liVa6bdaYwBAFLtG",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         13,
@@ -340,7 +340,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Turing Test Failure:</strong> Have difficulty expressing humanity. Party members make a Fear Save or gain 1 Stress whenever you show up.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.3nrEYqwkhMs1Ch5v]{+1 Turing Test Failure}",
+      "description": "<strong>Turing Test Failure:</strong> Have difficulty expressing humanity. Party members make a Fear Save or gain 1 Stress whenever you show up.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.3nrEYqwkhMs1Ch5v]{+1 Turing Test Failure}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!aBnY19jlhPXzibCt.liVa6bdaYwBAFLtG"
@@ -348,7 +348,7 @@
     {
       "_id": "5mSv5jcvVDyAKKqz",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         14,
@@ -374,7 +374,7 @@
     {
       "_id": "uH4WMyycbJSM66kk",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         15,
@@ -392,7 +392,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Fried Logic Core:</strong> Frenzied nonsensical behavior, everyone else makes a Panic Check.<br><br>@UUID[Compendium.mosh.macros_hotbar_1e.Macro.IgWvaabVqzKDzLL4]{Panic Check}",
+      "description": "<strong>Fried Logic Core:</strong> Frenzied nonsensical behavior, everyone else makes a Panic Check.<br><br>@UUID[Compendium.mothershiprpg.macros_hotbar_1e.Macro.IgWvaabVqzKDzLL4]{Panic Check}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!aBnY19jlhPXzibCt.uH4WMyycbJSM66kk"
@@ -400,7 +400,7 @@
     {
       "_id": "0PNiAaof10ibaecR",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         16,
@@ -426,7 +426,7 @@
     {
       "_id": "dzviNQmak3WjrhoU",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         17,
@@ -444,7 +444,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Compound Data Corruption:</strong> Roll twice.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.Jek7hKAMDevKxlZR]{Roll on Android Panic Table}",
+      "description": "<strong>Compound Data Corruption:</strong> Roll twice.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.Jek7hKAMDevKxlZR]{Roll on Android Panic Table}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!aBnY19jlhPXzibCt.dzviNQmak3WjrhoU"
@@ -452,7 +452,7 @@
     {
       "_id": "0G33UqnAIHYY2lw2",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         18,
@@ -470,7 +470,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Firmware Malfunction:</strong> Roll 1d10 on this table, behavior is permanent.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.yPGx2mXToJ2iJPbY]{Roll 1d10 on Android Panic Table}",
+      "description": "<strong>Firmware Malfunction:</strong> Roll 1d10 on this table, behavior is permanent.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.yPGx2mXToJ2iJPbY]{Roll 1d10 on Android Panic Table}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!aBnY19jlhPXzibCt.0G33UqnAIHYY2lw2"
@@ -478,7 +478,7 @@
     {
       "_id": "YdrRbPU8fVlKkFvu",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         19,
@@ -504,7 +504,7 @@
     {
       "_id": "DvRejWzlmoS364xm",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/panic_check.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "weight": 1,
       "range": [
         20,
@@ -522,7 +522,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>Slagged:</strong> Gigeresque-Scanners Head Explosion, everyone present gains a phobia and 1d5 Stress <em>(Fear Save to avoid)<em>.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.RTL29CqdaAriGSTS]{+1 Phobia}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.luNKvwmm2tjUJhT6]{+1d5 Stress}",
+      "description": "<strong>Slagged:</strong> Gigeresque-Scanners Head Explosion, everyone present gains a phobia and 1d5 Stress <em>(Fear Save to avoid)<em>.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.RTL29CqdaAriGSTS]{+1 Phobia}<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.luNKvwmm2tjUJhT6]{+1d5 Stress}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!aBnY19jlhPXzibCt.DvRejWzlmoS364xm"

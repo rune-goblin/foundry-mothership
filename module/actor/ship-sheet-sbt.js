@@ -15,7 +15,7 @@ export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
 
         var options = {
             classes: ["mosh", "sheet", "actor", "ship"],
-            template: "systems/mosh/templates/actor/ship-sheet-sbt.html",
+            template: "systems/mothershiprpg/templates/actor/ship-sheet-sbt.html",
             width: 700,
             height: 840,
             tabs: [{ navSelector: "#sheet-tabs", contentSelector: "#sheet-body", initial: "character" },
@@ -80,9 +80,9 @@ export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
             superData.settings = {};
         }
 
-        superData.settings.useCalm = game.settings.get("mosh", "useCalm");
-        superData.settings.hideWeight = game.settings.get("mosh", "hideWeight");
-        superData.settings.androidPanic = game.settings.get("mosh", "androidPanic");
+        superData.settings.useCalm = game.settings.get("mothershiprpg", "useCalm");
+        superData.settings.hideWeight = game.settings.get("mothershiprpg", "hideWeight");
+        superData.settings.androidPanic = game.settings.get("mothershiprpg", "androidPanic");
 
         let maxHull = superData.supplies.hull.max;
 
@@ -168,7 +168,7 @@ export class MothershipShipSheetSBT extends  foundry.appv1.sheets.ActorSheet {
     async _prepareMegadamage(sheetData) {
         const actorData = sheetData;
         //A script to return the data from a table.
-        let tableId = game.settings.get('mosh', 'table1eMegadamageEffects');
+        let tableId = game.settings.get('mothershiprpg', 'table1eMegadamageEffects');
         //get table data
         let tableData = await fromIdUuid(tableId,{type:"RollTable"});
 

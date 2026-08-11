@@ -2,7 +2,7 @@
   "_id": "kYdj6XJlPvJAhBEN",
   "name": "Fried Logic Core",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/logic_core.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/logic_core.png",
   "system": {
     "description": "<p>Frenzied nonsensical behaviour. Whenever you lose Calm, everyone else nearby loses the same amount of Calm.</p>",
     "severity": 1,

@@ -2,7 +2,7 @@
   "_id": "FLaPtHcegheN7wHw",
   "name": "Jump Bug. 10% chance Jump takes 2d10 months, not 2d10 days.",
   "type": "repair",
-  "img": "systems/mosh/images/icons/ui/rolltables/maintenance_issues.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/maintenance_issues.png",
   "system": {
     "description": "<p>Maintenance Issue</p>",
     "quantity": 1,

@@ -3,7 +3,7 @@ export class DLShipDeckplan extends foundry.appv1.sheets.ActorSheet {
         const options = super.defaultOptions;
         options.id = 'sheet-modifiers';
         options.classes = ["mosh", "sheet", "actor", "ship"];
-        options.template = 'systems/mosh/templates/dialogs/ship-deckplan-dialog.html';
+        options.template = 'systems/mothershiprpg/templates/dialogs/ship-deckplan-dialog.html';
         options.width = 800;
         options.height = 'auto';
         options.resizeable = true;

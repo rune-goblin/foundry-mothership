@@ -1,8 +1,8 @@
 {
   "_id": "T4wAR08WyT3g9C6D",
-  "name": "Oxygen leak. If ship is low on O2, lose 1d5 extra per day.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.u7TchSo3qutnzaKF]{-1d5 Oxygen}",
+  "name": "Oxygen leak. If ship is low on O2, lose 1d5 extra per day.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.u7TchSo3qutnzaKF]{-1d5 Oxygen}",
   "type": "repair",
-  "img": "systems/mosh/images/icons/ui/rolltables/maintenance_issues.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/maintenance_issues.png",
   "system": {
     "description": "<p>Maintenance Issue</p>",
     "quantity": 1,

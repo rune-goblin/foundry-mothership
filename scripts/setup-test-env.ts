@@ -9,7 +9,7 @@
 //
 // Adapted from runegoblin-foundrytemplate for a system rather than a module.
 import {
-  existsSync, mkdirSync, copyFileSync, writeFileSync, unlinkSync, lstatSync, rmSync,
+  existsSync, mkdirSync, copyFileSync, readFileSync, writeFileSync, unlinkSync, lstatSync, rmSync,
   readdirSync, readlinkSync, renameSync,
 } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -21,7 +21,7 @@ const TEST_DATA = join(repo, 'test', 'foundry-data');
 const PORT = Number(process.env.TEST_FOUNDRY_PORT ?? 30005);
 const TEST_WORLD = process.env.TEST_WORLD ?? 'mosh';
 const RESET_WORLD = process.argv.includes('--reset-world');
-const SYSTEM_ID = 'mosh';
+const SYSTEM_ID = 'mothershiprpg';
 
 function resolveFoundryData(): string {
   const candidates = [
@@ -191,6 +191,26 @@ if (existsSync(worldDest)) {
   }
   cloneTree(worldSrc, worldDest);
   console.log(`🌍 cloned world "${TEST_WORLD}" (${humanSize(worldDest)}) — independent of the original`);
+}
+
+// Foundry refuses to auto-launch a world whose `system` is not installed, or whose recorded
+// `systemVersion` is newer than the installed one — and the rename to `mothershiprpg` reset the
+// version to 0.0.0, so a world made on 0.6.1 fails both checks. The clone is throwaway, so
+// repoint it rather than requiring a hand-migrated world just to run the harness.
+const worldManifest = join(worldDest, 'world.json');
+if (existsSync(worldManifest)) {
+  const world = JSON.parse(readFileSync(worldManifest, 'utf8')) as Record<string, unknown>;
+  const { version } = JSON.parse(readFileSync(join(repo, "system.json"), 'utf8')) as { version: string };
+  const was = { system: world.system, systemVersion: world.systemVersion };
+  if (was.system !== SYSTEM_ID || was.systemVersion !== version) {
+    world.system = SYSTEM_ID;
+    world.systemVersion = version;
+    writeFileSync(worldManifest, `${JSON.stringify(world, null, 2)}\n`);
+    console.log(
+      `   ↳ world.json ${was.system}@${was.systemVersion} → ${SYSTEM_ID}@${version} ` +
+        '(clone only; the original is untouched)',
+    );
+  }
 }
 
 console.log('\n✨ Test data path ready at test/foundry-data (no shared LevelDBs — run your own Foundry freely)');

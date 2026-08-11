@@ -1,7 +1,7 @@
 {
   "_id": "BsfdIl7CJNs1PViS",
   "name": "Bankruptcy Save",
-  "img": "systems/mosh/images/icons/ui/rolltables/bankruptcy_save.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/bankruptcy_save.png",
   "description": "<p>As the owner of this operation, make a Bankruptcy Save to determine the financial health of the company.</p>",
   "formula": "1d4-1",
   "replacement": true,
@@ -10,7 +10,7 @@
     {
       "_id": "PmxxNHaOwjUgXDuj",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/bankruptcy_save.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/bankruptcy_save.png",
       "weight": 1,
       "range": [
         0,
@@ -36,7 +36,7 @@
     {
       "_id": "u9hjcZZUKwuho0Qx",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/bankruptcy_save.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/bankruptcy_save.png",
       "weight": 1,
       "range": [
         1,
@@ -62,7 +62,7 @@
     {
       "_id": "9kfZTUWCaEDUgYRh",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/bankruptcy_save.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/bankruptcy_save.png",
       "weight": 1,
       "range": [
         2,
@@ -88,7 +88,7 @@
     {
       "_id": "tRv3vRvOVTteMz5Y",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/bankruptcy_save.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/bankruptcy_save.png",
       "weight": 1,
       "range": [
         3,

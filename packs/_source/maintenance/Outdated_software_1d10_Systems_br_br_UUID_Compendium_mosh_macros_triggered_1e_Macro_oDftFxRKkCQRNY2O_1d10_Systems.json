@@ -1,8 +1,8 @@
 {
   "_id": "FmPqHYH3UoGpaWYL",
-  "name": "Outdated software. -1d10 Systems.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.oDftFxRKkCQRNY2O]{-1d10 Systems}",
+  "name": "Outdated software. -1d10 Systems.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.oDftFxRKkCQRNY2O]{-1d10 Systems}",
   "type": "repair",
-  "img": "systems/mosh/images/icons/ui/rolltables/maintenance_issues.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/maintenance_issues.png",
   "system": {
     "description": "<p>Maintenance Issue</p>",
     "quantity": 1,

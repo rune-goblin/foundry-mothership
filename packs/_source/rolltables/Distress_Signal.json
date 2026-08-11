@@ -1,7 +1,7 @@
 {
   "_id": "UxAjAqUTjYTcCbS8",
   "name": "Distress Signal",
-  "img": "systems/mosh/images/icons/ui/rolltables/distress_signal.png",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/distress_signal.png",
   "description": "<p>Occasionally you may need to put your ship on emergency power, seal yourselves in cryopods, send out a Distress Signal, and wait for help. It’s a long shot, but sometimes it’s the only shot you’ve got. When this happens, roll on this table.</p>",
   "formula": "1d10-1",
   "replacement": true,
@@ -10,7 +10,7 @@
     {
       "_id": "4W0riCssZ2SEzGLe",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/distress_signal.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/distress_signal.png",
       "weight": 1,
       "range": [
         0,
@@ -36,7 +36,7 @@
     {
       "_id": "tG7DvLzk0nIDsGxH",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/distress_signal.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/distress_signal.png",
       "weight": 1,
       "range": [
         1,
@@ -62,7 +62,7 @@
     {
       "_id": "Bx4dP1VaEfohIdO9",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/distress_signal.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/distress_signal.png",
       "weight": 1,
       "range": [
         3,
@@ -80,7 +80,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>[[2D10]] YEARS.</strong> Make a Body Save or lose 1d5 to all Stats and Saves.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.X3gqTFFwMe7AudiS]{Body Save}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.SeMStXQGIaeiLwvw]{-1d5 All Stats/Saves}",
+      "description": "<strong>[[2D10]] YEARS.</strong> Make a Body Save or lose 1d5 to all Stats and Saves.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.X3gqTFFwMe7AudiS]{Body Save}<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.SeMStXQGIaeiLwvw]{-1d5 All Stats/Saves}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!UxAjAqUTjYTcCbS8.Bx4dP1VaEfohIdO9"
@@ -88,7 +88,7 @@
     {
       "_id": "K9MvgxDKYTflPZDl",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/distress_signal.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/distress_signal.png",
       "weight": 1,
       "range": [
         5,
@@ -106,7 +106,7 @@
         "duplicateSource": null,
         "exportSource": null
       },
-      "description": "<strong>[[2D10]] DECADES.</strong> Make a Body Save [-] or lose 1d10 to all Stats and Saves.<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.ItHLy3URKFQVLipe]{Body Save [-]}<br><br>@UUID[Compendium.mosh.macros_triggered_1e.Macro.2MuANcdgp2g8SDlF]{-1d10 All Stats/Saves}",
+      "description": "<strong>[[2D10]] DECADES.</strong> Make a Body Save [-] or lose 1d10 to all Stats and Saves.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.ItHLy3URKFQVLipe]{Body Save [-]}<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.2MuANcdgp2g8SDlF]{-1d10 All Stats/Saves}",
       "name": "",
       "flags": {},
       "_key": "!tables.results!UxAjAqUTjYTcCbS8.K9MvgxDKYTflPZDl"
@@ -114,7 +114,7 @@
     {
       "_id": "rFLMF0FIuJOK582Z",
       "type": "text",
-      "img": "systems/mosh/images/icons/ui/rolltables/distress_signal.png",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/distress_signal.png",
       "weight": 1,
       "range": [
         6,

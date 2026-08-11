@@ -1,4 +1,4 @@
-// Scaffolds Data/systems/mosh as a real directory whose entries symlink back to this
+// Scaffolds Data/systems/mothership as a real directory whose entries symlink back to this
 // repo, so edits are live in Foundry. Deliberately NOT a whole-repo symlink: that would
 // expose node_modules/ and .git to the server.
 //

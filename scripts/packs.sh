@@ -6,7 +6,7 @@
 # existing worlds, so they cannot be renamed.
 set -euo pipefail
 
-SYSTEM_ID="mosh"
+SYSTEM_ID="mothershiprpg"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 

@@ -2,7 +2,7 @@
   "_id": "OBpJQ7uYIj3KezNc",
   "name": "Ethical Directive Misread",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/moral_compass.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/moral_compass.png",
   "system": {
     "description": "<p>Loses any expressiveness. Discusses the irrationality of Phobias, seeks to trigger them in others.</p>",
     "severity": 1,

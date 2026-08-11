@@ -26,7 +26,7 @@ export default async function globalSetup(config: FullConfig): Promise<void> {
         systemVersion: g?.system?.version ?? '?',
         core: g?.version ?? '?',
         packs: (Array.from(g?.packs?.values?.() ?? []) as any[])
-          .filter((p) => p.metadata?.packageName === 'mosh')
+          .filter((p) => p.metadata?.packageName === g?.system?.id)
           .map((p) => p.metadata.name),
       };
     });

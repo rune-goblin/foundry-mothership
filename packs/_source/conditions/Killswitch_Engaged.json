@@ -2,7 +2,7 @@
   "_id": "g6CuxCqbyRnNa57N",
   "name": "Killswitch Engaged",
   "type": "condition",
-  "img": "systems/mosh/images/icons/ui/conditions/killswitch.png",
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/killswitch.png",
   "system": {
     "description": "<p>Go berserk, will not withdraw from combat regardless of situation, will not adhere to tactics.</p>",
     "severity": 1,

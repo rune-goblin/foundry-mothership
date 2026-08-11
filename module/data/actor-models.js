@@ -123,11 +123,11 @@ export class MoshShip extends foundry.abstract.TypeDataModel {
       images: new fields.SchemaField({
         layout: new fields.FilePathField({
           categories: ['IMAGE'], required: true, blank: true,
-          initial: 'systems/mosh/images/Galloway_Top.png',
+          initial: 'systems/mothershiprpg/images/Galloway_Top.png',
         }),
         beauty: new fields.FilePathField({
           categories: ['IMAGE'], required: true, blank: true,
-          initial: 'systems/mosh/images/Galloway_Top.png',
+          initial: 'systems/mothershiprpg/images/Galloway_Top.png',
         }),
       }),
       runSetup: bool(true),
