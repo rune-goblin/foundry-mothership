@@ -424,9 +424,11 @@
       "damageReduction":0,
       "speed": "",
       "oxygenMax": 0,
-      "oxygenCurrent": 0,      
+      "oxygenCurrent": 0,
       "weight": 0,
-      "cost" : 0
+      "cost" : 0,
+      "equipped": false,
+      "features": ""
     },
     "condition": {
       "templates": [
@@ -467,7 +469,8 @@
       "hull": 1,
       "totalHull" : 1,
       "feature" : "",
-      "offline" : false
+      "offline" : false,
+      "cost" : 0
     },
     "class": {
       "templates": [

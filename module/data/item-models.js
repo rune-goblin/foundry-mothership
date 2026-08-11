@@ -67,6 +67,11 @@ export class MoshArmor extends foundry.abstract.TypeDataModel {
       oxygenCurrent: num(0),
       weight: num(0),
       cost: num(0),
+      // Absent from the original template.json, yet bound by the armor sheet and read by
+      // _deriveCharacter/_deriveCreature. Under template.json unknown keys survived, so this
+      // worked; a SchemaField cleans them off, which silently stopped armour from equipping.
+      equipped: bool(false),
+      features: str(''),
     };
   }
 }
@@ -86,6 +91,7 @@ export class MoshModule extends foundry.abstract.TypeDataModel {
       totalHull: num(1),
       feature: str(''),
       offline: bool(false),
+      cost: num(0),
     };
   }
 }
