@@ -8,9 +8,11 @@ Audited 2026-08-11 against the locally installed **Foundry v14 stable**
 (`/Applications/Foundry Virtual Tabletop.app/.../public/scripts/foundry.mjs`), not from
 memory. API claims below were checked in that file.
 
-> **Status: Phase 1 complete** (gulp → Vite, `_releases/` removed). See §4.
-> Phase 1 uncovered that the SCSS tree is not the source of the stylesheet — §1.1 has
-> been corrected accordingly, and it changes the styling plan.
+> **Status: phases 1–3 complete.** Build (gulp → Vite), quality gates (84 tests,
+> typecheck, CI), the content pipeline (packs built from JSON, 0e dropped), and the
+> DataModel migration have all landed. **Phase 4 — ApplicationV2 + Svelte — is next.**
+> Nothing has been verified in a running game since the world load early in phase 1; see
+> the notes at the end of §3, §7 and §8.
 
 ---
 
@@ -308,18 +310,41 @@ lookup — small, self-contained, and a good first unit-test target in phase 2.
 
 **Verify:** CI green on a PR; `npm run deploy` produces a working install.
 
-### Phase 3 — DataModels (≈3–5 days)
+### Phase 3 — DataModels ✅ **done**
 
-Replace `template.json` with `foundry.abstract.DataModel` subclasses registered via
-`CONFIG.Actor.dataModels` / `CONFIG.Item.dataModels` — 3 actor types, 10 item types.
+All 13 types (3 Actor, 10 Item) are `foundry.abstract.TypeDataModel` subclasses in
+`module/data/{actor,item}-models.js`, registered via `CONFIG.Actor.dataModels` /
+`CONFIG.Item.dataModels`. Confirmed against v14's `_cleanType`: a registered model takes
+precedence and `template.json` is only consulted when none exists, so the migration was
+safe to do type-by-type.
 
-Do this **before** the sheet migration, not after. Svelte components want typed, validated
-data; migrating sheets against the untyped `template.json` blob means doing the sheet work
-twice. This phase is also where the phase-2 unit tests earn their keep — schema changes
-are exactly the kind of thing that silently breaks derived data.
+**Every schema is proved equivalent to `template.json`.** `test/field-stubs.ts` stubs
+`foundry.data.fields` to record what each field would initialise to, then walks the *real
+shipped schema* and compares it to the defaults `template.json` composes. That is 13
+equivalence assertions plus coverage checks that the model set matches the types declared
+in both `system.json` and `template.json` — so adding a type without a model fails CI.
+Mutation-tested: a changed default, a nested default, a dropped threshold key, or a
+missing type all fail.
 
-Keep `template.json` in place during the transition (v14 still honours it) and delete it
-only once every type has a model.
+Two deliberate looseness calls, both commented in place:
+
+- `class.base_adjustment` / `class.selected_adjustment` are free-form `ObjectField`s.
+  `choose_skill_or` is an array of arrays of objects and `class-sheet.js:41` writes a
+  derived `from_list_names` onto each entry while rendering, which a strict `SchemaField`
+  would clean back off. Tighten once the character generator stops mutating the model it
+  renders from.
+- `character.xp.html` is a **number**, not a string, matching `template.json`. The sheet
+  builds the XP pips from it.
+
+`template.json` is **kept on purpose**. It is inert at runtime now, but it is the oracle
+the equivalence tests check against — a locked record of the pre-migration schema, so any
+future schema change has to be made deliberately in both places. Delete it when that stops
+earning its keep; v16 removes support regardless.
+
+**Not verified in a running game.** The schemas are provably identical to what
+`template.json` produced, but no world has been opened against them. Do that before
+release: DataModels validate where `template.json` did not, so any existing document
+holding out-of-schema data will be cleaned on load.
 
 ### Phase 4 — ApplicationV2 + Svelte, sheet by sheet (≈2–3 weeks)
 
