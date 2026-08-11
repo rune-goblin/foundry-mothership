@@ -1,4 +1,5 @@
 // Import Modules
+import { compare } from "./compare.js";
 import { MothershipActor } from "./actor/actor.js";
 import { MothershipActorSheet } from "./actor/actor-sheet.js";
 import { MothershipCreatureSheet } from "./actor/creature-sheet.js";
@@ -83,21 +84,7 @@ Hooks.once('init', async function () {
     return str.toLowerCase();
   });
 
-  Handlebars.registerHelper('compare', function (varType, varOne, comparator, varTwo) {
-    if (varType === 'str') {
-     if (eval('"' + varOne + '"' + comparator + '"' + varTwo+ '"')) {
-       return true
-     } else {
-       return false
-     }
-    } else if (varType === 'int') {
-     if (eval(varOne + comparator + varTwo)) {
-       return true
-     } else {
-       return false
-     }
-    }
-     });
+  Handlebars.registerHelper('compare', compare);
      //convert uuid list to names for display.
      Handlebars.registerHelper('UUidListToNames',function(UuidList){
       var names = []

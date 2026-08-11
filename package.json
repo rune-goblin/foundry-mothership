@@ -13,9 +13,12 @@
     "dev": "vite",
     "watch": "vite build --watch",
     "clean": "rm -rf dist",
-    "setup": "node scripts/setup.ts"
+    "setup": "node scripts/setup.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
-    "vite": "^8.0.0"
+    "vite": "^8.0.0",
+    "vitest": "^4.1.9"
   }
 }
