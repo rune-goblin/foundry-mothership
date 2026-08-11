@@ -1176,7 +1176,7 @@ third-party ones are now **out**, and the reason is provenance rather than effor
 |---|---|---|
 | `mothership-survival-guide` | **GPL-3** (`LICENSE` file), from hollowphoton's `fvtt_mosh_1e_psg` | **No** |
 | `mothership-character-builder` | **none declared**, authored by **Naurgul** | **No** |
-| `mothership-data` | none declared, no git remote, no author — rune-goblin's own extraction | Yes |
+| `mothership-data` | rune-goblin's own transcription **from the published book** | Yes |
 
 **The GPL one would have relicensed the system.** This project is MIT; GPL-3 is copyleft and
 travels one way — MIT code can be taken into a GPL work, GPL code cannot be relicensed MIT. So
@@ -1189,13 +1189,16 @@ GPL, not a stronger one.
 
 Both repositories are untouched and stay published. They simply stay modules.
 
-**What merges instead is rune-goblin's own extraction** of the data and ruleset
-(`mothership-data`), which carries no third-party permission problem.
+**What merges instead was transcribed from the published book**, not extracted from either
+module. That matters more than it sounds: it is an independent source, so nothing in it derives
+from Naurgul's or hollowphoton's work, and no third-party code licence reaches it. The GPL-3
+and the missing licence are simply not in the chain.
 
-One thing that is unchanged by any of this: the *content* is Mothership, and shipping it is
-governed by Tuesday Knight Games' third-party policy, not by any module licence. That applies
-however the data was produced, and is the framing the README and `LICENSE.txt` already use —
-unofficial, non-commercial, TKG's IP.
+The remaining constraint is the one that was always there and is unaffected by any of this: the
+content is Mothership, so shipping it answers to **Tuesday Knight Games' third-party policy**,
+not to any module licence. That is the framing `README.md` and `LICENSE.txt` already carry —
+unofficial, non-commercial, TKG's IP — and it applies to a transcription exactly as it applies
+to anything else.
 
 ### The mechanical consequence, when it happens
 
