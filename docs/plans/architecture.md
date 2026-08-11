@@ -582,3 +582,60 @@ the 46 unreferenced macros (keep, recommended); the plain ship sheet (C13).
 
 No measurement is outstanding — Parts 3 and 4 closed the gaps this plan leans on. The
 dynamic-access allowlist must exist (P0.2) before any prune beyond the audited dozen.
+
+
+---
+
+## Decisions taken by the owner, 2026-08-12
+
+These settle the product calls the plan left open. A new session should treat them as given.
+
+| Question | Decision |
+|---|---|
+| The plain (non-default) ship sheet — C13 | **Deprecate now, delete later.** Not converted, not removed: marked deprecated so it stops accruing work, with removal a separate later call. |
+| The 46 unreferenced triggered macros | **Keep, for now.** As the plan recommended — reference counting cannot see hotbar use, so nothing proves them dead. |
+| Backward compatibility | **Not a constraint.** Schemas may change freely; breaking existing worlds is acceptable, consistent with §18. |
+| Stable document ids | **Valuable, and kept.** See below — the reason is not backward compatibility. |
+
+### Why stable ids still matter with backward compatibility abandoned
+
+Not for old worlds. For the content's **own internal integrity**: the shipped packs contain
+**269 `@UUID` cross-references** — 169 to macros, 100 to maintenance items — from rolltable
+results and item descriptions. Panic and wound results link to the stress/calm macros; maintenance
+items link to their effect macros.
+
+Regenerate with fresh ids and all 269 break, requiring a rewrite pass over content in the same
+build that produced it. Seeding the id registry from `packs/_source` keeps them valid for free.
+So Decision 6's id registry stays exactly as planned; only its *justification* changes.
+
+### New requirement — weapons usable from the character sheet
+
+> "weapons that have been added to a character sheet can be clicked on to use and will use the
+> character's current stats and conditions"
+
+Measured against what exists:
+
+- **Already true:** clicking a weapon fires `.weapon-roll` → `actor.rollCheck(null,'low','combat',null,null,item)`, which resolves against the character's live Combat stat (`actor-sheet.js`). Damage has its own `.dmg-roll`.
+- **Not true:** **conditions do not affect any roll.** The only condition the code reads is
+  `Bleeding`, and only to accumulate a derived `bleeding` value (`actor.js:52-54, 92-94`).
+  Conditions are otherwise descriptive items with a `severity` and prose.
+
+So the requirement is one new mechanic, not a rewrite: **conditions must contribute
+advantage/disadvantage to the rolls a character makes.**
+
+It is well-founded in the data, which is why it belongs after phase 1 rather than before:
+
+- `mothership-data` already models effects mechanically — **125 `modifiers` fields with the
+  vocabulary `{disadvantage: 22, advantage: 13}`**, plus `grantsCondition` (8 true).
+- That vocabulary is exactly what the roll pipeline already speaks: `parseRollString` translates
+  `[+]` / `[-]` into keep-highest / keep-lowest formulas, and it is unit-tested.
+
+**Consequence for the content filter:** `modifiers` and `grantsCondition` are *gameplay* data and
+must survive the "cut metadata, keep gameplay" rule. A naive strip to name + description would
+delete the very fields this feature runs on.
+
+**Where it lands:** phase 2, with `actor-sheet` (C9) or as its own small unit straight after —
+it needs C3's content shipped and the condition schema settled. It also changes the roll pipeline's
+*inputs* but not its arithmetic, so it stays inside Decision 2's change boundary. Add e2e cover:
+a character with a disadvantage-granting condition rolls `[-]`, and the same character without it
+does not.
