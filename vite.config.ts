@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 
 const systemJSON = JSON.parse(readFileSync(new URL('./system.json', import.meta.url), 'utf8'));
 const id = systemJSON.id;
@@ -9,6 +9,7 @@ const FOUNDRY = 'http://localhost:30000';
 
 export default defineConfig({
   base: `/systems/${id}/dist/`,
+  plugins: [svelte()],
   // `npm run dev` runs this as a reverse proxy in front of Foundry: open
   // http://localhost:30001/game (NOT :30000) and Vite serves our source with HMR while
   // proxying everything else — Foundry routes, the socket, our static files — to the
