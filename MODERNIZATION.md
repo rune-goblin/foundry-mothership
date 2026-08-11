@@ -8,11 +8,24 @@ Audited 2026-08-11 against the locally installed **Foundry v14 stable**
 (`/Applications/Foundry Virtual Tabletop.app/.../public/scripts/foundry.mjs`), not from
 memory. API claims below were checked in that file.
 
-> **Status: phases 1–3 complete.** Build (gulp → Vite), quality gates (84 tests,
-> typecheck, CI), the content pipeline (packs built from JSON, 0e dropped), and the
-> DataModel migration have all landed. **Phase 4 — ApplicationV2 + Svelte — is next.**
-> Nothing has been verified in a running game since the world load early in phase 1; see
-> the notes at the end of §7 — everything else is now covered by the e2e harness (§9).
+## Start here
+
+**Phases 1–3 and the test harness are complete. Phase 4 (ApplicationV2 + Svelte) is next.**
+
+| | |
+|---|---|
+| Read first | `CLAUDE.md`, then the `foundry-mosh` skill (`.claude/skills/foundry-mosh/`) |
+| The plan | §Phase 4 below — step 0 wires Svelte up, then a sheet at a time |
+| Verify with | `npm run check && npm test` (84 specs), `npm run test:e2e` (28 specs) |
+| State | 13 commits on `master`, tree clean, **unpushed** |
+
+**Before pushing:** history was rewritten to drop 854 MB of committed release zips, so the
+next push must be `git push --force origin master`. `origin` still holds the pre-rewrite
+history and is the only recovery route — re-clone from GitHub first if anything needs
+undoing. Also fix the manifest `url`/`manifest`/`download`, which still point at the
+`Futil` upstream (§5).
+
+Everything below is the audit and the record of what landed, newest phases at §7–§9.
 
 ---
 
@@ -345,28 +358,77 @@ earning its keep; v16 removes support regardless.
 against a real Foundry, and validation is confirmed to reject a bad value outright rather
 than store it.
 
-### Phase 4 — ApplicationV2 + Svelte, sheet by sheet (≈2–3 weeks)
+### Phase 4 — ApplicationV2 + Svelte, sheet by sheet (next)
 
-The pattern is in the skill: `references/svelte-in-applicationv2.md` — a thin
-ApplicationV2 shell that `mount()`s a Svelte 5 component and `unmount()`s on close.
+**Read first:** the `foundry-mosh` skill's `references/svelte-in-applicationv2.md` — the
+shell pattern, the AppV1→V2 mapping table, and the five codebase-specific hazards.
 
-Migrate one sheet at a time, shipping between each. Suggested order, easiest first:
+#### Step 0 — wire Svelte up (half a day, once)
 
-1. `item-sheet.js` (80 lines) + its 10 item templates — smallest, most repetitive, best
-   place to establish the component conventions.
-2. `skill-sheet.js` (72), `class-sheet.js` (340).
-3. The 5 bare-`FormApplication` windows → ApplicationV2: `ship-setup` (73),
-   `ship-megadamage` (120), `creature-settings` (160), `settings-rolltables` (89),
-   `actor-generator` (772).
-4. `ship-macros.js` — **fix the broken `BaseSheet` hybrid here**, or earlier as a
-   standalone bugfix if it is visibly failing for players.
-5. `ship-sheet.js` (275), `ship-sheet-sbt.js` (498), `creature-sheet.js` (661).
-6. `actor-sheet.js` (659) last — the character sheet, highest risk and most player-visible.
+Svelte is **not installed**. Before the first conversion:
 
-37 Handlebars `.html` templates retire as their sheets migrate. Note the existing sheets
-build HTML strings inside `getData()` (e.g. `superData.xp.html` assembled in a loop in
-`actor-sheet.js:55`) — that logic becomes markup in the component and should not be
-ported forward as string concatenation.
+```bash
+npm i -D svelte @sveltejs/vite-plugin-svelte svelte-check
+```
+
+then `svelte.config.js` with `vitePreprocess()`, the `svelte()` plugin in `vite.config.ts`,
+`svelte-check` appended to `npm run check`, and the svelte plugin added to
+`vitest.config.ts` so `.svelte.js` runes modules can be unit-tested headlessly. Verify the
+existing 84 + 28 specs still pass before converting anything.
+
+#### Order of attack
+
+Convert one at a time and ship between each. Easiest first, so the conventions are settled
+before the risky sheets:
+
+| # | Target | Lines | Notes |
+|---|---|---|---|
+| 1 | `item-sheet.js` + 8 item templates | 80 | Smallest and most repetitive — establish the component conventions here. One shell, a component per item type. |
+| 2 | `skill-sheet.js` | 72 | Extends the item sheet; follows straight on. |
+| 3 | `ship-setup`, `ship-megadamage`, `settings-rolltables` | 73 / 120 / 89 | The simple `FormApplication` windows. `ship-megadamage` also has a stale `data.` path fixed but unverified. |
+| 4 | `ship-macros.js` | 110 | Already repaired; small, and its e2e spec exists. Decide whether to restore the commented-out trigger (below) or delete the window. |
+| 5 | `creature-settings.js` | 160 | **Resolve the `FIXME` first** — `_updateObject` still does not persist (see §8). Decide what should save, then convert. |
+| 6 | `class-sheet.js` | 340 | Mutates the model it renders from; converting it is what unblocks tightening the two free-form `ObjectField`s (§7). |
+| 7 | `ship-sheet.js`, `ship-sheet-sbt.js`, `creature-sheet.js` | 275 / 498 / 661 | SBT is the **default** ship sheet — check which you are looking at. |
+| 8 | `actor-generator.js` | 772 | The character generator. Biggest window; drives `class-sheet` data. |
+| 9 | `actor-sheet.js` | 659 | The character sheet — highest risk, most player-visible, do it last with the most conventions in hand. |
+
+37 Handlebars templates retire as their sheets migrate.
+
+#### Definition of done, per conversion
+
+1. `npm run check` (now including `svelte-check`) and `npm test` green.
+2. `npm run test:e2e` green — `test/e2e/sheets.spec.ts` already asserts each actor sheet
+   renders and shows its actor, and that derived armour/net HP survive.
+3. **A new e2e spec for the interactions that sheet owns** — the rolls it fires, the fields
+   it edits. A converted sheet that only proves it renders is under-tested.
+4. The old `.html` template deleted, not orphaned. (Two dead sources have already been found
+   in this repo; don't leave a third.)
+
+#### Known hazards, in the order they will bite
+
+- **`getData()` builds HTML strings.** `actor-sheet.js:55` assembles XP pips in a loop into
+  `superData.xp.html`; `character.xp.html` is a *number* in the schema for that reason. In a
+  component this becomes `{#each}` markup. Do not port string concatenation forward.
+- **Derived data is already computed.** `prepareDerivedData` fills `stats.armor.mod/total`,
+  `netHP`, `bleeding`. Read them; don't recompute.
+- **Settings are copied per-sheet today** (`useCalm`, `hideWeight`, `firstEdition`,
+  `androidPanic`). Components can read settings directly — but `firstEdition` is slated for
+  removal, so don't entrench it.
+- **`class-sheet.js` writes onto the model while rendering** (`from_list_names`,
+  `skills_granted_object`). Derive into local state instead; that is the precondition for
+  tightening `base_adjustment`/`selected_adjustment` into real schemas.
+- **`.macro-menu-button` is commented out** at `templates/actor/ship-sheet-sbt.html:132`, so
+  `DLShipMacros` has no UI route at all. Restore the button or drop the window — but decide,
+  rather than porting dead UI.
+
+#### Queued behind this phase
+
+**Remove the `firstEdition` / 0e rules branches** — 50 references across 12 files (21 in
+`actor.js`), plus the `hideWeight` setting labelled "Hide 0e Weight" and an `onChange` that
+migrates actor stress. Deferred by decision until the automation had test cover; it now does,
+so this can happen whenever. Doing it *before* the big sheet conversions removes 12 template
+conditionals from work that has to be redone otherwise.
 
 ### Phase 5 — TypeScript conversion (opportunistic, ongoing)
 
