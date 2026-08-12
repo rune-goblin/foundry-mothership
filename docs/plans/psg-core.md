@@ -478,13 +478,24 @@ Deletions it carries, each in the DataModel **and** `template.json` (Decision 2a
 | `condition.treatment.html` | `PipTrack` from `treatment.value` | written onto embedded items at `actor-sheet.js:129–145`; the `.treatment-button` handler at 207 stays |
 | `character.weight.current` / `.capacity` | computed in `prepareDerivedData`, not stored | explicitly inside Decision 2's may-change list |
 
-**`weapon.ranges.value` is a correction to Decision 2a, and a decision for the owner.** That table
-says the converted item sheet already derives it. It does not: `Weapon.svelte:52` still *binds*
-`name="system.ranges.value"` as a free-text field, and lines 16–22 only fall back to
-short/medium/long when it is empty. Deleting it means deciding that a weapon's range is three
-numbers and never a typed string like `10/20/30`. **Decide that deliberately; do not let a
-conversion agent infer it.** Both actor sheets also recompute it onto embedded items during render
-(`actor-sheet.js:120`, `creature-sheet.js:163`) — that half goes either way.
+**`weapon.ranges.value` stays — decided by the owner at the S6 review, and Decision 2a's row is
+struck.** It is not a render artifact: it is the *only* range the system has. Measured across the
+22 shipped weapons, **every one carries a PSG range band in `ranges.value`** — `Adjacent`, `Close`,
+`Long`, `Extreme` — and `short`/`medium`/`long` are `0` on all 22. Mothership 1e ranges in bands,
+not metres, so deleting `value` would delete every weapon's range and leave a numeric trio the book
+never fills.
+
+The numeric trio is the 0e vestige, and it is kept too: it is what `Weapon.svelte:19–23` and
+`actor-sheet.js:120` fall back to, which is how a pre-PSG weapon still shows `10/20/30`. **Removing
+it would need a data-model migration for worlds holding those weapons — out of scope until one is
+proposed.**
+
+**The copy path was checked and is sound.** Both routes an item takes onto an actor preserve the
+band: the drop path (`game.items.fromCompendium` → `Item.create`) and the loadout path
+(`modifyItem`, which the generator calls). A Pulse Rifle reaches the actor as `value: "Long"` by
+either, and the sheet renders it. So S7's only job here is to **stop recomputing it onto the
+embedded item during render** (`actor-sheet.js:120`) — the write, not the field — exactly as S6
+did for the creature (§30).
 
 ---
 

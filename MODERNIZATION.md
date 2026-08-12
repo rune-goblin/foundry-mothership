@@ -2270,6 +2270,12 @@ both from Handlebars, so they ride S7 (rule 12). What did stop is the *writing*:
 `item.ranges.value` and `item.treatment.html` on **embedded item objects** during render, the same
 defect class as the ship sheet's `megadamage.html`. The creature sheet computes neither now.
 
+**`ranges.value` was then struck from Decision 2a's deletion list entirely** (owner's call at this
+review). It is not a render artifact: all 22 shipped weapons carry a PSG range *band* in it —
+`Adjacent`, `Close`, `Long`, `Extreme` — and `short`/`medium`/`long` are `0` on every one. Deleting
+it would delete every weapon's range. Both routes an item takes onto an actor were measured against
+a live world and preserve it: the drop path and `modifyItem`, which the generator's loadout calls.
+
 ### Five bugs the port fixed
 
 1. **The sheet opened on no tab at all.** `tabs: [{initial: "character"}]` names a tab no panel

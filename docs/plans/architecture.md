@@ -148,7 +148,7 @@ riding the wave that removes its last reader:
 |---|---|---|
 | `character.xp.html` (a *number*), `creature.xp.html` | phase 2, with the actor/creature sheets | `PipTrack` + `$derived` |
 | `condition.treatment.html` — including the copies persisted in 50 shipped items | content: phase 1 rescue; schema: phase 2 | `PipTrack` from `treatment.value` |
-| `weapon.ranges.value` | phase 2 (the converted item sheet already derives it) | `$derived` |
+| ~~`weapon.ranges.value`~~ **struck — owner's call, S6 review** | never | it is the *only* range the book produces: 22/22 shipped weapons carry a PSG band (`Adjacent`/`Close`/`Long`/`Extreme`) in it, and `short`/`medium`/`long` are `0` on every one |
 | `character.weight.current` / `.capacity` — computed only in the sheet today | phase 2 | computed in `prepareDerivedData`, not stored |
 | `ship.megadamage.html`, `ship.megadamage.menu` | **phase 3**, with the SBT conversion | `$derived` list |
 
