@@ -371,22 +371,18 @@ describe('the emitted document', () => {
 });
 
 describe('the registry gate', () => {
+  const newcomer = (contentId: string): ContentRecord => ({
+    contentId,
+    name: 'Newcomer',
+    img: 'systems/mothershiprpg/images/icons/ui/conditions/exhausted.png',
+    body: { kind: 'Item', type: 'condition', system: { description: '<p>New.</p>' } },
+    provenance: { tier: 'local', source: 'fixture' },
+  });
+
   const extra = (contentId: string): PackDefinition[] =>
-    mutated('gadgets', (r) => r).map((def) =>
+    FIXTURE_PACKS.map((def) =>
       def.pack === 'gadgets'
-        ? {
-            ...def,
-            load: (root: string) => [
-              ...def.load(root),
-              {
-                contentId,
-                name: 'Newcomer',
-                img: 'systems/mothershiprpg/images/icons/ui/conditions/exhausted.png',
-                body: { kind: 'Item' as const, type: 'condition', system: { description: '<p>New.</p>' } },
-                provenance: { tier: 'local' as const, source: 'fixture' },
-              },
-            ],
-          }
+        ? { ...def, load: (root: string) => [...def.load(root), newcomer(contentId)] }
         : def,
     );
 
