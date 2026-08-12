@@ -52,9 +52,9 @@ test.describe('system loads', () => {
       actor: Object.keys((window as any).CONFIG.Actor.dataModels ?? {}).sort(),
       item: Object.keys((window as any).CONFIG.Item.dataModels ?? {}).sort(),
     }));
-    expect(models.actor).toEqual(['character', 'creature', 'ship']);
+    expect(models.actor).toEqual(['character', 'creature']);
     expect(models.item).toEqual(
-      ['ability', 'armor', 'class', 'condition', 'crew', 'item', 'module', 'repair', 'skill', 'weapon'],
+      ['ability', 'armor', 'class', 'condition', 'item', 'skill', 'weapon'],
     );
   });
 
@@ -67,7 +67,7 @@ test.describe('system loads', () => {
     });
     expect(packs.filter((n: string) => n.endsWith('_0e'))).toEqual([]);
     expect(packs.sort()).toEqual([
-      'conditions_1e', 'items_maintenance_1e', 'macros_hotbar_1e', 'macros_triggered_1e', 'rolltables_1e',
+      'conditions_1e', 'macros_hotbar_1e', 'macros_triggered_1e', 'rolltables_1e',
     ]);
   });
 });

@@ -82,9 +82,7 @@ export class MothershipCreatureSheet extends foundry.appv1.sheets.ActorSheet {
         if (data.data.system.settings == null) {
             data.data.system.settings = {};
         }
-        data.data.system.settings.useCalm = game.settings.get("mothershiprpg", "useCalm");
         data.data.system.settings.hideWeight = game.settings.get("mothershiprpg", "hideWeight");
-        data.data.system.settings.androidPanic = game.settings.get("mothershiprpg", "androidPanic");
 
         data.data.enriched = [];
         data.data.enriched.description = await foundry.applications.ux.TextEditor.implementation.enrichHTML(data.data.system.description, {async: true});

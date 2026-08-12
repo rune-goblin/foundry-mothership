@@ -1636,3 +1636,118 @@ and the run**, or it proves nothing.
 `npm run check:e2e`. Mutation-checked, each with a rebuild: breaking the swarm stash fails the
 swarm spec; dropping `submitOnChange` fails the persistence spec; an unread schema field fails the
 usage ratchet; a stale allowlist entry fails the honesty check.
+
+
+---
+
+## 25. The PSG cut — ships, the Calm variant, and 13,000 lines
+
+**The project changed shape.** `docs/plans/psg-core.md` supersedes `architecture.md`'s phases 1–3:
+the system now implements Mothership 1e's **Player's Survival Guide, completely and only**, and
+extends one book at a time. The Warden's Operations Manual is next; the Shipbreaker's Toolkit
+brings ships back.
+
+Everything cut is preserved on the **`archive/pre-psg-cut`** branch and tag, both pushed to the
+remote *before* a single deletion. Ships return by cherry-pick, not by re-authoring.
+
+### Why the previous plan died
+
+`architecture.md` was built around *preserving* the inherited packs: an id registry seeded to keep
+269 `@UUID` cross-references alive, a one-way-door rescue with an enumerated-transform proof, and a
+phase 3 paying down the ship sheets' debt. All of that exists to protect content that is now
+deleted, so it went with the content — C10–C13 entirely, the rescue program, the derived/rescued
+two-tier split, and §22's ship debt.
+
+The trade is lopsided in the cut's favour: **811 lines of ship sheets out of 8,776 lines of runtime
+code — 9%.** The roll engine, the e2e harness, the Vite/TS build and the whole converted
+`module/ui/` layer are character-side and survive untouched. That is why this was a deletion in
+place rather than a new repository.
+
+### What went
+
+| | |
+|---|---|
+| Code | both ship sheets, `ship-deckplan`, `ShipSetup`, the `ship` actor type and the `module` / `crew` / `repair` item types — in the DataModels, `template.json` and `system.json` in lockstep |
+| `actor.js` | ~300 lines: `_deriveShip`, `distressSignal`, `maintenanceCheck`, `bankruptcySave`, `moraleCheck` and their branches inside `rollTable` and `rollCheck` |
+| Content | the 100-item maintenance pack, 4 ship tables, 3 panic variants, 39 conditions, 44 orphaned macros |
+| Settings | 4 ship table ids, plus `useCalm` and `androidPanic` |
+| Localization | 54 flat keys, `table.distress_signal`, `table.maintenance_issues`, the whole `attribute.calm` tree and 3 ship stats — in **both** locales |
+
+**190 files deleted, 13,337 lines removed.**
+
+### Three things the cut turned up
+
+**`moraleCheck` was a ship check.** It sits beside the creature checks and its comment claimed it
+was a distress signal, but it rolls against `system.megadamage.hits` and its macros call
+`noShipSelected()`. Copy-pasted comments are not evidence of what a function does.
+
+**Two pieces of machinery were dead the moment their caller left.** The second-roll pair
+(`rollResult2` / `parsedRollResult2`) existed only for a failed maintenance check, so it went along
+with the block in `templates/chat/rollTable.html` that rendered it. And `mosh.js`'s
+`noShipSelected` was **never on the public API** despite shipped macros calling
+`game.mothershiprpg.noShipSelected()` — a latent break that left with its callers.
+
+**The Calm variant is not in the book.** The PSG's rule is "roll the Panic Die (1d20) and try to
+roll above your current Stress"; the Calm variant switched it to `1d100` and selected different
+tables. Zero occurrences of Calm as a mechanic anywhere in the transcription. Removing it deleted a
+unit spec — *"defers to the ordinary crit rules when Calm is on"* — which by Decision 2's rule is
+the signal that an edit is out of bounds **for a conversion**. This was a scope cut the plan names
+explicitly, so the spec went with the mechanic. Recorded rather than done quietly, because the rule
+is worth keeping sharp.
+
+### The keep-set was derived, not judged
+
+Which conditions survive was computed from the reference graph, not chosen: the 10 that the
+Stress/Normal panic table applies through its macros, plus **`Bleeding`** — which three surviving
+wound tables independently apply and which `_deriveCharacter` reads *by name*. Cutting on the panic
+table alone would have removed it and silently broken the bleeding derivation.
+
+Afterwards: **zero dangling `@UUID` references** across the 136 surviving documents, and the
+surviving macros call exactly five public API entry points, all of which still exist.
+
+### The ratchet paid for itself twice
+
+`field-usage.test.ts` (§24) failed twice during this work, both times correctly. First its honesty
+meta-test caught the `DEFERRED_TO_PHASE_3` allowlist entries the instant the ship schema went —
+they no longer matched any declared leaf. Then it caught `other.stress.max` and `.label` losing
+their only reader when the Calm markup was removed. Neither would have been noticed by hand.
+
+Also fixed in passing: **`system.json` declared `"system": "mosh"` on every pack** — the §18 rename
+never reached the manifest's pack blocks.
+
+### The trap that cost two e2e cycles: packing never deletes
+
+`fvtt package pack` writes and updates LevelDB keys. **It removes nothing.** Two consequences, and
+the second is the dangerous one:
+
+1. A pack whose source directory is gone stays compiled and keeps loading — that is how
+   `items_maintenance_1e` survived being dropped from `system.json`.
+2. **Deleting a source JSON does not delete the document.** Re-packing the reduced sources left all
+   50 conditions, 151 macros and 14 tables in the database. Foundry served the ghosts, and the
+   count spec was right to fail while every source count said otherwise.
+
+The fix is to `rm -rf` the compiled pack directories and pack from scratch — in `packs/` **and** in
+`test/foundry-data/Data/systems/mothershiprpg/packs/`, which are separate copies.
+
+Two further cycles went to a wrong diagnosis of *why* the test tree kept reverting. It was not the
+running server flushing stale state, and it was not a `rm -rf` that failed. **The e2e harness
+rebuilds its system tree on every boot**: `start-test-env.sh` runs `setup-test-env.ts`, which
+re-clones the system from the developer's *live* Foundry Data dir. Hand-editing
+`test/foundry-data/.../packs` therefore does nothing that survives the next launch, and the suite
+keeps testing whatever `npm run setup` last copied there.
+
+The correct sequence, which `CLAUDE.md` already stated in one line and this session did not read
+carefully enough — *"packs are COPIED — re-run after packing"*:
+
+```
+./scripts/packs.sh pack     # sources -> packs/  (delete the pack dirs first if any doc was removed)
+npm run setup               # packs/ -> the live Data dir, which the harness clones from
+npm run test:e2e
+```
+
+All three points are now in `CLAUDE.md`'s gotchas, because any future content removal hits them.
+
+It is worth noting what caught this: the compendium count spec, which exists precisely because "a
+pack missing its .ldb opens as an empty database rather than failing". The same reasoning covers
+the opposite case, and it was the only thing standing between the cut and shipping a system whose
+compendia still contained everything supposedly removed.

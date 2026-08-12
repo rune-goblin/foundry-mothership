@@ -13,32 +13,36 @@ Code style: global `~/.claude/CLAUDE.md` — comment only the non-obvious *why*.
 
 ## Where the project is
 
-Modernization from a dead gulp build to the runegoblin baseline. **Phases 1–3, the test
-harness, the shared component layer, the skill sheet, the simple windows and phase 0 are done;
-phase 1 — the content system — is next.**
+**The goal: our own implementation of Mothership 1e, complete and faithful to the Player's
+Survival Guide, containing nothing else — then extend one book at a time.** The Warden's
+Operations Manual is next; the Shipbreaker's Toolkit brings ships back.
 
-**The order was re-planned on 2026-08-12 and now lives in `docs/plans/architecture.md`** — read
-that for what to do next, `docs/plans/evidence.md` for the measurements under it, and
-`docs/plans/run-to-the-end.md` for how a unit is delegated and gated (its ten standing rules and
-review gate are current; its *wave order* is superseded). `MODERNIZATION.md` is the **record**:
-§10 for the conventions the item sheet settled, §20 the component layer, §22 the windows, §24
-phase 0. Update it as work lands.
+**The plan is `docs/plans/psg-core.md`** — read that for what to do next. It supersedes
+`docs/plans/architecture.md`'s phases 1–3 (Decisions 1–4 there still stand; 5–7 do not).
+`docs/plans/evidence.md` holds the measurements; `docs/plans/run-to-the-end.md` holds how a unit
+is delegated and gated (its ten standing rules and review gate are current; its *wave order* is
+superseded). `MODERNIZATION.md` is the **record**: §10 the item-sheet conventions, §20 the
+component layer, §22 the windows, §24 phase 0, §25 the PSG cut. Update it as work lands.
+
+**Ships, the Calm/android panic variants and all unsourced content were cut** (§25) and live on
+the pushed **`archive/pre-psg-cut`** branch and tag. Nothing was destroyed; ships return as an
+additive book tier. **Do not re-add content without a book behind it.**
 
 **Port, verify, ship, and record the compromise.** Conversions deliberately keep AppV1-era
-shapes so each carries no visual risk; a Svelte best-practices audit is queued as C14/C15 (§23).
+shapes so each carries no visual risk; a Svelte best-practices audit is queued as S9 (§23).
 Don't fix component architecture piecemeal mid-phase — note it in §23 instead.
 
 | Done | Not done |
 |---|---|
-| Vite build, TS tooling, CI | 6 AppV1 sheet classes |
-| DataModels for all 13 types | 1 bare-`FormApplication` window (`actor-generator`) |
-| Packs from JSON source, 0e removed | 23 Handlebars templates |
-| Svelte 5 wired into build, check, vitest | 7 sheets/windows left to convert |
-| 9 item sheets on ApplicationV2 + Svelte | **the system ships no skills, classes, weapons, armour or equipment** — phase 1 |
-| Shared components in `module/ui/parts/` | conditions do not affect any roll — the new requirement |
+| Vite build, TS tooling, CI | 4 AppV1 sheet classes (actor, creature, class, + the item base) |
+| DataModels for the 9 surviving types | 1 bare-`FormApplication` window (`actor-generator`) |
+| Packs from JSON source, 0e removed | 17 Handlebars templates |
+| Svelte 5 wired into build, check, vitest | 4 sheets/windows left to convert |
+| 6 item sheets on ApplicationV2 + Svelte | **the system ships no skills, classes, weapons, armour or equipment** — S3 |
+| Shared components in `module/ui/parts/` | conditions do not affect any roll — S8 |
 | 0e / `firstEdition` rules removed | |
 | `creature-settings` on ApplicationV2 (§24) | |
-| 135 vitest + 83 Playwright specs | |
+| The PSG cut — 13,337 lines removed (§25) | |
 
 ## Hard rules (override defaults)
 
@@ -114,6 +118,20 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   `test/sheet-bindings.test.ts` pins all 13 types. See `MODERNIZATION.md` §10.
 - **Foundry holds an exclusive LevelDB lock** on every pack it can see; `packs.sh` refuses
   to run while it is open. That guard is deliberate.
+- **`packs.sh pack` never deletes — not a pack, and not a document.** `fvtt package pack` writes
+  and updates LevelDB keys; it removes nothing. So **deleting a source JSON does not delete the
+  document**: it stays in the compiled pack and Foundry keeps serving it. A whole pack whose
+  source is gone survives the same way. Both `packs/` and the e2e tree's
+  `test/foundry-data/Data/systems/mothershiprpg/packs/` are affected, and they are separate
+  copies. **After removing any source document, `rm -rf` the compiled pack directories in both
+  places and re-pack from scratch** — otherwise every count assertion passes against ghosts.
+- **Never hand-edit `test/foundry-data/.../packs` — it is rebuilt on every e2e boot.**
+  `start-test-env.sh` runs `setup-test-env.ts` before each launch, which re-clones the system
+  **from your live Foundry Data dir**. So the real sequence after changing pack *sources* is:
+  `./scripts/packs.sh pack` → **`npm run setup`** (refreshes the live Data dir, which is where
+  the harness clones from) → `npm run test:e2e`. Skipping `npm run setup` means the suite keeps
+  testing the packs from whenever you last ran it, no matter what you do to the test tree.
+  Together with the point above this cost four e2e cycles during §25's cut.
 - **A killed e2e run leaves the GM session occupied** — the next run hangs 30s then fails in
   `globalSetup`. Fix: `lsof -ti:30005 | xargs kill -9`, then **wait for the port to actually
   free** (`until ! lsof -ti:30005 >/dev/null; do sleep 1; done`) — a fixed `sleep` is not enough

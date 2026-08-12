@@ -19,28 +19,27 @@ describe('the id registry', () => {
     expect(serializeRegistry(registry)).toBe(serializeRegistry(seedFromPackSource(ROOT)));
   });
 
-  it('covers all 326 documents and 269 rolltable results', () => {
+  it('covers all 136 documents and 74 rolltable results', () => {
     const counts = Object.entries(registry.packs).map(([pack, entry]) => [
       pack,
       Object.keys(entry.documents).length,
     ]);
     expect(Object.fromEntries(counts)).toEqual({
-      conditions: 50,
-      maintenance: 100,
+      conditions: 11,
       hotbar: 11,
-      triggered: 151,
-      rolltables: 14,
+      triggered: 107,
+      rolltables: 7,
     });
 
     const results = Object.values(registry.packs)
       .flatMap((p) => Object.values(p.documents))
       .reduce((n, e) => n + Object.keys(e.results ?? {}).length, 0);
-    expect(results).toBe(269);
+    expect(results).toBe(74);
   });
 
   it('holds 595 distinct Foundry ids', () => {
     const ids = allIds(registry);
-    expect(ids.size).toBe(326 + 269);
+    expect(ids.size).toBe(136 + 74);
     expect([...ids].filter((id) => !FOUNDRY_ID.test(id))).toEqual([]);
   });
 
@@ -78,14 +77,13 @@ describe('referential integrity of the content as it stands', () => {
 
   const references = scan();
 
-  it('finds the 269 cross-references the registry exists to protect', () => {
-    expect(references.length).toBe(269);
+  it('finds the 58 cross-references the registry exists to protect', () => {
+    expect(references.length).toBe(58);
     const byTarget = new Map<string, number>();
     for (const r of references) byTarget.set(r.compendium, (byTarget.get(r.compendium) ?? 0) + 1);
     expect(Object.fromEntries(byTarget)).toEqual({
-      macros_triggered_1e: 162,
-      macros_hotbar_1e: 7,
-      items_maintenance_1e: 100,
+      macros_triggered_1e: 54,
+      macros_hotbar_1e: 4,
     });
   });
 

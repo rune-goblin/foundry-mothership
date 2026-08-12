@@ -23,18 +23,17 @@ test('every rolltable setting resolves to a real document', async ({ gmPage }) =
   });
   expect(unresolved).toEqual([]);
   // Guard against the assertion above passing on an empty list.
-  expect(checked).toBe(14);
+  expect(checked).toBe(7);
 });
 
 // Proves the pack pipeline end to end: JSON in packs/_source → scripts/packs.sh → LevelDB →
 // Foundry actually reading the documents back. A pack missing its .ldb opens as an empty
 // database rather than failing, so counts are the assertion that matters.
 const EXPECTED = {
-  conditions_1e: 50,
-  items_maintenance_1e: 100,
+  conditions_1e: 11,
   macros_hotbar_1e: 11,
-  macros_triggered_1e: 151,
-  rolltables_1e: 14,
+  macros_triggered_1e: 107,
+  rolltables_1e: 7,
 } as const;
 
 test.describe('compendium packs', () => {
@@ -65,17 +64,23 @@ test.describe('compendium packs', () => {
     expect(commands.plus).not.toBe(commands.minus);
   });
 
-  test('the android panic macros use the configurable rolltable setting', async ({ gmPage }) => {
-    // These were the two macros where the deleted _macros/ copies had drifted stale, hardcoding
-    // a rolltable id instead of reading the setting.
-    const command = await gmPage.evaluate(async () => {
+  // The android panic macros this used to cover were cut with the Calm/android variants (§25).
+  // The invariant it protected -- a macro must read the rolltable *setting*, never a hardcoded id,
+  // which is how the deleted _macros/ copies had drifted -- still matters for every macro left.
+  test('no triggered macro hardcodes a rolltable id', async ({ gmPage }) => {
+    const offenders = await gmPage.evaluate(async () => {
       const g = (window as any).game;
       const pack = g.packs.get(`${g.system.id}.macros_triggered_1e`);
-      const docs = await pack.getDocuments();
-      return docs.find((d: any) => d.name === 'Roll on Android Panic Table')?.command ?? null;
+      const tableIds = new Set(
+        (await g.packs.get(`${g.system.id}.rolltables_1e`).getDocuments()).map((t: any) => t.id),
+      );
+      const bad: string[] = [];
+      for (const doc of await pack.getDocuments()) {
+        for (const id of tableIds) if (doc.command.includes(id)) bad.push(`${doc.name} -> ${id}`);
+      }
+      return bad;
     });
-    expect(command).toContain('table1ePanicStressAndroid');
-    expect(command).not.toContain('aBnY19jlhPXzibCt');
+    expect(offenders).toEqual([]);
   });
 
   test('no compendium references a deleted 0e pack', async ({ gmPage }) => {

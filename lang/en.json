@@ -1,5 +1,5 @@
-{ 
-  "Mosh":{
+{
+  "Mosh": {
     "table": {
       "death_save": {
         "roll": {
@@ -45,19 +45,6 @@
         "success": {
           "android": "System resources free up and you regain control.",
           "human": "You take a deep breath and regain your composure."
-        }
-      },
-      "distress_signal": {
-        "roll": {
-          "human": "You put your ship on emergency power, seal yourselves in cryopods, send out a Distress Signal, and wait for help. It’s a long shot, but sometimes it’s the only shot you’ve got. Will you be found?"
-        }
-      },
-      "maintenance_issues": {
-        "roll": {
-          "human": "You perform a full inspection of the ship for wear and tear."
-        },
-        "success": {
-          "human": "You find nothing wrong with the ship."
         }
       }
     },
@@ -126,48 +113,6 @@
         "pastFloor": {
           "android": "You are already as focused as possible.",
           "human": "You are already as calm as possible."
-        }
-      },
-      "calm": {
-        "increase": {
-          "android": "You soft-reset, purging unnecessary background processes.",
-          "human": "You feel a sense of calm wash over you."
-        },
-        "increaseHeader": {
-          "android": "Calm Gained",
-          "human": "Calm Gained"
-        },
-        "increaseImg": {
-          "android": "systems/mothershiprpg/images/icons/ui/macros/relieve_stress.png",
-          "human": "systems/mothershiprpg/images/icons/ui/macros/relieve_stress.png"
-        },
-        "hitCeiling": {
-          "android": "You attain perfect focus and clarity.",
-          "human": "You attain complete peace of mind."
-        },
-        "pastCeiling": {
-          "android": "You are already as focused as possible.",
-          "human": "You are already as calm as possible."
-        },
-        "decrease": {
-          "android": "Power surges through your chest and you start to overheat.",
-          "human": "You feel tightness in your chest and start to sweat."
-        },
-        "decreaseHeader": {
-          "android": "Calm Lost",
-          "human": "Calm Lost"
-        },
-        "decreaseImg": {
-          "android": "systems/mothershiprpg/images/icons/ui/macros/gain_stress.png",
-          "human": "systems/mothershiprpg/images/icons/ui/macros/gain_stress.png"
-        },
-        "hitFloor": {
-          "android": "System performance grinds to a halt.",
-          "human": "You hit rock bottom."
-        },
-        "pastFloor": {
-          "android": "You sense unrecoverable data loss.",
-          "human": "You feel a part of yourself drift away."
         }
       },
       "health": {
@@ -713,111 +658,6 @@
           "android": "Your armor cannot get any lower.",
           "human": "Your armor cannot get any lower."
         }
-      },
-      "thrusters": {
-        "check": {
-          "human": "You successfully manuever the craft through danger."
-        },
-        "increase": {
-          "human": "Thrusters upgraded. Agility, acceleration, and top speed have improved."
-        },
-        "increaseHeader": {
-          "human": "Thrusters Enhanced"
-        },
-        "increaseImg": {
-          "human": "systems/mothershiprpg/images/icons/ui/attributes/thrusters.png"
-        },
-        "hitCeiling": {
-          "human": "Your thrusters are at maximum."
-        },
-        "pastCeiling": {
-          "human": "Your thrusters are already at maximum and cannot be improved further."
-        },
-        "decrease": {
-          "human": "Thrusters damaged. Agility, acceleration, and top speed are impaired."
-        },
-        "decreaseHeader": {
-          "human": "Thrusters Impaired"
-        },
-        "decreaseImg": {
-          "human": "systems/mothershiprpg/images/icons/ui/attributes/thrusters.png"
-        },
-        "hitFloor": {
-          "human": "You've lost your thrusters."
-        },
-        "pastFloor": {
-          "human": "Your thrusters are broken and cannot be damaged further."
-        }
-      },
-      "battle": {
-        "check": {
-          "human": "You land a successful hit on the target."
-        },
-        "increase": {
-          "human": "Targeting systems upgraded. Combat readiness has improved."
-        },
-        "increaseHeader": {
-          "human": "Battle Enhanced"
-        },
-        "increaseImg": {
-          "human": "systems/mothershiprpg/images/icons/ui/attributes/battle.png"
-        },
-        "hitCeiling": {
-          "human": "Your targeting systems are at maximum."
-        },
-        "pastCeiling": {
-          "human": "Your targeting systems are already at maximum and cannot be improved further."
-        },
-        "decrease": {
-          "human": "Targeting systems damaged. Combat readiness have been impaired."
-        },
-        "decreaseHeader": {
-          "human": "Battle Impaired"
-        },
-        "decreaseImg": {
-          "human": "systems/mothershiprpg/images/icons/ui/attributes/battle.png"
-        },
-        "hitFloor": {
-          "human": "You've lost your targeting systems."
-        },
-        "pastFloor": {
-          "human": "Your targeting systems are broken and cannot be damaged further."
-        }
-      },
-      "systems": {
-        "check": {
-          "human": "Your ship's systems are running smoothly."
-        },
-        "increase": {
-          "human": "Systems upgraded. Sensors, computers, and other systems have improved."
-        },
-        "increaseHeader": {
-          "human": "Systems Enhanced"
-        },
-        "increaseImg": {
-          "human": "systems/mothershiprpg/images/icons/ui/attributes/battle.png"
-        },
-        "hitCeiling": {
-          "human": "Your ship's systems are at maximum."
-        },
-        "pastCeiling": {
-          "human": "Your ship's systems are already at maximum and cannot be improved further."
-        },
-        "decrease": {
-          "human": "Systems damaged. Sensors, computers, and other systems have been impaired."
-        },
-        "decreaseHeader": {
-          "human": "Systems Impaired"
-        },
-        "decreaseImg": {
-          "human": "systems/mothershiprpg/images/icons/ui/attributes/battle.png"
-        },
-        "hitFloor": {
-          "human": "You've lost your ship's systems."
-        },
-        "pastFloor": {
-          "human": "Your ship's systems are broken and cannot be damaged further."
-        }
       }
     },
     "macro": {
@@ -884,34 +724,34 @@
         }
       }
     },
-    "CharacterGenerator":{
-        "name": "Character Generator",
-        "CommonSkills": "Common Skills",
-        "CommonSkillExplanation": "This is a list of usual skill for this class to be used for random character generation.",
-        "StatOption": "Stats & Saves",
-        "StatOptionPopupTitle": "Class Attribute and Saves option",
-        "StatOptionPopupText": "Choose where to apply the bonus of:",
-        "SkillOption.Classerror": "You need to select a class first.",
-        "SkillOption.PopupTitle": "Choose your skills",
-        "SkillOption.PopupTrainedDescription": "Choose 1 Trained skill",
-        "SkillOption.PopupExpertDescription": "Choose 1 Expert skill",
-        "SkillOption.PopupMasterDescription": "Choose 1 Master skill",
-        "SkillOption.PopupFullMasterName": "Master Set",
-        "SkillOption.PopupFullMasterDescription": "Choose 1 Master skill, and an Expert and Trained Skill prerequisite.",
-        "SkillOption.PopupFullExpertName": "Expert Set",
-        "SkillOption.PopupFullExperDescription": "Choose 1 Expert skill, and Trained Skill prerequisite.",
-        "SkillOption.ChoiceWord": "Option",
-        "SkillOption.ChoiceText":"Choose 1 from these skill bonus options",
-        "Tables": "Tables",
-        "Table.Loadout": "Loadout Table",
-        "Table.Patch": "Patch Table",
-        "Table.Trinket": "Trinket Table",
-        "Error.NoClass": "You need to select a class first."
+    "CharacterGenerator": {
+      "name": "Character Generator",
+      "CommonSkills": "Common Skills",
+      "CommonSkillExplanation": "This is a list of usual skill for this class to be used for random character generation.",
+      "StatOption": "Stats & Saves",
+      "StatOptionPopupTitle": "Class Attribute and Saves option",
+      "StatOptionPopupText": "Choose where to apply the bonus of:",
+      "SkillOption.Classerror": "You need to select a class first.",
+      "SkillOption.PopupTitle": "Choose your skills",
+      "SkillOption.PopupTrainedDescription": "Choose 1 Trained skill",
+      "SkillOption.PopupExpertDescription": "Choose 1 Expert skill",
+      "SkillOption.PopupMasterDescription": "Choose 1 Master skill",
+      "SkillOption.PopupFullMasterName": "Master Set",
+      "SkillOption.PopupFullMasterDescription": "Choose 1 Master skill, and an Expert and Trained Skill prerequisite.",
+      "SkillOption.PopupFullExpertName": "Expert Set",
+      "SkillOption.PopupFullExperDescription": "Choose 1 Expert skill, and Trained Skill prerequisite.",
+      "SkillOption.ChoiceWord": "Option",
+      "SkillOption.ChoiceText": "Choose 1 from these skill bonus options",
+      "Tables": "Tables",
+      "Table.Loadout": "Loadout Table",
+      "Table.Patch": "Patch Table",
+      "Table.Trinket": "Trinket Table",
+      "Error.NoClass": "You need to select a class first."
     },
     "Add": "Add",
-    "AddOr":"Add Or",
-    "AddOption":"Add Option",
-    "AddGroup":"Add Group",
+    "AddOr": "Add Or",
+    "AddOption": "Add Option",
+    "AddGroup": "Add Group",
     "AddASkill": "Add a Skill?",
     "Advantage": "Advantage",
     "AllStatsAndSavesDecreasedBy": "All stats and saves decreased by",
@@ -925,21 +765,15 @@
     "ArmorName": "Armor Name",
     "ArmorPoints": "Armor Points",
     "Background": "Background",
-    "Bankruptcy": "Bankruptcy",
-    "BankruptcyCheck": "Bankruptcy Check",
-    "BankruptcySave": "Bankruptcy Save",
     "Base": "Base",
-    "Battle": "Battle",
     "Bio": "Bio",
     "Body": "Body",
     "BodySave": "Body Save",
     "Bonus": "Bonus",
-    "Calm": "Calm",
-    "Cargo": "Cargo",
     "CarryingCapacity": "Carrying Capacity",
     "CLASS": "CLASS",
-    "classNewStatOptionEmptyError":"You must select at least two stat or saves",
-    "classNewSkillOptionSkillTip":"Save first.",
+    "classNewStatOptionEmptyError": "You must select at least two stat or saves",
+    "classNewSkillOptionSkillTip": "Save first.",
     "Combat": "Combat",
     "Condition": "Condition",
     "Cost": "Cost",
@@ -949,9 +783,7 @@
     "CreateWeapon": "Create Weapon",
     "CreatureSettings": "Creature Settings",
     "Credits": "Credits",
-    "Crew": "Crew",
     "CriticalDamage": "Critical Damage",
-    "Cryopods": "Cryopods",
     "CryofreezeDamage": "Cryofreeze Damage",
     "Current": "Current",
     "CurrentShots": "Current Shots",
@@ -967,11 +799,9 @@
     "Description": "Description",
     "Disabled": "Disabled",
     "Disadvantage": "Disadvantage",
-    "DistressSignal": "Distress Signal",
     "DoNotAddASkillToThisRoll": "Do not add a skill to this roll.",
     "DMGReduction": "DMG Reduction",
     "DR": "DR",
-    "Fuel": "Fuel",
     "Feature": "Feature",
     "Features": "Features",
     "EditArmor": "Edit Armor",
@@ -982,15 +812,10 @@
     "Equipped": "Equipped",
     "Emergency": "Emergency",
     "Enabled": "Enabled",
-    "EnemyShips": "Enemy Ships",
-    "EscapePods": "Escape Pods",
     "Fear": "Fear",
-    "Finances": "Finances",
     "Health": "Health",
     "HighScore": "High Score",
     "Hits": "Hits",
-    "HullPoints": "Hull Points",
-    "Installed": "Installed",
     "Instinct": "Instinct",
     "Intellect": "Intellect",
     "ItemName": "Item Name",
@@ -999,29 +824,17 @@
     "Level": "Level",
     "Loyalty": "Loyalty",
     "Macros": "Macros",
-    "MaintenanceAndRepairs": "Maintenance & Repairs",
-    "MaintenanceCheck": "Maintenance Check",
     "Major": "Major",
     "Maximum": "Maximum",
     "MaxShots": "Max Shots",
-    "MaxO2": "Max. O2",
-    "ShipSetup": "Ship Setup",
-    "RollStartingCondition": "Roll Starting Condition",
     "Finish": "Finish",
-    "MegadamageEffects": "Megadamage Effects",
-    "Megadamage": "Megadamage",
     "Minimum": "Minimum",
-    "ModuleName": "Module Name",
-    "MoraleCheck": "Morale Check",
-    "MoraleCheckDescription": "After any Ship Round where an enemy takes MDMG, they must make a Morale Check. To make a Morale Check, roll 1d10. If they roll under their current MDMG, they may send a hail offering a ceasefire and to resume negotiations.",
     "NA": "N/A",
     "Name": "Name",
     "Next": "Next",
     "Normal": "Normal",
     "Notes": "Notes",
-    "O2Remaining": "O2 Remaining",
     "OK": "OK",
-    "OpenDeckplan": "Open Deckplan",
     "Other": "Other",
     "Oxygen": "Oxygen",
     "PanicCheck": "Panic Check",
@@ -1030,7 +843,6 @@
     "RadiationDamage": "Radiation Damage",
     "Range": "Range",
     "RANK": "Rank",
-    "Repairs": "Repairs",
     "Resolve": "Resolve",
     "Robotic": "Robotic",
     "RollingForGeneric": "Rolling for {name}",
@@ -1039,7 +851,6 @@
     "Sanity": "Sanity",
     "SaveBonus": "SaveBonus",
     "Severity": "Severity",
-    "ShipIdentifier": "Ship Identifier",
     "ShipWeaponBonus": "Ship Weapon Bonus",
     "Shots": "Shots",
     "ShotsPerFiring": "Shots per Firing",
@@ -1061,16 +872,11 @@
     "Strength": "Strength",
     "Stress": "Stress",
     "StressResponse": "Stress Response",
-    "Systems": "Systems",
-    "Thrusters": "Thrusters",
     "Total": "Total",
     "TraumaResponse": "Trauma Response",
-    "Transponder": "Transponder",
     "Treatment": "Treatment",
-    "Upgrades": "Upgrades",
     "UsesAmmo": "Uses Ammo",
     "Value": "Value",
-    "WarpCores": "Warp Cores",
     "WeaponName": "Weapon Name",
     "Weapons": "Weapons",
     "Weight": "Weight",
@@ -1081,7 +887,6 @@
     "HEARTATTACKSHORTCIRCUITANDROIDS": "HEART ATTACK / SHORT CIRCUIT (ANDROIDS).",
     "SHORTCIRCUIT": "SHORT CIRCUIT.",
     "HEARTATTACK": "HEART ATTACK.",
-    "Gain1d10Calmk2TtLFOG9mGaWVx31d10Calm":" Gain 1d10 Calm.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.k2TtLFOG9mGaWVx3]{+1d10 Calm}",
     "SelectAStat": "Select a Stat",
     "ChooseTheStatForSkillCheck": "Choose the Stat that best suits the nature of this Skill Check. You will add your skill bonus to the Stat value for this roll",
     "GivingYouAHigherNumber": "(giving you a higher number to roll under).",
@@ -1091,8 +896,8 @@
     "CombatSkillExample": "Fighting for your life.",
     "SelectYourRollType": "Select your roll type",
     "ChooseAStat": "Choose a Stat",
-    "SwarmWoundShort":"W*",
-    "IfYouHaveARelevantSkill":"If you have a Skill that is relevant to the task at hand, you can add the Skill’s bonus to your Stat or Save before making your roll",
+    "SwarmWoundShort": "W*",
+    "IfYouHaveARelevantSkill": "If you have a Skill that is relevant to the task at hand, you can add the Skill’s bonus to your Stat or Save before making your roll",
     "HeavyCover": "Heavy Cover",
     "Cover": "Cover",
     "NoCover": "No Cover",
@@ -1108,18 +913,8 @@
     "WoodFurnitureDoorsShields": "Wood furniture/doors, body shields, etc.",
     "TreesBulkheadWallMetalFurniture": "Trees, bulkhead walls, metal furniture, etc.",
     "AirlockDoorsCementBeamsShips": "Airlock doors, cement beams, ships, etc.",
-    "DistressSignalTableExplanation": "Occasionally you may need to put your ship on emergency power, seal yourselves in cryopods, send out a Distress Signal, and wait for help. It’s a long shot, but sometimes it’s the only shot you’ve got. When this happens, roll on this table.",
-    "MaintenanceCheckExplanation1": "Eventually, your ship needs a tune-up, or sometimes a complete overhaul. When this happens, you’ll need to get it repaired.",
-    "MinorRepairs": "Minor Repairs",
-    "MajorRepairs": "Major Repairs",
-    "MinorRepairsExplanation" : "cover cosmetic damage, cleanup, and other handyman type work that can be handled in flight, usually within 2d10 days",
-    "MajorRepairsExplanation": "cover large scale structural or system damage, including repairing Megadamage and Hull, and can only be fixed in port.",
-    "BankrupcyCheckExplanation": "A slim minority of ships are owned by small banking firms who share ownership with the operators, fronting all costs of the vessel and taking most of the profits. In exchange, you get a ship and a relatively free hand in conducting your business on the Rim. Each year",
-    "OrQuarterAsDeterminedByWarden" : "or quarter, as determined by your Warden",
-    "MakeA": "make a",
-    "BankrupcySaveExplanationEnd": "to determine the financial health of the company",
     "WeaponReloaded": "Weapon reloaded",
-    "Reload":"Reload",
+    "Reload": "Reload",
     "OutOfAmmo": "Out of ammo",
     "OutOfAmmoNeedReload": "Out of ammo, you need to reload",
     "WeaponIssue": "Weapon Issue",
@@ -1128,21 +923,12 @@
     "YouAddAnotherOfThisToYourInventory": "You add another one of these to your inventory.",
     "HealthZeroMessage": "Your health has hit zero and you must take a wound.",
     "HealthZeroMessage2": "Your health has hit zero and you must take a wound. Your health has been reset to ",
-    "YouSenseTheWeightOfYourSetbacks": "You sense the weight of your setbacks.",
-    "Bankrupcy": "Bankrupcy",
-    "BankrupcySave": "Bankrupcy Save",
     "RestSave": "Rest Save",
-    "Job": "Occupation",
     "Class": "Class",
     "Type": "Type",
-    "Owed": "Owed",
-    "Hull": "Hull",
-    "Modules": "Modules",
-    "DeckPlan": "Deck Plan",
-    "Stock": "Stock",
-    "Errors":{
-      "SkillAlreadyInList":"This skill is already in the list.",
-      "NoDropTarget":"Something went wrong with the drop, please try again."
+    "Errors": {
+      "SkillAlreadyInList": "This skill is already in the list.",
+      "NoDropTarget": "Something went wrong with the drop, please try again."
     }
   }
 }

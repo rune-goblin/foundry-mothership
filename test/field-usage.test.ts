@@ -67,6 +67,12 @@ const GRANDFATHERED: Entry[] = [
     reason: 'stat and resolve bounds; nothing reads them, not even by computed key',
   },
   {
+    // The PSG tracks Minimum Stress, not a maximum, so only .value and .min are read. Both come
+    // from the shared pool() helper, so they cost nothing to leave in place.
+    pattern: /^other\.stress\.(max|label)$/,
+    reason: 'pool scaffolding; the Calm variant was their only reader and it is cut',
+  },
+  {
     pattern: /^(health|hits|bleeding|other\.resolve)\.label$/,
     reason: 'resource-pool scaffolding; the sheets hardcode these labels in markup',
   },

@@ -18,7 +18,6 @@ fi
 
 PACKS=(
   "conditions:conditions_1e"
-  "maintenance:items_maintenance_1e"
   "hotbar:macros_hotbar_1e"
   "triggered:macros_triggered_1e"
   "rolltables:rolltables_1e"

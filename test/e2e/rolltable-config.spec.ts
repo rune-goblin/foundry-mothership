@@ -1,7 +1,7 @@
 import { type Page } from '@playwright/test';
 import { test, expect } from './fixtures/foundry-clients.ts';
 
-// The rolltable config window (module/ui/settings/) edits 14 world settings directly -- there is
+// The rolltable config window (module/ui/settings/) edits 7 world settings directly -- there is
 // no document behind it, so game.settings is what has to round-trip. It is also the one window
 // in this system registered with game.settings.registerMenu rather than opened from a sheet, so
 // the real risk is that path: Foundry constructs the class itself (`new menu.type()`) and calls
@@ -50,11 +50,11 @@ test.describe('rolltable config', () => {
     await expect(app.locator('.window-title')).toContainText('Rolltable Configuration');
   });
 
-  test('all 14 tables render, each showing its current value', async ({ gmPage }) => {
+  test('all 7 tables render, each showing its current value', async ({ gmPage }) => {
     const app = await openViaMenu(gmPage);
     const keys = await rolltableKeys(gmPage);
     // Guards against the per-key loop below passing vacuously on an empty list.
-    expect(keys).toHaveLength(14);
+    expect(keys).toHaveLength(7);
 
     for (const key of keys) {
       const current = await getSetting(gmPage, key);
@@ -64,7 +64,7 @@ test.describe('rolltable config', () => {
 
   test('editing a table id persists to game.settings', async ({ gmPage }) => {
     const app = await openViaMenu(gmPage);
-    const key = 'table1eBankruptcy';
+    const key = 'table1eDeath';
     const original = await getSetting(gmPage, key);
 
     const input = app.locator(`input[name="${key}"]`);

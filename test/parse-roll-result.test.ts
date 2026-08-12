@@ -4,12 +4,9 @@ vi.mock('../module/mosh.js', () => ({ fromIdUuid: () => undefined }));
 
 const { MothershipActor } = await import('../module/actor/actor.js');
 
-let useCalm = false;
-
 beforeEach(() => {
-  useCalm = false;
   (globalThis as Record<string, unknown>).game = {
-    settings: { get: (_scope: string, key: string) => (key === 'useCalm' ? useCalm : false) },
+    settings: { get: () => false },
   };
 });
 
@@ -207,7 +204,7 @@ describe('parseRollResult — disadvantage [-] on a roll-over check', () => {
   });
 });
 
-// A panic check ignores the crit preferences: with Calm off it just takes the worst
+// A panic check ignores the crit preferences -- it just takes the worst
 // (advantage) or best (disadvantage) of two failures.
 describe('parseRollResult — panic check', () => {
   it('takes the best of two failures under advantage', () => {
@@ -226,12 +223,4 @@ describe('parseRollResult — panic check', () => {
     expect(r.total).toBe(88);
   });
 
-  it('defers to the ordinary crit rules when Calm is on', () => {
-    useCalm = true;
-    const r = resolve({
-      rollString: '1d100[+]', formula: '{1d100,1d100}kl', dice: [88, 60],
-      rollTarget: 50, comparison: '<', checkCrit: true, specialRoll: 'panicCheck',
-    });
-    expect(r.total).toBe(60);
-  });
 });

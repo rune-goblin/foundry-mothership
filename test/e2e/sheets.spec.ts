@@ -17,7 +17,7 @@ test.describe('sheets render', () => {
     });
   });
 
-  for (const type of ['character', 'creature', 'ship']) {
+  for (const type of ['character', 'creature']) {
     test(`the ${type} sheet opens and shows the actor`, async ({ gmPage }) => {
       const appId = await gmPage.evaluate(async (t) => {
         const doc = await (window as any).Actor.create({ name: `__e2e_${t}`, type: t });
@@ -45,19 +45,4 @@ test.describe('sheets render', () => {
     expect(derived).toEqual({ armorMod: 0, armorTotal: 0, netHP: 20, netHPMax: 20 });
   });
 
-  // The DLShipMacros popout was deleted: its four checks are all on the sheet's own Macros tab,
-  // and its only trigger had been commented out. This pins the surviving route.
-  test('the ship sheet carries the four ship checks on its macros tab', async ({ gmPage }) => {
-    const appId = await gmPage.evaluate(async () => {
-      const doc = await (window as any).Actor.create({ name: '__e2e_ship_macros', type: 'ship' });
-      await doc.sheet.render(true);
-      return doc.sheet.id;
-    });
-
-    const macros = gmPage.locator(`#${appId} [data-tab="macros"]`);
-    for (const button of ['.distress-button', '.maintenance-button', '.bankruptcy-button', '.morale-button']) {
-      await expect(macros.locator(button)).toHaveCount(1);
-    }
-    await expect(gmPage.locator(`#${appId} .deckplan-button`)).toHaveCount(1);
-  });
 });

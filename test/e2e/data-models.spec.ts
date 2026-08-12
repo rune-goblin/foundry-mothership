@@ -28,7 +28,7 @@ test.describe('created documents get the DataModel defaults', () => {
     });
   });
 
-  for (const type of ['character', 'creature', 'ship']) {
+  for (const type of ['character', 'creature']) {
     test(`a new ${type} actor matches template.json`, async ({ gmPage }) => {
       // toObject() is the cleaned *source*: prepareDerivedData mutates actor.system in place
       // (armour mod, net HP, bleeding), so the live object is deliberately not what we compare.
@@ -40,7 +40,7 @@ test.describe('created documents get the DataModel defaults', () => {
     });
   }
 
-  for (const type of ['item', 'skill', 'weapon', 'armor', 'ability', 'module', 'condition', 'crew', 'repair', 'class']) {
+  for (const type of ['item', 'skill', 'weapon', 'armor', 'ability', 'condition', 'class']) {
     test(`a new ${type} item matches template.json`, async ({ gmPage }) => {
       const source = await gmPage.evaluate(async (t) => {
         const doc = await (window as any).Item.create({ name: `__e2e_${t}`, type: t });
@@ -56,16 +56,9 @@ test.describe('created documents get the DataModel defaults', () => {
   const RESTORED: Array<[kind: 'Actor' | 'Item', type: string, path: string, value: unknown]> = [
     ['Item', 'armor', 'system.equipped', true],
     ['Item', 'armor', 'system.features', 'sealed'],
-    ['Item', 'module', 'system.cost', 250],
     ['Actor', 'creature', 'system.xp.selectedSkill', 'Zero-G'],
     ['Actor', 'creature', 'system.swarm.enabled', true],
     ['Actor', 'creature', 'system.swarm.combat.value', 30],
-    ['Actor', 'ship', 'system.cost', '2,000,000cr'],
-    ['Actor', 'ship', 'system.owed', '750,000cr'],
-    ['Actor', 'ship', 'system.make', 'Galloway / Class II'],
-    ['Actor', 'ship', 'system.transponder', true],
-    ['Actor', 'ship', 'system.stats.speed.mod', 5],
-    ['Actor', 'ship', 'system.supplies.oxygen.value', 12],
   ];
 
   for (const [kind, type, path, value] of RESTORED) {

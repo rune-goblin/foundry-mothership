@@ -5,7 +5,7 @@ import { test, expect } from './fixtures/foundry-clients.ts';
 // the round trip works: the sheet renders the stored value, an edit reaches the document, and a
 // document update reaches the sheet.
 
-const TYPES = ['item', 'weapon', 'armor', 'ability', 'module', 'condition', 'crew', 'repair'];
+const TYPES = ['item', 'weapon', 'armor', 'ability', 'condition'];
 
 const openSheet = async (page: any, type: string, system: Record<string, unknown> = {}) =>
   page.evaluate(

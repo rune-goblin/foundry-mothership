@@ -14,12 +14,7 @@ export const ROLLTABLE_GROUPS = [
     label: 'Panic Check',
     icon: 'fa-solid fa-bolt',
     columns: 4,
-    fields: [
-      { key: 'table1ePanicStressNormal', label: 'Stress, Normal (1e)' },
-      { key: 'table1ePanicStressAndroid', label: 'Stress, Android (1e)' },
-      { key: 'table1ePanicCalmNormal', label: 'Calm, Normal (1e)' },
-      { key: 'table1ePanicCalmAndroid', label: 'Calm, Android (1e)' },
-    ],
+    fields: [null, { key: 'table1ePanicStressNormal', label: 'Panic (1e)' }, null],
   },
   {
     label: 'Wound Check',
@@ -39,18 +34,8 @@ export const ROLLTABLE_GROUPS = [
     columns: 4,
     fields: [null, { key: 'table1eDeath', label: 'Death Save (1e)' }, null],
   },
-  {
-    label: 'Ship Checks',
-    icon: 'fa-solid fa-rocket',
-    columns: 4,
-    fields: [
-      { key: 'table1eDistressSignal', label: 'Distress Signal' },
-      { key: 'table1eMegadamageEffects', label: 'Megadamage Effects' },
-      { key: 'table1eMaintenance', label: 'Maintenance Check' },
-      { key: 'table1eBankruptcy', label: 'Bankruptcy Check' },
-    ],
-  },
 ];
+
 
 export const ROLLTABLE_KEYS = ROLLTABLE_GROUPS.flatMap((group) =>
   group.fields.filter(Boolean).map((field) => field.key),

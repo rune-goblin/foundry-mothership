@@ -18,7 +18,6 @@ export interface SourcePack {
 // they are baked into every @UUID in the shipped content and into existing worlds.
 export const INHERITED_PACKS: ReadonlyArray<{ pack: string; compendium: string; documentType: string }> = [
   { pack: 'conditions', compendium: 'conditions_1e', documentType: 'Item' },
-  { pack: 'maintenance', compendium: 'items_maintenance_1e', documentType: 'Item' },
   { pack: 'hotbar', compendium: 'macros_hotbar_1e', documentType: 'Macro' },
   { pack: 'triggered', compendium: 'macros_triggered_1e', documentType: 'Macro' },
   { pack: 'rolltables', compendium: 'rolltables_1e', documentType: 'RollTable' },
