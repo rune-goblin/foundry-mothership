@@ -4,6 +4,90 @@ Written 2026-08-12. **This supersedes `docs/plans/architecture.md`'s phases 1–
 built on preserving the inherited content; the owner's decision is to stop preserving it and ship
 the book instead. What survives from it is noted at the end.
 
+---
+
+## Status — start here
+
+| | |
+|---|---|
+| **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26) |
+| **Next** | **S3 — generate the PSG book content.** Design notes below; read them before briefing it. |
+| **Green at** | `check` 0/0 (221 files) · **178 vitest** · **56 Playwright** · `build` |
+| **Preserved** | Everything cut is on the pushed `archive/pre-psg-cut` branch **and** tag |
+
+What the system ships today: 2 actor types (character, creature), 7 item types, **7 rolltables,
+11 conditions, 107 macros — 136 documents**. It ships **no skills, classes, weapons, armour or
+equipment**; S3 is where that changes and where the character generator gets data for the first
+time.
+
+**The commands that matter**, in this order — the middle one is not optional and is easy to miss:
+
+```bash
+./scripts/packs.sh pack   # rm -rf the pack dirs first if any source document was REMOVED
+npm run setup             # packs/ -> the live Data dir, which the e2e harness clones from
+npm run test:e2e
+```
+
+---
+
+## S3 design notes — measured, so the next session need not re-derive them
+
+### The class-adjustment mapping is three rules plus one open question
+
+The book's `adjustments: [{raw, kind, target, value}]` does not map mechanically onto the runtime
+`base_adjustment` / `selected_adjustment` shape the generator reads. All four classes, measured:
+
+| Book form | Example | Runtime |
+|---|---|---|
+| `kind: stat`, named target | `+10 COMBAT` | `base_adjustment.combat` |
+| `kind: save`, named target | `+10 BODY SAVE` | `base_adjustment.body` — **stats and saves share one flat key space** |
+| `kind: max-wounds` | `+1 MAX WOUNDS` | `base_adjustment.max_wounds` |
+| `target: "all"` | `+5 TO ALL STATS`, `+10 TO ALL SAVES` | fan out across the four stats / three saves |
+| `target: null` | `-10 TO 1 STAT` (Android), `+5 TO 1 STAT` (Scientist) | **a choice** → `selected_adjustment.choose_stat: [{modification, stats: [...]}]` |
+
+Skills: `skills.granted` (ids) → `base_adjustment.skills_granted` (**UUIDs**, so skills must be
+emitted first and their ids known within the same build); `skills.bonus.options` → a single option
+becomes `choose_skill_and`, multiple options become `choose_skill_or`.
+
+**The one genuinely open case:** the Scientist's `skills.choices` — *"1 Master Skill, and an Expert
+and Trained Skill prerequisite"* — has no clean equivalent in the runtime shape. Decide it
+deliberately in S3 rather than letting an agent guess.
+
+`architecture.md` Decision 2 still governs: **do not reshape the runtime schema to match the book.**
+The content build is the adapter.
+
+### Two gaps in the extraction, and one thing the book simply lacks
+
+Measured against `content/books/psg/`. The internal joins are healthy — **42 skills with 0
+unresolved prerequisites, 0 unresolved class-granted skills** — but:
+
+1. **`character-creation.json` holds prose, not formulas.** *"Roll 2 ten-sided dice (2d10), add them
+   together, then add 25"* is a sentence. The generator needs `2d10+25`. Only four values are
+   involved (stats `2d10+25`, saves `2d10+10`, health `1d10+10`, Stress starts at 2), so
+   hand-authoring them in the pipeline is cheaper than re-extracting — but it is authored data, and
+   should be labelled as such rather than pretending it came from the book.
+2. **Loadout results are free text, not references.** `items: ["Tank Top and Camo Pants (AP 1)",
+   "Combat Knife (as Scalpel DMG [+])", "Stimpak (x5)"]` — strings, not ids into
+   `equipment`/`weapons`/`armor`. So the plan's "loadout tables whose results link the new
+   equipment documents" **cannot be built from this data as it stands.** Either ship loadouts as
+   text tables (cheap, and honest), or match strings to gear by hand (a real authoring job).
+   This directly affects the capstone e2e, which asserts a generated Marine's loadout.
+3. **There is no conditions dataset in the PSG extraction at all.** The 11 conditions the system
+   ships are inherited prose, not book-sourced. Only three carry a modifier the book can vouch for
+   (`Frightened`, `Nightmares`, `Spiraling`, all `disadvantage`, via the panic results that grant
+   them). The owner's decision stands: seed those three, leave the rest neutral.
+
+**If the corpus is ever re-extracted, (1) and (2) are the two things worth fixing at the source.**
+Neither blocks S3.
+
+### S3 must close the id-preservation loop
+
+`checkIdPreservation` is written and tested but deliberately **not** wired into `build()` (§26).
+S3 regenerates the macro pack from a table and will not reproduce all 107 inherited macros, so
+turning it on today fails every build. **S3 retires what it drops — the registry takes a reason —
+and then wires the check on**, one line in `pipeline.ts`. That check is what protects the `@UUID`
+cross-references the surviving rolltables still hold.
+
 ## The goal, in one sentence
 
 **Our own implementation of Mothership 1e, complete and faithful to the Player's Survival Guide,
