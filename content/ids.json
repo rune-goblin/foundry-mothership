@@ -1,0 +1,1311 @@
+{
+  "version": 1,
+  "packs": {
+    "conditions": {
+      "compendium": "conditions_1e",
+      "documentType": "Item",
+      "documents": {
+        "anhedonia": {
+          "id": "JM9PnNw2HVWcAfOX"
+        },
+        "bit-rot": {
+          "id": "H1dqOrGg0voG2DmC"
+        },
+        "bleeding": {
+          "id": "pxtF1NfletmoFFGV"
+        },
+        "broken": {
+          "id": "ZXyoVuMAsEDmU5Qi"
+        },
+        "corrosive-atmosphere": {
+          "id": "acxtiC0oGwQloAwj"
+        },
+        "coward": {
+          "id": "YIF9QkUlexxauSCE"
+        },
+        "cryosickness": {
+          "id": "j26FZQ2gYuNfMKkc"
+        },
+        "death-wish": {
+          "id": "srws3n4rpl4oCj83"
+        },
+        "deflated": {
+          "id": "waimTU6LXaADcJrT"
+        },
+        "deviant-logic-core": {
+          "id": "PTK6ds7eJvJDonbp"
+        },
+        "doomed": {
+          "id": "x41AwiI03h7wNjaM"
+        },
+        "emotional-detachment": {
+          "id": "iiiAIZvpfUUNai74"
+        },
+        "escapism": {
+          "id": "qejBMjd8niz1y3Zi"
+        },
+        "ethical-directive-failure": {
+          "id": "pe7ChrErjX6N57VP"
+        },
+        "ethical-directive-misread": {
+          "id": "OBpJQ7uYIj3KezNc"
+        },
+        "exhausted": {
+          "id": "jfcpnfM3bSHvMJlG"
+        },
+        "extreme-cold": {
+          "id": "uco5QbXZ6ZTKxx9g"
+        },
+        "extreme-heat": {
+          "id": "9DsSQajDLqPGpK2i"
+        },
+        "faulty-heuristics": {
+          "id": "uPVp78kHmvMSYx2F"
+        },
+        "fried-logic-core": {
+          "id": "kYdj6XJlPvJAhBEN"
+        },
+        "frightened": {
+          "id": "z0avrplKe6M0RcXk"
+        },
+        "hallucinations": {
+          "id": "oTafwWjoNOE7nBrj"
+        },
+        "haunted": {
+          "id": "olC4JytslvUrQN8g"
+        },
+        "hypervigilance": {
+          "id": "tGYYK71q2QxnPtpL"
+        },
+        "insane": {
+          "id": "0ZAwhewvLBwX3opf"
+        },
+        "irradiated": {
+          "id": "gSTHeVqpynRxoQEy"
+        },
+        "killswitch-engaged": {
+          "id": "g6CuxCqbyRnNa57N"
+        },
+        "losing-your-grip": {
+          "id": "kNjz3I0yAYkt9CV0"
+        },
+        "loss-of-confidence": {
+          "id": "kbbVOYgjwzoODs7N"
+        },
+        "nightmares": {
+          "id": "MLPSYfWrwY6R7JDy"
+        },
+        "panicky": {
+          "id": "EW7X6FfetwxmZDzf"
+        },
+        "phobia": {
+          "id": "NuzL7Yi7PvUOeWsj"
+        },
+        "psychotic-episodes": {
+          "id": "og4lXN03vH5pwSDC"
+        },
+        "rampancy": {
+          "id": "lXoBqGW2eCK0b1tX"
+        },
+        "recurring-nightmares": {
+          "id": "S2kZpUl3nNPS4wNS"
+        },
+        "severe-anxiety": {
+          "id": "CPRLqpW9inXDLYjS"
+        },
+        "social-anxiety": {
+          "id": "hskhRKLEAJN7huAk"
+        },
+        "software-bloat": {
+          "id": "dA6COSDLbpmKdOkm"
+        },
+        "spiraling": {
+          "id": "Bt2rl2c5jGyt3QAr"
+        },
+        "starving": {
+          "id": "6zDq1nvEr3AYLcLn"
+        },
+        "suffocating": {
+          "id": "VCgpc7OwyMU23Clv"
+        },
+        "suspicious": {
+          "id": "8lOkseRbg09YFvv7"
+        },
+        "the-bends": {
+          "id": "PCPGYzzFaFjws1LL"
+        },
+        "the-shakes": {
+          "id": "d3KlY4zMdD1j3CTW"
+        },
+        "threat-assessment-failure": {
+          "id": "HZBI88iwvtQVWKOR"
+        },
+        "toxic-atmosphere": {
+          "id": "TCB5GnuGt45WbPsw"
+        },
+        "turing-test-failure": {
+          "id": "a87x3Hk72ymOx5rf"
+        },
+        "twitchy": {
+          "id": "kiJyYYxzy5TdjTfS"
+        },
+        "vocalization-failure": {
+          "id": "ZO4f9gvaiVSKDmRC"
+        },
+        "worship-danger": {
+          "id": "LDoAzwiELtLjgxrf"
+        }
+      }
+    },
+    "hotbar": {
+      "compendium": "macros_hotbar_1e",
+      "documentType": "Macro",
+      "documents": {
+        "cover": {
+          "id": "6wsDxyoKPHxpoHtF"
+        },
+        "death-save": {
+          "id": "NsRHfRuuNGPfkYVf"
+        },
+        "gain-calm": {
+          "id": "GSFEBhrKC9yuD88V"
+        },
+        "gain-stress": {
+          "id": "X0L0NnWt53b0rHYG"
+        },
+        "lose-calm": {
+          "id": "trU0DtBJvJCPddsQ"
+        },
+        "panic-check": {
+          "id": "IgWvaabVqzKDzLL4"
+        },
+        "relieve-stress": {
+          "id": "GaadOTppoqNFWZhV"
+        },
+        "rest-save": {
+          "id": "iyonscW5QiQdQbyJ"
+        },
+        "save": {
+          "id": "kb3tvYdTSWnzQRfw"
+        },
+        "stat-check": {
+          "id": "2u4a5gEogtLd3XQz"
+        },
+        "wound-roll": {
+          "id": "ZzKgfEmRdvDfyBMS"
+        }
+      }
+    },
+    "maintenance": {
+      "compendium": "items_maintenance_1e",
+      "documentType": "Item",
+      "documents": {
+        "autopilot-systems-down": {
+          "id": "vip6FxWcX4ReJD3b"
+        },
+        "bevvy-of-osha-violations": {
+          "id": "xa9MPzfrPglkSJjg"
+        },
+        "blocked-air-vents": {
+          "id": "ZbAFemnvHB1YTHBK"
+        },
+        "broken-light-fixture-in-remote-corridor": {
+          "id": "ZBUtxiX72udqLzIk"
+        },
+        "buggy-communications": {
+          "id": "Odpb5coSTST7kCkc"
+        },
+        "check-engine-light-won-t-turn-off": {
+          "id": "guvCGNRa75AB2Avg"
+        },
+        "clogged-air-filtration-crew-capacity-cut-in-half-br-br-uuid-compendium-mothershiprpg-macros-triggered-1e-macro-duury7khkd7n5luv-50-crew-capacity": {
+          "id": "XLEhMV9SnSfeEE7E"
+        },
+        "computer-failure-from-cosmic-radiation": {
+          "id": "5UiJy739gvGHkRYp"
+        },
+        "controls-sticking": {
+          "id": "BicB3xA1h978ZevJ"
+        },
+        "coolant-leak": {
+          "id": "C9dQYp7gcjtq5QRz"
+        },
+        "corroded-exhaust-manifolds": {
+          "id": "IDiwAbD8DTbec7S1"
+        },
+        "corroded-pipes": {
+          "id": "PKBXKvgWZwafKWJ3"
+        },
+        "corrupted-a-i": {
+          "id": "zHsnShUX37Zvyi2O"
+        },
+        "corrupted-data-banks": {
+          "id": "4Lqg0lqjjTlNlr0j"
+        },
+        "counterfit-papers-ship-is-stolen-there-is-a-bounty-on-it": {
+          "id": "b081FxEAclRKji3q"
+        },
+        "cracked-heat-shields": {
+          "id": "IiPryFS9MOGZXeuG"
+        },
+        "cracked-viewports": {
+          "id": "Eo0l4WMxcS62GCMP"
+        },
+        "creaking-hull": {
+          "id": "QUyfvbFhCqb9d7Lu"
+        },
+        "damaged-bulkheads": {
+          "id": "SW5kVSjiFbBxIeiu"
+        },
+        "damaged-communications-antenna": {
+          "id": "2Ht7fg78511Hd49u"
+        },
+        "damaged-coolant-pump": {
+          "id": "iwFmPpAth3VbRRL8"
+        },
+        "damaged-floor-pannelling": {
+          "id": "1iOSKp82goZGJZch"
+        },
+        "damaged-fuel-lines": {
+          "id": "rlW0LUlsK7vDGZEh"
+        },
+        "death-trap-on-all-rolls": {
+          "id": "ALplRgZtneMRdloo"
+        },
+        "defective-intercom-system": {
+          "id": "pW1FUDxp2N0M0D1y"
+        },
+        "delayed-communication-relays": {
+          "id": "hNJYqetiMKUlZzYH"
+        },
+        "dysfunctional-gravity-plating": {
+          "id": "9kS8VjGuSMpghdCk"
+        },
+        "emergency-lighting-only": {
+          "id": "wjyAZnOOafvv4xzB"
+        },
+        "failed-airlock-seals": {
+          "id": "vv1VykTwiQmgEj6N"
+        },
+        "failed-backup-systems": {
+          "id": "cbXMdd4ugxSOT5TU"
+        },
+        "failed-radiation-filter": {
+          "id": "wCYGQrI9qonhWy8F"
+        },
+        "failed-water-recovery-system": {
+          "id": "e144cIdUEyTJgN1G"
+        },
+        "faulty-altitude-control-thrusters": {
+          "id": "m04JdXL1xGQOkDyp"
+        },
+        "faulty-carbon-dioxide-removal-assembly": {
+          "id": "5OBjTojgrp5N9mEw"
+        },
+        "faulty-cryopods-nightmares-cryosickness-lasts-an-additional-week": {
+          "id": "mK1Acfk5NAgs1MHC"
+        },
+        "faulty-door-locks": {
+          "id": "kftgvuQoefQ7pl28"
+        },
+        "faulty-electrical-system": {
+          "id": "4JRD71mvWNtFUDL7"
+        },
+        "fire-suppression-system-out-of-code": {
+          "id": "AuTERG3m7ECQKrKs"
+        },
+        "flickering-interior-lights": {
+          "id": "TAerNMqv19pANCxq"
+        },
+        "fragile-always-take-1-mdmg": {
+          "id": "g9Z7He5zPHNrxYe1"
+        },
+        "fuel-leak-burn-1-fuel-everytime-you-spend-fuel": {
+          "id": "GW1KGmYdxYYf4ZWT"
+        },
+        "fusion-reactors-overheating": {
+          "id": "RiHvRQ9nZDygwvvB"
+        },
+        "hidden-highly-illegal-contraband": {
+          "id": "CLvIvoNryBARtU7T"
+        },
+        "huge-mess-everywhere": {
+          "id": "pLleYaFjcIuAm4Pp"
+        },
+        "inaccurate-data-collection": {
+          "id": "vleMoz5bbkZ5w28o"
+        },
+        "inaccurate-navigation": {
+          "id": "d94uF9rpmeP60Kl4"
+        },
+        "inadequate-waste-recycling": {
+          "id": "UPAxtEOrSF3Il4uA"
+        },
+        "inadequate-water-filtration-parasites-in-the-water-supply": {
+          "id": "NLwybTzXJ1bndki3"
+        },
+        "infected-food-storage-facilities": {
+          "id": "vMRVXZxu6ozj0iw2"
+        },
+        "innaccurate-orbital-transfer-navigation": {
+          "id": "NgKPVhRkD8Gteo5Z"
+        },
+        "inoperative-exterior-lighting-system": {
+          "id": "IGx8nQrwfz07r6TR"
+        },
+        "insufficient-life-support-redundancy": {
+          "id": "OWkfB73RTSLDMlsU"
+        },
+        "intermittent-electrical-outages": {
+          "id": "QIcoFYoC0hxW84qD"
+        },
+        "internal-networking-issues": {
+          "id": "l1OGQ0IXZHjnO4Ys"
+        },
+        "jammed-cargo-bay-doors": {
+          "id": "Ka8elMGKtcakUIxx"
+        },
+        "jammed-exhaust-vent": {
+          "id": "zRzb3Laiuw4ac6p0"
+        },
+        "jammed-exterior-airlocks": {
+          "id": "c8SXxPHMsG7uycas"
+        },
+        "jump-bug-10-chance-jump-takes-2d10-months-not-2d10-days": {
+          "id": "FLaPtHcegheN7wHw"
+        },
+        "leaking-hydraulic-systems": {
+          "id": "AQt9nXy6S0Ev50r7"
+        },
+        "leaky-fuel-valve": {
+          "id": "cOLcJ3Dnecbe6ZIU"
+        },
+        "lemon-maintenance-checks-at-br-br-uuid-compendium-mothershiprpg-macros-triggered-1e-macro-c04vbnoj8lgfy8qk-maintenance-check": {
+          "id": "7GqbGIOzA9vYOPiI"
+        },
+        "lifts-non-functioning": {
+          "id": "Tp6k1gPwhQmT6hCo"
+        },
+        "loose-couplings": {
+          "id": "59cXdcrZlmjUcJpV"
+        },
+        "malfunctioning-climate-control-85-at-all-times": {
+          "id": "Z8raruNDvfNASFQi"
+        },
+        "malfunctioning-escape-pods": {
+          "id": "IR1sWnYXniMg9TdP"
+        },
+        "malfunctioning-plasma-thruster": {
+          "id": "nHac0gkEcCNew7RX"
+        },
+        "malfunctioning-sensor-arrays": {
+          "id": "LRumIQdUBzD0Jc0X"
+        },
+        "malfunctioning-waste-management-system": {
+          "id": "oySXnFIbRW0WRoeF"
+        },
+        "micrometoroid-hull-damage": {
+          "id": "b2b3j5JtanbyWlNd"
+        },
+        "misaligned-docking-clamps": {
+          "id": "wNm669fzbdZGwr0g"
+        },
+        "miscalibrated-guidance-system": {
+          "id": "XmIcQgho4un7hYki"
+        },
+        "miscalibrated-targeting-sensors-1d10-battle-br-br-uuid-compendium-mothershiprpg-macros-triggered-1e-macro-x3cl9es2hopxhlh5-1d10-battle": {
+          "id": "3Ptitg8HBZfl2CXN"
+        },
+        "miscalibrated-thruster-gimbal-system": {
+          "id": "1HNvL7XEUcMQbLps"
+        },
+        "no-emergency-power": {
+          "id": "3rulbOVhyRlTizT0"
+        },
+        "out-of-code-compliance": {
+          "id": "Low2X1z7m1iB3rkA"
+        },
+        "out-of-date-air-filters": {
+          "id": "64AQJ3zQDOb7NOR1"
+        },
+        "outdated-software-1d10-systems-br-br-uuid-compendium-mothershiprpg-macros-triggered-1e-macro-odftfxrkkcqrny2o-1d10-systems": {
+          "id": "FmPqHYH3UoGpaWYL"
+        },
+        "overloaded-circuitry": {
+          "id": "yJY9CzP1KA15aMqV"
+        },
+        "overloaded-power-storage": {
+          "id": "KhlrUaPjVIoyhnaL"
+        },
+        "oxygen-leak-if-ship-is-low-on-o2-lose-1d5-extra-per-day-br-br-uuid-compendium-mothershiprpg-macros-triggered-1e-macro-u7tchso3qutnzakf-1d5-oxygen": {
+          "id": "T4wAR08WyT3g9C6D"
+        },
+        "poor-scanners-ship-has-to-be-one-range-band-closer-than-normal": {
+          "id": "ElXLL32uNYiPmE4G"
+        },
+        "radiation-leak-entire-ship-is-at-radiation-level-2": {
+          "id": "5J4r3yw4xDj890yZ"
+        },
+        "rancid-smell-permeates-cabins": {
+          "id": "ciAkQXkxSXTG8MV1"
+        },
+        "rust-bucket-everything-that-can-go-wrong-does-1-minimum-stress-to-crew-br-br-uuid-compendium-mothershiprpg-macros-triggered-1e-macro-bmehwh7yxv9qb21p-1-minimum-stress": {
+          "id": "60QSsxrVOt83OU9p"
+        },
+        "sabotaged-coolant-system": {
+          "id": "4kmMuAbW1jnfVMYP"
+        },
+        "slow-acceleration-1-week-to-travel": {
+          "id": "dgisAPnBbrIOiisk"
+        },
+        "solar-panel-degradation": {
+          "id": "8s1eBY5bEcQQTCz0"
+        },
+        "staticky-comms": {
+          "id": "dReCCsfiV7it4lsm"
+        },
+        "stuck-waste-disposal-chute": {
+          "id": "EZzGAO6DneH1qmQM"
+        },
+        "systems-overloaded-with-malware": {
+          "id": "miRqXNzkW0biml1I"
+        },
+        "terminal-displays-non-functional": {
+          "id": "EteEoBrlnzcySppN"
+        },
+        "thermal-management-system-failure": {
+          "id": "DYHuVA4CQlmK2MJy"
+        },
+        "throttled-afterburners-2d10-thrusters-br-br-uuid-compendium-mothershiprpg-macros-triggered-1e-macro-jmoh8n2ps0yiebc0-2d10-thrusters": {
+          "id": "fbrN7sbgPjIwkk7I"
+        },
+        "toxic-chemical-spill": {
+          "id": "EnogUslNNusSfVFy"
+        },
+        "unable-to-send-distress-signals": {
+          "id": "FIqSHePAeLJywerx"
+        },
+        "viewports-blocked": {
+          "id": "3l0LUZpjizvZmHWs"
+        },
+        "warp-cores-fail-10-of-the-time": {
+          "id": "58KhhfMQ9p0XJZHc"
+        },
+        "weak-frame-1-hull-1-upgrade-br-br-uuid-compendium-mothershiprpg-macros-triggered-1e-macro-upy19y49bgclgk3n-1-hull-br-br-uuid-compendium-mothershiprpg-macros-triggered-1e-macro-06nsvdyttmkeutlq-1-upgrade": {
+          "id": "ulWxa2UtTOQihTyz"
+        },
+        "worn-landing-struts": {
+          "id": "2pxf4O2NrLdwYRtO"
+        },
+        "worn-out-fuel-injection-nozzles": {
+          "id": "5d220ZzrEV3qx6Fy"
+        }
+      }
+    },
+    "rolltables": {
+      "compendium": "rolltables_1e",
+      "documentType": "RollTable",
+      "documents": {
+        "bankruptcy-save": {
+          "id": "BsfdIl7CJNs1PViS",
+          "results": {
+            "r01": "PmxxNHaOwjUgXDuj",
+            "r02": "u9hjcZZUKwuho0Qx",
+            "r03": "9kfZTUWCaEDUgYRh",
+            "r04": "tRv3vRvOVTteMz5Y"
+          }
+        },
+        "bleeding-wound": {
+          "id": "ata3fRz3uoPfNCLh",
+          "results": {
+            "r01": "58jsAYGMOoYV0aXe",
+            "r02": "qVUXginkyIDKa6fe",
+            "r03": "uvF7ftDjXr9excYX",
+            "r04": "5ED6Ynmibq9pKDEk",
+            "r05": "hO9e9wmIsTXWfZns",
+            "r06": "8eTGRuBUdp9s2Z46",
+            "r07": "FZ9GwrHFQJUmHQ7k",
+            "r08": "kLAtlJUE9QfCX38s",
+            "r09": "806d8NZZaysIHJvm",
+            "r10": "439gBR7gGeLatpfl"
+          }
+        },
+        "blunt-force-wound": {
+          "id": "31YibfjueXuZdNLb",
+          "results": {
+            "r01": "kGDBRdD9azQLJRDl",
+            "r02": "mYsLkuttsbN0PPzE",
+            "r03": "RnmOw1OvhVaYQsJV",
+            "r04": "rCPAVwvuRI5PDapO",
+            "r05": "gYfGKit1I8vIlXas",
+            "r06": "Xvo8mQoXzQb18gms",
+            "r07": "AiacUbJlw1slbsW3",
+            "r08": "bxD3uLX6GcVG7kwG",
+            "r09": "5WHDRIu6o2xp1Vml",
+            "r10": "NzrMxLpPo52Ayoq7"
+          }
+        },
+        "death-save": {
+          "id": "W36WFIpCfMknKgHy",
+          "results": {
+            "r01": "4TFF3HjlrKsOCyT5",
+            "r02": "C0ht8FBreWQjhNi7",
+            "r03": "WTOIWYApDTqwAHu6",
+            "r04": "ygaJ1Gc5LuuXbJZq"
+          }
+        },
+        "distress-signal": {
+          "id": "UxAjAqUTjYTcCbS8",
+          "results": {
+            "r01": "4W0riCssZ2SEzGLe",
+            "r02": "tG7DvLzk0nIDsGxH",
+            "r03": "Bx4dP1VaEfohIdO9",
+            "r04": "K9MvgxDKYTflPZDl",
+            "r05": "rFLMF0FIuJOK582Z"
+          }
+        },
+        "fire-explosives-wound": {
+          "id": "lqiaWwh5cGcJhvnu",
+          "results": {
+            "r01": "VYN9lwpyPTW4Hnmh",
+            "r02": "V3np2nl2cIVshF5D",
+            "r03": "Wen5sWpWmN2j4Zcb",
+            "r04": "OD9Ilkg4OA11sU8H",
+            "r05": "0BvZK2vdM2oweYvg",
+            "r06": "syEHXuDiZFwD4l4G",
+            "r07": "MRl6Iid4Xgjb6myY",
+            "r08": "bHNeXD95WH4o2Rjz",
+            "r09": "F9aNmmfK5oSh4kAs",
+            "r10": "V0ZCYS4xQCoqnKuC"
+          }
+        },
+        "gore-massive-wound": {
+          "id": "uVfC1CqYdojaJ7yR",
+          "results": {
+            "r01": "aJN3DtKVY9bG3ubv",
+            "r02": "Lf5EQIYpu4DXFQix",
+            "r03": "1NnoNAENwZjlIxh8",
+            "r04": "8iAPqxJpCEgQJXq6",
+            "r05": "NcPFW20iV54oar6P",
+            "r06": "QP4863dIgMJ28XWs",
+            "r07": "ayHuDn1OuCcbgCZt",
+            "r08": "h2hZbBnnY5DVnyLL",
+            "r09": "JB623Z5gI9hP5cOs",
+            "r10": "9LPNxRgcnpZHjENW"
+          }
+        },
+        "gunshot-wound": {
+          "id": "XjDU2xFOWEasaZK0",
+          "results": {
+            "r01": "LubF6RyYnl11EmUj",
+            "r02": "EFQBqcegsqHQ4Jih",
+            "r03": "tNz8bKJY9cDDQmQ6",
+            "r04": "YwdH5Q7uuxu78jQp",
+            "r05": "kOw2Sk8NgE5zWvGz",
+            "r06": "1EEfUVqLk1vcvmBl",
+            "r07": "4si8KPgRXJSi2R94",
+            "r08": "wbmBeO70jbk5cNAi",
+            "r09": "SXF0bbAqIyqvPvb9",
+            "r10": "8rlgfH4GJ8H0LHhL"
+          }
+        },
+        "maintenance-issues": {
+          "id": "kqz8GsFVPfjvqO0N",
+          "results": {
+            "r01": "IyZRbv37zFiJ383B",
+            "r02": "C0ZgIm60S90TAT91",
+            "r03": "eTkF90oClQfEzqnO",
+            "r04": "1eCoLlXdJOBH9PWj",
+            "r05": "0OAtazWzOPLEfTkw",
+            "r06": "PfUxdaS1uo7lxKa3",
+            "r07": "nix5zKmEronI6Yvv",
+            "r08": "sbObgOY0tmHaZpKG",
+            "r09": "gyTPedRpwTvRBfhT",
+            "r10": "I11M8UMDMBitMr3v",
+            "r100": "6TJ246ieXGmopzm7",
+            "r11": "SWXQhPfu8y8XFzRM",
+            "r12": "zbhqG61KG97AHnxy",
+            "r13": "TUWadEIBbOEtHy3z",
+            "r14": "ynAJiaLcVAE3HIjG",
+            "r15": "DtVeZrxUIjJoPqFH",
+            "r16": "WgmjKOE5Iv3Gq1lg",
+            "r17": "ls4xOoWbhod4xcK5",
+            "r18": "Z6UTZnadXEZAbtnx",
+            "r19": "jLmjfUWSNdD3dRwk",
+            "r20": "MXvxkk3A53nEUVjW",
+            "r21": "uITLtr1tukKg6GH3",
+            "r22": "Dy29r0yTcurlTOb3",
+            "r23": "bN364EHfBPjRPV1k",
+            "r24": "SdzntkGxTPxc0mBk",
+            "r25": "3FAjfGNOdUhikeaT",
+            "r26": "yJjr6ttFIL0Tm1Q0",
+            "r27": "iYG96XjPC5zAo8qm",
+            "r28": "esUyqvuWPGfPps0s",
+            "r29": "DkIuGgcrI6Jur9Cr",
+            "r30": "QBBJru6guS5DCeTT",
+            "r31": "ZHmFbVcuh2DAOVEf",
+            "r32": "XEgBLTIutnbQ8wjj",
+            "r33": "Lkm8VtpQRjICLlwU",
+            "r34": "038MckXaAQARD67V",
+            "r35": "oUetfiowLXa1LAoD",
+            "r36": "Z52rxcwBR1l2ioZV",
+            "r37": "uUwTRxD7VL9uOPI1",
+            "r38": "ha1AgBUXwSB0YvLZ",
+            "r39": "pIwClgLjhzBxWjQB",
+            "r40": "uPVo13V46Gn7UdGQ",
+            "r41": "mHxQpOcW3O3zoHqc",
+            "r42": "RAEu9fESI7Kb3IsO",
+            "r43": "ZilkOLl2fqpMxTCK",
+            "r44": "uwF7IfVg4DTCrkEY",
+            "r45": "XtidrkdiZPuXrSD9",
+            "r46": "d0aLCaYUFBvm3A8D",
+            "r47": "wyaIb9XoOYTr8l56",
+            "r48": "8e3FhcBmlf4TobEP",
+            "r49": "mWZZ3GgXZeaIWKq4",
+            "r50": "uUbSTVqzPH0XUO5T",
+            "r51": "5bSHAIUf6NsGPtkl",
+            "r52": "lfEjfRS1T1xGw4Nt",
+            "r53": "ZOPIRA0fnXVSQo5D",
+            "r54": "5YHIGpIFC7xm5BQv",
+            "r55": "pjyyj4uVkJcwKtSK",
+            "r56": "IaEAcW8uwekpS8EW",
+            "r57": "Ru2TBxEYhuBx8Cn4",
+            "r58": "iuZDnxPMmNE2H8T6",
+            "r59": "0PNCNoYdxWJA8pJ1",
+            "r60": "vwv4akGBUkDSzVet",
+            "r61": "ZWZaNrksEIrvkw0a",
+            "r62": "C4bKdbAe1rGL4Xdu",
+            "r63": "nkBNqVm7dfv4L7Se",
+            "r64": "XTA2gczwQ6svM3JU",
+            "r65": "CBKVd5xeJTqFZhqN",
+            "r66": "0r2hvYBfdrLp1Fd0",
+            "r67": "ZWaPQw3J8v9irvsJ",
+            "r68": "EWeonowwk9JY7UDo",
+            "r69": "hD1NP45qwjxr51vQ",
+            "r70": "UAjsBmmS82j8Irw3",
+            "r71": "ndMPpWBt7TETFN5x",
+            "r72": "QcsbthzAbdnETOZB",
+            "r73": "JakRLX2zyPrI10Pb",
+            "r74": "NISfAAR2ECI2ioE1",
+            "r75": "yp8FBNHjXWojwg3H",
+            "r76": "697i67021D88RIbg",
+            "r77": "V8I6X6TZUHlrDUNk",
+            "r78": "6wy2JtIKZik32G27",
+            "r79": "lVi2h8AvOE8SF06p",
+            "r80": "Ip8GIZLR3f0TxRkW",
+            "r81": "hIuA8Rx1YcRVMf6H",
+            "r82": "g2YZ56OllRPkuGFf",
+            "r83": "mXz81hgLUolDq7wr",
+            "r84": "PENJ768OdQpKKg6w",
+            "r85": "qkGhdVs179LjB3MD",
+            "r86": "F2RKhsEiySWv0ffY",
+            "r87": "awMYuugY3Kj6pK5I",
+            "r88": "H2jCFkQSC4QJFhGH",
+            "r89": "kwTupIw3zfFK8gYu",
+            "r90": "EN4i27AKjAyfbUF3",
+            "r91": "ix7YwKfDHjgEBgHJ",
+            "r92": "kD7E2VQh2AeDciOo",
+            "r93": "5lUmyZ8nImFZofuu",
+            "r94": "dKC7BnQOxM3Zwouv",
+            "r95": "T5Xr0vE7z8MbaHbC",
+            "r96": "YHHrA8ToKRIS4AK6",
+            "r97": "a8wNHPfmQDhb2yBQ",
+            "r98": "sHwBoWQk8HnDDln1",
+            "r99": "XN7xFrup67y9XK9H"
+          }
+        },
+        "megadamage-effects": {
+          "id": "AqGWwoWXzijFs427",
+          "results": {
+            "r01": "ENq0mvm5iqtMh1ft",
+            "r02": "yVzV5Y0tNWSqPVpS",
+            "r03": "Vnfbw2I9XRvrjKQ0",
+            "r04": "qPV5sasqyDgWwNiW",
+            "r05": "kGOebdOLWOZBekvw",
+            "r06": "etnepA2VTtuv2iyc",
+            "r07": "ay9hN3EYsAJOKUeZ",
+            "r08": "gNqK1zdrt9AUacUg",
+            "r09": "kmZfxrotglCOUw8M",
+            "r10": "A3XHL5OaSekv3OF3"
+          }
+        },
+        "panic-check-calm-android": {
+          "id": "GCtYeCCQVQJ5M6SE",
+          "results": {
+            "r01": "HWOLLg9BaqHHTic6",
+            "r02": "rntpKYebltLa5OO7",
+            "r03": "FuB4kX2dhRCmmSnO",
+            "r04": "nKsdhexbHjfgB36n",
+            "r05": "z5nwGQENMCEP7GOM",
+            "r06": "DpEMe3Zwb48kNy7u",
+            "r07": "J2r7KvRISQuUj5wg",
+            "r08": "d6Wm36Qtcj7lGA4Y",
+            "r09": "7mC8inwvnsLOHH4u",
+            "r10": "V629RPnKA5wKx6n6",
+            "r11": "OhdDuQ8gMp4GBtcD",
+            "r12": "iwN6yTflt4D3roCN",
+            "r13": "MyJZnlKG0LJ59yWA",
+            "r14": "iNjsSW1iXWzpcCfy",
+            "r15": "vhrcho7GGbox9M5p",
+            "r16": "P35RZJfLqM8QPpvt",
+            "r17": "3rCcCnxz7Ez582ZW",
+            "r18": "t5iTm387wPsVrIAe",
+            "r19": "yZ8tnNN1HoaeycCz",
+            "r20": "zu59Rvvc8vegrtPN",
+            "r21": "qrkXSXkbn5oymjBl",
+            "r22": "ErmpxrA7QnjJ5QOO",
+            "r23": "OLJTaMVRK13dJpNl",
+            "r24": "ewJ6G0cFV00tq87l",
+            "r25": "GXYDv0D5ziopFB19",
+            "r26": "LNR14WhinNejIKvP",
+            "r27": "WBqcIfMznk4lvPgb",
+            "r28": "SU9ggXRsL88CNb6N"
+          }
+        },
+        "panic-check-calm-normal": {
+          "id": "MOYI6Ntj5OVFYk06",
+          "results": {
+            "r01": "DHvObevFoNX6o7Dc",
+            "r02": "d0Li0aJSeRsHZzAe",
+            "r03": "C5gfNr1IccewP9MP",
+            "r04": "7oGjaJ87muIkWXqj",
+            "r05": "NGDxlqtHo0hrg0a7",
+            "r06": "cnidPS821nyDmk3O",
+            "r07": "C7T1ZNN81SUwOLXX",
+            "r08": "tvVo2JPXGBq8EXtg",
+            "r09": "TLAoXEhAAp5elKQi",
+            "r10": "wT4c4kj33ehIfCdL",
+            "r11": "ERv7ngjr6h6PSJl2",
+            "r12": "BLhsVH6uXPsw9nUb",
+            "r13": "0kZQtWxO9P1voycZ",
+            "r14": "ToerE4a77WZvWJOS",
+            "r15": "GkdxvyW9kCKOcmnF",
+            "r16": "V3glomGRXiHjnoZj",
+            "r17": "8Sv4YzhD3Zl5eBJo",
+            "r18": "yUDq43zxZKgnCWwB",
+            "r19": "GJKxSWI2bxXyCNxT",
+            "r20": "TOqb2JnInEfFipaR",
+            "r21": "AP8XSxwSK8fugXyc",
+            "r22": "HylewV0kpxfLH6T9",
+            "r23": "KXtQ6JklVOBolFHf",
+            "r24": "C0rWCutnv8a4X46J",
+            "r25": "jIaGDvdasADYuAw1",
+            "r26": "sCo5Gi5YZJJF4Gp3",
+            "r27": "QssxAQ8lw7rba9Us",
+            "r28": "FmhTD6OzbqsJsaD3"
+          }
+        },
+        "panic-check-stress-android": {
+          "id": "aBnY19jlhPXzibCt",
+          "results": {
+            "r01": "Uf9xMdlmk2RS9ev8",
+            "r02": "THtp1wYhy7Fmggo2",
+            "r03": "jqRITpf8XIo4LX4y",
+            "r04": "dSTOHakBOy4i4nFx",
+            "r05": "fYipAsps5SAM3API",
+            "r06": "hr4dgIk8AxDJrs9A",
+            "r07": "lGlPWoSKPLuQiFNv",
+            "r08": "qP73NbUa2ybPiS3B",
+            "r09": "1QRCUzUTpJzzUEju",
+            "r10": "2nVqX6tEjYSvwMEL",
+            "r11": "NPfdalo4T5YQGgOa",
+            "r12": "AlC7dIwBOtFBoOFh",
+            "r13": "liVa6bdaYwBAFLtG",
+            "r14": "5mSv5jcvVDyAKKqz",
+            "r15": "uH4WMyycbJSM66kk",
+            "r16": "0PNiAaof10ibaecR",
+            "r17": "dzviNQmak3WjrhoU",
+            "r18": "0G33UqnAIHYY2lw2",
+            "r19": "YdrRbPU8fVlKkFvu",
+            "r20": "DvRejWzlmoS364xm"
+          }
+        },
+        "panic-check-stress-normal": {
+          "id": "ypcoikqHLhnc9tNs",
+          "results": {
+            "r01": "C3v1mSfDXIklIAUB",
+            "r02": "U9WjdvVrVvGEWA9e",
+            "r03": "qrw2SQ9MMwmmz5U1",
+            "r04": "xfR9AtZFClqK4Tkk",
+            "r05": "6O6QNEIIVFSTifl6",
+            "r06": "HclQqfxT8Q9NShBa",
+            "r07": "j1jjGls1snJ3uCWS",
+            "r08": "qnBXWm15pc7Kn7bf",
+            "r09": "5YQKw63GB18XUYDp",
+            "r10": "FpTmgA9FxG4W1x0a",
+            "r11": "6qInELrRmGGogpkW",
+            "r12": "SjCav3ZLlpQ9fyo3",
+            "r13": "2aJpNteB4MaFIbVn",
+            "r14": "g6JDKtnXUFWlTPMV",
+            "r15": "wFbLrig0F2WSM6hM",
+            "r16": "mN1KTYh1TcDKLMjj",
+            "r17": "fFp8wFcomRNUgtdP",
+            "r18": "RI06IV89j3Bxtxkz",
+            "r19": "zJkYrssfrdWBSeRm",
+            "r20": "uluHEycHi6Ul2GMj"
+          }
+        }
+      }
+    },
+    "triggered": {
+      "compendium": "macros_triggered_1e",
+      "documentType": "Macro",
+      "documents": {
+        "bankruptcy-save": {
+          "id": "S6sYho89Bp5tMlsJ"
+        },
+        "bankruptcy-save-minus": {
+          "id": "5ewwn221Wo1JQ98k"
+        },
+        "bankruptcy-save-plus": {
+          "id": "sc6UPaBF5A4Yl27h"
+        },
+        "bleeding-wound": {
+          "id": "1DD8i6eCS6nx2Ip0"
+        },
+        "bleeding-wound-minus": {
+          "id": "tFcWNddtZvlv7tsg"
+        },
+        "bleeding-wound-plus": {
+          "id": "xr2o2PU5vdrR6fxQ"
+        },
+        "blunt-force-wound": {
+          "id": "TAjlQjA5AAy3qYL3"
+        },
+        "blunt-force-wound-minus": {
+          "id": "oL3GH0HoEPlP8vzG"
+        },
+        "blunt-force-wound-plus": {
+          "id": "k0zf8ZGivRguc0wb"
+        },
+        "body-save": {
+          "id": "X3gqTFFwMe7AudiS"
+        },
+        "body-save-minus": {
+          "id": "ItHLy3URKFQVLipe"
+        },
+        "body-save-plus": {
+          "id": "IG2NQgEnqvPjiV5C"
+        },
+        "combat-check": {
+          "id": "9FOBS5lQCwtVtrgh"
+        },
+        "combat-check-minus": {
+          "id": "vxcDSg3xiAxDYQIb"
+        },
+        "combat-check-plus": {
+          "id": "5hlvK0p68imanBmy"
+        },
+        "death-save-minus": {
+          "id": "E2bDXSVfH57BnGEI"
+        },
+        "death-save-plus": {
+          "id": "KHL2lJ6RRvhupFZ3"
+        },
+        "fear-save": {
+          "id": "R2KizR1soAhFYDZm"
+        },
+        "fear-save-minus": {
+          "id": "wVhApjRP5MXue2kh"
+        },
+        "fear-save-plus": {
+          "id": "DadBoZJblU4uBY5E"
+        },
+        "fire-explosives-wound": {
+          "id": "bZi1qKmcKLFvnhZ2"
+        },
+        "fire-explosives-wound-minus": {
+          "id": "dJnQKDf0AlwK27QD"
+        },
+        "fire-explosives-wound-plus": {
+          "id": "7rYhbDAaFeok1Daq"
+        },
+        "gore-massive-wound": {
+          "id": "S9nnHKWYGSQmjQdp"
+        },
+        "gore-massive-wound-minus": {
+          "id": "DuVjNlE4lsnR7Emc"
+        },
+        "gore-massive-wound-plus": {
+          "id": "eQPuDgwv8evetFIk"
+        },
+        "gunshot-wound": {
+          "id": "XgCOLv9UunBddUyW"
+        },
+        "gunshot-wound-minus": {
+          "id": "fnVATRHYJEUlS3pR"
+        },
+        "gunshot-wound-plus": {
+          "id": "LTpa1ZYVZl4m9k6z"
+        },
+        "intellect-check": {
+          "id": "DMjVDa7vUq7xGpn8"
+        },
+        "intellect-check-minus": {
+          "id": "ln3OpNFK4mN4Ym5q"
+        },
+        "intellect-check-plus": {
+          "id": "DXfAjkwJVwSCOqZ1"
+        },
+        "lower-minimum-stress-to-2": {
+          "id": "hF2Vnb8Pzn7geCcJ"
+        },
+        "lower-wounds-to-0": {
+          "id": "YLitGkgwIi8GqFAg"
+        },
+        "maintenance-check": {
+          "id": "8euTBbjY9uDQR13K"
+        },
+        "maintenance-check-minus": {
+          "id": "C04VbNoj8LgfY8QK"
+        },
+        "maintenance-check-plus": {
+          "id": "g5hyNqBioTNe5TGx"
+        },
+        "minus-1-all-stats-saves": {
+          "id": "V1PPeCwryXNQAkUe"
+        },
+        "minus-1-health": {
+          "id": "vwpxRBbMwjfDCQVG"
+        },
+        "minus-1-hull": {
+          "id": "uPY19Y49bGCLGK3N"
+        },
+        "minus-1-maximum-wound": {
+          "id": "qD8Mvegkf3zVarFr"
+        },
+        "minus-1-minimum-stress": {
+          "id": "yZE4YhJ5E13zjDXG"
+        },
+        "minus-1-stress": {
+          "id": "qbq694JMbXeZrHjj"
+        },
+        "minus-1-upgrade": {
+          "id": "06NSvDYTtmkeUtLq"
+        },
+        "minus-1-wound": {
+          "id": "p7tp3aMkcVLAhiD5"
+        },
+        "minus-10-health": {
+          "id": "C9iTlPOpROuuYi2F"
+        },
+        "minus-1d10-all-stats-saves": {
+          "id": "2MuANcdgp2g8SDlF"
+        },
+        "minus-1d10-battle": {
+          "id": "X3cL9eS2HOPxhLH5"
+        },
+        "minus-1d10-body-save": {
+          "id": "nT2AsZwrYhJyxizF"
+        },
+        "minus-1d10-health": {
+          "id": "w3ttEaXP7yp25M5Q"
+        },
+        "minus-1d10-intellect": {
+          "id": "oYSjanH7BmmweIpp"
+        },
+        "minus-1d10-maximum-stress": {
+          "id": "J61Srent4vEthGAn"
+        },
+        "minus-1d10-strength": {
+          "id": "V3L1iRkWwyTzCZK9"
+        },
+        "minus-1d10-stress": {
+          "id": "jHyqXb2yDFTNWxpy"
+        },
+        "minus-1d10-systems": {
+          "id": "oDftFxRKkCQRNY2O"
+        },
+        "minus-1d5-all-stats-saves": {
+          "id": "SeMStXQGIaeiLwvw"
+        },
+        "minus-1d5-maximum-health": {
+          "id": "yYujq1tBZPqGrQlh"
+        },
+        "minus-1d5-oxygen": {
+          "id": "u7TchSo3qutnzaKF"
+        },
+        "minus-1d5-sanity-save": {
+          "id": "xNLdumzjtYwQmBeP"
+        },
+        "minus-1d5-stress": {
+          "id": "AvKZE5IFubIaAIUy"
+        },
+        "minus-2-maximum-stress": {
+          "id": "eoGfi5JdPASUUJU4"
+        },
+        "minus-2d10-body-save": {
+          "id": "ISd2nEMYvWCPQpl0"
+        },
+        "minus-2d10-health": {
+          "id": "pS6A6OklvM6S3bvO"
+        },
+        "minus-2d10-thrusters": {
+          "id": "jmOh8n2ps0YIeBC0"
+        },
+        "minus-3d10-health": {
+          "id": "nECUu4pcwsNTE8C5"
+        },
+        "minus-50-crew-capacity": {
+          "id": "DUuRY7kHKd7n5luv"
+        },
+        "morale-check": {
+          "id": "RZdvjsMBaSKcs3Ot"
+        },
+        "morale-check-minus": {
+          "id": "wrfA9gVG0OdZhvOT"
+        },
+        "morale-check-plus": {
+          "id": "vCkDdHtJJmYkq3wK"
+        },
+        "panic-check-minus": {
+          "id": "EwZbGIwHB3JuRvx5"
+        },
+        "panic-check-plus": {
+          "id": "kVNV9vZPY0j77VTo"
+        },
+        "plus-1-anhedonia": {
+          "id": "hzxRycVkMhNS6gyJ"
+        },
+        "plus-1-bit-rot": {
+          "id": "YYmZYNe8RWvhDFDz"
+        },
+        "plus-1-bleeding": {
+          "id": "BH7tgbDVH6jdcZ4u"
+        },
+        "plus-1-broken": {
+          "id": "8VoaVAl39Xs0pDcr"
+        },
+        "plus-1-coward": {
+          "id": "b0jk4XwP7by8a3uc"
+        },
+        "plus-1-death-wish": {
+          "id": "Yh2CTFXfWMe9o2lv"
+        },
+        "plus-1-deflated": {
+          "id": "2aD5avpn35wdzdm5"
+        },
+        "plus-1-deviant-logic-core": {
+          "id": "6PU4hmYOjHk4N0SY"
+        },
+        "plus-1-doomed": {
+          "id": "8IPhlAuMEQJC6zxA"
+        },
+        "plus-1-emotional-detachment": {
+          "id": "tdQu2wnAXXXcXfrO"
+        },
+        "plus-1-escapism": {
+          "id": "sSYIhNQhEiWTs1ip"
+        },
+        "plus-1-ethical-directive-failure": {
+          "id": "WAyrlgcyR4I19Bqv"
+        },
+        "plus-1-ethical-directive-misread": {
+          "id": "9sKO5WUBwCW1YbR3"
+        },
+        "plus-1-faulty-heuristics": {
+          "id": "zLRsweb35Lw0NMev"
+        },
+        "plus-1-fried-logic-core": {
+          "id": "NDjuBKnMVPgJePNq"
+        },
+        "plus-1-frightened": {
+          "id": "BEQvMZ5N7QOBqnId"
+        },
+        "plus-1-hallucinations": {
+          "id": "Z7XPRgpTQqqi4M1n"
+        },
+        "plus-1-haunted": {
+          "id": "Eo56QFyTeoCcFmD8"
+        },
+        "plus-1-hypervigilance": {
+          "id": "dSQgoBV6zSeQ1tqF"
+        },
+        "plus-1-insane": {
+          "id": "FTB2KHEbe7ApCilw"
+        },
+        "plus-1-killswitch-engaged": {
+          "id": "tQltbIC9ahDwNsTp"
+        },
+        "plus-1-losing-your-grip": {
+          "id": "4Ak3WH8lzzkds6yo"
+        },
+        "plus-1-loss-of-confidence": {
+          "id": "54Krt3opbJe1WATH"
+        },
+        "plus-1-minimum-stress": {
+          "id": "BmEHWH7YxV9qb21p"
+        },
+        "plus-1-nightmares": {
+          "id": "AZbaGWu663wio9mI"
+        },
+        "plus-1-panicky": {
+          "id": "lto7Vq1jb7DBScuu"
+        },
+        "plus-1-phobia": {
+          "id": "RTL29CqdaAriGSTS"
+        },
+        "plus-1-psychotic-episodes": {
+          "id": "er0IZXOSuF28Po1h"
+        },
+        "plus-1-rampancy": {
+          "id": "wXobG3sUiQMLtGQs"
+        },
+        "plus-1-recurring-nightmares": {
+          "id": "AqZ9JqENaPSmFQbK"
+        },
+        "plus-1-sanity-save": {
+          "id": "xQQmaFbpFFrCSyji"
+        },
+        "plus-1-severe-anxiety": {
+          "id": "LAXDz9nMvSSO3qzZ"
+        },
+        "plus-1-social-anxiety": {
+          "id": "HhofJYVhx3ovuyAw"
+        },
+        "plus-1-software-bloat": {
+          "id": "L4gRfMiEaxm3Xda5"
+        },
+        "plus-1-spiraling": {
+          "id": "3AjUWUSRvYy8Mwji"
+        },
+        "plus-1-stress": {
+          "id": "dvJR9DYXI2kV0BbR"
+        },
+        "plus-1-suspicious": {
+          "id": "5K7wZEvEXjOH4IM7"
+        },
+        "plus-1-the-shakes": {
+          "id": "DsmTMGHs92cmwlVk"
+        },
+        "plus-1-threat-assessment-failure": {
+          "id": "djzdZtIjROXN1dVB"
+        },
+        "plus-1-turing-test-failure": {
+          "id": "3nrEYqwkhMs1Ch5v"
+        },
+        "plus-1-twitchy": {
+          "id": "Sez3VnhWliRmsxze"
+        },
+        "plus-1-vocalization-failure": {
+          "id": "bJWFhod0YA8ln8H8"
+        },
+        "plus-1-worship-danger": {
+          "id": "wHcA2ub6CobipsfR"
+        },
+        "plus-1d10-combat": {
+          "id": "hNdUPkEYauPuCHcm"
+        },
+        "plus-1d10-fear-save": {
+          "id": "06j3tzX29f4pwYwh"
+        },
+        "plus-1d10-health": {
+          "id": "f8Q9FCZsnUyAbczE"
+        },
+        "plus-1d10-maximum-stress": {
+          "id": "8om45xDZUwCLNTNq"
+        },
+        "plus-1d10-stress": {
+          "id": "k2TtLFOG9mGaWVx3"
+        },
+        "plus-1d5-stress": {
+          "id": "luNKvwmm2tjUJhT6"
+        },
+        "plus-2-bleeding": {
+          "id": "IIVNXuhckFQfzXah"
+        },
+        "plus-2-minimum-stress": {
+          "id": "bFPoNLOGusT1ocqt"
+        },
+        "plus-2-stress": {
+          "id": "6jjFVScyiaBvN8kX"
+        },
+        "plus-2d10-body-save": {
+          "id": "X8QFfHssG9ievzau"
+        },
+        "plus-2d10-speed": {
+          "id": "0K2qqtpYr4ZN7I87"
+        },
+        "plus-2d10-strength": {
+          "id": "YddW6GtkOZ4bWFBo"
+        },
+        "plus-3-bleeding": {
+          "id": "LawygQJAPu8XEnSc"
+        },
+        "plus-4-bleeding": {
+          "id": "QkCJK7Vmda5bGAA7"
+        },
+        "plus-5-bleeding": {
+          "id": "CZ2gqnRHcOpCLlG0"
+        },
+        "plus-6-bleeding": {
+          "id": "Tx19z2BhTY6onldp"
+        },
+        "plus-7-bleeding": {
+          "id": "ZJaVFBB0Kslv1k4f"
+        },
+        "raise-maximum-stress-to-85": {
+          "id": "Sdad2njbBKNpOCO8"
+        },
+        "rest-save-minus": {
+          "id": "AM9nIK5l7mC5Ho8C"
+        },
+        "rest-save-plus": {
+          "id": "ZaChBhkd4yU6hoWx"
+        },
+        "roll-1d10-on-android-panic-table": {
+          "id": "yPGx2mXToJ2iJPbY"
+        },
+        "roll-on-android-panic-table": {
+          "id": "Jek7hKAMDevKxlZR"
+        },
+        "roll-on-maintenance-issues-table": {
+          "id": "hRapiXGVW8WZQH12"
+        },
+        "roll-on-panic-table": {
+          "id": "2DnKZpyj03HvpeCy"
+        },
+        "sanity-save": {
+          "id": "TkMfT4RIczQb56j2"
+        },
+        "sanity-save-minus": {
+          "id": "MdmZ31pKu1q006z7"
+        },
+        "sanity-save-plus": {
+          "id": "p6JhfjAF7OESZiFM"
+        },
+        "speed-check": {
+          "id": "uxrWvijfqDVnaXMj"
+        },
+        "speed-check-minus": {
+          "id": "QZHhiDAr7owozxdf"
+        },
+        "speed-check-plus": {
+          "id": "WzsVrS0brblqWhMR"
+        },
+        "starting-condition": {
+          "id": "g5FXFSnlyU5KmwCz"
+        },
+        "starting-condition-minus": {
+          "id": "33LAJdyYr0xi4TdF"
+        },
+        "starting-condition-plus": {
+          "id": "TnuezRDCUlw4cDvG"
+        },
+        "strength-check": {
+          "id": "B9qe0UHmKoal9eub"
+        },
+        "strength-check-minus": {
+          "id": "XlfEeDblsp7fTzUx"
+        },
+        "strength-check-plus": {
+          "id": "9X5WPlXiZn9EqF9f"
+        },
+        "take-bleeding-damage": {
+          "id": "aur5HWqZJNspwdCd"
+        }
+      }
+    }
+  },
+  "retired": []
+}
