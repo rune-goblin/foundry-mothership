@@ -43,6 +43,16 @@ const DYNAMIC: Entry[] = [
     pattern: /^netHP\.(min|label)$/,
     reason: '_deriveCharacter/_deriveCreature write netHP as an object literal, not by path',
   },
+  {
+    pattern: /^stats\.[a-z]+\.enabled$/,
+    reason: 'CreatureSheet and CreatureSettings bind system.stats.<stat>.enabled by computed key',
+  },
+  {
+    // The other four creature stats are still named literally by the Handlebars character sheet,
+    // which shares them. When S7 converts it this entry widens to every stat.
+    pattern: /^stats\.(instinct|loyalty)\.value$/,
+    reason: 'CreatureSheet binds system.stats.<stat>.value by computed key',
+  },
 ];
 
 /**

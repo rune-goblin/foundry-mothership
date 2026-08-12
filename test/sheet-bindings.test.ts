@@ -6,6 +6,11 @@
 // Only unprefixed names are checked. `armor.system.equipped` and friends on the actor sheets
 // address an *embedded item*, not the actor, and are handled by click handlers rather than the
 // form -- checking them against the actor schema would be wrong.
+//
+// A Svelte sheet passes the name down as a prop (`rightName="system.health.max"`) and builds
+// some of them from a key (`name="system.stats.{stat.key}.value"`), so any attribute whose
+// literal value is a `system.` path counts, and an interpolated segment stands for any key at
+// that level.
 import { describe, it, expect } from 'vitest';
 import { readFileSync, existsSync, globSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -33,8 +38,8 @@ const OWN_COMPONENTS: Record<string, string[]> = {
 };
 
 // templates/item/ is gone -- the class sheet was its last file -- but the path stays listed for
-// the Actor half, where two sheets are still Handlebars. A missing file is skipped, an empty
-// list fails.
+// the Actor half, where the character sheet is still Handlebars. A missing file is skipped, an
+// empty list fails.
 const SOURCES: Record<string, Record<string, string[]>> = {
   Item: Object.fromEntries(
     Object.keys(ITEM_MODELS).map((type) => [
@@ -48,24 +53,30 @@ const SOURCES: Record<string, Record<string, string[]>> = {
   ),
   Actor: {
     character: ['templates/actor/actor-sheet.html'],
-    creature: ['templates/actor/creature-sheet.html'],
-    // Both ship sheets are registered; SBT is the default, the other is still selectable.
-    ship: ['templates/actor/ship-sheet.html', 'templates/actor/ship-sheet-sbt.html'],
+    creature: [
+      'module/ui/creature/CreatureSheet.svelte',
+      'module/ui/creature/CreatureSettings.svelte',
+      'module/ui/parts/sections/HealthBlock.svelte',
+    ],
   },
 };
 
+const BOUND = /(^|\s)[A-Za-z][A-Za-z0-9_-]*=(?:"(system\.[^"]*)"|\{`(system\.[^`]*)`\})/g;
+
 const boundPaths = (source: string): string[] => {
   const live = source.replace(/<!--[\s\S]*?-->/g, '');
-  return [...live.matchAll(/(^|[\s"'])name="system\.([A-Za-z0-9_.-]+)"/g)].map((m) => m[2]);
+  return [...live.matchAll(BOUND)]
+    .map((match) => (match[2] ?? match[3]).slice('system.'.length))
+    .map((path) => path.replace(/\$?\{[^}]*\}/g, '*'));
 };
 
-const resolves = (defaults: Record<string, unknown>, path: string): boolean => {
-  let cursor: unknown = defaults;
-  for (const key of path.split('.')) {
-    if (typeof cursor !== 'object' || cursor === null || !(key in cursor)) return false;
-    cursor = (cursor as Record<string, unknown>)[key];
-  }
-  return true;
+const resolves = (node: unknown, path: string[]): boolean => {
+  if (!path.length) return true;
+  if (typeof node !== 'object' || node === null) return false;
+  const record = node as Record<string, unknown>;
+  const [key, ...rest] = path;
+  if (key === '*') return Object.values(record).some((child) => resolves(child, rest));
+  return key in record && resolves(record[key], rest);
 };
 
 describe.each([
@@ -80,7 +91,7 @@ describe.each([
 
       const unbacked = sources.flatMap((path) =>
         boundPaths(readFileSync(fileURLToPath(new URL(path, root)), 'utf8'))
-          .filter((p) => !resolves(defaults, p))
+          .filter((p) => !resolves(defaults, p.split('.')))
           .map((p) => `${path}: system.${p}`),
       );
       expect(unbacked).toEqual([]);

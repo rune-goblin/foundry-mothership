@@ -560,8 +560,14 @@ p {
   border: 1px solid #000;
 }
 
+/* Foundry frames every image in an AppV1 window through `body.game .app img`. An ApplicationV2
+   window is `.application`, so a converted sheet never sees that rule -- the row thumbnails kept
+   their border for twelve years and this is what keeps it. */
 .mosh .items-list .item img {
   display: block;
+  box-sizing: border-box;
+  border: 1px solid #000;
+  border-radius: 2px;
 }
 
 .mosh .items-list .item-name {

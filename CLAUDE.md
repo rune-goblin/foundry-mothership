@@ -24,7 +24,8 @@ is delegated and gated (its ten standing rules and review gate are current; its 
 superseded). `MODERNIZATION.md` is the **record**: §10 the item-sheet conventions, §20 the
 component layer, §22 the windows, §24 phase 0, §25 the PSG cut, §26 the content pipeline, §27 the
 TypeScript catalogs and the generated content, §28 the class-adjustment schema and the last AppV1
-item sheet, §29 the character generator on a draft store. Update it as work lands.
+item sheet, §29 the character generator on a draft store, §30 the creature sheet and the section
+tier. Update it as work lands.
 
 **Ships, the Calm/android panic variants and all unsourced content were cut** (§25) and live on
 the pushed **`archive/pre-psg-cut`** branch and tag. Nothing was destroyed; ships return as an
@@ -36,12 +37,13 @@ Don't fix component architecture piecemeal mid-phase — note it in §23 instead
 
 | Done | Not done |
 |---|---|
-| Vite build, TS tooling, CI | 2 AppV1 sheet classes (actor, creature) |
-| DataModels for the 9 surviving types | 11 Handlebars templates, none of them an item |
-| Packs generated from the book, 0e removed | 2 sheets left to convert |
-| Svelte 5 wired into build, check, vitest | conditions do not affect any roll — S8 |
+| Vite build, TS tooling, CI | 1 AppV1 sheet class (`actor-sheet.js`) — S7 |
+| DataModels for the 9 surviving types | 10 Handlebars templates, 1 of them a sheet |
+| Packs generated from the book, 0e removed | conditions do not affect any roll — S8 |
+| Svelte 5 wired into build, check, vitest | |
 | **Every item sheet on ApplicationV2 + Svelte** (§28) | |
-| Shared components in `module/ui/parts/` | |
+| **The creature sheet, on shared sections** (§30) | |
+| Shared components in `module/ui/parts/`, sections in `parts/sections/` | |
 | 0e / `firstEdition` rules removed | |
 | `creature-settings` on ApplicationV2 (§24) | |
 | The PSG cut — 13,337 lines removed (§25) | |

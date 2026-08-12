@@ -10,9 +10,9 @@ the book instead. What survives from it is noted at the end.
 
 | | |
 |---|---|
-| **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26), **S2b** the TypeScript catalogs and **S3** the content (§27), **S4** the class sheet and `base_adjustment` (§28), **S5** the generator on a draft store and `selected_adjustment` (§29) |
-| **Next** | **S6 — creature-sheet.** The smaller of the two actor sheets, and where the shared sections land before the player-visible one depends on them. |
-| **Green at** | `check` 0/0 (233 files) · **234 vitest** · **74 Playwright** · `build` |
+| **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26), **S2b** the TypeScript catalogs and **S3** the content (§27), **S4** the class sheet and `base_adjustment` (§28), **S5** the generator on a draft store and `selected_adjustment` (§29), **S6** the creature sheet and the section tier (§30) |
+| **Next** | **S7 — actor-sheet.** The last AppV1 class in the system, and the last sheet template. It composes S6's sections. |
+| **Green at** | `check` 0/0 (241 files) · **249 vitest** · **87 Playwright** · `build` |
 | **Preserved** | Everything cut is on the pushed `archive/pre-psg-cut` branch **and** tag |
 
 What the system ships today: 2 actor types (character, creature), 7 item types, and **274
@@ -327,8 +327,8 @@ one less actor type in every schema test.
 | S3 | generate the book | ✅ §27 |
 | S4 | class-sheet + `base_adjustment` | ✅ §28 |
 | S5 | actor-generator on a draft store | ✅ §29 |
-| S6 | creature-sheet | **next** |
-| S7 | actor-sheet — last, most player-visible | |
+| S6 | creature-sheet | ✅ §30 |
+| S7 | actor-sheet — last, most player-visible | **next** |
 | S8 | conditions contribute advantage/disadvantage to rolls | |
 | S9 | trailing, ungated | |
 
@@ -424,7 +424,23 @@ row must yield three items.
 
 ---
 
-### S6 — creature-sheet
+### S6 — creature-sheet ✅ §30
+
+**Landed.** Four things came out other than as written, and S7 inherits them:
+
+- **`ItemPanel` needed no `hideWeight` flag.** With the columns as data and the row as a snippet,
+  the caller drops the Weight column itself. Decision 1's falsifier passed with the taxonomy props
+  alone; the shared part is the frame, which is the part that was byte-identical to begin with.
+- **`condition.treatment.html` and `weapon.ranges.value` stay** — the character sheet still reads
+  both, so those two deletions ride S7 (rule 12). Only `creature.xp.html` had its last reader here.
+- **The converted sheets have been quietly losing their image borders.** `body.game .app img` does
+  not reach an ApplicationV2 window. Caught by the before/after screenshot, fixed in `css/mosh.css`
+  for every sheet at once.
+- **Five bugs, including two the sheet had always had**: it opened on a tab no panel declares, so
+  the body was blank, and the notes tab never rendered the notes because `getData()` did not
+  enrich them.
+
+The brief as it stood follows, because S7 builds on it.
 
 `module/actor/creature-sheet.js` (661 lines) + `templates/actor/creature-sheet.html` (434). The
 settings window it used to carry is already ApplicationV2 (§24).

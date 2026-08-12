@@ -9,29 +9,28 @@ import { test, expect } from './fixtures/foundry-clients.ts';
 // The swarm arithmetic is also asserted in data-models.spec.ts, but there it is reproduced inside
 // evaluate() -- so it covers the schema, not this window. These drive the window itself.
 
-// AppV1 windows are .window-app and V2 windows are .application, so this cannot collide with the
-// creature sheet underneath, which carries the same mosh/sheet/actor/creature classes.
-const SETTINGS = '.application.creature';
+// The creature sheet underneath is now an ApplicationV2 too, carrying the same
+// mosh/sheet/actor/creature classes -- `creature-settings` is what tells the two apart.
+const SETTINGS = '.application.creature-settings';
 
-// AppV1's render() resolves before its DOM injection finishes, and its late _render bumps the
-// shared z-index counter. Wait for the sheet to actually be on screen before opening the settings
-// window over it, or the settings window lands underneath and its inputs cannot be clicked.
+// Wait for the sheet to actually be on screen before opening the settings window over it, or the
+// settings window lands underneath and its inputs cannot be clicked.
 const openSettings = async (page: Page, system: Record<string, unknown> = {}) => {
-  const uuid = await page.evaluate(async (s: Record<string, unknown>) => {
+  const { uuid, appId } = await page.evaluate(async (s: Record<string, unknown>) => {
     const doc = await (window as any).Actor.create({
       name: '__e2e_creature_settings',
       type: 'creature',
       system: s,
     });
     await doc.sheet.render(true);
-    return doc.uuid as string;
+    return { uuid: doc.uuid as string, appId: doc.sheet.id as string };
   }, system);
 
-  await expect(page.locator('.window-app.creature')).toBeVisible();
+  await expect(page.locator(`#${appId}`)).toBeVisible();
 
   await page.evaluate(async (u: string) => {
     const doc = await (window as any).fromUuid(u);
-    doc.sheet._onConfigureCreature({ preventDefault: () => {} });
+    doc.sheet.configureCreature();
   }, uuid);
 
   await expect(page.locator(SETTINGS)).toBeVisible();

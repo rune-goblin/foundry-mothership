@@ -22,8 +22,18 @@ import TabPanel from '../module/ui/parts/TabPanel.svelte';
 import CircleStats from '../module/ui/parts/CircleStats.svelte';
 import CircleStat from '../module/ui/parts/CircleStat.svelte';
 import MainStat from '../module/ui/parts/MainStat.svelte';
+import MinMaxField from '../module/ui/parts/MinMaxField.svelte';
+import PipTrack from '../module/ui/parts/PipTrack.svelte';
+import RollableStat from '../module/ui/parts/RollableStat.svelte';
+import ArmorBlock from '../module/ui/parts/sections/ArmorBlock.svelte';
+import HealthBlock from '../module/ui/parts/sections/HealthBlock.svelte';
+import ItemPanel from '../module/ui/parts/sections/ItemPanel.svelte';
 import { onActivate } from '../module/ui/parts/activate.js';
 import { dropTarget } from '../module/ui/parts/drop-target.js';
+
+// The sections caption themselves; the primitives take their labels as props. `localize` is a
+// one-line wrapper on game.i18n, which jsdom has no reason to provide -- echo the key back.
+(globalThis as any).game = { i18n: { localize: (key: string) => key } };
 
 const mounted: Array<Record<string, unknown>> = [];
 
@@ -213,6 +223,141 @@ describe('ItemCell', () => {
     press(el, 'Escape');
     expect(onclick).toHaveBeenCalledTimes(2);
   });
+
+  it('is the black name pill on request, and wears the roll hover cue', () => {
+    const el = render(ItemCell, { children: text('Wrench'), variant: 'name', roll: true })
+      .firstElementChild!;
+    expect([...el.classList]).toEqual(['skill-name', 'list-roll']);
+  });
+
+  // The +/- cells: left click adds, right click removes. Enter is the left click's twin; a
+  // right click has none, so the key handler must not fire it twice.
+  it('takes a right-click handler beside the left one', () => {
+    const onclick = vi.fn();
+    const oncontextmenu = vi.fn();
+    const el = render(ItemCell, { children: text('3'), onclick, oncontextmenu }).firstElementChild!;
+
+    (el as HTMLElement).click();
+    el.dispatchEvent(new window.MouseEvent('contextmenu', { bubbles: true }));
+    press(el, 'Enter');
+
+    expect(onclick).toHaveBeenCalledTimes(2);
+    expect(oncontextmenu).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('MinMaxField', () => {
+  it('is the label, the two inputs either side of the slant, and their captions', () => {
+    const el = render(MinMaxField, {
+      label: 'Health',
+      name: 'system.health.value',
+      value: 7,
+      rightName: 'system.health.max',
+      rightValue: 10,
+      leftLabel: 'Current',
+      rightLabel: 'Maximum',
+    }).firstElementChild!;
+
+    expect([...el.classList]).toEqual(['resource', 'healthspread', 'minmaxtopstat']);
+
+    const caption = el.querySelector('label')!;
+    expect([...caption.classList]).toEqual(['resource-label', 'minmaxtext']);
+    expect(caption.hasAttribute('role')).toBe(false);
+
+    const wrapper = el.querySelector('.minmaxwrapper')!;
+    const [left, right] = [...wrapper.querySelectorAll('input')];
+    expect(left.className).toBe('maxhealth-input darkGreyText');
+    expect([left.getAttribute('name'), left.value]).toEqual(['system.health.value', '7']);
+    expect([right.getAttribute('name'), right.value]).toEqual(['system.health.max', '10']);
+    expect(wrapper.querySelector('.slant')).not.toBeNull();
+
+    expect([...el.querySelectorAll('.healthmaxtext')].map((n) => n.textContent)).toEqual([
+      'Current',
+      'Maximum',
+    ]);
+  });
+
+  it('a rollable caption activates, and takes the class that names the roll', () => {
+    const onroll = vi.fn();
+    const caption = render(MinMaxField, {
+      label: 'Stress',
+      labelClass: 'rollable stress-roll',
+      onroll,
+    }).querySelector('label')!;
+
+    expect([...caption.classList]).toEqual([
+      'resource-label',
+      'minmaxtext',
+      'rollable',
+      'stress-roll',
+    ]);
+    caption.click();
+    press(caption, ' ');
+    expect(onroll).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('RollableStat', () => {
+  it('is the .rollable label, keyed and activatable', () => {
+    const onroll = vi.fn();
+    const el = render(RollableStat, {
+      label: 'Combat',
+      key: 'combat',
+      class: 'creaturestat',
+      onroll,
+    }).firstElementChild!;
+
+    expect(el.tagName).toBe('SPAN');
+    expect([...el.classList]).toEqual([
+      'ability-mod',
+      'stat-roll',
+      'rollable',
+      'creaturestat',
+    ]);
+    expect((el as HTMLElement).dataset).toMatchObject({ key: 'combat', label: 'Combat' });
+    expect(el.textContent!.trim()).toBe('Combat');
+
+    (el as HTMLElement).click();
+    press(el, 'Enter');
+    expect(onroll).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('PipTrack', () => {
+  it('fills the first `value` circles and leaves the rest empty', () => {
+    const target = render(PipTrack, { count: 5, value: 2 });
+    expect([...target.children].map((n) => n.className)).toEqual([
+      'circle-f',
+      'circle-f',
+      'circle',
+      'circle',
+      'circle',
+    ]);
+  });
+
+  it('captions a milestone pip and darkens its text once filled', () => {
+    const target = render(PipTrack, {
+      count: 5,
+      value: 5,
+      milestones: { 5: { label: 'Trained', left: -54 } },
+    });
+    const caption = target.querySelector('.skill_training_text')! as HTMLElement;
+
+    expect(caption.textContent!.trim()).toBe('Trained');
+    expect(caption.getAttribute('style')).toContain('left: -54px');
+    expect(caption.getAttribute('style')).toContain('color: black');
+    expect(caption.parentElement!.getAttribute('style')).toContain('background: black');
+  });
+
+  // The condition treatment track is three Font Awesome circles, not divs.
+  it('renders the icon variant as solid and outline glyphs', () => {
+    const target = render(PipTrack, { count: 3, value: 1, variant: 'icon' });
+    expect([...target.children].map((n) => n.className)).toEqual([
+      'fas fa-circle',
+      'far fa-circle',
+      'far fa-circle',
+    ]);
+  });
 });
 
 describe('ItemControls and ItemControl', () => {
@@ -386,6 +531,108 @@ describe('CircleStat', () => {
     const target = render(CircleStat, { name: 'system.supplies.oxygen.value', value: 4 });
     expect(target.children).toHaveLength(1);
     expect(target.querySelector('.circlestatlabel')).toBeNull();
+  });
+});
+
+// The sections are the tier above the primitives: shared between the two actor sheets, composed
+// out of the parts above, and captioned from lang/. Decision 1's falsifier is the prop count --
+// a section needing more than about three divergence props should be split back apart.
+describe('ItemPanel', () => {
+  const items = [
+    { id: 'aaa', name: 'Wrench' },
+    { id: 'bbb', name: 'Crowbar' },
+  ];
+  const row = createRawSnippet((item: () => { name: string }) => ({
+    render: () => `<div class="skill-name">${item().name}</div>`,
+  }));
+
+  const panel = (onclick = () => {}) =>
+    render(ItemPanel, {
+      headers: [{ label: 'Mosh.ItemName', grow: 1.5 }, { label: 'Mosh.Quantity' }],
+      items,
+      row,
+      create: { title: 'Mosh.CreateItem', onclick },
+      style: 'margin-bottom: 10px;',
+    }).firstElementChild!;
+
+  it('is a header row of captions plus one identified row per item', () => {
+    const list = panel();
+    expect(list.className).toBe('items-list');
+    expect(list.getAttribute('style')).toBe('margin-bottom: 10px;');
+
+    const [header, ...rows] = [...list.children];
+    expect([...header.classList]).toEqual(['item', 'flexrow', 'item-header']);
+    expect([...header.querySelectorAll('.skill-stat')].map((n) => n.textContent!.trim())).toEqual([
+      'Mosh.ItemName',
+      'Mosh.Quantity',
+    ]);
+    expect(header.querySelector('.skill-stat')!.getAttribute('style')).toBe('flex-grow: 1.5;');
+    // The spacer under the thumbnail column keeps the header's cells aligned with the rows'.
+    expect(header.querySelector('.item-image')!.children).toHaveLength(0);
+
+    expect(rows.map((r) => r.getAttribute('data-item-id'))).toEqual(['aaa', 'bbb']);
+    expect(rows.map((r) => r.getAttribute('draggable'))).toEqual(['true', 'true']);
+    expect(rows.map((r) => r.textContent!.trim())).toEqual(['Wrench', 'Crowbar']);
+  });
+
+  it('the create control is the header row\'s only item-control', () => {
+    const onclick = vi.fn();
+    const controls = [...panel(onclick).querySelectorAll('.item-controls a.item-control')];
+
+    expect(controls).toHaveLength(1);
+    expect(controls[0].getAttribute('title')).toBe('Mosh.CreateItem');
+    expect(controls[0].querySelector('i')!.className).toBe('fas fa-plus');
+    expect(controls[0].textContent).toBe(' Mosh.Add');
+
+    (controls[0] as HTMLElement).click();
+    expect(onclick).toHaveBeenCalledOnce();
+  });
+});
+
+describe('HealthBlock', () => {
+  it('is the health and wounds pair, in that order', () => {
+    const target = render(HealthBlock, {
+      health: { value: 7, max: 10 },
+      hits: { value: 1, max: 2 },
+    });
+
+    expect([...target.querySelectorAll('input')].map((i) => i.getAttribute('name'))).toEqual([
+      'system.health.value',
+      'system.health.max',
+      'system.hits.value',
+      'system.hits.max',
+    ]);
+    expect([...target.querySelectorAll('label')].map((l) => l.textContent!.trim())).toEqual([
+      'Mosh.Health',
+      'Mosh.Wounds',
+    ]);
+  });
+});
+
+describe('ArmorBlock', () => {
+  const block = (armor: Record<string, unknown>, onroll = () => {}) =>
+    render(ArmorBlock, { armor, onroll }).firstElementChild!;
+
+  it('reads out the derived points and reduction, and rolls from its caption', () => {
+    const onroll = vi.fn();
+    const el = block({ mod: 4, damageReduction: 2, cover: 'none' }, onroll);
+
+    expect([...el.querySelectorAll('.whiteText')].map((n) => n.textContent)).toEqual(['4', '2']);
+    expect(el.querySelector('.highlightText')).toBeNull();
+
+    const caption = el.querySelector('label')!;
+    caption.click();
+    press(caption, 'Enter');
+    expect(onroll).toHaveBeenCalledTimes(2);
+  });
+
+  it.each([
+    ['insignificant', [' 5']],
+    ['light', [' 10']],
+    ['heavy', [' 20', ' 5']],
+  ])('cover %s adds its bonuses beside the readouts', (cover, expected) => {
+    const el = block({ mod: 0, damageReduction: 0, cover });
+    expect([...el.querySelectorAll('.highlightText')].map((n) => n.textContent)).toEqual(expected);
   });
 });
 

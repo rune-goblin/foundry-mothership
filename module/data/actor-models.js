@@ -84,7 +84,7 @@ export class MoshCreature extends foundry.abstract.TypeDataModel {
       biography: html(''),
       notes: html(''),
       description: html('This is a description'),
-      xp: new fields.SchemaField({ value: num(1), html: str(''), selectedSkill: str('') }),
+      xp: new fields.SchemaField({ value: num(1), selectedSkill: str('') }),
       stats: new fields.SchemaField({
         combat: stat(10, 'Combat', 'Combat Check', { enabled: true }),
         instinct: stat(10, 'Instinct', 'Instinct Check', { enabled: true }),

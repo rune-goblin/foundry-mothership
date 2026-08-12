@@ -2218,3 +2218,135 @@ after `render` resolves, so a click landing too early does nothing — the spec 
 Playwright's own `click` never reaches that button at all: the window header is draggable and
 swallows a synthesized mousedown/mouseup pair, so the click is made in the page. Neither applies to
 an ApplicationV2 window; both die with the sheet in S7.
+
+---
+
+## 30. S6 — the creature sheet, and the section tier it proves
+
+The first actor sheet on ApplicationV2, and the first consumer of the tier above the primitives.
+`module/actor/creature-sheet.js` (661) and `templates/actor/creature-sheet.html` (434) are gone;
+**`templates/actor/` now holds one file**, and it is S7's.
+
+```
+module/ui/creature/CreatureSheet.svelte   the window body
+module/ui/creature/CreatureSheetApp.js    ActorSheetV2 — drag, drop and form handling for free
+module/ui/actor/items.js                  the embedded-item operations both actor sheets drive
+module/ui/parts/MinMaxField RollableStat PipTrack     Decision 1's second primitive batch
+module/ui/parts/sections/ItemPanel HealthBlock ArmorBlock
+```
+
+### The falsifier fired clean
+
+Decision 1 bought `ItemPanel` on a condition: *build it against `actor-sheet`'s blocks, apply it to
+`creature-sheet`, and split it if it sprouts flags beyond list-taxonomy and `hideWeight`.* The two
+sheets' five list blocks are byte-identical (evidence 1.1), so building against one is building
+against both. Measured on the five the creature instantiates:
+
+| Prop | What it carries |
+|---|---|
+| `headers` | the column captions — taxonomy |
+| `items` | the rows — taxonomy |
+| `row` | a snippet of cells — taxonomy |
+| `create` | `{title, onclick}` for the header's `+ Add` |
+| `style` | one panel's `margin-bottom` |
+
+**No `hideWeight` flag was needed.** With `headers` as data and `row` as a snippet, the caller
+drops the Weight column and its cell itself; the section never learns the setting exists. The
+shared part is exactly the frame — the `ol`, the header row, the create control, the identified
+row wrapper — which is the part that was byte-identical to begin with.
+
+`HealthBlock` is two `MinMaxField`s and nothing else; that is honest rather than thin, because the
+character sheet's stress block is a third `MinMaxField` with a *minimum* on the right, which is why
+that side is a named prop rather than "the max".
+
+### `creature.xp.html` deleted, `treatment.html` and `ranges.value` not
+
+The one schema deletion this unit's last reader allowed (Decision 2a), made in `actor-models.js`
+and `template.json` together. `PipTrack` renders the fifteen circles from `xp.value` and the three
+treatment glyphs from `treatment.value`; neither writes anything back.
+
+`condition.treatment.html` and `weapon.ranges.value` **stay** — the character sheet still reads
+both from Handlebars, so they ride S7 (rule 12). What did stop is the *writing*: `getData()` set
+`item.ranges.value` and `item.treatment.html` on **embedded item objects** during render, the same
+defect class as the ship sheet's `megadamage.html`. The creature sheet computes neither now.
+
+### Five bugs the port fixed
+
+1. **The sheet opened on no tab at all.** `tabs: [{initial: "character"}]` names a tab no panel
+   declares, so nothing got `.active` and the body was blank until the user clicked. It opens on
+   Skills.
+2. **The notes tab never showed the notes.** `getData()` enriched `description` and `biography`;
+   the template asked for `enriched.notes`, which was never computed. Stored notes were invisible.
+   Verified by screenshot: blank before, present after.
+3. **A swarm weapon with no dice in its damage threw.** `damage.match(/([0-9]+)d[0-9]+/i)[1]`
+   indexed a `null`. It falls back to the plain roll.
+4. **The carrying-capacity footer could never show a number.** It reads `system.weight.*`, which
+   `MoshCreature` does not declare — only the character does. Deleted, not fixed.
+5. **Four `title` strings rendered as their own lang keys.** `Mosh.CreateAbility`, `EditAbility`,
+   `DeleteAbility` and `CreateArmor` were missing from `lang/en.json`. Added.
+
+### The thumbnail border, and what the visual gate caught
+
+Foundry borders every image in an AppV1 window through `body.game .app img`. **An ApplicationV2
+window is `.application`, so no converted sheet has ever seen that rule** — the item rows' 24px
+thumbnails silently lost their frame. A before/after screenshot pair out of headless Foundry is
+what found it; `css/mosh.css` now sets the border itself, on `.mosh .items-list .item img`, which
+is a no-op on the still-AppV1 character sheet that already had it. Note the colour is literal:
+`var(--color-border-dark)` resolves to nothing in v14 and would have made the declaration invalid.
+
+Every other frame is a pixel match, apart from the V2 window chrome itself — the ellipsis menu in
+place of AppV1's four header buttons, which is where **Creature Settings** now lives.
+
+### What the jQuery selectors left behind
+
+`item-edit`, `item-create`, `skill-create`, `weapon-create`, `armor-ap`, `armor-dr`, `armor-oxy`,
+`item-quantity`, `severity`, `weapon-ammo`, `weapon-shots`, `weapon-reload`, `description-roll`,
+`skill-roll`, `weapon-roll`, `dmg-roll`, `char-pip-button`, `treatment-button`, `item-equip` and
+`dropitem` are **all gone from the creature sheet**: every one was a `activateListeners` selector
+with no stylesheet rule behind it, checked against `css/mosh.css` and `packs/_source/` before
+removal. `.list-roll` and `.rollable` stay — those are the hover cues.
+
+Three more things went with them:
+- **The +/- steppers are `click` / `contextmenu`, not `mousedown`.** AppV1 read `event.button` off
+  the *global* `event`, which works by accident in Chrome. The right click is consumed, so it no
+  longer risks a context menu over the sheet, and `ItemCell` gives the left click a keyboard twin.
+- **The armour row's `name="armor.system.equipped"`** addressed an embedded item through the actor
+  form, so Foundry cleaned it off every submit. The checkbox has its own handler.
+- **The malformed `role="table"`/`rowgroup`/`cell` tree** on the armour list (a rowgroup cannot
+  contain cells) is dropped rather than propagated to the other four panels.
+
+### Two conventions this sets for S7
+
+- **`ActorSheetV2` binds dragstart to the `.draggable` rows present when `_onRender` runs.**
+  `ItemRow` already emits that class, so drag-to-hotbar and drop-to-add work with no configuration.
+  `_renderHTML` calls `flushSync()` after refreshing the store so the rows exist by then; measured,
+  Svelte's own microtask flush already lands first (AppV2 awaits twice in between), so the call is
+  making an incidental guarantee explicit rather than fixing a live bug.
+- **`sheet-bindings.test.ts` now reads component props, not just `name=` attributes.** A Svelte
+  sheet passes the path down (`rightName="system.health.max"`) and builds some from a key
+  (`name="system.stats.{stat.key}.value"`), so any attribute whose literal value is a `system.`
+  path is checked, and an interpolated segment resolves against any key at that level. The
+  usage ratchet takes the other half: `stats.*.enabled` and the two creature-only stat values are
+  now reached by computed key, so they are named in `DYNAMIC` — S7 widens that entry to every stat.
+
+### Verified
+
+`npm run check` 0 errors / 0 warnings (241 files) · **249 vitest** · **87 Playwright** ·
+`npm run content` clean and byte-identical on a second build · `npm run build`.
+
+`test/ui-parts.test.ts` grows to 43 specs, covering the three new primitives, the three sections
+and `ItemCell`'s new props. `test/e2e/creature-sheet.spec.ts` is 13 against real headless Foundry.
+
+| Mutation | Result |
+|---|---|
+| `ItemCell` always renders `.skill-stat` | `ui-parts` fails — the name pill |
+| `PipTrack` swaps its solid and outline glyphs | `ui-parts` fails |
+| `MinMaxField`'s right input loses its `name` | `ui-parts` fails twice, including `HealthBlock` |
+| `ItemPanel` drops the create control's title | `ui-parts` fails |
+| `ArmorBlock` loses the heavy-cover DR bonus | `ui-parts` fails |
+| `RollableStat` drops `data-key` | `ui-parts` fails |
+| a dynamic binding names a leaf no stat declares | `sheet-bindings` fails, naming `system.stats.*.bogus` |
+| the new `DYNAMIC` entry is removed | `field-usage` fails twice |
+| `stepBy` always adds | the XP and quantity specs fail |
+| `_context()` stops enriching notes | the notes spec fails |
+| the sheet opens on `character` again | the tab spec fails |

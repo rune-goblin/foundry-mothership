@@ -4,7 +4,7 @@ import { ITEM_MODELS } from "./data/item-models.js";
 import { ACTOR_MODELS } from "./data/actor-models.js";
 import { MothershipActor } from "./actor/actor.js";
 import { MothershipActorSheet } from "./actor/actor-sheet.js";
-import { MothershipCreatureSheet } from "./actor/creature-sheet.js";
+import { MoshCreatureSheet } from "./ui/creature/CreatureSheetApp.js";
 
 import { MothershipItem } from "./item/item.js";
 import { MoshItemSheet } from "./ui/item/ItemSheetApp.js";
@@ -54,7 +54,7 @@ Hooks.once('init', async function () {
   // Register sheet application classes
   foundry.documents.collections.Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
   foundry.documents.collections.Actors.registerSheet("mothershiprpg", MothershipActorSheet, {types: ['character'], makeDefault: true});
-  foundry.documents.collections.Actors.registerSheet("mothershiprpg", MothershipCreatureSheet, {types: ['creature'], makeDefault: false});
+  foundry.documents.collections.Actors.registerSheet("mothershiprpg", MoshCreatureSheet, {types: ['creature'], makeDefault: true});
   foundry.documents.collections.Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
   foundry.documents.collections.Items.registerSheet("mothershiprpg", MoshClassSheet, {types: ['class'], makeDefault: true});
   foundry.documents.collections.Items.registerSheet("mothershiprpg", MoshSkillSheet, {types: ['skill'], makeDefault: true});

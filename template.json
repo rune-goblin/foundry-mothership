@@ -158,7 +158,6 @@
       "description": "This is a description",
       "xp": {
         "value": 1,
-        "html": "",
         "selectedSkill": ""
       },
       "stats": {
