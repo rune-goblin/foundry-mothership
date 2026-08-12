@@ -13,17 +13,28 @@ memory. API claims below were checked in that file.
 **Phases 1–3, the test harness, phase 4's step 0 + first conversion, the 0e removal, the schema
 repairs, the `mothershiprpg` rename, the shared component layer, `skill-sheet.js` and the
 simple windows are complete.**
-**Next: `creature-settings.js` (§Phase 4 item 4), then the rest of the order.**
 
-**Queued behind phase 4:** an architectural audit migrating the UI to Svelte best practices
-(§23). The conversions deliberately preserve AppV1-era shapes to keep risk at zero; that is a
-compromise with a scheduled end, not the target state.
+**The remaining order was re-planned by an architecture review on 2026-08-12 and now lives in
+`docs/plans/architecture.md`.** That review found the schema work and the UI work are one
+schedule — the fields that exist only to hold rendered HTML cannot die until their sheets
+convert — and that the system has never shipped the content its character generator scans for.
+So the content pipeline goes first and everything else is built against the clean data it
+produces. §Phase 4's own order table below is **superseded**; it survives only as the record of
+items 1–3, with a map to where each remaining item went.
+
+**Next: phase 0 — the dead-field prune (P0.2) and `creature-settings.js` (P0.3) — then phase 1,
+the content system.**
+
+**Queued behind the sheet conversions:** an architectural audit migrating the UI to Svelte best
+practices (§23). The conversions deliberately preserve AppV1-era shapes to keep risk at zero;
+that is a compromise with a scheduled end, not the target state.
 
 | | |
 |---|---|
 | Read first | `CLAUDE.md`, then the `foundry-mosh` skill (`.claude/skills/foundry-mosh/`) |
-| The plan | §Phase 4 below — the conversion order, one sheet at a time |
-| How it runs | `docs/plans/run-to-the-end.md` — waves, model assignment, the gate before each lands |
+| The plan | `docs/plans/architecture.md` — the phases, the decisions, the owner's rulings at the end |
+| The evidence under it | `docs/plans/evidence.md` — the measurements the plan leans on |
+| How it runs | `docs/plans/run-to-the-end.md` — the ten standing rules and the review gate (still current); its *wave order* is superseded by architecture.md |
 | Build on | `module/ui/parts/` — the shared primitives (§20), before writing bespoke markup |
 | Verify with | `npm run check && npm test` (120 specs), `npm run test:e2e` (75 specs) |
 | State | `master`, tree clean, pushed and tracking `origin/master` |
@@ -382,23 +393,42 @@ reactivity under Node). `npm run check` now runs `tsc` **and** `svelte-check` ag
 Verified before converting anything: 84 vitest + 28 Playwright still green, and the new gate
 is not vacuous — a throwaway component using `export let` and `on:click` fails `svelte-check`.
 
-#### Order of attack
+#### Order of attack — items 1–3 done; the rest **superseded**
 
-Convert one at a time and ship between each. Easiest first, so the conventions are settled
-before the risky sheets:
+The original plan was easiest-first, so the conventions were settled before the risky sheets.
+That worked: three items landed and settled them (§10, §20, §21, §22). The remaining five were
+re-planned on 2026-08-12 — see `docs/plans/architecture.md`, and the map below.
 
 | # | Target | Lines | Notes |
 |---|---|---|---|
 | ~~1~~ | ~~`item-sheet.js` + 8 item templates~~ | 80 | ✅ **done** — see §10. |
 | ~~2~~ | ~~`skill-sheet.js`~~ | 72 | ✅ **done** — see §21. `item-skill-sheet.html` deleted; `item-sheet.js` now survives only for `class-sheet.js`. |
 | ~~3~~ | ~~`ship-setup`, `ship-megadamage`, `settings-rolltables`~~ | 73 / 120 / 89 | ✅ **done** — see §22. `ship-megadamage` was **deleted**, not converted. |
-| 4 | `creature-settings.js` | 160 | **Next. Resolve the `FIXME` first** — `_updateObject` still does not persist (see §8). Decide what should save, then convert. |
-| 5 | `class-sheet.js` | 340 | Mutates the model it renders from; converting it is what unblocks tightening the two free-form `ObjectField`s (§7). |
-| 6 | `ship-sheet.js`, `ship-sheet-sbt.js`, `creature-sheet.js`, `ship-deckplan.js` | 275 / 498 / 661 / 40 | SBT is the **default** ship sheet — check which you are looking at. Schema holes fixed ahead of time (§10). **`ship-sheet-sbt` owes three things** (§22): kill the document write during render, derive the megadamage list instead of persisting it, and then delete `megadamage.html` + `megadamage.menu.html` from the DataModel *and* `template.json`. |
-| 7 | `actor-generator.js` | 772 | The character generator. Biggest window; drives `class-sheet` data. |
-| 8 | `actor-sheet.js` | 659 | The character sheet — highest risk, most player-visible, do it last with the most conventions in hand. |
 
-28 Handlebars templates remain and retire as their sheets migrate.
+**Where items 4–8 went.** The review changed the *order*, not the work: the content pipeline was
+inserted ahead of the sheets, because the character generator scans for skill and class documents
+this system has never shipped, and the sheets should be built against clean data rather than
+retrofitted to it. Schema deletions were also bound to the conversions that remove their last
+reader, so a conversion cannot re-enshrine a render artifact.
+
+| Old item | New unit | Phase |
+|---|---|---|
+| 4 · `creature-settings.js` | **P0.3** — unchanged in substance; the `FIXME` is resolved in §12 (it should persist **nothing**) | phase 0 |
+| 5 · `class-sheet.js` | **C6** — now two commits: derive first, then tighten `base_adjustment`/`selected_adjustment` into real schemas with `template.json` and a generated contract type | phase 2 |
+| 6 · `creature-sheet.js` | **C8** | phase 2 |
+| 6 · `ship-sheet-sbt.js` | **C12** — still owes §22's three things, now paid alongside the ship schema cleanup | phase 3 |
+| 6 · `ship-sheet.js` | **C13** — **not converted.** Owner's decision: the non-default sheet is *deprecated now, deleted later* | phase 3 |
+| 6 · `ship-deckplan.js` | folded into **C12** | phase 3 |
+| 7 · `actor-generator.js` | **C7** — rebuilt on an explicit draft store, with its dice formulas read from shipped content instead of hardcoded | phase 2 |
+| 8 · `actor-sheet.js` | **C9** — still last, still the highest-risk sheet | phase 2 |
+| — | **P0.2** dead-field prune + standing usage test; **C1–C4** the content system; **C5** primitives batch 2 + shared sections; **C10–C11** ship content and schema; **C14–C15** CSS dissolution and TypeScript | new |
+
+Two units are new work the original order did not contain: the content system (C1–C4), which is
+the feature — the generator starts working when it lands — and the requirement that **conditions
+contribute advantage/disadvantage to rolls**, recorded at the end of `architecture.md` and landing
+with or just after C9.
+
+The Handlebars templates retire as their sheets migrate, as before.
 
 #### Definition of done, per conversion
 
@@ -1475,7 +1505,9 @@ checked in the installed `foundry.mjs` before briefing: it takes a `FormApplicat
 
 ## 23. Queued — the Svelte architecture audit
 
-**After phase 4, not during it.** Every conversion so far deliberately preserves AppV1-era
+**After the sheet conversions, not during them** — scheduled as C14/C15 in
+`docs/plans/architecture.md`, which also gives the CSS dissolution an order and a
+verification method. Every conversion so far deliberately preserves AppV1-era
 shapes so that a conversion carries no visual or behavioural risk: the primitives emit the global
 class names from the hand-authored `css/mosh.css` (§13's hybrid decision, §20), and designs
 inherited from Handlebars are ported rather than rethought.

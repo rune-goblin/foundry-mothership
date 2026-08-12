@@ -4,8 +4,16 @@ How the rest of the modernization gets executed, who does what, and what has to 
 each wave is allowed to land. `MODERNIZATION.md` stays the **record** of what happened; this file
 is the **method**.
 
-Read `MODERNIZATION.md` §Phase 4 for the conversion order and the reasoning behind it. This file
-does not restate it — it schedules it.
+> **The wave order below is superseded.** The architecture review of 2026-08-12
+> (`docs/plans/architecture.md`) re-sequenced the work: the content pipeline goes first, and each
+> schema deletion rides the conversion that removes its last reader. Read that file for **what to
+> do and in what order**. Read this one for **how a unit is delegated and what has to be true
+> before it lands** — the roles, the ten standing rules and the gate are all still current, and
+> architecture.md's Decision 7 keeps them deliberately whole. §The waves is retained as the record
+> of the reasoning each unit inherits.
+
+Read `docs/plans/architecture.md` for the phases and the decisions behind them. This file does not
+restate them — it schedules how each unit is run.
 
 ---
 
@@ -64,6 +72,18 @@ Repeat these in every brief. They are the accumulated cost of the last four wave
 10. **Commit in your worktree** and report: files added/changed/deleted, exact `npm run check` and
     `npm test` output, decisions taken, anything contradicting the brief, and — explicitly —
     **what you could not verify**.
+
+Two more, added by the architecture review (Decision 7) for the content phases:
+
+11. **A content build must pass determinism, id preservation and referential integrity before it
+    lands** — build twice for byte-identical output; every pre-pipeline `_id` emitted or explicitly
+    retired; every `@UUID` resolving to an emitted document. Plus the enumerated-transform proof
+    whenever a rescue is involved. The rescue is a one-way door: once packs generate from
+    `content/local/`, anything not carried across is gone.
+12. **Every schema deletion rides the wave that removes its last reader**, changes `template.json`
+    in lockstep, and is named a migration in the record. Deleting a field whose sheet has not yet
+    converted just moves the breakage; converting a sheet without deleting the field re-enshrines
+    it.
 
 ## The gate — what the orchestrator does before a wave lands
 
