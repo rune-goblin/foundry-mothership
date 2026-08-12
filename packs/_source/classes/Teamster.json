@@ -25,7 +25,6 @@
       "speed": 5,
       "strength": 5
     },
-    "common_skills": [],
     "description": "<p>Teamsters are rough and tumble blue-collar space workers, mechanics, engineers, miners, and pilots.</p>",
     "robotic": false,
     "roll_tables": {

@@ -726,8 +726,6 @@
     },
     "CharacterGenerator": {
       "name": "Character Generator",
-      "CommonSkills": "Common Skills",
-      "CommonSkillExplanation": "This is a list of usual skill for this class to be used for random character generation.",
       "StatOption": "Stats & Saves",
       "StatOptionPopupTitle": "Class Attribute and Saves option",
       "StatOptionPopupText": "Choose where to apply the bonus of:",

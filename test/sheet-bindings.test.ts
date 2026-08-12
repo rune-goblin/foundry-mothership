@@ -29,10 +29,12 @@ const itemComponents = globSync('module/ui/item/types/*.svelte', { cwd: fileURLT
 // type names like "item" and cover nothing.
 const OWN_COMPONENTS: Record<string, string[]> = {
   skill: ['module/ui/skill/SkillSheet.svelte'],
+  class: ['module/ui/class/ClassSheet.svelte'],
 };
 
-// The Handlebars paths stay listed so the types still on AppV1 keep their cover until they
-// convert; a missing file is skipped, an empty list fails.
+// templates/item/ is gone -- the class sheet was its last file -- but the path stays listed for
+// the Actor half, where two sheets are still Handlebars. A missing file is skipped, an empty
+// list fails.
 const SOURCES: Record<string, Record<string, string[]>> = {
   Item: Object.fromEntries(
     Object.keys(ITEM_MODELS).map((type) => [

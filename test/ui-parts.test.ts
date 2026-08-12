@@ -21,6 +21,7 @@ import Tabs from '../module/ui/parts/Tabs.svelte';
 import TabPanel from '../module/ui/parts/TabPanel.svelte';
 import CircleStats from '../module/ui/parts/CircleStats.svelte';
 import CircleStat from '../module/ui/parts/CircleStat.svelte';
+import MainStat from '../module/ui/parts/MainStat.svelte';
 import { onActivate } from '../module/ui/parts/activate.js';
 import { dropTarget } from '../module/ui/parts/drop-target.js';
 
@@ -82,6 +83,63 @@ describe('ItemRow', () => {
     expect([...el.classList]).toEqual(['item', 'flexrow']);
     expect(el.hasAttribute('draggable')).toBe(false);
     expect(el.getAttribute('data-item-id')).toBe('Item.abc');
+  });
+
+  it('applies an attachment when one is passed, and copes when none is', () => {
+    // The class sheet's choose_skill_or options each receive drops on their own row.
+    const attached: Element[] = [];
+    const el = render(ItemRow, {
+      children: text('x'),
+      itemId: 0,
+      draggable: false,
+      attach: (node: Element) => void attached.push(node),
+    }).firstElementChild!;
+
+    expect(attached).toEqual([el]);
+    expect(() => render(ItemRow, { children: text('x') })).not.toThrow();
+  });
+});
+
+describe('MainStat', () => {
+  it('is the label bar plus circle input the stat blocks are built from', () => {
+    const wrapper = render(MainStat, {
+      name: 'system.base_adjustment.combat',
+      value: 10,
+      label: 'Combat',
+      key: 'combat',
+    }).firstElementChild!;
+
+    expect(wrapper.className).toBe('mainstatwrapper');
+    const stat = wrapper.firstElementChild!;
+    expect([...stat.classList]).toEqual(['resource', 'mainstat']);
+
+    const span = stat.querySelector('.mainstatlabel span')!;
+    expect(span.className).toBe('mainstattext');
+    expect((span as HTMLElement).dataset).toMatchObject({ key: 'combat', label: 'Combat' });
+    expect(span.textContent).toBe('Combat');
+
+    const input = stat.querySelector('input')!;
+    expect(input.className).toBe('circle-input');
+    expect(input.getAttribute('name')).toBe('system.base_adjustment.combat');
+    expect(input.getAttribute('type')).toBe('text');
+    expect(input.getAttribute('data-dtype')).toBe('Number');
+    expect(input.value).toBe('10');
+  });
+
+  it('renders a checked box for a boolean stat', () => {
+    const input = render(MainStat, {
+      name: 'system.robotic',
+      type: 'checkbox',
+      checked: true,
+      dtype: 'Boolean',
+      label: 'Robotic',
+      key: 'robotic',
+    }).querySelector('input')!;
+
+    expect(input.className).toBe('circle-input');
+    expect(input.type).toBe('checkbox');
+    expect(input.checked).toBe(true);
+    expect(input.getAttribute('data-dtype')).toBe('Boolean');
   });
 });
 

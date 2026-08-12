@@ -96,19 +96,25 @@ export class MoshClass extends foundry.abstract.TypeDataModel {
       ...base(),
       trauma_response: str(''),
       robotic: bool(true),
-      common_skills: uuidList(),
-      // base_adjustment and selected_adjustment stay free-form ObjectFields on purpose.
-      // selected_adjustment.choose_skill_or is an array of arrays of objects, and
-      // class-sheet.js writes a derived `from_list_names` onto each entry while rendering --
-      // a strict SchemaField would clean that back off. Tighten these once the character
-      // generator stops mutating the model it renders from.
-      base_adjustment: new fields.ObjectField({
-        required: true,
-        initial: () => ({
-          strength: 0, speed: 0, intellect: 0, combat: 0, sanity: 0, fear: 0,
-          body: 0, max_wounds: 0, skills_granted: [],
-        }),
+      // These eight keys are a contract, not a bag: actor-generator.js writes every key except
+      // skills_granted into `input[name="system.stats.<key>.bonus"]`, so anything added here is
+      // applied as a stat bonus. Stats and saves share the one flat key space, which is what the
+      // book's adjustments map onto (MODERNIZATION.md §27).
+      base_adjustment: new fields.SchemaField({
+        strength: num(0),
+        speed: num(0),
+        intellect: num(0),
+        combat: num(0),
+        sanity: num(0),
+        fear: num(0),
+        body: num(0),
+        max_wounds: num(0),
+        skills_granted: uuidList(),
       }),
+      // Free-form until S5. choose_skill_or is an array of arrays whose entries the character
+      // generator treats as two things at once: showOptionsDialog resolves one and hands it
+      // straight to popUpSkillOptions, which reads it as a pick-set. A strict SchemaField would
+      // pin a shape the generator is still moving; S5 untangles that, and tightens this.
       selected_adjustment: new fields.ObjectField({
         required: true,
         initial: () => ({

@@ -5,7 +5,14 @@
   // Identified rows are draggable by default -- that is what an actor sheet's rows are for. A
   // list that only receives drops, like the skill sheet's prerequisites, passes `draggable={false}`
   // so it does not offer a drag no handler is listening for.
-  let { children, header = false, itemId, draggable = itemId !== undefined, role } = $props();
+  let {
+    children,
+    header = false,
+    itemId,
+    draggable = itemId !== undefined,
+    role,
+    attach,
+  } = $props();
 </script>
 
 <li
@@ -15,6 +22,7 @@
   data-item-id={itemId}
   draggable={draggable ? 'true' : undefined}
   {role}
+  {@attach attach}
 >
   {@render children()}
 </li>

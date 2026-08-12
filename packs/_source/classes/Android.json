@@ -26,7 +26,6 @@
       "speed": 0,
       "strength": 0
     },
-    "common_skills": [],
     "description": "<p>Androids are a terrifying and exciting addition to any crew. They tend to unnerve other crewmembers with their cold inhumanity.</p>",
     "robotic": true,
     "roll_tables": {

@@ -1517,10 +1517,13 @@ Those are compromises with a scheduled end. What the audit should revisit, as it
 - **The hybrid CSS decision itself.** §13 parked "dismantle the 247-selector stylesheet into
   scoped styles" as a styling project with real visual risk, to revisit once the component set is
   stable. That is the audit.
-- **Presentation persisted into documents.** `ship-sheet-sbt` writes `megadamage.html` during
-  render (§22); `class-sheet.js` writes `from_list_names` and `skills_granted_object` onto the
-  model while rendering (§Phase 4 hazards). Both should be `$derived`, and the schema fields that
-  exist only to hold rendered strings should go.
+- **Presentation persisted into documents.** `ship-sheet-sbt` wrote `megadamage.html` during
+  render (§22); `class-sheet.js` wrote `from_list_names` and `skills_granted_object` onto the
+  model while rendering (§Phase 4 hazards). The class half is fixed — S4 resolves both in the
+  shell (§28) — and the ship half went with the sheet.
+- **`ClassSheet.svelte` carries six tabs in one component** (§28). It reads as the template it
+  replaced, which is the point during phase 4; the audit should split the tabs into components
+  and lift the drop handlers with them.
 - **Anything else a conversion flags.** The rule during phase 4 is: port, verify, ship, and
   **record** the compromise here — do not fix component architecture piecemeal mid-phase.
 
@@ -1969,3 +1972,116 @@ compendia into `system.json` stays orchestrator-only.
 
 **Verified:** `npm run check` 0 errors / 0 warnings (221 files) · **217 vitest** · **61 Playwright**
 · `npm run build` · a second content build byte-identical to the first.
+
+
+---
+
+## 28. S4 — the class-adjustment schema, and the last AppV1 item sheet
+
+Three things, in the order the plan set them: tighten the schema now that real documents exist,
+delete the field whose last reader was about to go, then convert the sheet whole.
+
+### `base_adjustment` is a SchemaField, derived from the emitted classes
+
+S3 was the reason to wait: four generated class documents replaced guesswork about the shape. The
+nine keys are exactly what the content build emits and what the sheet binds:
+
+```js
+base_adjustment: new fields.SchemaField({
+  strength: num(0), speed: num(0), intellect: num(0), combat: num(0),
+  sanity: num(0), fear: num(0), body: num(0), max_wounds: num(0),
+  skills_granted: uuidList(),
+}),
+```
+
+**The key space is a contract, not a bag.** `actor-generator.js:521` iterates
+`Object.entries(base_adjustment)` and writes every key except `skills_granted` into
+`input[name="system.stats.<key>.bonus"]` — so a tenth key would be applied as a stat bonus by a
+window nobody edited. Stats and saves share the one flat space, which is what §27's mapping rules
+target. `template.json` moved in lockstep, deliberately: it is the oracle
+`test/item-models.test.ts` compares against.
+
+**`selected_adjustment` stays an `ObjectField`, and the comment now says why.** The old reason —
+`class-sheet.js` writing `from_list_names` onto each option while rendering — is gone with the
+sheet. The remaining one is the generator: `showOptionsDialog` resolves one `choose_skill_or`
+option and hands it straight to `popUpSkillOptions`, which reads the same object as a pick-set. The
+shape is an array of arrays doing two jobs, and untangling it is S5's, not this unit's.
+
+**The content build's guard is the fast feedback loop.** Re-adding one emitted key the SchemaField
+does not declare fails `npm run content` immediately, by name and by document — checked by
+mutation, four errors for four classes.
+
+### `common_skills` deleted
+
+Dead, and rule 12 says a schema deletion rides the wave that removes its last reader. S3 emitted
+`[]` for all four classes; `class-sheet.js` and `item-class-sheet.html` were the only readers, and
+both go below. Removed from `MoshClass`, from `template.json`, from the emitter — leaving the emit
+would have failed the DataModel guard — and the two now-orphaned `Mosh.CharacterGenerator.CommonSkill*`
+keys came out of both `lang/` files.
+
+### The class sheet, converted whole
+
+```
+module/ui/class/ClassSheetApp.js   MoshClassSheet extends MoshItemSheet
+module/ui/class/ClassSheet.svelte  six tabs, built from module/ui/parts/
+module/ui/class/OptionDraft.svelte the half-entered choose_skill_or option
+module/ui/class/stat-option.js     the DialogV2 that adds a choose_stat entry
+```
+
+**Three files died with it**: `module/item/class-sheet.js` (340 lines), `module/item/item-sheet.js`
+(the AppV1 base, 80), and `templates/item/item-class-sheet.html` (411). `templates/item/` is gone
+entirely — no item type renders Handlebars any more, and `foundry.appv1.sheets.ItemSheet` has no
+subclass left in the system.
+
+**The write-during-render is gone.** `getData()` resolved four derived keys onto `data.system`
+(`skills_granted_object`, `from_list_names`, `common_skills_object`, `enriched`) — the practice
+that kept these fields free-form in the first place. `_context()` resolves the same UUIDs and
+returns them beside the document; nothing is written back.
+
+**Two primitives grew**, rather than the sheet writing bespoke markup:
+
+| Added | Why |
+|---|---|
+| `parts/MainStat.svelte` | The `.mainstatwrapper` / `.mainstat` / `.mainstatlabel` block, which is not `CircleStat` — a black label bar beside the circle, not a caption under it. Both actor sheets use it too, so S6/S7 inherit it. |
+| `attach` on `ItemRow` | Each `choose_skill_or` option receives drops on its own row. Same optional-attachment shape `TabPanel` already had. |
+
+**The nine adjustments are written out, not looped.** An interpolated `name="system.…{key}"` is
+invisible to both `test/sheet-bindings.test.ts` (which matches the literal attribute) and the
+field-usage ratchet (which searches the corpus for the literal path). Looping compiled and passed
+`check` while silently dropping the new SchemaField's whole cover — the ratchet caught it, which is
+the ratchet working. Mutation-checked: deleting `fear` from the schema now fails `item-models`
+*and* `sheet-bindings` naming `ClassSheet.svelte`.
+
+### Three bugs fixed rather than ported
+
+- **A dangling granted skill blanked the sheet.** `getData()` did `(await fromUuid(skill)).name`
+  on every `from_list` entry — a deleted skill threw and the sheet rendered nothing. Unresolvable
+  UUIDs now render raw and stay deletable, as on the skill sheet (§21).
+- **The new-option form stored strings.** It read its inputs back out of the DOM by name and
+  indexed them by the *group* index — `li.find(…)[index]` — so a second group read the first
+  group's fields. The draft is local component state now, the inputs carry no `name` so Foundry
+  never sees them, and the counts are stored as numbers, which is what the generated classes hold
+  and what the generator compares.
+- **`choose_stat.modification` stored a string** for the same reason. `statOptions` reached for
+  `parseInt` to survive it.
+
+Both string fixes are pinned by the e2e specs, which assert the stored value's *type* through
+`toObject()`.
+
+### Verified
+
+`npm run check` 0 errors / 0 warnings (224 files) · **220 vitest** · **70 Playwright** ·
+`npm run content` clean and byte-identical on a second build.
+
+`test/e2e/class-sheet.spec.ts` is 10 specs; `item-sheets.spec.ts` lost its "still renders on AppV1"
+placeholder. Checked by mutation against the real Foundry — and the first attempt at that proved
+nothing, because `npx playwright test` runs against whatever `dist/` already holds. **A mutation
+test of the e2e tier must rebuild first**; `npm run test:e2e` does, a bare `playwright test` does not.
+
+| Mutation | Result |
+|---|---|
+| the draft's counts stored raw, as the old sheet did | 1 spec fails |
+| revoking a granted skill filters nothing (the §21 `_id` bug, reproduced) | 2 specs fail |
+| `.mainstatwrapper` renamed | `ui-parts` fails |
+| `ItemRow`'s `{@attach}` dropped | `ui-parts` fails |
+| an emitted `common_skills` key restored | `npm run content` fails, 4 named errors |

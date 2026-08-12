@@ -726,8 +726,6 @@
     },
     "CharacterGenerator": {
       "name": "Gerador de Personagem",
-      "CommonSkills": "Habilidades Comuns",
-      "CommonSkillExplanation": "Esta é uma lista de habilidades usuais para esta classe, usadas para a geração aleatória de personagens.",
       "StatOption": "Atributos & Salvaguardas",
       "StatOptionPopupTitle": "Opção de Atributos e Salvaguardas da Classe",
       "StatOptionPopupText": "Escolha onde aplicar o bônus de:",

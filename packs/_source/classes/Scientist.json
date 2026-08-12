@@ -22,7 +22,6 @@
       "speed": 0,
       "strength": 0
     },
-    "common_skills": [],
     "description": "<p>Scientists are doctors, researchers, or anyone who wants to slice open creatures (or infected crewmembers) with a scalpel.</p>",
     "robotic": false,
     "roll_tables": {

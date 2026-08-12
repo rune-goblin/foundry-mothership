@@ -25,7 +25,6 @@
       "speed": 0,
       "strength": 0
     },
-    "common_skills": [],
     "description": "<p>Marines are handy in a fight, but whenever they Panic it may cause problems for the rest of the crew.</p>",
     "robotic": false,
     "roll_tables": {

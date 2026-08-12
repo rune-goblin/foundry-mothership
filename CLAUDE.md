@@ -23,7 +23,8 @@ Operations Manual is next; the Shipbreaker's Toolkit brings ships back.
 is delegated and gated (its ten standing rules and review gate are current; its *wave order* is
 superseded). `MODERNIZATION.md` is the **record**: §10 the item-sheet conventions, §20 the
 component layer, §22 the windows, §24 phase 0, §25 the PSG cut, §26 the content pipeline, §27 the
-TypeScript catalogs and the generated content. Update it as work lands.
+TypeScript catalogs and the generated content, §28 the class-adjustment schema and the last AppV1
+item sheet. Update it as work lands.
 
 **Ships, the Calm/android panic variants and all unsourced content were cut** (§25) and live on
 the pushed **`archive/pre-psg-cut`** branch and tag. Nothing was destroyed; ships return as an
@@ -35,16 +36,17 @@ Don't fix component architecture piecemeal mid-phase — note it in §23 instead
 
 | Done | Not done |
 |---|---|
-| Vite build, TS tooling, CI | 4 AppV1 sheet classes (actor, creature, class, + the item base) |
+| Vite build, TS tooling, CI | 2 AppV1 sheet classes (actor, creature) |
 | DataModels for the 9 surviving types | 1 bare-`FormApplication` window (`actor-generator`) |
-| Packs generated from the book, 0e removed | 17 Handlebars templates |
-| Svelte 5 wired into build, check, vitest | 4 sheets/windows left to convert |
-| 6 item sheets on ApplicationV2 + Svelte | the generator extracts one `_id` per loadout row — S5 |
+| Packs generated from the book, 0e removed | 16 Handlebars templates, none of them an item |
+| Svelte 5 wired into build, check, vitest | 3 sheets/windows left to convert |
+| **Every item sheet on ApplicationV2 + Svelte** (§28) | the generator extracts one `_id` per loadout row — S5 |
 | Shared components in `module/ui/parts/` | conditions do not affect any roll — S8 |
-| 0e / `firstEdition` rules removed | `base_adjustment` is still a free-form `ObjectField` — S4 |
+| 0e / `firstEdition` rules removed | `selected_adjustment` is still free-form, pending S5 (§28) |
 | `creature-settings` on ApplicationV2 (§24) | |
 | The PSG cut — 13,337 lines removed (§25) | |
 | **274 documents generated from the PSG** (§27) | |
+| `base_adjustment` is a real `SchemaField` (§28) | |
 
 ## Hard rules (override defaults)
 

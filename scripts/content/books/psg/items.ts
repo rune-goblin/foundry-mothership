@@ -161,7 +161,6 @@ const classes: PackDefinition = {
             description: html(klass.description),
             trauma_response: klass.traumaResponse,
             robotic: klass.id === 'android',
-            common_skills: [],
             base_adjustment: base,
             selected_adjustment: { choose_stat: chooseStat, choose_skill_and: and, choose_skill_or: or },
             roll_tables: {

@@ -1,6 +1,7 @@
 import { test, expect } from './fixtures/foundry-clients.ts';
 
-// The eight simple item types are ApplicationV2 + Svelte (module/ui/item/). Their fields keep
+// The simple item types are ApplicationV2 + Svelte (module/ui/item/); skill and class have their
+// own sheets and their own specs (skill-sheet.spec.ts, class-sheet.spec.ts). Their fields keep
 // `name="system.…"` and Foundry's own form handling persists them, so what needs proving is that
 // the round trip works: the sheet renders the stored value, an edit reaches the document, and a
 // document update reaches the sheet.
@@ -39,14 +40,6 @@ test.describe('item sheets', () => {
       await expect(sheet.locator('prose-mirror[name="system.description"]')).toHaveCount(1);
     });
   }
-
-  // class-sheet.js is the last user of the AppV1 MothershipItemSheet, which is registered for
-  // nothing itself. It is next in the conversion order; until then, prove it still opens.
-  // (skill moved to ApplicationV2 + Svelte — see skill-sheet.spec.ts.)
-  test('the class sheet still renders on AppV1', async ({ gmPage }) => {
-    const { appId } = await openSheet(gmPage, 'class');
-    await expect(gmPage.locator(`#${appId}`)).toBeVisible();
-  });
 
   test('editing a field persists it to the document', async ({ gmPage }) => {
     const { appId, uuid } = await openSheet(gmPage, 'item');
