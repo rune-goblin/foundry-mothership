@@ -38,6 +38,25 @@ if [ -z "${FOUNDRY_APP:-}" ] || [ ! -f "$FOUNDRY_APP/main.js" ]; then
     exit 1
 fi
 
+# Foundry locks its data directory and releases the lock only on a clean exit. Anything that
+# kills it — `kill -9`, a Playwright teardown, ^C at the wrong moment — leaves the lock behind,
+# and the next boot dies with "already locked by another process". Through Playwright that
+# surfaces as `webServer was not able to start. Exit code: 1`, which names nothing.
+#
+# This tree is the harness's alone and is re-cloned on every boot, so a lock with nothing
+# listening on the port belongs to a process that is gone. The lock is a *directory* — an atomic
+# mkdir — so it is tested with -e and removed with -r.
+LOCK="$TEST_DATA/Config/options.json.lock"
+if [ -e "$LOCK" ]; then
+    if lsof -ti:"$PORT" >/dev/null 2>&1; then
+        echo "❌ Something is already serving port $PORT against $TEST_DATA."
+        echo "   Stop it first:  lsof -ti:$PORT | xargs kill"
+        exit 1
+    fi
+    echo "🔓 cleared a stale data-dir lock (left by a killed run; nothing is on port $PORT)"
+    rm -rf "$LOCK"
+fi
+
 cd "$FOUNDRY_APP"
 
 ARGS=(--dataPath="$TEST_DATA" --port="$PORT" --noupnp)

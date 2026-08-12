@@ -25,7 +25,7 @@ superseded). `MODERNIZATION.md` is the **record**: §10 the item-sheet conventio
 component layer, §22 the windows, §24 phase 0, §25 the PSG cut, §26 the content pipeline, §27 the
 TypeScript catalogs and the generated content, §28 the class-adjustment schema and the last AppV1
 item sheet, §29 the character generator on a draft store, §30 the creature sheet and the section
-tier, §31 the weapon range enum. Update it as work lands.
+tier, §31 the weapon range enum, §32 the e2e harness's self-diagnosis. Update it as work lands.
 
 **Ships, the Calm/android panic variants and all unsourced content were cut** (§25) and live on
 the pushed **`archive/pre-psg-cut`** branch and tag. Nothing was destroyed; ships return as an
@@ -142,10 +142,14 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   the harness clones from) → `npm run test:e2e`. Skipping `npm run setup` means the suite keeps
   testing the packs from whenever you last ran it, no matter what you do to the test tree.
   Together with the point above this cost four e2e cycles during §25's cut.
-- **A killed e2e run leaves the GM session occupied** — the next run hangs 30s then fails in
-  `globalSetup`. Fix: `lsof -ti:30005 | xargs kill -9`, then **wait for the port to actually
-  free** (`until ! lsof -ti:30005 >/dev/null; do sleep 1; done`) — a fixed `sleep` is not enough
-  and the run fails the same way.
+- **A killed e2e run leaves a lock, not an occupied session** (§32 — this entry used to say the
+  opposite). Foundry locks its data dir as `Config/options.json.lock`, a **directory**, and only
+  releases it on a clean exit; `kill -9` leaves it behind and the next boot dies with *"already
+  locked by another process"*, which Playwright reports as the contentless `webServer was not able
+  to start. Exit code: 1`. Freeing the port does **not** clear it — which is why the old advice
+  here appeared to fail. `start-test-env.sh` now clears a stale lock itself (port free ⇒ stale),
+  so prefer `npm run test:e2e` over a hand-started server, and kill with **`kill`** rather than
+  `kill -9` so Foundry unlocks on its way out.
 - **`prepareDerivedData` mutates `this.system` in place.** Assert stored data with
   `doc.toObject().system`, never `doc.system`.
 - **`Actor.create` returns `undefined` on a validation failure** — it does not throw.

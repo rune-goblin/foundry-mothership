@@ -2428,3 +2428,66 @@ items during render** — that block existed only to make the trio presentable, 
 | the choices check is dropped from the content guard | `content-pipeline` fails on the title-cased band |
 | `Field` ignores `choices` and renders an input | `ui-parts` fails |
 | `choices` is dropped from the weapon schema | the e2e range spec fails — `"Long"` stores |
+
+---
+
+## 32. The e2e harness diagnoses itself, and the lock that was blamed on a session
+
+Three times this session a run died with a 30-second `game.ready` timeout or `webServer was not
+able to start. Exit code: 1`, and neither says which of a dozen causes it was. Chasing it found
+that **the gotcha this repo has documented since §25 was wrong about the mechanism**, which is why
+following its advice did not help.
+
+### It is a lock, not an occupied session
+
+Foundry locks its data directory as `Config/options.json.lock` — a **directory**, an atomic mkdir —
+and releases it only on a clean exit. `kill -9` leaves it behind, and the next boot dies with
+*"cannot start in this directory which is already locked by another process"*. Through Playwright
+that is an exit code and nothing else.
+
+Freeing the port, which is what CLAUDE.md told you to do, does not touch the lock. The port and the
+lock are independent, so the documented fix could not work and the failure looked intermittent —
+it depended on whether the previous process had cleaned up before it died.
+
+`start-test-env.sh` now clears a stale lock itself, on the one rule that is safe for a tree the
+harness re-clones every boot: **nothing listening on the port means the lock's owner is gone.** If
+something *is* listening it refuses instead, naming what to stop. Both branches were driven.
+
+### What the harness checks before it opens a browser
+
+`GET /api/status` answers in milliseconds and knows almost everything worth failing over, so
+`preflight()` runs before Chromium starts:
+
+| Reading | Fails with |
+|---|---|
+| no answer | nothing is serving this port |
+| `active: false` | a world-less stray, which `reuseExistingServer` will happily reuse — with the incantation to clear it |
+| wrong `system` / `world` | both names, and how to point at the right one |
+| `users > 0` | a session already holds the login this harness needs |
+
+`active` is *waited* for rather than judged, because Foundry answers HTTP before the world finishes
+launching; so is the occupied-GM check, because global-setup's own session is still releasing when
+the worker joins. Both settle within seconds and only then fail.
+
+Two more, once in the world:
+
+- **`game.ready` reports what it saw.** The old timeout said nothing; it now prints the page's
+  view, world, system and whether the system API exists, which distinguishes a slow world from an
+  esmodule that threw during `init`.
+- **The compendia are counted against `packs/_source`.** Packs are *copied* — repo → live data dir
+  (`npm run setup`) → test tree (every boot) — so a pack that missed that sequence is invisible
+  here, and since packing never deletes, a removed source document lingers as a ghost. A count
+  mismatch now names the pack, both numbers, and the sequence to fix it. Falsified by removing one
+  weapon source: `weapons_1e: 21 source document(s), 22 served`.
+
+### A check that could not fail, removed
+
+A build-freshness check compared the served esmodule against `dist/` — and could never fire:
+`npm run setup` symlinks `dist/`, `lang/`, `images/` and `data/` straight back to the repo, so the
+server always serves the current build. It survived even a `deploy` install. Written, falsified,
+found unfalsifiable, deleted. **Only packs go stale**, which is what the count check covers.
+
+### Verified
+
+`npm run check` 0/0 (241 files) · **253 vitest** · **88 Playwright** · four consecutive runs
+started immediately after a `kill -9`, where the same sequence previously failed one time in three.
