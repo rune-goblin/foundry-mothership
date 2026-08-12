@@ -36,7 +36,7 @@ try {
     allocate,
     tiers: [
       { schema: join(root, 'content/schema'), data: join(root, 'content/local') },
-      { schema: join(root, 'content/data/schema'), data: join(root, 'content/data') },
+      { schema: join(root, 'content/data/schema'), data: join(root, 'content/data'), strict: false },
     ],
   });
 

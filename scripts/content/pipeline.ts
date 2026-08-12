@@ -5,7 +5,7 @@ import { IdRegistry, type Registry } from './ids.ts';
 import { checkReferences } from './integrity.ts';
 import type { PackDefinition } from './record.ts';
 import { fileSlug } from './slug.ts';
-import { validateTier } from './validate.ts';
+import { validateTier, type TierPaths } from './validate.ts';
 
 export interface BuildOptions {
   root: string;
@@ -14,8 +14,7 @@ export interface BuildOptions {
   outDir: string;
   manifestPath?: string;
   allocate?: boolean;
-  /** Skip JSON Schema validation; the fixture tests supply their own tiers. */
-  tiers?: { schema: string; data: string }[];
+  tiers?: TierPaths[];
 }
 
 export interface BuildResult {

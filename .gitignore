@@ -1,5 +1,8 @@
 node_modules/
 dist/
+# build/content-manifest.json — where a content build records what each _id came from.
+# Provenance is kept out of the shipped packs, and regenerating it is one command.
+build/
 .DS_Store
 *.zip
 *.log

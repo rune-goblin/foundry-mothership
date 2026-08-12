@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runegoblin.dev/mosh/fixture/mishaps.schema.json",
+  "title": "Fixture rolltables",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "name", "img", "formula", "results"],
+    "additionalProperties": false,
+    "properties": {
+      "id": { "$ref": "common.schema.json#/$defs/contentId" },
+      "name": { "type": "string", "minLength": 1 },
+      "img": { "$ref": "common.schema.json#/$defs/img" },
+      "description": { "$ref": "common.schema.json#/$defs/html" },
+      "formula": { "type": "string", "minLength": 1 },
+      "results": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "required": ["id", "range", "description"],
+          "additionalProperties": false,
+          "properties": {
+            "id": { "$ref": "common.schema.json#/$defs/contentId" },
+            "range": { "$ref": "common.schema.json#/$defs/rollRange" },
+            "description": { "$ref": "common.schema.json#/$defs/html" }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runegoblin.dev/mosh/fixture/quips.schema.json",
+  "title": "Fixture macros",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "name", "img", "command"],
+    "additionalProperties": false,
+    "properties": {
+      "id": { "$ref": "common.schema.json#/$defs/contentId" },
+      "name": { "type": "string", "minLength": 1 },
+      "img": { "$ref": "common.schema.json#/$defs/img" },
+      "command": { "type": "string", "minLength": 1 }
+    }
+  }
+}
