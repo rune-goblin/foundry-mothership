@@ -845,6 +845,7 @@
     "RadiationDamage": "Radiation Damage",
     "Range": "Range",
     "RangeBand": {
+      "none": "None",
       "adjacent": "Adjacent",
       "close": "Close",
       "long": "Long",

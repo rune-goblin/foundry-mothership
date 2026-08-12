@@ -57,8 +57,9 @@ test.describe('item sheets', () => {
   });
 
   // Mothership ranges in bands, so `system.range` is a StringField with choices rather than the
-  // free-text field (and vestigial short/medium/long trio) it replaced. The point of the enum is
-  // that Foundry rejects anything else, which is what the last assertion drives.
+  // free-text field (and vestigial short/medium/long trio) it replaced. `none` is one of the five:
+  // Ammo is on the weapons list and is never thrown at anyone. The point of the enum is that
+  // Foundry rejects anything else, which is what the last assertion drives.
   test('the weapon range is a band picked from the four, and nothing else stores', async ({
     gmPage,
   }) => {
@@ -68,7 +69,13 @@ test.describe('item sheets', () => {
       gmPage.evaluate(async (u) => (await (window as any).fromUuid(u)).toObject().system.range, uuid);
 
     await expect(range).toHaveValue('close');
-    await expect(range.locator('option')).toHaveText(['', 'Adjacent', 'Close', 'Long', 'Extreme']);
+    await expect(range.locator('option')).toHaveText([
+      'None',
+      'Adjacent',
+      'Close',
+      'Long',
+      'Extreme',
+    ]);
 
     await range.selectOption('extreme');
     await expect.poll(stored).toBe('extreme');

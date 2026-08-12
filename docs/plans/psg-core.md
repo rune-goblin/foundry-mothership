@@ -481,8 +481,9 @@ Deletions it carries, each in the DataModel **and** `template.json` (Decision 2a
 **`weapon.ranges.value` is done — §31, landed after the S6 review, and Decision 2a's row is
 struck.** It was the opposite of a render artifact: all 22 shipped weapons carry a PSG range *band*
 in it and `short`/`medium`/`long` are `0` on every one. So the field stayed and the **trio** went,
-as an enum — `system.range`, a `StringField` with the four bands as `choices`, no migration (the
-owner's call: fresh worlds forward from here). The character sheet's `_prepareCharacterItems` no
+as an enum — `system.range`, a `StringField` whose `choices` are the four bands plus `none` for a
+weapon that has no range at all (Ammo), and no migration (the owner's call: fresh worlds forward
+from here). The character sheet's `_prepareCharacterItems` no
 longer composes `10/20/30` onto embedded items during render, so **S7 has nothing left to do here**
 beyond keeping the localized band in its converted markup.
 

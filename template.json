@@ -269,7 +269,7 @@
       "bonus": 0,
       "weight": 0,
       "cost": 0,
-      "range": ""
+      "range": "none"
     },
     "armor": {
       "templates": [

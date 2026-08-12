@@ -204,8 +204,8 @@ const weapons: PackDefinition = {
           bonus: 0,
           weight: 0,
           cost: credits(weapon.cost),
-          // The band token, as the catalog spells it -- the runtime enumerates the same four.
-          range: weapon.range ?? '',
+          // The band token, as the catalog spells it; its `null` is the runtime's `none`.
+          range: weapon.range ?? 'none',
         },
       },
       provenance: { source: `${SOURCE}/weapons.ts`, sourceId: weapon.id, page: weapon.source.page },

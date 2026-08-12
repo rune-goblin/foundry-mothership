@@ -2373,7 +2373,7 @@ a `migrateData` with a threshold table nobody could source.
 
 ```js
 // was                                          // now
-ranges: { short, medium, long, value: 'Long' }   range: 'long'   // StringField, four choices
+ranges: { short, medium, long, value: 'Long' }   range: 'long'   // StringField, five choices
 ```
 
 `content/books/psg/weapons.ts` had already declared `RangeBand` as a union; the runtime now
@@ -2382,11 +2382,14 @@ The emitter stops title-casing the token into a display string — the sheets lo
 `lang/pt-BR.json` shows Portuguese bands for the first time instead of English ones baked into the
 data.
 
-### `blank` has to be said out loud
+### "No range" is a value, not an absence
 
-`StringField` turns `blank` **off** the moment `choices` is set. Left implicit, every weapon with no
-range at all — Ammo is one — would have failed validation and fallen back to the initial, which is
-the blank it was already trying to be. It is set explicitly, and pinned by a spec.
+Ammo is on the weapons list and is never thrown at anyone, so a weapon needs a fifth state — and it
+is **`none`**, a member of the enum, rather than a blank. `StringField` turns `blank` off the moment
+`choices` is set, and rather than turn it back on the field simply has no unset state: five values,
+`none` the initial, `blank: false` said out loud beside it. Nothing downstream branches on emptiness
+— both actor sheets localize whatever token is there, so the `N/A` fallback each carried for the
+range column is gone.
 
 ### The guard learned to read choices
 
@@ -2398,6 +2401,9 @@ content build now fails with
 ```
 fixture_gadgets_1e/flux-capacitor: system.range = "Long" is not one of the choices weapon declares
 ```
+
+The blank exemption is exact rather than assumed: the stub records `blank` alongside `choices`, so
+`""` passes only where a field actually declares it — which `range`, having choices, does not.
 
 That is the third distinct silent-loss channel this repo has closed (undeclared key, array element,
 now enumerated value), and the first one caught before it could ship rather than after.

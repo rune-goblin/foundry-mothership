@@ -16,12 +16,15 @@ const bool = (initial = false) => new fields.BooleanField({ required: true, init
 const uuidList = () => new fields.ArrayField(new fields.StringField());
 
 /**
- * The PSG's four range bands, in order. A weapon stores the token and the sheets localize it;
- * `''` is the fifth state, for the things on the weapons list that have no range at all.
- * `content/books/psg/weapons.ts` declares the same four as a TypeScript union — the catalog
- * describes the book, this describes the runtime, and the content build is the adapter.
+ * What a weapon's range can be: the PSG's four bands in order, behind the state for a weapon
+ * that has no range at all — Ammo is on the weapons list and never gets thrown at anyone.
+ * `none` is a value rather than a blank so the field has no unset state to reason about.
+ *
+ * `content/books/psg/weapons.ts` declares the four bands as a TypeScript union and `null` for the
+ * rest — the catalog describes the book, this describes the runtime, the content build is the
+ * adapter. A weapon stores the token; the sheets localize it.
  */
-export const RANGE_BANDS = ['adjacent', 'close', 'long', 'extreme'];
+export const WEAPON_RANGES = ['none', 'adjacent', 'close', 'long', 'extreme'];
 
 // How many skills of each rank a class adjustment lets the player pick. A *_full_set is one skill
 // plus the prerequisite chain beneath it, which is a different dialog, hence a different key.
@@ -65,14 +68,12 @@ export class MoshWeapon extends foundry.abstract.TypeDataModel {
       bonus: num(0),
       weight: num(0),
       cost: num(0),
-      // Mothership ranges in bands, not distances -- the book gives no metres for them. Stored as
-      // the token; the sheets localize it. `blank` has to be explicit: StringField turns it off
-      // as soon as `choices` is set.
+      // Mothership ranges in bands, not distances -- the book gives no metres for them.
       range: new fields.StringField({
         required: true,
-        blank: true,
-        initial: '',
-        choices: RANGE_BANDS,
+        blank: false,
+        initial: 'none',
+        choices: WEAPON_RANGES,
       }),
     };
   }

@@ -528,9 +528,7 @@
     <ItemCell>{localize('Mosh.NA')}</ItemCell>
     <ItemCell>{localize('Mosh.NA')}</ItemCell>
   {/if}
-  <ItemCell>
-    {weapon.system.range ? localize(`Mosh.RangeBand.${weapon.system.range}`) : localize('Mosh.NA')}
-  </ItemCell>
+  <ItemCell>{localize(`Mosh.RangeBand.${weapon.system.range}`)}</ItemCell>
   <ItemControls>
     <ItemControl
       icon="edit"

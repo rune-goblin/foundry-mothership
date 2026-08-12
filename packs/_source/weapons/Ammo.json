@@ -20,7 +20,7 @@
     "curShots": 0,
     "damage": "",
     "description": "<p>Per magazine/container.</p>",
-    "range": "",
+    "range": "none",
     "shots": 0,
     "shotsPerFire": 1,
     "useAmmo": false,

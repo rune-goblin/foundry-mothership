@@ -6,6 +6,7 @@ export type Stub = {
   schema?: Record<string, Stub>;
   element?: Stub;
   choices?: readonly string[];
+  blank?: boolean;
 };
 
 class Recorded {
@@ -21,12 +22,15 @@ export function installFoundryFieldStubs(): void {
         NumberField: class extends Recorded { constructor(o: { initial: number }) { super(o.initial); } },
         // `choices` is kept so the content build can check emitted values against the enum, not
         // just the key against the schema -- an off-list string is discarded on load just as
-        // silently as an undeclared key.
+        // silently as an undeclared key. `blank` rides along because Foundry lets "" through
+        // ahead of the choices check, but only where the field asks for it.
         StringField: class extends Recorded {
           choices?: readonly string[];
-          constructor(o?: { initial?: string; choices?: readonly string[] }) {
+          blank: boolean;
+          constructor(o?: { initial?: string; choices?: readonly string[]; blank?: boolean }) {
             super(o?.initial ?? '');
             this.choices = o?.choices;
+            this.blank = o?.blank ?? !o?.choices;
           }
         },
         BooleanField: class extends Recorded { constructor(o?: { initial?: boolean }) { super(o?.initial ?? false); } },
@@ -97,7 +101,8 @@ function undeclaredIn(value: unknown, field: Stub, path: string): string[] {
 /**
  * Dotted paths whose value is not one of the enumerated choices its field declares. Foundry
  * validates a StringField's choices on load and falls back to the initial, so an off-list value
- * is the same silent loss as an undeclared key -- and blank is always allowed where the field is.
+ * is the same silent loss as an undeclared key. Blank passes only where the field declares it --
+ * setting `choices` turns `blank` off, which is what makes "" an off-list value like any other.
  */
 export function invalidChoices(
   value: Record<string, unknown>,
@@ -110,7 +115,11 @@ export function invalidChoices(
     if (!field) continue;
     if (field.schema && isPlainObject(child)) {
       out.push(...invalidChoices(child, field.schema, `${prefix}${key}.`));
-    } else if (field.choices && child !== '' && !field.choices.includes(child as string)) {
+    } else if (
+      field.choices &&
+      !(child === '' && field.blank) &&
+      !field.choices.includes(child as string)
+    ) {
       out.push(`${prefix}${key} = ${JSON.stringify(child)}`);
     }
   }

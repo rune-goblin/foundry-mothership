@@ -509,11 +509,7 @@
           {{else}}
           <div class="skill-stat">{{ localize 'Mosh.NA' }}</div>
           {{/if}}
-          {{#if weapon.system.range}}
           <div class="skill-stat">{{ localize (concat 'Mosh.RangeBand.' weapon.system.range) }}</div>
-          {{else}}
-          <div class="skill-stat">{{ localize 'Mosh.NA' }}</div>
-          {{/if}}
           <div class="item-controls">
             <a class="item-control weapon-edit" title="{{ localize 'Mosh.EditWeapon' }}"><i class="fas fa-edit"></i></a>
             <a class="item-control item-delete" title="{{ localize 'Mosh.DeleteWeapon' }}"><i class="fas fa-trash"></i></a>

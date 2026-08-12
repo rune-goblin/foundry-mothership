@@ -2,7 +2,7 @@
   import Field from '../../parts/Field.svelte';
   import CheckField from '../../parts/CheckField.svelte';
   import { localize } from '../../i18n.js';
-  import { RANGE_BANDS } from '../../../data/item-models.js';
+  import { WEAPON_RANGES } from '../../../data/item-models.js';
 
   const WOUND_ROLLS = [
     'Bleeding', 'Bleeding [-]', 'Bleeding [+]',
@@ -14,12 +14,10 @@
 
   let { system } = $props();
 
-  // Mothership ranges in bands. The blank first option is the state of a thing on the weapons
-  // list with no range at all -- Ammo is one.
-  const RANGE_CHOICES = [
-    { value: '', label: '' },
-    ...RANGE_BANDS.map((band) => ({ value: band, label: localize(`Mosh.RangeBand.${band}`) })),
-  ];
+  const RANGE_CHOICES = WEAPON_RANGES.map((range) => ({
+    value: range,
+    label: localize(`Mosh.RangeBand.${range}`),
+  }));
 </script>
 
 <div class="item-armor-grid" style="margin-top: 10px; margin-bottom: 10px;">

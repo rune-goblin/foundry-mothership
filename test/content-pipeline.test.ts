@@ -315,9 +315,11 @@ describe('the DataModel guard', () => {
     );
   });
 
-  it('accepts a declared choice, and the blank the field also allows', () => {
+  it('accepts a declared choice, and rejects the blank the field does not offer', () => {
     expect(() => run(weaponWith({ range: 'long' }))).not.toThrow();
-    expect(() => run(weaponWith({ range: '' }))).not.toThrow();
+    // "No range" is the value `none`, not an absent one -- setting choices turns blank off.
+    expect(() => run(weaponWith({ range: '' }))).toThrow(/system\.range = "" is not one of/);
+    expect(() => run(weaponWith({ range: 'none' }))).not.toThrow();
   });
 
   it('fails on an Item type no DataModel is registered for', () => {
