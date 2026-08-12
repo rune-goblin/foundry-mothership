@@ -1835,3 +1835,137 @@ protecting the `@UUID`s the surviving rolltables still hold.
 **Verified:** `npm run check` 0 errors / 0 warnings (221 files) · **178 vitest** (168 + 10) ·
 **56 Playwright** · `npm run build`. `packs/_source`, `module/`, `templates/` and `system.json`
 untouched — confirmed by diff, so the runtime could not have moved.
+
+---
+
+## 27. S2b and S3 — the book becomes TypeScript, and then becomes 274 documents
+
+Two units, one session. S2b converted the transcription; S3 emitted it. The order was not optional:
+converting 353 records after S3 would have meant redoing the source of every document plus the
+loadout mapping.
+
+### S2b — typed catalogs replace JSON plus JSON Schema
+
+`content/books/psg/*.json` and its 13 `schema/*.schema.json` became twelve `.ts` catalogs, each
+`export const X = [...] as const satisfies readonly T[]`. Converted **mechanically, once**, by a
+throwaway script, and verified byte-identical: every catalog re-serialises to exactly the JSON it
+replaced.
+
+This supersedes `architecture.md` Decision 4's content half. That decision's premise — that writing
+TS first would make this repo upstream of a data repo's validator — was already gone: `../mothership-data`
+has no `.git`, and §26 imported the corpus once and owned it here.
+
+**What it bought.** Ids became literal union types, so the cross-references stopped being
+runtime-validated and started being compiler-enforced:
+
+```
+content/books/psg/skills.ts(429,7): error TS2322:
+  Type '"zooology"' is not assignable to type '"command" | "archaeology" | … | "xenoesotericism"'.
+  Did you mean '"zoology"'?
+```
+
+Three joins are covered — the 42 skills' prerequisites, the classes' granted skills, and the
+99-row loadout mapping. `Skill.prerequisites` cannot say so itself (`SkillId` is derived from the
+array being checked), so `skills.ts` ends with one `satisfies` statement that closes the loop.
+
+**What it cost, and where that went.** JSON Schema checked things types cannot: row counts,
+`minimum`, `minItems`. Those moved to `test/content-catalogs.test.ts`, which pins every dataset's
+count and asserts **every table covers its die exactly once** — a stronger check than Ajv had, since
+a gap or an overlap in a 100-row table is invisible in the emitted pack. The enum and tuple
+constraints live in the types.
+
+**Deleted:** Ajv, the 13 schema files, `scripts/content/validate.ts`, and S2's strict-mode fixes.
+**Added:** nothing — `tsconfig.json` gained `content/**/*.ts` to its include list and that was all.
+
+`PackDefinition.load()` stopped taking a root: records reach the build as imports now, never off
+disk. The fixture book converted with it, so it still mirrors the real one. What `validateDatasets`
+used to guard — a book whose `dir` is a typo — is now `checkBookDir`: a book must have its directory
+and its `BOOK.md`, because `dir` is what the manifest cites as every document's provenance.
+
+### S3 — 274 documents, and the generator finally has data
+
+| | Before | After |
+|---|---|---|
+| Documents | 136 | **274** |
+| Items | 11 conditions | **157** — 42 skills, 4 classes, 22 weapons, 15 armor, 65 equipment, 9 conditions |
+| RollTables | 7 | **13** |
+| Macros | 118 | **104** |
+| Compendia | 4 | **9** |
+
+**148 Items the system has never shipped.** The character generator scans every compendium for
+`type: "skill"` and `type: "class"`; it has always found none, so its whole class-and-skill flow has
+been dead since it was written. A new e2e spec asserts the scan now returns 42 and 4.
+
+**The class-adjustment mapping.** Three rules, as measured: a named target is a key (stats and saves
+share one flat key space), `all` fans out, a null target becomes `selected_adjustment.choose_stat`.
+`architecture.md` Decision 2 held — the runtime schema was not reshaped; `scripts/content/books/psg/items.ts`
+is the adapter.
+
+**The one open question, settled.** The Scientist's *"1 Master Skill, and an Expert and Trained Skill
+prerequisite"* has a clean runtime equivalent after all: `choose_skill_and.master_full_set`, whose
+dialog (`actor-generator-skill-option-full-master-dialog.html`) walks the whole prerequisite chain.
+Nothing new was invented for it.
+
+**Loadouts link real gear.** `content/books/psg/gear.ts` is the hand-checked mapping the plan
+reserved — 99 rows keyed by the exact strings the tables print, typed
+`Record<LoadoutItemText, readonly GearRef[]>`. That type is the point: a row left unmapped **and** a
+key no table prints any more are both compile errors. Three rules decided them, in order:
+
+1. the parenthetical names the item — `Screwdriver (as Assorted Tools)`, `Combat Knife (as Scalpel DMG [+])`;
+2. a near-miss maps to the priced entry — `Oxygen Tank with Filter Mask`, `Small Pet (organic).`;
+3. what is left, the loadout tables are the source for.
+
+Rule 3 produced **32 documents, not the ~12 the plan estimated** — because the estimate did not
+account for the ten outfits the tables print *with an Armor Point value*. `Fatigues (AP 2)` and
+`Heavy Duty Work Clothes (AP 2)` are the reason they are not folded into Standard Crew Attire: no
+priced armor provides AP 2, so folding them would have quietly halved a mechanic. The other eight
+are AP 1, and a Scientist who rolls a Lab Coat should get a Lab Coat.
+
+`GearRef` carries a `kind` alongside the id, and that is not decoration: `crowbar` is both an
+`EquipmentId` and a `WeaponId`. The price list prints the Crowbar twice, once with damage. Only the
+weapon is emitted — `modifyItem` resolves items **by name**, so two documents of one name would race.
+`EQUIPMENT_COVERED_BY_WEAPON` records the exception, which is why equipment is 43 + 22, not 44 + 22.
+
+**The generator's loadout parse is still broken, and that is S5's.** It extracts a single `_id` per
+row (`match(/(.*)(@UUID.*)/)` then two greedy replaces), so a three-item row yields one item — even
+though the submit path splits on commas and clearly expected several. The content is now right;
+the extraction is not. Recorded here rather than fixed, per the change boundary.
+
+### The id-preservation loop, closed
+
+`checkIdPreservation` is wired into `build()` — the one line S3 owed §26. **16 ids retired with a
+reason:**
+
+| Retired | Why |
+|---|---|
+| 7 triggered macros | write ship fields (`system.supplies.*`, `stats.{battle,systems,thrusters,oxygen}`) that no surviving model declares |
+| 3 triggered macros | the radiation and cryosickness conditions they served were cut in §25 |
+| `+1 Death Wish`, `+1 Suspicious` | their conditions have no book source |
+| `death-wish`, `suspicious` | no PSG panic result grants them; they came from the Calm/android tables |
+| `gain-calm`, `lose-calm` | Calm was cut with the panic variants |
+
+The reference check now matches **bare** compendium UUIDs, not only `@UUID[…]`: a class names its
+granted skills as plain strings in an array, and that join breaks as silently as a bad link in prose.
+Loaders receive an `IdLookup` and every pack is declared before any of them loads, because a class
+asks for a skill's id before the build has reached the skills pack.
+
+### Two smaller corrections
+
+**The panic table is named `Panic Check`,** not `Panic Check (Stress, Normal)`. `actor.js` derives
+its flavour-text key from the table's *name*, and `Mosh.table.panic_check` is the key that has always
+been in `lang/en.json` — the old name never matched it. The variants are gone, so the qualifier was
+meaningless as well as wrong. The `_id` is unchanged, so no setting or world moves.
+
+**`packs.sh` reads its pack list from `content/ids.json`.** It held a hardcoded four-entry list;
+adding five compendia would have meant editing it in step forever. (macOS ships bash 3.2, which has
+no `mapfile` — hence the `while read` loop.)
+
+### Adding the next book
+
+Unchanged from §26, minus the schemas: a `content/books/<id>/` directory of typed catalogs with a
+`source.ts` and a `BOOK.md`, a `scripts/content/books/<id>/` describing its packs, one entry in
+`BOOKS`, then `npm run content -- --allocate` and commit `content/ids.json`. Merging the new
+compendia into `system.json` stays orchestrator-only.
+
+**Verified:** `npm run check` 0 errors / 0 warnings (221 files) · **217 vitest** · **61 Playwright**
+· `npm run build` · a second content build byte-identical to the first.

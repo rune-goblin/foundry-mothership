@@ -22,7 +22,8 @@ Operations Manual is next; the Shipbreaker's Toolkit brings ships back.
 `docs/plans/evidence.md` holds the measurements; `docs/plans/run-to-the-end.md` holds how a unit
 is delegated and gated (its ten standing rules and review gate are current; its *wave order* is
 superseded). `MODERNIZATION.md` is the **record**: §10 the item-sheet conventions, §20 the
-component layer, §22 the windows, §24 phase 0, §25 the PSG cut. Update it as work lands.
+component layer, §22 the windows, §24 phase 0, §25 the PSG cut, §26 the content pipeline, §27 the
+TypeScript catalogs and the generated content. Update it as work lands.
 
 **Ships, the Calm/android panic variants and all unsourced content were cut** (§25) and live on
 the pushed **`archive/pre-psg-cut`** branch and tag. Nothing was destroyed; ships return as an
@@ -36,13 +37,14 @@ Don't fix component architecture piecemeal mid-phase — note it in §23 instead
 |---|---|
 | Vite build, TS tooling, CI | 4 AppV1 sheet classes (actor, creature, class, + the item base) |
 | DataModels for the 9 surviving types | 1 bare-`FormApplication` window (`actor-generator`) |
-| Packs from JSON source, 0e removed | 17 Handlebars templates |
+| Packs generated from the book, 0e removed | 17 Handlebars templates |
 | Svelte 5 wired into build, check, vitest | 4 sheets/windows left to convert |
-| 6 item sheets on ApplicationV2 + Svelte | **the system ships no skills, classes, weapons, armour or equipment** — S3 |
+| 6 item sheets on ApplicationV2 + Svelte | the generator extracts one `_id` per loadout row — S5 |
 | Shared components in `module/ui/parts/` | conditions do not affect any roll — S8 |
-| 0e / `firstEdition` rules removed | |
+| 0e / `firstEdition` rules removed | `base_adjustment` is still a free-form `ObjectField` — S4 |
 | `creature-settings` on ApplicationV2 (§24) | |
 | The PSG cut — 13,337 lines removed (§25) | |
+| **274 documents generated from the PSG** (§27) | |
 
 ## Hard rules (override defaults)
 
@@ -64,9 +66,10 @@ npm run build            # vite → dist/
 npm run setup            # dev install: symlink scaffold (packs are COPIED — re-run after packing)
 npm run deploy           # release rehearsal: link-free copy, same shape as the zip
 ./scripts/packs.sh pack  # packs/_source/*.json → LevelDB (close Foundry first)
-npm test                 # 120 vitest specs — the CI tier
+npm run content -- --allocate  # content/books/** -> packs/_source/** (--allocate mints new ids)
+npm test                 # 217 vitest specs — the CI tier
 npm run check            # tsc over the .ts surface, then svelte-check over module/ui
-npm run test:e2e         # 75 Playwright specs vs a real headless Foundry
+npm run test:e2e         # 61 Playwright specs vs a real headless Foundry
 ```
 
 A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — both `dist/` and
@@ -111,7 +114,9 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
 - **Check that a "source" is really the source.** Two dead sources have already been found
   and deleted (`scss/`, `_macros/`), each duplicating something that had moved on. Before
   building from any input, verify it produces what actually ships.
-- **`packs/` and `dist/` are never committed.** Sources are `packs/_source/**/*.json`.
+- **`packs/_source/**` is generated — do not hand-edit it.** The real source is
+  `content/books/psg/*.ts` (typed catalogs, §27); `npm run content` emits the pack sources and
+  `packs.sh pack` compiles them. `packs/` and `dist/` are never committed; `packs/_source/` is.
 - **A sheet can bind a field no schema declares.** A `SchemaField` cleans off keys it does not
   know, so the write is accepted and silently discarded. That is how the DataModel migration
   stopped armour from equipping; twelve such fields were found and restored.

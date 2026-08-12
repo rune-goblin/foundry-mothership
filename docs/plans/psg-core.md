@@ -10,15 +10,15 @@ the book instead. What survives from it is noted at the end.
 
 | | |
 |---|---|
-| **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26) |
-| **Next** | **S2b — convert the book to TypeScript catalogs**, then **S3 — generate the content.** Read the decisions below before briefing either. |
-| **Green at** | `check` 0/0 (221 files) · **178 vitest** · **56 Playwright** · `build` |
+| **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26), **S2b** the TypeScript catalogs and **S3** the content (§27) |
+| **Next** | **S4 — the class sheet and the class-adjustment schema.** S3 emits `base_adjustment`/`selected_adjustment` as free-form objects; S4 tightens them into real SchemaFields and kills the last AppV1 item-sheet base. |
+| **Green at** | `check` 0/0 (221 files) · **217 vitest** · **61 Playwright** · `build` |
 | **Preserved** | Everything cut is on the pushed `archive/pre-psg-cut` branch **and** tag |
 
-What the system ships today: 2 actor types (character, creature), 7 item types, **7 rolltables,
-11 conditions, 107 macros — 136 documents**. It ships **no skills, classes, weapons, armour or
-equipment**; S3 is where that changes and where the character generator gets data for the first
-time.
+What the system ships today: 2 actor types (character, creature), 7 item types, and **274
+documents** across 9 compendia — 42 skills, 4 classes, 22 weapons, 15 armor, 65 equipment, 9
+conditions, 13 rolltables, 104 macros. The character generator's compendium scan finds skills and
+classes for the first time, and every loadout row links the gear it hands out.
 
 **The commands that matter**, in this order — the middle one is not optional and is easy to miss:
 
@@ -30,7 +30,22 @@ npm run test:e2e
 
 ---
 
-## S3 design notes — measured, so the next session need not re-derive them
+## S3 design notes — kept as the record of what was decided, now that it is done
+
+**All of this landed; §27 has the outcome.** Three things came out other than as written, and they
+are the ones to carry forward:
+
+- **The Scientist's `skills.choices` was not open after all.** `choose_skill_and.master_full_set`
+  is exactly *"1 Master Skill, and an Expert and Trained Skill prerequisite"* — the dialog walks
+  the whole prerequisite chain. Nothing new was invented.
+- **The loadout gap needed 32 documents, not ~12.** The estimate missed the ten outfits the tables
+  print *with an Armor Point value*; two of them are AP 2, which no priced armor provides.
+- **`character-creation.json` did carry formulas** (`2d10+25`, `2d10+10`, `1d10+10`, `2d10*10`) —
+  gap (1) below was stale. Only "Stress starts at 2" is prose, and S5 needs it.
+
+The rest of this section is the reasoning as it stood, kept because S4 and S5 build on it.
+
+
 
 ### The class-adjustment mapping is three rules plus one open question
 
@@ -316,23 +331,20 @@ S2  content pipeline, simplified                          ✅ done (§26)  Opus
     strip C1 to one tier; content/books/psg/; the DataModel guard
     above; determinism + integrity retained.
 
-S2b the book becomes a TypeScript catalog                            Opus
-    json + json-schema -> typed .ts catalogs, converted MECHANICALLY
-    from today's json. Ids become literal union types; Ajv, the 13
-    schemas and validate.ts are deleted. Must land before S3 emits
-    anything -- see the decision above. The DataModel guard and the
-    generated-from-defineSchema rule are unchanged.
+S2b the book becomes a TypeScript catalog                 ✅ done (§27)  Opus
+    twelve typed .ts catalogs, converted mechanically and verified
+    byte-identical. Ajv, the 13 schemas and validate.ts deleted;
+    counts and die coverage moved to content-catalogs.test.ts.
 
-S3  generate the book                                                Sonnet, against S2's tests
-    ~130 Items (117 + the loadout-only gear), 7 tables from
-    wounds/panic/death, trinkets, patches, 4 loadout tables linking
-    real gear documents, the conditions with modifiers seeded on
-    Frightened/Nightmares/Spiraling, the macro table.
-    Retire the ids it drops, then wire checkIdPreservation on.
-    Milestone: browsable in a real Foundry; the generator has data
-    for the first time, loadouts included.
+S3  generate the book                                     ✅ done (§27)  Opus
+    274 documents across 9 compendia: 148 new Items, 13 tables,
+    104 macros, 9 conditions. Loadouts link real gear through the
+    99-row mapping in gear.ts. 16 ids retired with a reason and
+    checkIdPreservation wired into build().
+    Left for S5: the generator extracts one _id per loadout row,
+    so a three-item row still grants one item.
 
-S4  class-sheet + the class-adjustment schema                        Opus
+S4  class-sheet + the class-adjustment schema                  <- next  Opus
     derive first, then tighten base_adjustment/selected_adjustment
     into real SchemaFields with template.json in lockstep. Kills the
     last AppV1 item-sheet base.
