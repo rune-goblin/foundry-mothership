@@ -11,7 +11,7 @@ the book instead. What survives from it is noted at the end.
 | | |
 |---|---|
 | **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26) |
-| **Next** | **S3 — generate the PSG book content.** Design notes below; read them before briefing it. |
+| **Next** | **S2b — convert the book to TypeScript catalogs**, then **S3 — generate the content.** Read the decisions below before briefing either. |
 | **Green at** | `check` 0/0 (221 files) · **178 vitest** · **56 Playwright** · `build` |
 | **Preserved** | Everything cut is on the pushed `archive/pre-psg-cut` branch **and** tag |
 
@@ -79,6 +79,77 @@ unresolved prerequisites, 0 unresolved class-granted skills** — but:
 
 **If the corpus is ever re-extracted, (1) and (2) are the two things worth fixing at the source.**
 Neither blocks S3.
+
+### Decided — the book is a TypeScript catalog, not JSON + JSON Schema
+
+**This supersedes `architecture.md` Decision 4's content half.** That decision said "Content: JSON
+Schema first… writing TS first would make this repo upstream of the data repo's validator —
+backwards." **The premise is gone:** `../mothership-data` has no `.git`, there is no sync, and the
+corpus is imported once and owned here (§26). With no upstream validator to be upstream *of*, the
+argument for JSON Schema no longer holds.
+
+So `content/books/psg/*.json` + `schema/*.schema.json` become **typed TypeScript catalogs**:
+
+```ts
+export const GEAR = [...] as const satisfies readonly Gear[];
+export type GearId = (typeof GEAR)[number]['id'];
+```
+
+**What this buys, and the loadout mapping is the case that decides it.** Ids become literal union
+types, so the three cross-reference sets stop being runtime-validated and start being
+compiler-enforced — the 42 skills' prerequisites, the classes' granted skills, and above all the
+~99-row loadout mapping, where a wrong gear id becomes a **compile error** rather than an integrity
+failure a test may or may not catch.
+
+It also deletes more than it adds: Ajv, the 13 schema files, `validate.ts`, and S2's strict-mode
+fixes. `tsconfig.json` already includes `scripts/**/*.ts`, so `npm run check` covers the catalogs
+with **no new tooling** (TypeScript is 5.9.3, so `as const satisfies` is available). And JSON's
+no-comments rule goes away, which matters for a transcription where `Combat Knife (as Scalpel DMG
+[+])` needs a note explaining what it maps to.
+
+**Two invariants, or this becomes the third-schema-language mistake Decision 4 was guarding
+against:**
+
+1. **Runtime types stay generated from `defineSchema()`.** The catalogs describe the *book*;
+   `defineSchema()` describes the *runtime*; the build is the adapter. Never a hand-written runtime
+   type.
+2. **S2's DataModel guard stays, and is still load-bearing.** TypeScript cannot see
+   `defineSchema()` — the guard is the only thing verifying the adapter's *output* fits the schema
+   Foundry will clean it against.
+
+**Method:** generate the `.ts` from today's `.json` **mechanically, once**, so the transcription
+stays faithful; hand-author only the genuinely new parts. Do not retype 353 records by hand.
+
+**Do this before S3 emits anything.** Converting 353 records now is a one-time mechanical
+transform; after S3 it means redoing the source of ~130 documents plus the loadout mapping.
+
+### Decided — loadouts link real gear documents, and the gear is browsable
+
+Both halves, because **the generator already assumes it**: on submit it reads
+`formData["system.class.loadout.uuid"].split(",")` and adds those items to the character. Ship
+loadouts as text and that path stays permanently dead — it has never had data.
+
+Measured against the corpus:
+
+| | |
+|---|---|
+| Gear documents from `equipment` + `weapons` + `armor` | **71** |
+| Distinct item strings across the 4 loadout tables | **99** |
+| Exact name match | 30 |
+| Match after stripping `(…)` and `xN` | +24 |
+| No match | **45** |
+
+The 45 are not all missing. **The parentheticals carry the mapping instruction** — `Combat Knife
+(as Scalpel DMG [+])`, `Screwdriver (as Assorted Tools)` name the item to use. Others are
+near-misses: `Paracord (100m)` vs the listed `Paracord (50m)`, `Small Pet (organic).` vs
+`Pet (Organic)`, `Oxygen Tank with Filter Mask` vs `Oxygen Tank`. Genuinely absent —
+`Defibrillator`, `Satchel`, `Vaccine`, `Tennis Ball`, `Challenge Coin`, `Dog` — are real gear the
+PSG never priced, and ship as Items sourced from the loadout tables.
+
+So: a **one-time hand-checked mapping table of ~99 rows** plus roughly a dozen new Items. Reviewable
+in one pass, and typed under the decision above so it cannot silently rot. Item count goes from
+~117 to **~130**; gear becomes browsable and draggable through the standard Foundry interfaces; the
+generator's loadout step works for the first time.
 
 ### S3 must close the id-preservation loop
 
@@ -242,15 +313,25 @@ S1  the cut                                                          orchestrato
     first. Gate: check, 0-warning svelte-check, vitest, e2e green
     with the ship specs removed rather than skipped.
 
-S2  content pipeline, simplified                                     Opus
+S2  content pipeline, simplified                          ✅ done (§26)  Opus
     strip C1 to one tier; content/books/psg/; the DataModel guard
     above; determinism + integrity retained.
 
+S2b the book becomes a TypeScript catalog                            Opus
+    json + json-schema -> typed .ts catalogs, converted MECHANICALLY
+    from today's json. Ids become literal union types; Ajv, the 13
+    schemas and validate.ts are deleted. Must land before S3 emits
+    anything -- see the decision above. The DataModel guard and the
+    generated-from-defineSchema rule are unchanged.
+
 S3  generate the book                                                Sonnet, against S2's tests
-    117 Items, 7 tables from wounds/panic/death, trinkets, patches,
-    4 loadout tables, the conditions, the macro table.
+    ~130 Items (117 + the loadout-only gear), 7 tables from
+    wounds/panic/death, trinkets, patches, 4 loadout tables linking
+    real gear documents, the conditions with modifiers seeded on
+    Frightened/Nightmares/Spiraling, the macro table.
+    Retire the ids it drops, then wire checkIdPreservation on.
     Milestone: browsable in a real Foundry; the generator has data
-    for the first time.
+    for the first time, loadouts included.
 
 S4  class-sheet + the class-adjustment schema                        Opus
     derive first, then tighten base_adjustment/selected_adjustment
