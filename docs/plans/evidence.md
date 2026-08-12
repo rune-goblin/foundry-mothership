@@ -330,3 +330,60 @@ an explicit, tested, reviewable transformation rather than a hand edit.
 
 Both tiers should land in **one typed source format, one validator, one pack generator**. After the
 rescue the distinction stops being visible in the codebase — it survives only as provenance.
+
+
+---
+
+## Part 5 — what a "condition" is, and why there are 50 of them
+
+Measured 2026-08-12, prompted by the owner's observation that a condition is an **ongoing effect**
+and that panic effects and conditions are the same kind of thing. Both are right, and the pack is
+organised on exactly that principle — but the count needs the whole chain to explain.
+
+### The chain is table → macro → condition
+
+No rolltable references a condition directly. A panic result's description links a triggered macro
+via `@UUID`, and that macro carries the condition's `_id` and applies it with `initModifyItem`.
+**46 of the 151 triggered macros exist to apply a condition.** So the conditions pack is the set of
+ongoing effects the four panic tables can inflict, plus the ones a Warden applies by hand.
+
+### The four panic tables, and what each can inflict
+
+The system ships **four** panic tables, selected by the `useCalm` and `androidPanic` settings:
+
+| Table | Results | Distinct conditions it applies |
+|---|---|---|
+| Panic Check (Stress, Normal) | 20 | **10** — Coward, Death Wish, Deflated, Doomed, Frightened, Haunted, Loss of Confidence, Nightmares, Spiraling, Suspicious |
+| Panic Check (Calm, Normal) | 28 | 16 — Anhedonia, Broken, Coward, Emotional Detachment, Escapism, Hallucinations, Hypervigilance, Insane, Losing Your Grip, Panicky, Phobia, Psychotic Episodes, Recurring Nightmares, Severe Anxiety, Social Anxiety, The Shakes |
+| Panic Check (Stress, Android) | 20 | 6 — Ethical Directive Misread, Killswitch Engaged, Phobia, Turing Test Failure, Vocalization Failure, Worship Danger |
+| Panic Check (Calm, Android) | 28 | 12 — the logic-core and directive faults: Bit Rot, Deviant Logic Core, Ethical Directive Failure/Misread, Faulty Heuristics, Fried Logic Core, Killswitch Engaged, Rampancy, Software Bloat, Threat Assessment Failure, Turing Test Failure, Vocalization Failure |
+
+Union of the four, allowing for the overlaps (`Coward`, `Phobia`, `Killswitch Engaged`,
+`Turing Test Failure`, `Vocalization Failure`, `Ethical Directive Misread` each appear in two):
+**40 conditions**.
+
+### The other 10 are environmental, and have no table at all
+
+`Corrosive Atmosphere`, `Cryosickness`, `Exhausted`, `Extreme Cold`, `Extreme Heat`, `Irradiated`,
+`Starving`, `Suffocating`, `The Bends`, `Toxic Atmosphere`. Nothing references them — no table, no
+macro, no code. They are ongoing effects a Warden applies directly, which is a use no reference
+count can see. 40 + 10 = **50**.
+
+**So the pack is not inflated.** "There should be 20" is the row count of the Stress/Normal panic
+table, which yields exactly 10 of the 50. The remaining 40 come from the other three tables and
+from the environment.
+
+### The consequence for C3, which is larger than the plan assumed
+
+`mothership-data/panic.json` is **one** table — `{id, name, die, rule, results, source}` with 20
+results — and it corresponds to Panic Check (Stress, Normal). There is **no Calm variant and no
+Android variant upstream**, because Calm/Stress and android panic are this system's own settings
+(`useCalm`, `androidPanic`), not PSG 1e core.
+
+So C3 cannot "rebuild panic on pinned ids" from PSG data as written. Of 96 panic result rows, **20
+are derivable and 76 are rescued tier** — the only copy is the inherited pack. The same caution
+applies to any table the plan assumes is derivable: check it row-for-row against the corpus first.
+
+One small disagreement worth recording: upstream flags **8** panic results `grantsCondition: true`,
+while the system's Stress/Normal table applies **10** — it also treats `Death Wish` and
+`Suspicious` as ongoing conditions. The system's reading is the one shipped content depends on.
