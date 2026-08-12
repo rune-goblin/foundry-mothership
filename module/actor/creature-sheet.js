@@ -2,7 +2,7 @@
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-import { DLCreatureSettings } from "../settings/creature-settings.js";
+import { CreatureSettingsApp } from "../ui/creature/CreatureSettingsApp.js";
 
 export class MothershipCreatureSheet extends foundry.appv1.sheets.ActorSheet {
 
@@ -41,9 +41,12 @@ export class MothershipCreatureSheet extends foundry.appv1.sheets.ActorSheet {
 
     _onConfigureCreature(event) {
         event.preventDefault();
-        new DLCreatureSettings(this.actor, {
-            top: this.position.top + 40,
-            left: this.position.left + (this.position.width - 400) / 2
+        new CreatureSettingsApp({
+            document: this.actor,
+            position: {
+                top: this.position.top + 40,
+                left: this.position.left + (this.position.width - 400) / 2
+            }
         }).render({force: true});
     }
 
