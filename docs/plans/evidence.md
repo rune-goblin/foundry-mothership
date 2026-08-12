@@ -146,8 +146,8 @@ as content**, the same disease as 1.4.
 
 ### 2.3b The content itself is misshapen, not just its metadata
 
-**`triggered/` — 151 macros that are 50 checks times three.** The naming is `X`, `X_plus`,
-`X_minus`, and the bodies differ by one token:
+**`triggered/` — 151 macros over 116 distinct base names.** Where a check has advantage and
+disadvantage variants, the bodies differ by one token:
 
 ```
 Body_Save          game.mothershiprpg.initRollCheck('1d100','low','body',null,null,null);
@@ -155,8 +155,33 @@ Body_Save_plus     game.mothershiprpg.initRollCheck('1d100 [+]','low','body',nul
 Body_Save_minus    game.mothershiprpg.initRollCheck('1d100 [-]','low','body',null,null,null);
 ```
 
-151 documents, 148 distinct bodies, every body a single line 56–72 characters long. Advantage and
-disadvantage are **parameters**, not content, and they have been multiplied into the compendium.
+Advantage and disadvantage are **parameters**, not content, and they have been multiplied into the
+compendium — but the multiplication is smaller than it looks.
+
+> **Corrected 2026-08-12, during phase 0.** An earlier version of this section read "151 macros
+> that are 50 checks times three", with "every body a single line". Re-measured against
+> `packs/_source/triggered`:
+>
+> | | |
+> |---|---|
+> | distinct base names | **116** (not 50) |
+> | bases with 3 variants (base / `+` / `-`) | **16** → 48 documents |
+> | bases with 2 variants | **3** → 6 documents |
+> | bases with 1 variant | **97** |
+> | single-line bodies | **130**; the other **21** are multi-line |
+>
+> So only about a third of the pack is variant multiplication. The remaining 97 — `Lower Minimum
+> Stress to 2`, `Take Bleeding Damage`, `Roll on Panic Table` and the like — are genuinely distinct
+> parameterised calls, and the 21 multi-line bodies wrap a `prep…()` function that resolves the
+> target actor. **A generation table is still right, and still collapses 151 documents into 116
+> rows plus a variants flag — but it is not a 50-row table and C3 should not be sized as one.**
+>
+> Name suffixes are also inconsistent in the data: most triples use ` +` / ` -`, four use
+> ` [+]` / ` [-]`. The generator has to preserve each document's existing name exactly, because
+> ids are pinned to it and the names are what a GM browses.
+
+The whole pack calls six public API entry points and nothing else: `initRollCheck`,
+`initRollTable`, `initModifyActor`, `initModifyItem`, `noCharSelected`, `noShipSelected`.
 
 **`maintenance/` — the name field holds a description.** 8 of 100 repair items carry HTML and an
 embedded `@UUID` link inside `name`:
