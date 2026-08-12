@@ -6,14 +6,20 @@
   "minItems": 1,
   "items": {
     "allOf": [{ "$ref": "common.schema.json#/$defs/rollTable" }],
+    "type": "object",
     "required": ["class", "source"],
     "properties": {
       "die": { "const": "1d10" },
+      "class": { "$ref": "common.schema.json#/$defs/id" },
+      "source": { "$ref": "common.schema.json#/$defs/source" },
       "results": {
+        "type": "array",
         "minItems": 10,
         "items": {
+          "type": "object",
           "required": ["range", "text", "items"],
           "properties": {
+            "range": { "$ref": "common.schema.json#/$defs/rollRange" },
             "text": { "type": "string", "minLength": 1 },
             "items": {
               "type": "array",
