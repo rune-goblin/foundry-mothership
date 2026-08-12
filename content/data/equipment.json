@@ -1,0 +1,711 @@
+[
+  {
+    "id": "assorted-tools",
+    "name": "Assorted Tools",
+    "cost": {
+      "raw": "20cr",
+      "value": 20,
+      "each": false
+    },
+    "description": "Wrenches, spanners, screwdrivers, etc. Can be used as weapons in a pinch (1d5 DMG).",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "automed",
+    "name": "Automed (x5)",
+    "cost": {
+      "raw": "1.5kcr",
+      "value": 1500,
+      "each": false
+    },
+    "description": "Nanotech pills that assist your body in repairing Damage by granting Advantage to Body Saves meant to repel disease and poison, as well as attempts to heal from rest.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    },
+    "packSize": 5
+  },
+  {
+    "id": "battery-high-power",
+    "name": "Battery (High Power)",
+    "cost": {
+      "raw": "500cr",
+      "value": 500,
+      "each": false
+    },
+    "description": "Heavy duty battery used for powering laser cutters, salvage drones, and other items. Can be recharged in 1 hour if connected to power or in 6 hours with solar power. Add waterproofing (+500cr).",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "binoculars",
+    "name": "Binoculars",
+    "cost": {
+      "raw": "150cr",
+      "value": 150,
+      "each": false
+    },
+    "description": "20x magnification. Add night vision (+300cr) or thermal vision (+1kcr).",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "bioscanner",
+    "name": "Bioscanner",
+    "cost": {
+      "raw": "3kcr",
+      "value": 3000,
+      "each": false
+    },
+    "description": "Long Range. Allows the user to scan for signs of life. Can tell the location of signs of life, but not what that life is. Blocked by some materials at the Warden's discretion.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "body-cam",
+    "name": "Body Cam",
+    "cost": {
+      "raw": "50cr",
+      "value": 50,
+      "each": false
+    },
+    "description": "A camera worn on your clothing that can stream video back to a control center so your other crewmembers can see what you're seeing. Add night vision (+300cr) or thermal vision (+1kcr).",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "chemlight",
+    "name": "Chemlight (x5)",
+    "cost": {
+      "raw": "5cr",
+      "value": 5,
+      "each": false
+    },
+    "description": "Small disposable glowsticks capable of dim illumination in a 1m radius.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    },
+    "packSize": 5
+  },
+  {
+    "id": "crowbar",
+    "name": "Crowbar",
+    "cost": {
+      "raw": "25cr",
+      "value": 25,
+      "each": false
+    },
+    "description": "Grants Advantage on Strength Checks to open jammed airlocks, lift heavy objects, etc.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "cybernetic-diagnostic-scanner",
+    "name": "Cybernetic Diagnostic Scanner",
+    "cost": {
+      "raw": "2kcr",
+      "value": 2000,
+      "each": false
+    },
+    "description": "Allows the user to scan androids and other cybernetic organisms in order to diagnose any physical or mental issues they may be having. Often distrusted by androids.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "electronic-tool-set",
+    "name": "Electronic Tool Set",
+    "cost": {
+      "raw": "100cr",
+      "value": 100,
+      "each": false
+    },
+    "description": "A full set of tools for doing detailed repair or construction work on electronics.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "emergency-beacon",
+    "name": "Emergency Beacon",
+    "cost": {
+      "raw": "2kcr",
+      "value": 2000,
+      "each": false
+    },
+    "description": "A small device that sends up a flare and then emits a loud beep every few seconds. Additionally, sends out a call on all radio channels to ships or vehicles in the area, but can be blocked by a radio jammer.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "exoloader",
+    "name": "Exoloader",
+    "cost": {
+      "raw": "100kcr",
+      "value": 100000,
+      "each": false
+    },
+    "description": "Open-air mechanical exoskeleton used for heavy lifting (up to 5000kg). Loader claws deal 1 Wound. User can only wear Standard Crew Attire or Standard Battle Dress while operating. Battery operated (48 hours of use).",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "explosives-detonator",
+    "name": "Explosives & Detonator",
+    "cost": {
+      "raw": "500cr",
+      "value": 500,
+      "each": false
+    },
+    "description": "Explosive charge powerful enough to blow open an airlock. All organisms in Close Range must make a Body Save or take a Wound (Explosive). Detonator works at Long Range, but can be blocked by a radio jammer.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "first-aid-kit",
+    "name": "First Aid Kit",
+    "cost": {
+      "raw": "75cr",
+      "value": 75,
+      "each": false
+    },
+    "description": "An assortment of dressings and treatments to help stop bleeding, bandage cuts, and treat other minor injuries.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "flashlight",
+    "name": "Flashlight",
+    "cost": {
+      "raw": "30cr",
+      "value": 30,
+      "each": false
+    },
+    "description": "Handheld or shoulder mounted. Illuminates 10m ahead of the user.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "foldable-stretcher",
+    "name": "Foldable Stretcher",
+    "cost": {
+      "raw": "150cr",
+      "value": 150,
+      "each": false
+    },
+    "description": "Portable stretcher that can fit within a rucksack. Allows the user to safely strap down the patient and carry them to a location where their wounds can be better treated. Unfolds to roughly 2m.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "geiger-counter",
+    "name": "Geiger Counter",
+    "cost": {
+      "raw": "20cr",
+      "value": 20,
+      "each": false
+    },
+    "description": "Detects radiation and displays radiation levels.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "heads-up-display-hud",
+    "name": "Heads-Up Display (HUD)",
+    "cost": {
+      "raw": "100cr",
+      "value": 100,
+      "each": false
+    },
+    "description": "Often worn by marines, the HUD allows the wearer to see through the body cams of others in their unit, and connect to any smart-link upgraded weapon.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "infrared-goggles",
+    "name": "Infrared Goggles",
+    "cost": {
+      "raw": "1.5kcr",
+      "value": 1500,
+      "each": false
+    },
+    "description": "Allows the wearer to see heat signatures, sometimes up to several hours old. Add night vision (+300cr).",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "jetpack",
+    "name": "Jetpack",
+    "cost": {
+      "raw": "75kcr",
+      "value": 75000,
+      "each": false
+    },
+    "description": "Allows wearer to fly up to 100m high and up to a speed of 100km/hr for 2 hours on a tank of fuel. Deals 1d100[+] DMG if destroyed. Fuel can be refilled for 200cr.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "lockpick-set",
+    "name": "Lockpick Set",
+    "cost": {
+      "raw": "40cr",
+      "value": 40,
+      "each": false
+    },
+    "description": "A highly advanced set of tools meant for hacking basic airlock and electronic door systems.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "long-range-comms",
+    "name": "Long-range Comms",
+    "cost": {
+      "raw": "1kcr",
+      "value": 1000,
+      "each": false
+    },
+    "description": "Rucksack-sized communication device for use in surface-to-ship communication.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "mag-boots",
+    "name": "Mag-boots",
+    "cost": {
+      "raw": "350cr",
+      "value": 350,
+      "each": false
+    },
+    "description": "Grants a magnetic grip to the wearer, allowing them to easily walk on the exterior of a ship (in space, while docked, or free-floating), metal-based asteroids, or any other magnetic surface.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "medscanner",
+    "name": "Medscanner",
+    "cost": {
+      "raw": "8kcr",
+      "value": 8000,
+      "each": false
+    },
+    "description": "Allows the user to scan a living or dead body to analyze it for disease or abnormalities, without having to do a biopsy or autopsy. Results may not be instantaneous and may require a lab for complete analysis.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "mohab-unit",
+    "name": "MoHab Unit",
+    "cost": {
+      "raw": "1kcr",
+      "value": 1000,
+      "each": false
+    },
+    "description": "Tent, canteen, stove, rucksack, compass, and sleeping bag.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "mre",
+    "name": "MRE (x7)",
+    "cost": {
+      "raw": "70cr",
+      "value": 70,
+      "each": false
+    },
+    "description": "\"Meal, Ready-to-Eat.\" Self-contained, individual field rations in lightweight packaging. Each has sufficient sustenance for a single person for one day (does not include water).",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    },
+    "packSize": 7
+  },
+  {
+    "id": "mylar-blanket",
+    "name": "Mylar Blanket",
+    "cost": {
+      "raw": "10cr",
+      "value": 10,
+      "each": false
+    },
+    "description": "Lightweight blanket made of heat-reflective material. Often used for thermal regulation of patients suffering from extreme cold or other trauma.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 10
+    }
+  },
+  {
+    "id": "oxygen-tank",
+    "name": "Oxygen Tank",
+    "cost": {
+      "raw": "50cr",
+      "value": 50,
+      "each": false
+    },
+    "description": "When attached to a vaccsuit provides up to 12 hours of oxygen under normal circumstances, 4 hours under stressful circumstances. Explosive.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    }
+  },
+  {
+    "id": "paracord-50m",
+    "name": "Paracord (50m)",
+    "cost": {
+      "raw": "10cr",
+      "value": 10,
+      "each": false
+    },
+    "description": "General purpose lightweight nylon rope.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    }
+  },
+  {
+    "id": "patch-kit",
+    "name": "Patch Kit (x3)",
+    "cost": {
+      "raw": "200cr",
+      "value": 200,
+      "each": false
+    },
+    "description": "Repairs punctured and torn vaccsuits, restoring their space readiness. Patched vaccsuits have an AP of 1.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    },
+    "packSize": 3
+  },
+  {
+    "id": "personal-locator",
+    "name": "Personal Locator",
+    "cost": {
+      "raw": "200cr",
+      "value": 200,
+      "each": false
+    },
+    "description": "Allows crewmembers at a control center (or on the bridge of a ship) to track the location of the wearer.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    }
+  },
+  {
+    "id": "pet-organic",
+    "name": "Pet (Organic)",
+    "cost": {
+      "raw": "200kcr",
+      "value": 200000,
+      "each": false
+    },
+    "description": "Small to medium-sized organic pet animal. Larger or rare pets cost 2d10x base pet cost.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    }
+  },
+  {
+    "id": "pet-synthetic",
+    "name": "Pet (Synthetic)",
+    "cost": {
+      "raw": "15kcr",
+      "value": 15000,
+      "each": false
+    },
+    "description": "Small to medium-sized synthetic pet animal. Larger or rare pets cost 2d10x base pet cost.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    }
+  },
+  {
+    "id": "portable-computer-terminal",
+    "name": "Portable Computer Terminal",
+    "cost": {
+      "raw": "1.5kcr",
+      "value": 1500,
+      "each": false
+    },
+    "description": "Flat computer monitor, keyboard and interface which allows the user to hack into pre-existing computers and networks, as well as perform standard computer tasks.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    }
+  },
+  {
+    "id": "radiation-pills",
+    "name": "Radiation Pills (x5)",
+    "cost": {
+      "raw": "200cr",
+      "value": 200,
+      "each": false
+    },
+    "description": "Take 1d5 DMG and reduce your Radiation Level (see pg. 33.2) by 1 for 2d10 minutes.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    },
+    "packSize": 5
+  },
+  {
+    "id": "radio-jammer",
+    "name": "Radio Jammer",
+    "cost": {
+      "raw": "4kcr",
+      "value": 4000,
+      "each": false
+    },
+    "description": "Rucksack-sized device which, when activated, renders all radio signals within 100km incomprehensible.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    }
+  },
+  {
+    "id": "rebreather",
+    "name": "Rebreather",
+    "cost": {
+      "raw": "500cr",
+      "value": 500,
+      "each": false
+    },
+    "description": "When worn, filters toxic air and/or allows for underwater breathing for up to 20 minutes at a time without resurfacing. Can be connected to an oxygen tank.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    }
+  },
+  {
+    "id": "rucksack",
+    "name": "Rucksack",
+    "cost": {
+      "raw": "50cr",
+      "value": 50,
+      "each": false
+    },
+    "description": "Large, durable, waterproof backpack.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    }
+  },
+  {
+    "id": "salvage-drone",
+    "name": "Salvage Drone",
+    "cost": {
+      "raw": "10kcr",
+      "value": 10000,
+      "each": false
+    },
+    "description": "Battery operated remote controlled drone. Requires two hands to operate receiver. Can fly up to 450m high, to a distance of 3km from operator. Can run for 2 hours. Can record and transmit footage to receiver. If purchased separately, can be equipped with up to two of the following: binoculars, radio jammer, Geiger counter, laser cutter, medscanner, personal locator, infrared goggles, emergency beacon, cybernetic diagnostic scanner, bioscanner. Can carry up to 20-30kg.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    }
+  },
+  {
+    "id": "sample-collection-kit",
+    "name": "Sample Collection Kit",
+    "cost": {
+      "raw": "50cr",
+      "value": 50,
+      "each": false
+    },
+    "description": "Used to research xenoflora and xenofauna in the field. Can take vital signs, DNA samples, and collect other data on foreign material. Results may not be instantaneous and may require a lab for complete analysis.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    }
+  },
+  {
+    "id": "short-range-comms",
+    "name": "Short-range Comms",
+    "cost": {
+      "raw": "100cr",
+      "value": 100,
+      "each": false
+    },
+    "description": "Allows communication from ship-to-ship within a reasonable distance, as well as surface-to-surface within a dozen kilometers. Blocked by radio jammer.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    }
+  },
+  {
+    "id": "smart-link-add-on",
+    "name": "Smart-link Add-On",
+    "cost": {
+      "raw": "10kcr",
+      "value": 10000,
+      "each": false
+    },
+    "description": "Grants remote viewing, recording, and operation of a ranged weapon as well as +5 DMG to the weapon.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    }
+  },
+  {
+    "id": "stimpak",
+    "name": "Stimpak",
+    "cost": {
+      "raw": "1kcr ea.",
+      "value": 1000,
+      "each": true
+    },
+    "description": "Cures cryosickness, reduces Stress by 1, restores 1d10 Health, and grants [+] to all rolls for 1d10 min. Roll 1d10. If you roll under the amount of doses you've taken in the past 24 hours, make a Death Save.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    }
+  },
+  {
+    "id": "water-filtration-device",
+    "name": "Water Filtration Device",
+    "cost": {
+      "raw": "50cr",
+      "value": 50,
+      "each": false
+    },
+    "description": "Can pump 4 liters of filtered water per hour from even the most brackish swamps.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11
+    }
+  }
+]

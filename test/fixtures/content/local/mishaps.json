@@ -1,0 +1,26 @@
+[
+  {
+    "id": "mishap-table",
+    "name": "Mishap Table",
+    "img": "systems/mothershiprpg/images/icons/ui/rolltables/bankruptcy_save.png",
+    "description": "<p>Something has gone wrong aboard.</p>",
+    "formula": "1d3",
+    "results": [
+      {
+        "id": "r01",
+        "range": [1, 1],
+        "description": "A coolant line splits. @UUID[Compendium.mothershiprpg.fixture_macros_1e.Macro.FiXbbbbbbbbbbb01]{+1 Stress}"
+      },
+      {
+        "id": "r02",
+        "range": [2, 2],
+        "description": "The lights hold. @UUID[Compendium.mothershiprpg.fixture_macros_1e.Macro.FiXbbbbbbbbbbb02]{-1 Stress}"
+      },
+      {
+        "id": "r03",
+        "range": [3, 3],
+        "description": "You find a @UUID[Compendium.mothershiprpg.fixture_gadgets_1e.Item.FiXaaaaaaaaaaa02]{Reactor Shim} in the bilge."
+      }
+    ]
+  }
+]

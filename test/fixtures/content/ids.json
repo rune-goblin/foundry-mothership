@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "packs": {
+    "gadgets": {
+      "compendium": "fixture_gadgets_1e",
+      "documentType": "Item",
+      "documents": {
+        "flux-capacitor": {
+          "id": "FiXaaaaaaaaaaa01"
+        },
+        "reactor-shim": {
+          "id": "FiXaaaaaaaaaaa02"
+        }
+      }
+    },
+    "quips": {
+      "compendium": "fixture_macros_1e",
+      "documentType": "Macro",
+      "documents": {
+        "minus-1-stress": {
+          "id": "FiXbbbbbbbbbbb02"
+        },
+        "plus-1-stress": {
+          "id": "FiXbbbbbbbbbbb01"
+        }
+      }
+    },
+    "mishaps": {
+      "compendium": "fixture_tables_1e",
+      "documentType": "RollTable",
+      "documents": {
+        "mishap-table": {
+          "id": "FiXccccccccccc01",
+          "results": {
+            "r01": "FiXddddddddddd01",
+            "r02": "FiXddddddddddd02",
+            "r03": "FiXddddddddddd03"
+          }
+        }
+      }
+    }
+  },
+  "retired": [
+    {
+      "pack": "gadgets",
+      "contentId": "tachyon-comb",
+      "id": "FiXaaaaaaaaaaa03",
+      "retired": "2026-08-12",
+      "reason": "Duplicated Flux Capacitor; folded into it during the rescue."
+    }
+  ]
+}

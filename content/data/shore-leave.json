@@ -1,0 +1,109 @@
+[
+  {
+    "id": "x-class",
+    "portClass": "X",
+    "cost": {
+      "raw": "1d100 x 10kcr",
+      "value": null,
+      "formula": "1d100*10000"
+    },
+    "stressConverted": {
+      "raw": "2d10 [+]",
+      "formula": "2d10",
+      "modifiers": [
+        "advantage"
+      ]
+    },
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 39,
+      "section": "39.1"
+    }
+  },
+  {
+    "id": "c-class",
+    "portClass": "C",
+    "cost": {
+      "raw": "2d10 x 100cr",
+      "value": null,
+      "formula": "2d10*100"
+    },
+    "stressConverted": {
+      "raw": "1d5",
+      "formula": "1d5",
+      "modifiers": []
+    },
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 39,
+      "section": "39.1"
+    }
+  },
+  {
+    "id": "b-class",
+    "portClass": "B",
+    "cost": {
+      "raw": "2d10 x 1kcr",
+      "value": null,
+      "formula": "2d10*1000"
+    },
+    "stressConverted": {
+      "raw": "1d10",
+      "formula": "1d10",
+      "modifiers": []
+    },
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 39,
+      "section": "39.1"
+    }
+  },
+  {
+    "id": "a-class",
+    "portClass": "A",
+    "cost": {
+      "raw": "2d10 x 10kcr",
+      "value": null,
+      "formula": "2d10*10000"
+    },
+    "stressConverted": {
+      "raw": "2d10",
+      "formula": "2d10",
+      "modifiers": []
+    },
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 39,
+      "section": "39.1"
+    }
+  },
+  {
+    "id": "s-class",
+    "portClass": "S",
+    "cost": {
+      "raw": "2d10 x 100kcr",
+      "value": null,
+      "formula": "2d10*100000"
+    },
+    "stressConverted": {
+      "raw": "All",
+      "formula": null,
+      "modifiers": []
+    },
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 39,
+      "section": "39.1"
+    }
+  }
+]

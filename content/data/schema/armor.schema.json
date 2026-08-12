@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runegoblin.dev/mothership/armor.schema.json",
+  "title": "Armor",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "name", "cost", "armorPoints", "source"],
+    "properties": {
+      "id": { "$ref": "common.schema.json#/$defs/id" },
+      "name": { "type": "string", "minLength": 1 },
+      "description": { "type": ["string", "null"] },
+      "cost": { "$ref": "common.schema.json#/$defs/cost" },
+      "armorPoints": { "type": "integer", "minimum": 0 },
+      "oxygen": { "$ref": "common.schema.json#/$defs/duration" },
+      "speed": {
+        "type": "object",
+        "required": ["raw", "modifiers"],
+        "properties": {
+          "raw": { "type": "string" },
+          "modifiers": { "$ref": "common.schema.json#/$defs/modifiers" }
+        },
+        "additionalProperties": false
+      },
+      "damageReduction": { "type": "integer", "minimum": 0 },
+      "special": { "type": ["string", "null"] },
+      "source": { "$ref": "common.schema.json#/$defs/source" }
+    },
+    "additionalProperties": false
+  }
+}

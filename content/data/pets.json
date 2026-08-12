@@ -1,0 +1,42 @@
+[
+  {
+    "id": "pet-organic",
+    "name": "Organic Pet",
+    "wounds": 1,
+    "health": 10,
+    "instinct": "2d10+40",
+    "traits": [
+      "1 Trained Skill.",
+      "[+] on Rest Saves.",
+      "1 Stress whenever pet takes Damage.",
+      "Panic Check if pet is killed. Minimum Stress +1."
+    ],
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11,
+      "section": "11.1"
+    }
+  },
+  {
+    "id": "pet-synthetic",
+    "name": "Synthetic Pet",
+    "wounds": 2,
+    "health": 15,
+    "instinct": "2d10+30",
+    "traits": [
+      "2 Trained Skills or 1 Expert Skill.",
+      "+5 to Rest Saves.",
+      "Sanity Save or 1 Stress whenever pet takes Damage.",
+      "1 Stress if pet is destroyed."
+    ],
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 11,
+      "section": "11.1"
+    }
+  }
+]

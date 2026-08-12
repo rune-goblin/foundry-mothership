@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runegoblin.dev/mothership/trinkets.schema.json",
+  "title": "Trinkets",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/rollTable" }],
+  "required": ["source"],
+  "properties": {
+    "die": { "const": "1d100" },
+    "results": {
+      "minItems": 100,
+      "items": {
+        "required": ["range", "text"],
+        "properties": { "text": { "type": "string", "minLength": 1 } }
+      }
+    }
+  }
+}

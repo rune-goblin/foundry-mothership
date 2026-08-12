@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runegoblin.dev/mothership/death.schema.json",
+  "title": "Death",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/rollTable" }],
+  "required": ["source"],
+  "properties": {
+    "die": { "const": "1d10" },
+    "results": {
+      "items": {
+        "required": ["range", "effect"],
+        "properties": { "effect": { "type": "string", "minLength": 1 } }
+      }
+    }
+  }
+}
