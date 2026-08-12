@@ -69,9 +69,8 @@ unresolved prerequisites, 0 unresolved class-granted skills** — but:
 2. **Loadout results are free text, not references.** `items: ["Tank Top and Camo Pants (AP 1)",
    "Combat Knife (as Scalpel DMG [+])", "Stimpak (x5)"]` — strings, not ids into
    `equipment`/`weapons`/`armor`. So the plan's "loadout tables whose results link the new
-   equipment documents" **cannot be built from this data as it stands.** Either ship loadouts as
-   text tables (cheap, and honest), or match strings to gear by hand (a real authoring job).
-   This directly affects the capstone e2e, which asserts a generated Marine's loadout.
+   equipment documents" **cannot be built from this data as it stands.** → **Settled below**
+   ("loadouts link real gear documents"): a hand-checked mapping table, typed, plus ~12 new Items.
 3. **There is no conditions dataset in the PSG extraction at all.** The 11 conditions the system
    ships are inherited prose, not book-sourced. Only three carry a modifier the book can vouch for
    (`Frightened`, `Nightmares`, `Spiraling`, all `disadvantage`, via the panic results that grant
