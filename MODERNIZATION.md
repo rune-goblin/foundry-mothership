@@ -2356,3 +2356,69 @@ and `ItemCell`'s new props. `test/e2e/creature-sheet.spec.ts` is 13 against real
 | `stepBy` always adds | the XP and quantity specs fail |
 | `_context()` stops enriching notes | the notes spec fails |
 | the sheet opens on `character` again | the tab spec fails |
+
+---
+
+## 31. Weapon range becomes an enum, and the trio goes
+
+Raised at the S6 review: the deletion list had `weapon.ranges.value` down as a render artifact, and
+it is the opposite — **the only range the system has**. All 22 shipped weapons carry a PSG range
+*band* in it; `short`/`medium`/`long` are `0` on every one. Mothership ranges in bands, not metres,
+and the book gives no distances for them, so the numeric trio could never be filled from the PSG
+and mapping metres onto a band would be a house rule invented by this repo.
+
+So the field stayed and the trio went, as an enum. **Owner's call: no migration** — the system
+supports fresh worlds forward from here, which is what made this a schema replacement rather than
+a `migrateData` with a threshold table nobody could source.
+
+```js
+// was                                          // now
+ranges: { short, medium, long, value: 'Long' }   range: 'long'   // StringField, four choices
+```
+
+`content/books/psg/weapons.ts` had already declared `RangeBand` as a union; the runtime now
+declares the same four in `item-models.js` and the build is the adapter, per §27's first invariant.
+The emitter stops title-casing the token into a display string — the sheets localize it, so
+`lang/pt-BR.json` shows Portuguese bands for the first time instead of English ones baked into the
+data.
+
+### `blank` has to be said out loud
+
+`StringField` turns `blank` **off** the moment `choices` is set. Left implicit, every weapon with no
+range at all — Ammo is one — would have failed validation and fallen back to the initial, which is
+the blank it was already trying to be. It is set explicitly, and pinned by a spec.
+
+### The guard learned to read choices
+
+`undeclaredKeys` checks that an emitted key exists in the schema. An **off-list value** in a key
+that does exist is discarded on load just as silently, and the old emitter's title-cased `"Long"` is
+exactly that shape — so `invalidChoices` joins it in `scripts/content/model-guard.ts`, and the
+content build now fails with
+
+```
+fixture_gadgets_1e/flux-capacitor: system.range = "Long" is not one of the choices weapon declares
+```
+
+That is the third distinct silent-loss channel this repo has closed (undeclared key, array element,
+now enumerated value), and the first one caught before it could ship rather than after.
+
+### An enum is picked, not typed
+
+`Field` grew a `choices` prop: given one it renders a `<select>` in the same wrapper, with the same
+class the input carried, so the weapon sheet reads as it did. Free text there would have been a
+field the player could fill with something validation then throws away.
+
+The AppV1 character sheet localizes the token through `{{localize (concat 'Mosh.RangeBand.' …)}}`
+until S7 converts it. Its `_prepareCharacterItems` **no longer composes `10/20/30` onto embedded
+items during render** — that block existed only to make the trio presentable, and it goes with it.
+
+### Verified
+
+`npm run check` 0 errors / 0 warnings (241 files) · **253 vitest** · **88 Playwright** ·
+`npm run content` clean, and re-packed · `npm run build`.
+
+| Mutation | Result |
+|---|---|
+| the choices check is dropped from the content guard | `content-pipeline` fails on the title-cased band |
+| `Field` ignores `choices` and renders an input | `ui-parts` fails |
+| `choices` is dropped from the weapon schema | the e2e range spec fails — `"Long"` stores |

@@ -20,12 +20,7 @@
     "curShots": 5,
     "damage": "2d10",
     "description": "<p>Can be fired one-handed.</p>",
-    "ranges": {
-      "long": 0,
-      "medium": 0,
-      "short": 0,
-      "value": "Long"
-    },
+    "range": "long",
     "shots": 5,
     "shotsPerFire": 1,
     "useAmmo": true,

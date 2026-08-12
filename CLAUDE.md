@@ -25,7 +25,7 @@ superseded). `MODERNIZATION.md` is the **record**: §10 the item-sheet conventio
 component layer, §22 the windows, §24 phase 0, §25 the PSG cut, §26 the content pipeline, §27 the
 TypeScript catalogs and the generated content, §28 the class-adjustment schema and the last AppV1
 item sheet, §29 the character generator on a draft store, §30 the creature sheet and the section
-tier. Update it as work lands.
+tier, §31 the weapon range enum. Update it as work lands.
 
 **Ships, the Calm/android panic variants and all unsourced content were cut** (§25) and live on
 the pushed **`archive/pre-psg-cut`** branch and tag. Nothing was destroyed; ships return as an

@@ -1,7 +1,12 @@
 // The model modules read foundry.data.fields at module scope. Rather than import Foundry, stub
 // each field class to record the default it would produce, then walk the real schema. Callers
 // therefore check the shipped schema itself, not a restatement of it.
-export type Stub = { initial?: unknown; schema?: Record<string, Stub>; element?: Stub };
+export type Stub = {
+  initial?: unknown;
+  schema?: Record<string, Stub>;
+  element?: Stub;
+  choices?: readonly string[];
+};
 
 class Recorded {
   initial: unknown;
@@ -14,7 +19,16 @@ export function installFoundryFieldStubs(): void {
     data: {
       fields: {
         NumberField: class extends Recorded { constructor(o: { initial: number }) { super(o.initial); } },
-        StringField: class extends Recorded { constructor(o?: { initial?: string }) { super(o?.initial ?? ''); } },
+        // `choices` is kept so the content build can check emitted values against the enum, not
+        // just the key against the schema -- an off-list string is discarded on load just as
+        // silently as an undeclared key.
+        StringField: class extends Recorded {
+          choices?: readonly string[];
+          constructor(o?: { initial?: string; choices?: readonly string[] }) {
+            super(o?.initial ?? '');
+            this.choices = o?.choices;
+          }
+        },
         BooleanField: class extends Recorded { constructor(o?: { initial?: boolean }) { super(o?.initial ?? false); } },
         HTMLField: class extends Recorded { constructor(o?: { initial?: string }) { super(o?.initial ?? ''); } },
         FilePathField: class extends Recorded { constructor(o?: { initial?: string }) { super(o?.initial ?? ''); } },
@@ -78,6 +92,29 @@ function undeclaredIn(value: unknown, field: Stub, path: string): string[] {
     return value.flatMap((entry, index) => undeclaredIn(entry, field.element!, `${path}[${index}]`));
   }
   return [];
+}
+
+/**
+ * Dotted paths whose value is not one of the enumerated choices its field declares. Foundry
+ * validates a StringField's choices on load and falls back to the initial, so an off-list value
+ * is the same silent loss as an undeclared key -- and blank is always allowed where the field is.
+ */
+export function invalidChoices(
+  value: Record<string, unknown>,
+  schema: Record<string, Stub>,
+  prefix = '',
+): string[] {
+  const out: string[] = [];
+  for (const [key, child] of Object.entries(value)) {
+    const field = schema[key];
+    if (!field) continue;
+    if (field.schema && isPlainObject(child)) {
+      out.push(...invalidChoices(child, field.schema, `${prefix}${key}.`));
+    } else if (field.choices && child !== '' && !field.choices.includes(child as string)) {
+      out.push(`${prefix}${key} = ${JSON.stringify(child)}`);
+    }
+  }
+  return out;
 }
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {

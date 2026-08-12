@@ -2,6 +2,7 @@
   import Field from '../../parts/Field.svelte';
   import CheckField from '../../parts/CheckField.svelte';
   import { localize } from '../../i18n.js';
+  import { RANGE_BANDS } from '../../../data/item-models.js';
 
   const WOUND_ROLLS = [
     'Bleeding', 'Bleeding [-]', 'Bleeding [+]',
@@ -13,14 +14,12 @@
 
   let { system } = $props();
 
-  // Weapons predating the single `ranges.value` string still carry the short/medium/long trio.
-  // getData() used to compose them and write the result back onto the model while rendering;
-  // derive it instead, so nothing is mutated on the way to the screen.
-  const range = $derived(
-    system.ranges.value === '' && system.ranges.medium > 0
-      ? `${system.ranges.short}/${system.ranges.medium}/${system.ranges.long}`
-      : system.ranges.value,
-  );
+  // Mothership ranges in bands. The blank first option is the state of a thing on the weapons
+  // list with no range at all -- Ammo is one.
+  const RANGE_CHOICES = [
+    { value: '', label: '' },
+    ...RANGE_BANDS.map((band) => ({ value: band, label: localize(`Mosh.RangeBand.${band}`) })),
+  ];
 </script>
 
 <div class="item-armor-grid" style="margin-top: 10px; margin-bottom: 10px;">
@@ -49,11 +48,12 @@
         checked={system.antiArmor}
       />
       <Field
-        name="system.ranges.value"
+        name="system.range"
         label={localize('Mosh.Range')}
-        value={range}
+        value={system.range}
         wrapper="text"
         width="180px"
+        choices={RANGE_CHOICES}
       />
     </div>
 

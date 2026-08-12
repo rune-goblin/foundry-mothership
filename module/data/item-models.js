@@ -15,6 +15,14 @@ const bool = (initial = false) => new fields.BooleanField({ required: true, init
 
 const uuidList = () => new fields.ArrayField(new fields.StringField());
 
+/**
+ * The PSG's four range bands, in order. A weapon stores the token and the sheets localize it;
+ * `''` is the fifth state, for the things on the weapons list that have no range at all.
+ * `content/books/psg/weapons.ts` declares the same four as a TypeScript union — the catalog
+ * describes the book, this describes the runtime, and the content build is the adapter.
+ */
+export const RANGE_BANDS = ['adjacent', 'close', 'long', 'extreme'];
+
 // How many skills of each rank a class adjustment lets the player pick. A *_full_set is one skill
 // plus the prerequisite chain beneath it, which is a different dialog, hence a different key.
 const picks = () => ({
@@ -57,8 +65,14 @@ export class MoshWeapon extends foundry.abstract.TypeDataModel {
       bonus: num(0),
       weight: num(0),
       cost: num(0),
-      ranges: new fields.SchemaField({
-        short: num(0), medium: num(0), long: num(0), value: str(''),
+      // Mothership ranges in bands, not distances -- the book gives no metres for them. Stored as
+      // the token; the sheets localize it. `blank` has to be explicit: StringField turns it off
+      // as soon as `choices` is set.
+      range: new fields.StringField({
+        required: true,
+        blank: true,
+        initial: '',
+        choices: RANGE_BANDS,
       }),
     };
   }

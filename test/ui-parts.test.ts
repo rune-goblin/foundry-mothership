@@ -21,6 +21,7 @@ import Tabs from '../module/ui/parts/Tabs.svelte';
 import TabPanel from '../module/ui/parts/TabPanel.svelte';
 import CircleStats from '../module/ui/parts/CircleStats.svelte';
 import CircleStat from '../module/ui/parts/CircleStat.svelte';
+import Field from '../module/ui/parts/Field.svelte';
 import MainStat from '../module/ui/parts/MainStat.svelte';
 import MinMaxField from '../module/ui/parts/MinMaxField.svelte';
 import PipTrack from '../module/ui/parts/PipTrack.svelte';
@@ -243,6 +244,50 @@ describe('ItemCell', () => {
 
     expect(onclick).toHaveBeenCalledTimes(2);
     expect(oncontextmenu).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Field', () => {
+  it('is the caption plus the wrapped text input the item sheets repeat', () => {
+    const el = render(Field, {
+      name: 'system.damage',
+      label: 'Damage',
+      value: '2d10',
+      wrapper: 'text',
+      width: '180px',
+    }).firstElementChild!;
+
+    expect([...el.classList]).toEqual(['resource', 'healthspread', 'minmaxtopstat', 'flex-center']);
+    expect(el.querySelector('label')!.className).toBe('resource-label minmaxtext');
+
+    const wrapper = el.querySelector('.textvaluewrapper')! as HTMLElement;
+    expect(wrapper.style.width).toBe('180px');
+    const input = wrapper.querySelector('input')!;
+    expect(input.className).toBe('textvaluewrapper-input darkGreyText');
+    expect([input.getAttribute('name'), input.value]).toEqual(['system.damage', '2d10']);
+  });
+
+  // An enumerated field is picked, not typed: free text would be discarded by validation on load.
+  it('becomes a select when given choices, with the stored one selected', () => {
+    const el = render(Field, {
+      name: 'system.range',
+      label: 'Range',
+      value: 'long',
+      wrapper: 'text',
+      choices: [
+        { value: '', label: '' },
+        { value: 'close', label: 'Close' },
+        { value: 'long', label: 'Long' },
+      ],
+    }).firstElementChild!;
+
+    const select = el.querySelector('select')!;
+    // The class is the input's, so the enum reads as the field it replaced.
+    expect(select.className).toBe('textvaluewrapper-input darkGreyText');
+    expect(select.getAttribute('name')).toBe('system.range');
+    expect(el.querySelector('input')).toBeNull();
+    expect([...select.options].map((o) => o.value)).toEqual(['', 'close', 'long']);
+    expect(select.value).toBe('long');
   });
 });
 

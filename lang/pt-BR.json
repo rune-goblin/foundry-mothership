@@ -840,6 +840,12 @@
     "Quantity": "Quantidade",
     "RadiationDamage": "Dano por Radiação",
     "Range": "Alcance",
+    "RangeBand": {
+      "adjacent": "Adjacente",
+      "close": "Perto",
+      "long": "Longe",
+      "extreme": "Extremo"
+    },
     "RANK": "Posto",
     "Resolve": "Resolução",
     "Robotic": "Robótico",

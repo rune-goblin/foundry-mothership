@@ -56,6 +56,30 @@ test.describe('item sheets', () => {
       .toBe(7);
   });
 
+  // Mothership ranges in bands, so `system.range` is a StringField with choices rather than the
+  // free-text field (and vestigial short/medium/long trio) it replaced. The point of the enum is
+  // that Foundry rejects anything else, which is what the last assertion drives.
+  test('the weapon range is a band picked from the four, and nothing else stores', async ({
+    gmPage,
+  }) => {
+    const { appId, uuid } = await openSheet(gmPage, 'weapon', { range: 'close' });
+    const range = gmPage.locator(`#${appId} select[name="system.range"]`);
+    const stored = () =>
+      gmPage.evaluate(async (u) => (await (window as any).fromUuid(u)).toObject().system.range, uuid);
+
+    await expect(range).toHaveValue('close');
+    await expect(range.locator('option')).toHaveText(['', 'Adjacent', 'Close', 'Long', 'Extreme']);
+
+    await range.selectOption('extreme');
+    await expect.poll(stored).toBe('extreme');
+
+    await gmPage.evaluate(async (u) => {
+      // What the old free-text field would have accepted, and the emitter used to write.
+      await (await (window as any).fromUuid(u)).update({ 'system.range': 'Long' }).catch(() => {});
+    }, uuid);
+    expect(await stored()).toBe('extreme');
+  });
+
   test('the equipped checkbox on armour persists and feeds the armour derivation', async ({ gmPage }) => {
     // system.equipped was bound by the sheet and read by _deriveCharacter but declared in no
     // schema, so the DataModel migration cleaned it off on every write and armour never applied.

@@ -116,12 +116,6 @@ export class MothershipActorSheet extends foundry.appv1.sheets.ActorSheet {
         armors.push(i);
         curWeight += item.weight;
       } else if (i.type === 'weapon') {
-        //We need to update this from the old system.    
-        if (item.ranges.value == "" && item.ranges.medium > 0) {
-          item.ranges.value = item.ranges.short + "/" + item.ranges.medium + "/" + item.ranges.long;
-          item.ranges.medium = 0;
-        }
-
         weapons.push(i);
         curWeight += item.weight;
       } else if (i.type === 'condition') {

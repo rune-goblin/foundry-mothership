@@ -20,12 +20,7 @@
     "curShots": 0,
     "damage": "Str/10",
     "description": "",
-    "ranges": {
-      "long": 0,
-      "medium": 0,
-      "short": 0,
-      "value": "Adjacent"
-    },
+    "range": "adjacent",
     "shots": 0,
     "shotsPerFire": 1,
     "useAmmo": false,

@@ -20,12 +20,7 @@
     "curShots": 4,
     "damage": "4d10",
     "description": "<p>1d10 DMG at Long Range or greater.</p>",
-    "ranges": {
-      "long": 0,
-      "medium": 0,
-      "short": 0,
-      "value": "Close"
-    },
+    "range": "close",
     "shots": 4,
     "shotsPerFire": 1,
     "useAmmo": true,

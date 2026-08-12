@@ -20,12 +20,7 @@
     "curShots": 6,
     "damage": "1d100",
     "description": "<p>Two-handed. Heavy. 1 round recharge between shots.</p>",
-    "ranges": {
-      "long": 0,
-      "medium": 0,
-      "short": 0,
-      "value": "Long"
-    },
+    "range": "long",
     "shots": 6,
     "shotsPerFire": 1,
     "useAmmo": true,

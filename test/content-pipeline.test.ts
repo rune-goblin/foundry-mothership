@@ -65,6 +65,13 @@ function systemOf(contentId: string, system: Record<string, unknown>): Book[] {
   );
 }
 
+/** The same staging as `systemOf`, against the one type carrying an enumerated field. */
+function weaponWith(system: Record<string, unknown>): Book[] {
+  return mutated('gadgets', (r) =>
+    r.contentId === 'flux-capacitor' ? { ...r, body: { kind: 'Item', type: 'weapon', system } } : r,
+  );
+}
+
 let built: BuildResult;
 beforeAll(() => {
   built = run();
@@ -296,6 +303,21 @@ describe('the DataModel guard', () => {
 
   it('accepts a record that sets only some of the declared fields', () => {
     expect(() => run(systemOf('flux-capacitor', { description: '<p>Bends time.</p>' }))).not.toThrow();
+  });
+
+  // A StringField that declares `choices` validates on load as well. An off-list value falls back
+  // to the initial, which loses the data exactly as quietly as an undeclared key -- and the
+  // title-cased band below is precisely what the emitter used to write.
+  it('fails on a value outside the choices its field declares', () => {
+    expect(() => run(weaponWith({ range: 'Long' }))).toThrow(
+      'emitted content does not fit its DataModel:\n' +
+        '  fixture_gadgets_1e/flux-capacitor: system.range = "Long" is not one of the choices weapon declares',
+    );
+  });
+
+  it('accepts a declared choice, and the blank the field also allows', () => {
+    expect(() => run(weaponWith({ range: 'long' }))).not.toThrow();
+    expect(() => run(weaponWith({ range: '' }))).not.toThrow();
   });
 
   it('fails on an Item type no DataModel is registered for', () => {

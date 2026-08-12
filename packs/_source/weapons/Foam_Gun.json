@@ -20,12 +20,7 @@
     "curShots": 3,
     "damage": "1",
     "description": "<p>Body Save or become stuck. Strength Check [-] to escape.<br><br>Rolls at [-].</p>",
-    "ranges": {
-      "long": 0,
-      "medium": 0,
-      "short": 0,
-      "value": "Close"
-    },
+    "range": "close",
     "shots": 3,
     "shotsPerFire": 1,
     "useAmmo": true,

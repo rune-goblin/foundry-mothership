@@ -20,12 +20,7 @@
     "curShots": 32,
     "damage": "1d5",
     "description": "",
-    "ranges": {
-      "long": 0,
-      "medium": 0,
-      "short": 0,
-      "value": "Close"
-    },
+    "range": "close",
     "shots": 32,
     "shotsPerFire": 1,
     "useAmmo": true,

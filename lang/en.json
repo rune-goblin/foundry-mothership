@@ -844,6 +844,12 @@
     "Quantity": "Quantity",
     "RadiationDamage": "Radiation Damage",
     "Range": "Range",
+    "RangeBand": {
+      "adjacent": "Adjacent",
+      "close": "Close",
+      "long": "Long",
+      "extreme": "Extreme"
+    },
     "RANK": "Rank",
     "Resolve": "Resolve",
     "Robotic": "Robotic",

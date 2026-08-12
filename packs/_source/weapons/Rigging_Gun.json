@@ -20,12 +20,7 @@
     "curShots": 1,
     "damage": "1d10",
     "description": "<p>100m micro-filament. Body Save or become entangled.</p>",
-    "ranges": {
-      "long": 0,
-      "medium": 0,
-      "short": 0,
-      "value": "Close"
-    },
+    "range": "close",
     "shots": 1,
     "shotsPerFire": 1,
     "useAmmo": true,

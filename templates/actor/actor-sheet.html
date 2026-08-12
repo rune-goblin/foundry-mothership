@@ -509,8 +509,8 @@
           {{else}}
           <div class="skill-stat">{{ localize 'Mosh.NA' }}</div>
           {{/if}}
-          {{#if weapon.system.ranges.value}}
-          <div class="skill-stat">{{weapon.system.ranges.value}}</div>
+          {{#if weapon.system.range}}
+          <div class="skill-stat">{{ localize (concat 'Mosh.RangeBand.' weapon.system.range) }}</div>
           {{else}}
           <div class="skill-stat">{{ localize 'Mosh.NA' }}</div>
           {{/if}}

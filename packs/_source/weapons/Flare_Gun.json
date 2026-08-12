@@ -20,12 +20,7 @@
     "curShots": 2,
     "damage": "1d5",
     "description": "<p>High intensity flare visible day and night from Long Range.</p>",
-    "ranges": {
-      "long": 0,
-      "medium": 0,
-      "short": 0,
-      "value": "Long"
-    },
+    "range": "long",
     "shots": 2,
     "shotsPerFire": 1,
     "useAmmo": true,

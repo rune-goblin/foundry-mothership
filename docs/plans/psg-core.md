@@ -12,7 +12,7 @@ the book instead. What survives from it is noted at the end.
 |---|---|
 | **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26), **S2b** the TypeScript catalogs and **S3** the content (§27), **S4** the class sheet and `base_adjustment` (§28), **S5** the generator on a draft store and `selected_adjustment` (§29), **S6** the creature sheet and the section tier (§30) |
 | **Next** | **S7 — actor-sheet.** The last AppV1 class in the system, and the last sheet template. It composes S6's sections. |
-| **Green at** | `check` 0/0 (241 files) · **249 vitest** · **87 Playwright** · `build` |
+| **Green at** | `check` 0/0 (241 files) · **253 vitest** · **88 Playwright** · `build` |
 | **Preserved** | Everything cut is on the pushed `archive/pre-psg-cut` branch **and** tag |
 
 What the system ships today: 2 actor types (character, creature), 7 item types, and **274
@@ -478,24 +478,13 @@ Deletions it carries, each in the DataModel **and** `template.json` (Decision 2a
 | `condition.treatment.html` | `PipTrack` from `treatment.value` | written onto embedded items at `actor-sheet.js:129–145`; the `.treatment-button` handler at 207 stays |
 | `character.weight.current` / `.capacity` | computed in `prepareDerivedData`, not stored | explicitly inside Decision 2's may-change list |
 
-**`weapon.ranges.value` stays — decided by the owner at the S6 review, and Decision 2a's row is
-struck.** It is not a render artifact: it is the *only* range the system has. Measured across the
-22 shipped weapons, **every one carries a PSG range band in `ranges.value`** — `Adjacent`, `Close`,
-`Long`, `Extreme` — and `short`/`medium`/`long` are `0` on all 22. Mothership 1e ranges in bands,
-not metres, so deleting `value` would delete every weapon's range and leave a numeric trio the book
-never fills.
-
-The numeric trio is the 0e vestige, and it is kept too: it is what `Weapon.svelte:19–23` and
-`actor-sheet.js:120` fall back to, which is how a pre-PSG weapon still shows `10/20/30`. **Removing
-it would need a data-model migration for worlds holding those weapons — out of scope until one is
-proposed.**
-
-**The copy path was checked and is sound.** Both routes an item takes onto an actor preserve the
-band: the drop path (`game.items.fromCompendium` → `Item.create`) and the loadout path
-(`modifyItem`, which the generator calls). A Pulse Rifle reaches the actor as `value: "Long"` by
-either, and the sheet renders it. So S7's only job here is to **stop recomputing it onto the
-embedded item during render** (`actor-sheet.js:120`) — the write, not the field — exactly as S6
-did for the creature (§30).
+**`weapon.ranges.value` is done — §31, landed after the S6 review, and Decision 2a's row is
+struck.** It was the opposite of a render artifact: all 22 shipped weapons carry a PSG range *band*
+in it and `short`/`medium`/`long` are `0` on every one. So the field stayed and the **trio** went,
+as an enum — `system.range`, a `StringField` with the four bands as `choices`, no migration (the
+owner's call: fresh worlds forward from here). The character sheet's `_prepareCharacterItems` no
+longer composes `10/20/30` onto embedded items during render, so **S7 has nothing left to do here**
+beyond keeping the localized band in its converted markup.
 
 ---
 

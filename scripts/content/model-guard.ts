@@ -1,4 +1,4 @@
-import { undeclaredKeys } from '../model-schema.ts';
+import { invalidChoices, undeclaredKeys } from '../model-schema.ts';
 import type { Emitted } from './emit.ts';
 import { ITEM_SCHEMAS } from './models.ts';
 
@@ -22,6 +22,9 @@ export function checkModelFields(emitted: Emitted[]): string[] {
     const system = (doc.document.system ?? {}) as Record<string, unknown>;
     for (const path of undeclaredKeys(system, schema)) {
       errors.push(`${where}: ${type} declares no system.${path} — Foundry would discard it on load`);
+    }
+    for (const path of invalidChoices(system, schema)) {
+      errors.push(`${where}: system.${path} is not one of the choices ${type} declares`);
     }
   }
   return errors;

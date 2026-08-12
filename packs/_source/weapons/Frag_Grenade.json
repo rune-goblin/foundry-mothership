@@ -20,12 +20,7 @@
     "curShots": 1,
     "damage": "3d10",
     "description": "<p>On a hit, damages all Adjacent to enemy.</p>",
-    "ranges": {
-      "long": 0,
-      "medium": 0,
-      "short": 0,
-      "value": "Close"
-    },
+    "range": "close",
     "shots": 1,
     "shotsPerFire": 1,
     "useAmmo": true,
