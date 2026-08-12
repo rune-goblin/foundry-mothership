@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runegoblin.dev/mothership/loadouts.schema.json",
+  "title": "Loadouts",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "allOf": [{ "$ref": "common.schema.json#/$defs/rollTable" }],
+    "required": ["class", "source"],
+    "properties": {
+      "die": { "const": "1d10" },
+      "results": {
+        "minItems": 10,
+        "items": {
+          "required": ["range", "text", "items"],
+          "properties": {
+            "text": { "type": "string", "minLength": 1 },
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

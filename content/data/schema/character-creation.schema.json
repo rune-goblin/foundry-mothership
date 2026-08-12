@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runegoblin.dev/mothership/character-creation.schema.json",
+  "title": "Character Creation",
+  "type": "object",
+  "required": ["id", "name", "intro", "steps", "source"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "const": "character-creation" },
+    "name": { "type": "string", "minLength": 1 },
+    "intro": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "source": { "$ref": "common.schema.json#/$defs/source" },
+    "steps": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "type": "object",
+        "required": ["id", "number", "title", "instruction", "text", "bullets",
+                     "references", "roll", "source"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "number": { "type": "integer", "minimum": 1, "maximum": 9 },
+          "title": { "type": "string", "minLength": 1 },
+          "instruction": { "type": ["string", "null"], "minLength": 1 },
+          "text": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "bullets": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "source": { "$ref": "common.schema.json#/$defs/source" },
+          "references": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["text", "pages"],
+              "additionalProperties": false,
+              "properties": {
+                "text": { "type": "string", "minLength": 1 },
+                "pages": {
+                  "type": "array",
+                  "items": { "type": "integer", "minimum": 1 },
+                  "minItems": 1,
+                  "maxItems": 2
+                }
+              }
+            }
+          },
+          "roll": {
+            "type": ["object", "null"],
+            "required": ["raw", "formula"],
+            "additionalProperties": false,
+            "properties": {
+              "raw": { "type": "string", "minLength": 1 },
+              "formula": { "type": "string", "pattern": "^\\d+d\\d+([+*]\\d+)?$" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

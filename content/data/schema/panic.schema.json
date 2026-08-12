@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runegoblin.dev/mothership/panic.schema.json",
+  "title": "Panic",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/rollTable" }],
+  "required": ["rule", "source"],
+  "properties": {
+    "die": { "const": "1d20" },
+    "results": {
+      "minItems": 20,
+      "items": {
+        "required": ["range", "name", "effect", "grantsCondition", "modifiers"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "effect": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

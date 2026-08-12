@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runegoblin.dev/mothership/skills.schema.json",
+  "title": "Skills",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "name", "tier", "bonus", "prerequisites", "source"],
+    "properties": {
+      "id": { "$ref": "common.schema.json#/$defs/id" },
+      "name": { "type": "string", "minLength": 1 },
+      "tier": { "enum": ["trained", "expert", "master"] },
+      "bonus": { "enum": [10, 15, 20] },
+      "description": { "type": ["string", "null"] },
+      "prerequisites": {
+        "type": "array",
+        "items": { "$ref": "common.schema.json#/$defs/id" },
+        "uniqueItems": true
+      },
+      "prerequisiteSource": { "enum": ["traced", "reviewed"] },
+      "source": { "$ref": "common.schema.json#/$defs/source" }
+    },
+    "additionalProperties": false
+  }
+}

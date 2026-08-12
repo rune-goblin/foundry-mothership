@@ -1,0 +1,44 @@
+[
+  {
+    "id": "radiation-1",
+    "level": 1,
+    "name": "Trace",
+    "sources": "Normal, everyday radiation, cosmic rays.",
+    "effect": "None immediately. Possible long-term side effects (cancer, etc.).",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 33,
+      "section": "33.2"
+    }
+  },
+  {
+    "id": "radiation-2",
+    "level": 2,
+    "name": "Acute",
+    "sources": "Unshielded reactors/Warp Cores.",
+    "effect": "Reduce all Stats and Saves by 1 every round.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 33,
+      "section": "33.2"
+    }
+  },
+  {
+    "id": "radiation-3",
+    "level": 3,
+    "name": "Lethal",
+    "sources": "Atomic weapons, direct handling of Warp Cores.",
+    "effect": "Every round: Body Save or lethal dose (death in 1d5 days).",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 33,
+      "section": "33.2"
+    }
+  }
+]

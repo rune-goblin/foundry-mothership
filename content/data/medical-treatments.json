@@ -1,0 +1,121 @@
+[
+  {
+    "id": "artificial-wellness-counselor",
+    "name": "Artificial Wellness Counselor",
+    "cost": {
+      "raw": "150cr",
+      "value": 150,
+      "each": false
+    },
+    "description": "1 hour session (max 1 per week) restores 1 Sanity Save. 1% chance you gain a random Condition.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 35,
+      "section": "34.2"
+    }
+  },
+  {
+    "id": "cognitive-defragmentation",
+    "name": "Cognitive Defragmentation",
+    "cost": {
+      "raw": "100kcr",
+      "value": 100000,
+      "each": false
+    },
+    "description": "24 hour surgical treatment removes 1 Condition. 1% chance of total amnesia. [-] on Intellect Checks, Sanity Saves, and Fear Saves for 4 weeks.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 35,
+      "section": "34.2"
+    }
+  },
+  {
+    "id": "deep-tissue-nanogel-massage",
+    "name": "Deep Tissue Nanogel Massage",
+    "cost": {
+      "raw": "24kcr",
+      "value": 24000,
+      "each": false
+    },
+    "description": "1 hour session (max 1 per week) reduces Minimum Stress by 1. [-] on all actions for 24 hours.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 35,
+      "section": "34.2"
+    }
+  },
+  {
+    "id": "immersive-slicksim-therapy",
+    "name": "Immersive Slicksim Therapy",
+    "cost": {
+      "raw": "1kcr",
+      "value": 1000,
+      "each": false
+    },
+    "description": "4 hour virtual treatment restores either 1d10 Combat or 1d10 Fear Save. 1% chance the character is stuck in the immersion for 1d10 days and loses 1d5 Sanity Save.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 35,
+      "section": "34.2"
+    }
+  },
+  {
+    "id": "medpod",
+    "name": "Medpod",
+    "cost": {
+      "raw": "6kcr",
+      "value": 6000,
+      "each": false
+    },
+    "description": "Week long treatment (spent in the pod) restores 1 Wound. Does not restore lost limbs/digits.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 35,
+      "section": "34.2"
+    }
+  },
+  {
+    "id": "pseudoflesh-injection",
+    "name": "Pseudoflesh Injection",
+    "cost": {
+      "raw": "18kcr",
+      "value": 18000,
+      "each": false
+    },
+    "description": "8 hour surgical treatment. Restores either 2d10 Speed, 2d10 Strength, 2d10 Body Save, or all Wounds. At [-] on all rolls for 2 weeks, plus an additional 4 weeks of convalescent recovery required.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 35,
+      "section": "34.2"
+    }
+  },
+  {
+    "id": "psychosurgery",
+    "name": "Psychosurgery",
+    "cost": {
+      "raw": "28kcr",
+      "value": 28000,
+      "each": false
+    },
+    "description": "8 hour surgical treatment restores either Intellect, Sanity Save, or Fear Save to their maximum, or reduces Minimum Stress to 2. At [-] on all rolls for 4 weeks.",
+    "source": {
+      "book": "Player's Survival Guide",
+      "system": "mothership-1e",
+      "version": "1.2",
+      "page": 35,
+      "section": "34.2"
+    }
+  }
+]
