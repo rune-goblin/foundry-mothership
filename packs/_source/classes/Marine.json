@@ -1,0 +1,71 @@
+{
+  "_id": "FUgg703iLDJFhUip",
+  "_key": "!items!FUgg703iLDJFhUip",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/mystery-man.svg",
+  "name": "Marine",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "base_adjustment": {
+      "body": 10,
+      "combat": 10,
+      "fear": 20,
+      "intellect": 0,
+      "max_wounds": 1,
+      "sanity": 0,
+      "skills_granted": [
+        "Compendium.mothershiprpg.skills_1e.Item.r1n6vraIyUgPuO6b",
+        "Compendium.mothershiprpg.skills_1e.Item.PCysCTzypE43tNup"
+      ],
+      "speed": 0,
+      "strength": 0
+    },
+    "common_skills": [],
+    "description": "<p>Marines are handy in a fight, but whenever they Panic it may cause problems for the rest of the crew.</p>",
+    "robotic": false,
+    "roll_tables": {
+      "loadout": "Compendium.mothershiprpg.rolltables_1e.RollTable.jX5jvQYVBcGE8obY",
+      "patch": "Compendium.mothershiprpg.rolltables_1e.RollTable.bW8BN8bIk13iVhwx",
+      "trinket": "Compendium.mothershiprpg.rolltables_1e.RollTable.7UZoTawQGpwxrcLx"
+    },
+    "selected_adjustment": {
+      "choose_skill_and": {
+        "expert": 0,
+        "expert_full_set": 0,
+        "master": 0,
+        "master_full_set": 0,
+        "trained": 0
+      },
+      "choose_skill_or": [
+        [
+          {
+            "expert": 1,
+            "expert_full_set": 0,
+            "from_list": [],
+            "master": 0,
+            "master_full_set": 0,
+            "name": "1 Expert Skill",
+            "trained": 0
+          },
+          {
+            "expert": 0,
+            "expert_full_set": 0,
+            "from_list": [],
+            "master": 0,
+            "master_full_set": 0,
+            "name": "2 Trained Skills",
+            "trained": 2
+          }
+        ]
+      ],
+      "choose_stat": []
+    },
+    "trauma_response": "Whenever you Panic, every Close friendly player must make a Fear Save."
+  },
+  "type": "class"
+}

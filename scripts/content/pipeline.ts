@@ -2,8 +2,8 @@ import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { checkBookDir, type Book } from './book.ts';
 import { canonical, emit, type Emitted, type Stamp } from './emit.ts';
-import { IdRegistry, type Registry } from './ids.ts';
-import { checkReferences } from './integrity.ts';
+import { allIds, IdRegistry, type Registry } from './ids.ts';
+import { checkIdPreservation, checkReferences } from './integrity.ts';
 import { checkModelFields } from './model-guard.ts';
 import type { Provenance } from './record.ts';
 import { fileSlug } from './slug.ts';
@@ -49,12 +49,17 @@ export function build(options: BuildOptions): BuildResult {
 
   const stamp = readStamp(root);
   const ids = IdRegistry.load(registryPath, allocate);
+  const before = allIds(ids.registry);
+
+  // Every pack is declared before any of them loads, because a loader asks the registry for ids in
+  // packs the build has not reached yet — a class names its granted skills, a loadout row links the
+  // gear it hands out.
+  for (const def of packs) ids.declarePack(def.pack, def.compendium, def.documentType);
 
   const emitted: Emitted[] = [];
   for (const book of books) {
     for (const def of book.packs) {
-      ids.declarePack(def.pack, def.compendium, def.documentType);
-      const records = [...def.load()].sort((a, b) => (a.contentId < b.contentId ? -1 : 1));
+      const records = [...def.load(ids)].sort((a, b) => (a.contentId < b.contentId ? -1 : 1));
       const filenames = new Map<string, string>();
       for (const record of records) {
         const doc = emit(def, record, ids, stamp, book.id);
@@ -73,6 +78,9 @@ export function build(options: BuildOptions): BuildResult {
   const compendia = new Set(packs.map((p) => p.compendium));
   const refErrors = checkReferences({ systemId: stamp.systemId, emitted, compendia });
   if (refErrors.length) throw new Error(`referential integrity failed:\n  ${refErrors.join('\n  ')}`);
+
+  const lostErrors = checkIdPreservation(before, emitted, ids.registry);
+  if (lostErrors.length) throw new Error(`ids went missing:\n  ${lostErrors.join('\n  ')}`);
 
   const files = new Map<string, string>();
   for (const doc of emitted) files.set(join(doc.pack, doc.filename), canonical(doc.document));

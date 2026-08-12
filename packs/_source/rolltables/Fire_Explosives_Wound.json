@@ -1,289 +1,149 @@
 {
   "_id": "lqiaWwh5cGcJhvnu",
-  "name": "Fire & Explosives Wound",
-  "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_fire_&_explosives.png",
-  "description": "<p>Whenever you gain a Fire &amp; Explosives Wound, roll on this table to determine the effect. <strong>Flesh Wounds</strong> are small inconveniences. <strong>Minor/Major Injuries</strong> cause lasting issues which require medical treatment. <strong>Lethal Injuries</strong> can kill you if not dealt with immediately. <strong>Fatal Injuries</strong> can kill outright. <strong>Bleeding</strong> wounds, if not treated can quickly overwhelm you.</p>",
-  "formula": "1d10-1",
-  "replacement": true,
+  "_key": "!tables!lqiaWwh5cGcJhvnu",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "description": "<p>Whenever you gain this kind of Wound, roll on this table to determine the effect. <strong>Flesh Wounds</strong> are small inconveniences. <strong>Minor/Major Injuries</strong> cause lasting issues which require medical treatment. <strong>Lethal Injuries</strong> can kill you if not dealt with immediately. <strong>Fatal Injuries</strong> can kill outright. <strong>Bleeding</strong> wounds, if not treated can quickly overwhelm you.</p>",
   "displayRoll": true,
+  "formula": "1d10-1",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_fire_&_explosives.png",
+  "name": "Fire & Explosives Wound",
+  "ownership": {
+    "default": 0
+  },
+  "replacement": true,
   "results": [
     {
       "_id": "VYN9lwpyPTW4Hnmh",
-      "type": "text",
+      "_key": "!tables.results!lqiaWwh5cGcJhvnu.VYN9lwpyPTW4Hnmh",
+      "description": "<strong>Flesh Wound:</strong> Hair burnt. Gain 1d5 Stress.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_fire_&_explosives.png",
-      "weight": 1,
+      "name": "",
       "range": [
         0,
         0
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Flesh Wound:</strong> Hair burnt. Gain 1d5 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.luNKvwmm2tjUJhT6]{+1d5 Stress}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!lqiaWwh5cGcJhvnu.VYN9lwpyPTW4Hnmh"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "V3np2nl2cIVshF5D",
-      "type": "text",
+      "_key": "!tables.results!lqiaWwh5cGcJhvnu.V3np2nl2cIVshF5D",
+      "description": "<strong>Minor Injury:</strong> Awesome scar. +1 Minimum Stress.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_fire_&_explosives.png",
-      "weight": 1,
+      "name": "",
       "range": [
         1,
         1
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Minor Injury:</strong> Awesome scar. +1 Minimum Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.BmEHWH7YxV9qb21p]{+1 Minimum Stress}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!lqiaWwh5cGcJhvnu.V3np2nl2cIVshF5D"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "Wen5sWpWmN2j4Zcb",
-      "type": "text",
+      "_key": "!tables.results!lqiaWwh5cGcJhvnu.Wen5sWpWmN2j4Zcb",
+      "description": "<strong>Minor Injury:</strong> Singed. [-] on next action.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_fire_&_explosives.png",
-      "weight": 1,
+      "name": "",
       "range": [
         2,
         2
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Minor Injury:</strong> Singed. [-] on next action.",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!lqiaWwh5cGcJhvnu.Wen5sWpWmN2j4Zcb"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "OD9Ilkg4OA11sU8H",
-      "type": "text",
+      "_key": "!tables.results!lqiaWwh5cGcJhvnu.OD9Ilkg4OA11sU8H",
+      "description": "<strong>Minor Injury:</strong> Shrapnel/large burn.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_fire_&_explosives.png",
-      "weight": 1,
+      "name": "",
       "range": [
         3,
         3
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Minor Injury:</strong> Shrapnel/large burn.",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!lqiaWwh5cGcJhvnu.OD9Ilkg4OA11sU8H"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "0BvZK2vdM2oweYvg",
-      "type": "text",
+      "_key": "!tables.results!lqiaWwh5cGcJhvnu.0BvZK2vdM2oweYvg",
+      "description": "<strong>Minor Injury:</strong> Extensive burns. -1d10 Strength.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_fire_&_explosives.png",
-      "weight": 1,
+      "name": "",
       "range": [
         4,
         4
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Minor Injury:</strong> 3rd degree burns.",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!lqiaWwh5cGcJhvnu.0BvZK2vdM2oweYvg"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "syEHXuDiZFwD4l4G",
-      "type": "text",
+      "_key": "!tables.results!lqiaWwh5cGcJhvnu.syEHXuDiZFwD4l4G",
+      "description": "<strong>Major Injury:</strong> Major Burn. -2d10 Body Save.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_fire_&_explosives.png",
-      "weight": 1,
+      "name": "",
       "range": [
         5,
         5
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Major Injury:</strong> Major Burn. Body Save -2d10.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.ISd2nEMYvWCPQpl0]{-2d10 Body Save}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!lqiaWwh5cGcJhvnu.syEHXuDiZFwD4l4G"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "MRl6Iid4Xgjb6myY",
-      "type": "text",
+      "_key": "!tables.results!lqiaWwh5cGcJhvnu.MRl6Iid4Xgjb6myY",
+      "description": "<strong>Major Injury:</strong> Skin grafts required. -2d10 Body Save.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_fire_&_explosives.png",
-      "weight": 1,
+      "name": "",
       "range": [
         6,
         6
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Major Injury:</strong> Skin grafts required. Body Save -2d10.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.ISd2nEMYvWCPQpl0]{-2d10 Body Save}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!lqiaWwh5cGcJhvnu.MRl6Iid4Xgjb6myY"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "bHNeXD95WH4o2Rjz",
-      "type": "text",
+      "_key": "!tables.results!lqiaWwh5cGcJhvnu.bHNeXD95WH4o2Rjz",
+      "description": "<strong>Lethal Injury (Death Save in 1d10 rounds):</strong> Limb on fire. 2d10 Damage per round.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_fire_&_explosives.png",
-      "weight": 1,
+      "name": "",
       "range": [
         7,
         7
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Lethal Injury:</strong> Limb on fire. 2d10 Damage per round. Death Save in [[/r 1d10]] rounds.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.pS6A6OklvM6S3bvO]{-2d10 Health}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!lqiaWwh5cGcJhvnu.bHNeXD95WH4o2Rjz"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "F9aNmmfK5oSh4kAs",
-      "type": "text",
+      "_key": "!tables.results!lqiaWwh5cGcJhvnu.F9aNmmfK5oSh4kAs",
+      "description": "<strong>Lethal Injury (Death Save in 1d10 rounds):</strong> Body on fire. 3d10 Damage per round.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_fire_&_explosives.png",
-      "weight": 1,
+      "name": "",
       "range": [
         8,
         8
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Lethal Injury:</strong> Body on fire. 3d10 Damage per round. Death Save in [[/r 1d10]] rounds.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.nECUu4pcwsNTE8C5]{-3d10 Health}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!lqiaWwh5cGcJhvnu.F9aNmmfK5oSh4kAs"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "V0ZCYS4xQCoqnKuC",
-      "type": "text",
+      "_key": "!tables.results!lqiaWwh5cGcJhvnu.V0ZCYS4xQCoqnKuC",
+      "description": "<strong>Fatal Injury (Death Save):</strong> Engulfed in fiery explosion. Death Save.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_fire_&_explosives.png",
-      "weight": 1,
+      "name": "",
       "range": [
         9,
         9
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Fatal Injury:</strong> Engulfed in fiery explosion. Death Save.<br><br>@UUID[Compendium.mothershiprpg.macros_hotbar_1e.Macro.NsRHfRuuNGPfkYVf]{Death Save}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!lqiaWwh5cGcJhvnu.V0ZCYS4xQCoqnKuC"
+      "type": "text",
+      "weight": 1
     }
-  ],
-  "_stats": {
-    "systemId": "mosh",
-    "systemVersion": "0.4.0",
-    "coreVersion": "13.348",
-    "createdTime": 1685936572185,
-    "modifiedTime": 1693515520278,
-    "lastModifiedBy": "6EeM38DJkcBWNAmw",
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "exportSource": null
-  },
-  "folder": null,
-  "sort": 0,
-  "ownership": {
-    "default": 0
-  },
-  "flags": {},
-  "_key": "!tables!lqiaWwh5cGcJhvnu"
+  ]
 }

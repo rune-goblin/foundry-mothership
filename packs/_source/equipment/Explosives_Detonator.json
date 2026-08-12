@@ -1,0 +1,20 @@
+{
+  "_id": "ZAwZFH6hERdFOQii",
+  "_key": "!items!ZAwZFH6hERdFOQii",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Explosives & Detonator",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 500,
+    "description": "<p>Explosive charge powerful enough to blow open an airlock. All organisms in Close Range must make a Body Save or take a Wound (Explosive). Detonator works at Long Range, but can be blocked by a radio jammer.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

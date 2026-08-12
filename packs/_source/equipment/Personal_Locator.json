@@ -1,0 +1,20 @@
+{
+  "_id": "Dib4YNAOo4WnAtES",
+  "_key": "!items!Dib4YNAOo4WnAtES",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Personal Locator",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 200,
+    "description": "<p>Allows crewmembers at a control center (or on the bridge of a ship) to track the location of the wearer.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

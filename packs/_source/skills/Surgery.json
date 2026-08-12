@@ -1,0 +1,23 @@
+{
+  "_id": "L49xbj6M4hILGaMi",
+  "_key": "!items!L49xbj6M4hILGaMi",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Surgery",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 20,
+    "description": "<p>Manually operating on living or dead biological subjects.</p>",
+    "prerequisite_ids": [
+      "Compendium.mothershiprpg.skills_1e.Item.LWqcNd1J9jTihhp4",
+      "Compendium.mothershiprpg.skills_1e.Item.EGqLcFB5KUBM9Gf1"
+    ],
+    "rank": "Master"
+  },
+  "type": "skill"
+}

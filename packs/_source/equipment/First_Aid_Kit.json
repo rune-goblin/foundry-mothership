@@ -1,0 +1,20 @@
+{
+  "_id": "KyM0RTkhf0PwEFy3",
+  "_key": "!items!KyM0RTkhf0PwEFy3",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "First Aid Kit",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 75,
+    "description": "<p>An assortment of dressings and treatments to help stop bleeding, bandage cuts, and treat other minor injuries.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

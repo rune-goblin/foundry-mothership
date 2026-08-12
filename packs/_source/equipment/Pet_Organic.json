@@ -1,0 +1,20 @@
+{
+  "_id": "3WzP2XLfSQDDGmOr",
+  "_key": "!items!3WzP2XLfSQDDGmOr",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Pet (Organic)",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 200000,
+    "description": "<p>Small to medium-sized organic pet animal. Larger or rare pets cost 2d10x base pet cost.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

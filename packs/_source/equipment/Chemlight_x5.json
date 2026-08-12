@@ -1,0 +1,20 @@
+{
+  "_id": "TJdV8OpkoMSe0udV",
+  "_key": "!items!TJdV8OpkoMSe0udV",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Chemlight (x5)",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 5,
+    "description": "<p>Small disposable glowsticks capable of dim illumination in a 1m radius.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

@@ -1,289 +1,149 @@
 {
   "_id": "ata3fRz3uoPfNCLh",
-  "name": "Bleeding Wound",
-  "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
-  "description": "<p>Whenever you gain a Bleeding Wound, roll on this table to determine the effect. <strong>Flesh Wounds</strong> are small inconveniences. <strong>Minor/Major Injuries</strong> cause lasting issues which require medical treatment. <strong>Lethal Injuries</strong> can kill you if not dealt with immediately. <strong>Fatal Injuries</strong> can kill outright. <strong>Bleeding</strong> wounds, if not treated can quickly overwhelm you.</p>",
-  "formula": "1d10-1",
-  "replacement": true,
+  "_key": "!tables!ata3fRz3uoPfNCLh",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "description": "<p>Whenever you gain this kind of Wound, roll on this table to determine the effect. <strong>Flesh Wounds</strong> are small inconveniences. <strong>Minor/Major Injuries</strong> cause lasting issues which require medical treatment. <strong>Lethal Injuries</strong> can kill you if not dealt with immediately. <strong>Fatal Injuries</strong> can kill outright. <strong>Bleeding</strong> wounds, if not treated can quickly overwhelm you.</p>",
   "displayRoll": true,
+  "formula": "1d10-1",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
+  "name": "Bleeding Wound",
+  "ownership": {
+    "default": 0
+  },
+  "replacement": true,
   "results": [
     {
       "_id": "58jsAYGMOoYV0aXe",
-      "type": "text",
+      "_key": "!tables.results!ata3fRz3uoPfNCLh.58jsAYGMOoYV0aXe",
+      "description": "<strong>Flesh Wound:</strong> Drop held item.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
-      "weight": 1,
+      "name": "",
       "range": [
         0,
         0
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Flesh Wound:</strong> Drop held item.",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!ata3fRz3uoPfNCLh.58jsAYGMOoYV0aXe"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "qVUXginkyIDKa6fe",
-      "type": "text",
+      "_key": "!tables.results!ata3fRz3uoPfNCLh.qVUXginkyIDKa6fe",
+      "description": "<strong>Minor Injury:</strong> Lots of blood. Those Close gain 1 Stress.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
-      "weight": 1,
+      "name": "",
       "range": [
         1,
         1
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Minor Injury:</strong> Lots of blood. Those Close gain 1 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.dvJR9DYXI2kV0BbR]{+1 Stress}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!ata3fRz3uoPfNCLh.qVUXginkyIDKa6fe"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "uvF7ftDjXr9excYX",
-      "type": "text",
+      "_key": "!tables.results!ata3fRz3uoPfNCLh.uvF7ftDjXr9excYX",
+      "description": "<strong>Minor Injury:</strong> Blood in eyes. [-] until wiped clean.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
-      "weight": 1,
+      "name": "",
       "range": [
         2,
         2
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Minor Injury:</strong> Blood in eyes. [-] until wiped clean.",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!ata3fRz3uoPfNCLh.uvF7ftDjXr9excYX"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "5ED6Ynmibq9pKDEk",
-      "type": "text",
+      "_key": "!tables.results!ata3fRz3uoPfNCLh.5ED6Ynmibq9pKDEk",
+      "description": "<strong>Minor Injury:</strong> Laceration. Bleeding +1.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
-      "weight": 1,
+      "name": "",
       "range": [
         3,
         3
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Minor Injury:</strong> Laceration. Bleeding +1.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.BH7tgbDVH6jdcZ4u]{+1 Bleeding}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!ata3fRz3uoPfNCLh.5ED6Ynmibq9pKDEk"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "hO9e9wmIsTXWfZns",
-      "type": "text",
+      "_key": "!tables.results!ata3fRz3uoPfNCLh.hO9e9wmIsTXWfZns",
+      "description": "<strong>Minor Injury:</strong> Major cut. Bleeding +2.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
-      "weight": 1,
+      "name": "",
       "range": [
         4,
         4
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Minor Injury:</strong> Major cut. Bleeding +2.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.IIVNXuhckFQfzXah]{+2 Bleeding}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!ata3fRz3uoPfNCLh.hO9e9wmIsTXWfZns"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "8eTGRuBUdp9s2Z46",
-      "type": "text",
+      "_key": "!tables.results!ata3fRz3uoPfNCLh.8eTGRuBUdp9s2Z46",
+      "description": "<strong>Major Injury:</strong> Fingers/toes severed. Bleeding +3.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
-      "weight": 1,
+      "name": "",
       "range": [
         5,
         5
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Major Injury:</strong> Fingers/toes severed. Bleeding +3.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.LawygQJAPu8XEnSc]{+3 Bleeding}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!ata3fRz3uoPfNCLh.8eTGRuBUdp9s2Z46"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "FZ9GwrHFQJUmHQ7k",
-      "type": "text",
+      "_key": "!tables.results!ata3fRz3uoPfNCLh.FZ9GwrHFQJUmHQ7k",
+      "description": "<strong>Major Injury:</strong> Hand/foot severed. Bleeding +4.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
-      "weight": 1,
+      "name": "",
       "range": [
         6,
         6
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Major Injury:</strong> Hand/foot severed. Bleeding +4.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.QkCJK7Vmda5bGAA7]{+4 Bleeding}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!ata3fRz3uoPfNCLh.FZ9GwrHFQJUmHQ7k"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "kLAtlJUE9QfCX38s",
-      "type": "text",
+      "_key": "!tables.results!ata3fRz3uoPfNCLh.kLAtlJUE9QfCX38s",
+      "description": "<strong>Lethal Injury (Death Save in 1d10 rounds):</strong> Limb severed. Bleeding +5.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
-      "weight": 1,
+      "name": "",
       "range": [
         7,
         7
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Lethal Injury:</strong> Limb severed. Bleeding +5. Death Save in [[/r 1d10]] rounds.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.CZ2gqnRHcOpCLlG0]{+5 Bleeding}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!ata3fRz3uoPfNCLh.kLAtlJUE9QfCX38s"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "806d8NZZaysIHJvm",
-      "type": "text",
+      "_key": "!tables.results!ata3fRz3uoPfNCLh.806d8NZZaysIHJvm",
+      "description": "<strong>Lethal Injury (Death Save in 1d10 rounds):</strong> Major artery cut. Bleeding +6.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
-      "weight": 1,
+      "name": "",
       "range": [
         8,
         8
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Lethal Injury:</strong> Major artery cut. Bleeding +6. Death Save in [[/r 1d10]] rounds.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.Tx19z2BhTY6onldp]{+6 Bleeding}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!ata3fRz3uoPfNCLh.806d8NZZaysIHJvm"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "439gBR7gGeLatpfl",
-      "type": "text",
+      "_key": "!tables.results!ata3fRz3uoPfNCLh.439gBR7gGeLatpfl",
+      "description": "<strong>Fatal Injury (Death Save):</strong> Throat slit or heart pierced. Death Save.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_bleeding.png",
-      "weight": 1,
+      "name": "",
       "range": [
         9,
         9
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Fatal Injury:</strong> Throat slit or heart pierced. Death Save.<br><br>@UUID[Compendium.mothershiprpg.macros_hotbar_1e.Macro.NsRHfRuuNGPfkYVf]{Death Save}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!ata3fRz3uoPfNCLh.439gBR7gGeLatpfl"
+      "type": "text",
+      "weight": 1
     }
-  ],
-  "_stats": {
-    "systemId": "mosh",
-    "systemVersion": "0.4.0",
-    "coreVersion": "13.348",
-    "createdTime": 1685936572185,
-    "modifiedTime": 1693515520278,
-    "lastModifiedBy": "6EeM38DJkcBWNAmw",
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "exportSource": null
-  },
-  "folder": null,
-  "sort": 0,
-  "ownership": {
-    "default": 0
-  },
-  "flags": {},
-  "_key": "!tables!ata3fRz3uoPfNCLh"
+  ]
 }

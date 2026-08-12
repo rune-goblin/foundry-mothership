@@ -1,0 +1,149 @@
+{
+  "_id": "ZIgtxTA7b1LwvyjO",
+  "_key": "!tables!ZIgtxTA7b1LwvyjO",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "description": "<p>The gear a Teamster starts with.</p>",
+  "displayRoll": true,
+  "formula": "1d10-1",
+  "img": "icons/svg/chest.svg",
+  "name": "Teamster Loadouts",
+  "ownership": {
+    "default": 0
+  },
+  "replacement": true,
+  "results": [
+    {
+      "_id": "19tOHxtpaAfn20Kn",
+      "_key": "!tables.results!ZIgtxTA7b1LwvyjO.19tOHxtpaAfn20Kn",
+      "description": "Vaccsuit (AP 3), Laser Cutter (1 extra battery), Patch Kit (x3), Toolbelt with Assorted Tools<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.H7j9UNfJhAsj1ayu]{Vaccsuit (AP 3)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.EEXtQQkmHTWFK1FU]{Laser Cutter (1 extra battery)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.rNcBzhlszNXO6kLf]{Laser Cutter (1 extra battery)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.NJx0o7Kcxxza5ZVz]{Patch Kit (x3)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.IBkf92WqC13tu7f8]{Toolbelt with Assorted Tools}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        0,
+        0
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "wyWEZ9USC2DtdJw3",
+      "_key": "!tables.results!ZIgtxTA7b1LwvyjO.wyWEZ9USC2DtdJw3",
+      "description": "Vaccsuit (AP 3), Revolver (6 rounds), Crowbar, Flashlight<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.H7j9UNfJhAsj1ayu]{Vaccsuit (AP 3)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.zdTy7gabLeCwsJBh]{Revolver (6 rounds)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.9C5s2vIWjbVV0tSp]{Crowbar}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.cMvO4sWQIqSekvWh]{Flashlight}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        1,
+        1
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "kbibeonAvQgGhxR1",
+      "_key": "!tables.results!ZIgtxTA7b1LwvyjO.kbibeonAvQgGhxR1",
+      "description": "Vaccsuit (AP 3), Rigging Gun (1 shot), Shovel, Salvage Drone<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.H7j9UNfJhAsj1ayu]{Vaccsuit (AP 3)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.hIhYSrExV2U2gHY1]{Rigging Gun (1 shot)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.xs63Go4h0xWpGrWi]{Shovel}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.4n1EgFXSCrqxBwPe]{Salvage Drone}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        2,
+        2
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "jb6m43LPHMBCJW5F",
+      "_key": "!tables.results!ZIgtxTA7b1LwvyjO.jb6m43LPHMBCJW5F",
+      "description": "Hazard Suit (AP 5), Vibechete, Spanner, Camping Gear, Water Filtration Device<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.v4puMALT4uFgU1eX]{Hazard Suit (AP 5)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.iIf6fmrMqlKPYsww]{Vibechete}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.IBkf92WqC13tu7f8]{Spanner}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.0fZESt6TOIzbeVJ8]{Camping Gear}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.ZrnvgS52tmNWXmTQ]{Water Filtration Device}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        3,
+        3
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "FHjIeAqK4kVzTGrF",
+      "_key": "!tables.results!ZIgtxTA7b1LwvyjO.FHjIeAqK4kVzTGrF",
+      "description": "Heavy Duty Work Clothes (AP 2), Explosives & Detonator, Cigarettes<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.xmtb96lXeNXuWTzT]{Heavy Duty Work Clothes (AP 2)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.ZAwZFH6hERdFOQii]{Explosives & Detonator}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.l98DW87Jp7r7uCQV]{Cigarettes}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        4,
+        4
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "HkPLbnW37LrtO6GP",
+      "_key": "!tables.results!ZIgtxTA7b1LwvyjO.HkPLbnW37LrtO6GP",
+      "description": "Heavy Duty Work Clothes (AP 2), Drill (as Assorted Tools), Paracord (100m), Salvage Drone<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.xmtb96lXeNXuWTzT]{Heavy Duty Work Clothes (AP 2)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.IBkf92WqC13tu7f8]{Drill (as Assorted Tools)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.SqEc9R1KaTLIIcUO]{Paracord (100m) (x2)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.4n1EgFXSCrqxBwPe]{Salvage Drone}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        5,
+        5
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "49Mf5ze5OYwnYxgh",
+      "_key": "!tables.results!ZIgtxTA7b1LwvyjO.49Mf5ze5OYwnYxgh",
+      "description": "Standard Crew Attire (AP 1), Combat Shotgun (4 rounds), Extension Cord (20m), Cat (pet)<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.BtLRzXEGLvpqJJJM]{Standard Crew Attire (AP 1)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.QATsbe6Ua7yvGCuo]{Combat Shotgun (4 rounds)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.aLtsUIysVrGOt3Wf]{Extension Cord (20m)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.3WzP2XLfSQDDGmOr]{Cat (pet)}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        6,
+        6
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "f2MTgFqGAqEbI5L8",
+      "_key": "!tables.results!ZIgtxTA7b1LwvyjO.f2MTgFqGAqEbI5L8",
+      "description": "Standard Crew Attire (AP 1), Nail Gun (32 rounds), Head Lamp, Toolbelt with Assorted Tools, Lunch Box<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.BtLRzXEGLvpqJJJM]{Standard Crew Attire (AP 1)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.Rs0xEt7BcCvHku5v]{Nail Gun (32 rounds)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.5nAJsAFBNnsZbZuD]{Head Lamp}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.IBkf92WqC13tu7f8]{Toolbelt with Assorted Tools}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.gvf7ENEyNoFmEjQG]{Lunch Box}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        7,
+        7
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "D32f0Y3V2LtHfkk6",
+      "_key": "!tables.results!ZIgtxTA7b1LwvyjO.D32f0Y3V2LtHfkk6",
+      "description": "Standard Crew Attire (AP 1), Flare Gun (2 rounds), Water Filtration Device, Personal Locator, Subsurface Scanner<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.BtLRzXEGLvpqJJJM]{Standard Crew Attire (AP 1)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.9fnBhaEpLm2cFbNL]{Flare Gun (2 rounds)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.ZrnvgS52tmNWXmTQ]{Water Filtration Device}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.Dib4YNAOo4WnAtES]{Personal Locator}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.kPbc3ZWQ2rIyVPa2]{Subsurface Scanner}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        8,
+        8
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "zTmA9Uwv6cAwKWj7",
+      "_key": "!tables.results!ZIgtxTA7b1LwvyjO.zTmA9Uwv6cAwKWj7",
+      "description": "Lounge Wear (AP 1), Crowbar, Stimpak, Six Pack of Beer<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.gsuRxgAZgvv5dCob]{Lounge Wear (AP 1)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.9C5s2vIWjbVV0tSp]{Crowbar}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.E496Z3oUgdzAWxib]{Stimpak}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.qG0vbc0nsg6nxz3o]{Six Pack of Beer}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        9,
+        9
+      ],
+      "type": "text",
+      "weight": 1
+    }
+  ]
+}

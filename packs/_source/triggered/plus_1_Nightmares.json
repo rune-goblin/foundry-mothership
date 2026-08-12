@@ -1,26 +1,16 @@
 {
   "_id": "AZbaGWu663wio9mI",
-  "name": "+1 Nightmares",
-  "type": "script",
-  "scope": "global",
-  "img": "icons/svg/d10-grey.svg",
-  "command": "game.mothershiprpg.initModifyItem('MLPSYfWrwY6R7JDy',1);",
-  "folder": null,
-  "flags": {},
+  "_key": "!macros!AZbaGWu663wio9mI",
   "_stats": {
-    "systemId": "mosh",
-    "systemVersion": "0.4.0",
-    "coreVersion": "13.348",
-    "createdTime": 1685936572185,
-    "modifiedTime": 1693515520278,
-    "lastModifiedBy": "6EeM38DJkcBWNAmw",
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "exportSource": null
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
   },
-  "sort": 0,
+  "command": "game.mothershiprpg.initModifyItem('MLPSYfWrwY6R7JDy',1);",
+  "img": "icons/svg/d10-grey.svg",
+  "name": "+1 Nightmares",
   "ownership": {
     "default": 0
   },
-  "_key": "!macros!AZbaGWu663wio9mI"
+  "scope": "global",
+  "type": "script"
 }

@@ -1,0 +1,36 @@
+{
+  "_id": "EEXtQQkmHTWFK1FU",
+  "_key": "!items!EEXtQQkmHTWFK1FU",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/sword.svg",
+  "name": "Laser Cutter",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "ammo": 6,
+    "ammoType": "",
+    "antiArmor": false,
+    "bonus": 0,
+    "cost": 1200,
+    "critDmg": "",
+    "curShots": 6,
+    "damage": "1d100",
+    "description": "<p>Two-handed. Heavy. 1 round recharge between shots.</p>",
+    "ranges": {
+      "long": 0,
+      "medium": 0,
+      "short": 0,
+      "value": "Long"
+    },
+    "shots": 6,
+    "shotsPerFire": 1,
+    "useAmmo": true,
+    "weight": 0,
+    "woundEffect": "Bleeding [+] Gore & Massive [+]"
+  },
+  "type": "weapon"
+}

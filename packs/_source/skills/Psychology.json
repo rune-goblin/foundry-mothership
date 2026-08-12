@@ -1,0 +1,23 @@
+{
+  "_id": "c7OGreem6GLr3sxP",
+  "_key": "!items!c7OGreem6GLr3sxP",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Psychology",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 15,
+    "description": "<p>The study of behavior and the human mind.</p>",
+    "prerequisite_ids": [
+      "Compendium.mothershiprpg.skills_1e.Item.eaijjQUYLF6U7lC2",
+      "Compendium.mothershiprpg.skills_1e.Item.qqbflJqocoPwwuFf"
+    ],
+    "rank": "Expert"
+  },
+  "type": "skill"
+}

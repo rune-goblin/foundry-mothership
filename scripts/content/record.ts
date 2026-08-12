@@ -56,11 +56,20 @@ export interface ContentRecord {
   provenance: SourceRef;
 }
 
+/**
+ * What a loader needs to write a link. A class names the skills it grants by `_id`, and a loadout
+ * row links the gear it hands out — both before the target document has been emitted, so the
+ * registry has to answer for an id the build has not reached yet.
+ */
+export interface IdLookup {
+  documentId(pack: string, contentId: string): string;
+}
+
 export interface PackDefinition {
   /** Registry key in `content/ids.json` and the directory name under `packs/_source/`. */
   pack: string;
   compendium: string;
   documentType: 'Item' | 'Macro' | 'RollTable';
   /** Reads the book's typed catalogs — imports, not the filesystem — and normalises them. */
-  load(): ContentRecord[];
+  load(ids: IdLookup): ContentRecord[];
 }

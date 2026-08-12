@@ -1,0 +1,1319 @@
+{
+  "_id": "bW8BN8bIk13iVhwx",
+  "_key": "!tables!bW8BN8bIk13iVhwx",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "description": "<p>What you wear on your shoulder.</p>",
+  "displayRoll": true,
+  "formula": "1d100-1",
+  "img": "icons/svg/tower-flag.svg",
+  "name": "Patches",
+  "ownership": {
+    "default": 0
+  },
+  "replacement": true,
+  "results": [
+    {
+      "_id": "G9i6vL798KayKJqk",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.G9i6vL798KayKJqk",
+      "description": "\"I'm Not A Rocket Scientist / But You're An Idiot\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        0,
+        0
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "qOjPtq5FFs8howTg",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.qOjPtq5FFs8howTg",
+      "description": "Medic Patch (Skull and Crossbones over Cross)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        1,
+        1
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "fjTDLzJDzm9hQfNp",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.fjTDLzJDzm9hQfNp",
+      "description": "\"Don't Run You'll Only Die Tired\" Backpatch",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        2,
+        2
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "pl5aHjvkdMVfHlVM",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.pl5aHjvkdMVfHlVM",
+      "description": "Red Shirt Logo",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        3,
+        3
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "T22eB53IcF3DJ1AM",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.T22eB53IcF3DJ1AM",
+      "description": "Blood Type (Reference Patch)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        4,
+        4
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "OTeEEbJ6sY8cMsmQ",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.OTeEEbJ6sY8cMsmQ",
+      "description": "\"Do I LOOK Like An Expert?\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        5,
+        5
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "bGU0HcD4io8muo8B",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.bGU0HcD4io8muo8B",
+      "description": "Biohazard Symbol",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        6,
+        6
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "1BT0pxjw5SIXp8aw",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.1BT0pxjw5SIXp8aw",
+      "description": "Mr. Yuck",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        7,
+        7
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "HouRalGHmbZh3zEq",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.HouRalGHmbZh3zEq",
+      "description": "Nuclear Symbol",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        8,
+        8
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "OMLAopRk8S4pDB1r",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.OMLAopRk8S4pDB1r",
+      "description": "\"Eat The Rich\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        9,
+        9
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "PFClXT7MTTukozRg",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.PFClXT7MTTukozRg",
+      "description": "\"Be Sure: Doubletap\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        10,
+        10
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "ySP8DYRoCCTiUPQK",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.ySP8DYRoCCTiUPQK",
+      "description": "Flame Emoji",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        11,
+        11
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "YpgI4KFULTAniUBp",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.YpgI4KFULTAniUBp",
+      "description": "Smiley Face (Glow in the Dark)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        12,
+        12
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "nyklo2IzDrB2iE7t",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.nyklo2IzDrB2iE7t",
+      "description": "\"Smile: Big Brother is Watching\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        13,
+        13
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "ZXo6w0CciSOp5wEs",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.ZXo6w0CciSOp5wEs",
+      "description": "Jolly Roger",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        14,
+        14
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "Q6x3usq5DqYa85Vn",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.Q6x3usq5DqYa85Vn",
+      "description": "Viking Skull",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        15,
+        15
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "0l8UK0dY494zGZHs",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.0l8UK0dY494zGZHs",
+      "description": "\"APEX PREDATOR\" (Sabertooth Skull)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        16,
+        16
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "nNANDBy9NTOQcR5L",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.nNANDBy9NTOQcR5L",
+      "description": "Pin-Up Model (Ace of Spades)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        17,
+        17
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "qiZYO75ge1SLheSp",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.qiZYO75ge1SLheSp",
+      "description": "Queen of Hearts",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        18,
+        18
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "t9RTFSK2eZvDYyaO",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.t9RTFSK2eZvDYyaO",
+      "description": "Security Guard",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        19,
+        19
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "FPBAQbx0lm4zD4Qi",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.FPBAQbx0lm4zD4Qi",
+      "description": "\"LONER\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        20,
+        20
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "JsDAzs79NorEOp0S",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.JsDAzs79NorEOp0S",
+      "description": "\"Front Towards Enemy\" (Claymore Mine)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        21,
+        21
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "b9qAr5r0yY10wSDi",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.b9qAr5r0yY10wSDi",
+      "description": "Pin-Up Model (Riding Missile)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        22,
+        22
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "Z03hn6O1QpNFNSxQ",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.Z03hn6O1QpNFNSxQ",
+      "description": "FUBAR",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        23,
+        23
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "Rs34OoCTRQb0wQZ9",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.Rs34OoCTRQb0wQZ9",
+      "description": "\"I'm A (Love) Machine\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        24,
+        24
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "oQpG9uYBsAEoJNjV",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.oQpG9uYBsAEoJNjV",
+      "description": "Pin-Up Model (Mechanic)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        25,
+        25
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "vYKkvWzaGUOId5mc",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.vYKkvWzaGUOId5mc",
+      "description": "\"HELLO MY NAME IS:\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        26,
+        26
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "Ju1lbNySbfRRmhPb",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.Ju1lbNySbfRRmhPb",
+      "description": "\"Powered By Coffee\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        27,
+        27
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "Rfm5fI1SmFalasyf",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.Rfm5fI1SmFalasyf",
+      "description": "\"Take Me To Your Leader\" (UFO)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        28,
+        28
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "RN2HHGbfU7Fzm2PJ",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.RN2HHGbfU7Fzm2PJ",
+      "description": "\"DO YOUR JOB\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        29,
+        29
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "31YdGPTuDFn3hMzt",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.31YdGPTuDFn3hMzt",
+      "description": "\"Take My Life (Please)\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        30,
+        30
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "10H4OiYeh49qvnlA",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.10H4OiYeh49qvnlA",
+      "description": "\"Upstanding Citizen\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        31,
+        31
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "fr2AH90KkI88CT14",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.fr2AH90KkI88CT14",
+      "description": "\"Allergic To Bullshit\" (Medical Style Patch)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        32,
+        32
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "mql6oRj5xx7YK3Dc",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.mql6oRj5xx7YK3Dc",
+      "description": "\"Fix Me First\" (Caduceus)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        33,
+        33
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "4sRHPIVB3yFwahMb",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.4sRHPIVB3yFwahMb",
+      "description": "\"I Like My Tools Clean / And My Lovers Dirty\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        34,
+        34
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "WvVESZlz63fIhrUR",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.WvVESZlz63fIhrUR",
+      "description": "\"The Louder You Scream the Faster I Come\" (Nurse Pin-Up)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        35,
+        35
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "tmtTdzaedmF0vIDP",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.tmtTdzaedmF0vIDP",
+      "description": "HMFIC (Head Mother Fucker In Charge)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        36,
+        36
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "BAnBxyxbe4wBnQ87",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.BAnBxyxbe4wBnQ87",
+      "description": "Dove in Crosshairs",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        37,
+        37
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "XIolUC4r9NlDGDqE",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.XIolUC4r9NlDGDqE",
+      "description": "Chibi Cthulhu",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        38,
+        38
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "QRnJlEpwMdTBMP9G",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.QRnJlEpwMdTBMP9G",
+      "description": "\"Welcome to the DANGER ZONE\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        39,
+        39
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "go7e7w0q7tLlp4Xm",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.go7e7w0q7tLlp4Xm",
+      "description": "Skull and Crossed Wrenches",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        40,
+        40
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "hSR1t5ch6Tkd7SY0",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.hSR1t5ch6Tkd7SY0",
+      "description": "Pin-Up Model (Succubus)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        41,
+        41
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "QJfId4s5MP03EO4d",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.QJfId4s5MP03EO4d",
+      "description": "\"DILLIGAF?\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        42,
+        42
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "fQD9WmjQNLb03Wiq",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.fQD9WmjQNLb03Wiq",
+      "description": "\"DRINK / FIGHT / FUCK\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        43,
+        43
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "FhjJrZXsH9KAnsPh",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.FhjJrZXsH9KAnsPh",
+      "description": "\"Work Hard / Party Harder\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        44,
+        44
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "rbFXHtuvp77YT80n",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.rbFXHtuvp77YT80n",
+      "description": "Mudflap Girl",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        45,
+        45
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "alVwagZb2ZIm0J0N",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.alVwagZb2ZIm0J0N",
+      "description": "Fun Meter (reads: Bad Time)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        46,
+        46
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "4XWkj7c8dwDDjPOO",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.4XWkj7c8dwDDjPOO",
+      "description": "\"GAME OVER\" (Bride & Groom)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        47,
+        47
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "VpOnVKlE7UnfzB0Z",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.VpOnVKlE7UnfzB0Z",
+      "description": "Heart",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        48,
+        48
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "alFZcLWMj4dun4fX",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.alFZcLWMj4dun4fX",
+      "description": "\"IMPROVE / ADAPT / OVERCOME\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        49,
+        49
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "vYHmOugPw6BsNHDB",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.vYHmOugPw6BsNHDB",
+      "description": "\"SUCK IT UP\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        50,
+        50
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "76srknCPZ0qu8qgh",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.76srknCPZ0qu8qgh",
+      "description": "\"Cowboy Up\" (Crossed Revolvers)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        51,
+        51
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "VdFPexDHg2eu70YW",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.VdFPexDHg2eu70YW",
+      "description": "\"Troubleshooter\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        52,
+        52
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "hD1aReOmYPKCaq0n",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.hD1aReOmYPKCaq0n",
+      "description": "NASA Logo",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        53,
+        53
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "JDcTTcV9VWd50lLH",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.JDcTTcV9VWd50lLH",
+      "description": "Crossed Hammers with Wings",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        54,
+        54
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "Dy77FnVnF0ZruvDI",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.Dy77FnVnF0ZruvDI",
+      "description": "\"Keep Well Lubricated\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        55,
+        55
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "oBciiCXc4ioljnxS",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.oBciiCXc4ioljnxS",
+      "description": "Soviet Hammer & Sickle",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        56,
+        56
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "iugZmbBFZtzNYNOb",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.iugZmbBFZtzNYNOb",
+      "description": "\"Plays Well With Others\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        57,
+        57
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "u1UHfLuWzFN6SB7e",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.u1UHfLuWzFN6SB7e",
+      "description": "\"Live Free and Die\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        58,
+        58
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "8JWnUHzS29TVxveA",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.8JWnUHzS29TVxveA",
+      "description": "\"IF I'M RUNNING KEEP UP\" Backpatch",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        59,
+        59
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "3ygr29CcaO3IEWmw",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.3ygr29CcaO3IEWmw",
+      "description": "\"Meat Bag\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        60,
+        60
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "KJaJCsebuslSdOwN",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.KJaJCsebuslSdOwN",
+      "description": "\"I Am Not A Robot\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        61,
+        61
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "Di1YtCF4CkK1qgro",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.Di1YtCF4CkK1qgro",
+      "description": "Red Gear",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        62,
+        62
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "cYav7TMoNmbLJAOJ",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.cYav7TMoNmbLJAOJ",
+      "description": "\"I Can't Fix Stupid\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        63,
+        63
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "cB5T6yaAlF1zn6Hz",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.cB5T6yaAlF1zn6Hz",
+      "description": "\"Space IS My Home\" (Sad Astronaut)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        64,
+        64
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "IP2kpNCrEtAGiWeU",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.IP2kpNCrEtAGiWeU",
+      "description": "All Seeing Eye",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        65,
+        65
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "ohl9G3sYzHfmsA9L",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.ohl9G3sYzHfmsA9L",
+      "description": "\"Solve Et Coagula\" (Baphomet)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        66,
+        66
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "b2WFHeEmdR98FDkZ",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.b2WFHeEmdR98FDkZ",
+      "description": "\"All Out of Fucks To Give\" (Astronaut with Turned Out Pockets)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        67,
+        67
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "78K2dW8GUnYqMmIV",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.78K2dW8GUnYqMmIV",
+      "description": "\"Travel To Distant Places / Meet Unusual Things / Get Eaten\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        68,
+        68
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "RC4PTtmiikaoNnEA",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.RC4PTtmiikaoNnEA",
+      "description": "BOHICA (Bend Over Here It Comes Again)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        69,
+        69
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "pApzE5Lmf6Ctsmug",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.pApzE5Lmf6Ctsmug",
+      "description": "\"I Am My Brother's Keeper\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        70,
+        70
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "RjK6W04iD9ICFPLJ",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.RjK6W04iD9ICFPLJ",
+      "description": "\"Mama Tried\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        71,
+        71
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "wqFlAdGX8W4VmORQ",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.wqFlAdGX8W4VmORQ",
+      "description": "Black Widow Spider",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        72,
+        72
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "sKSY2S6N702q3yuv",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.sKSY2S6N702q3yuv",
+      "description": "\"My Other Ride Married You\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        73,
+        73
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "XNvRgOGMAOoyEdvC",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.XNvRgOGMAOoyEdvC",
+      "description": "\"One Size Fits All\" (Grenade)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        74,
+        74
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "akZrKhwhZ0cZRZOn",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.akZrKhwhZ0cZRZOn",
+      "description": "Grim Reaper Backpatch",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        75,
+        75
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "D1jTcG5qQthvUzT9",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.D1jTcG5qQthvUzT9",
+      "description": "отъебись (\"Fuck Off,\" Russian)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        76,
+        76
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "yY8pENo4Rp2phFLf",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.yY8pENo4Rp2phFLf",
+      "description": "\"Smooth Operator\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        77,
+        77
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "8wiyQD1tNAIkffn4",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.8wiyQD1tNAIkffn4",
+      "description": "Atom Symbol",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        78,
+        78
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "xct4Ps5iKDz8IV7R",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.xct4Ps5iKDz8IV7R",
+      "description": "\"For Science!\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        79,
+        79
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "VM2Nhk6l8eByaxOU",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.VM2Nhk6l8eByaxOU",
+      "description": "\"Actually, I AM A Rocket Scientist\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        80,
+        80
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "kLgJALPofGja0QYq",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.kLgJALPofGja0QYq",
+      "description": "\"Help Wanted\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        81,
+        81
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "qr0w4b8td9w8LYco",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.qr0w4b8td9w8LYco",
+      "description": "Princess",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        82,
+        82
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "JH7d9OJb4lQf2iB5",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.JH7d9OJb4lQf2iB5",
+      "description": "\"NOMAD\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        83,
+        83
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "PUYrodQFe5ZVW0ip",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.PUYrodQFe5ZVW0ip",
+      "description": "\"GOOD BOY\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        84,
+        84
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "01UZsPFGEzScxL4I",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.01UZsPFGEzScxL4I",
+      "description": "Dice (Snake Eyes)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        85,
+        85
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "EUWDl66sNihzE2d8",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.EUWDl66sNihzE2d8",
+      "description": "\"#1 Worker\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        86,
+        86
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "VP5GN4CvCxf3VPJS",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.VP5GN4CvCxf3VPJS",
+      "description": "\"Good\" (Brain)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        87,
+        87
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "hLV2otnFTppJOjkZ",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.hLV2otnFTppJOjkZ",
+      "description": "\"Bad Bitch\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        88,
+        88
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "RJGWqnYc5DnsnF4d",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.RJGWqnYc5DnsnF4d",
+      "description": "\"Too Pretty To Die\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        89,
+        89
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "n0KFoo9NxftwOXCw",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.n0KFoo9NxftwOXCw",
+      "description": "\"Fuck Forever\" (Roses)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        90,
+        90
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "gDODo9B2p4J3ghKg",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.gDODo9B2p4J3ghKg",
+      "description": "Icarus",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        91,
+        91
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "DNRNgvHBi0TEUNUZ",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.DNRNgvHBi0TEUNUZ",
+      "description": "\"Girl's Best Friend\" (Diamond)",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        92,
+        92
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "52AHAiq4p58I3xig",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.52AHAiq4p58I3xig",
+      "description": "Risk of Electrocution Symbol",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        93,
+        93
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "fjJlcI2U9v544h4w",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.fjJlcI2U9v544h4w",
+      "description": "Inverted Cross",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        94,
+        94
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "LfAI9Su6Gc4rTaMd",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.LfAI9Su6Gc4rTaMd",
+      "description": "\"Do You Sign My Paychecks?\" Backpatch",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        95,
+        95
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "rp0ssnjlonbXcVmV",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.rp0ssnjlonbXcVmV",
+      "description": "\"I ♥ Myself\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        96,
+        96
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "QQQ5q4p3b03urgx8",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.QQQ5q4p3b03urgx8",
+      "description": "Double Cherry",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        97,
+        97
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "5WSwxPl3FSGZduhD",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.5WSwxPl3FSGZduhD",
+      "description": "\"Volunteer\"",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        98,
+        98
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "FHd7p7qye2mF106a",
+      "_key": "!tables.results!bW8BN8bIk13iVhwx.FHd7p7qye2mF106a",
+      "description": "Poker Hand: Dead Man's Hand* *Aces Full Of Eights",
+      "img": "icons/svg/tower-flag.svg",
+      "name": "",
+      "range": [
+        99,
+        99
+      ],
+      "type": "text",
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "_id": "nPpSm7DWq8Ph9y56",
+  "_key": "!items!nPpSm7DWq8Ph9y56",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Heads-Up Display (HUD)",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 100,
+    "description": "<p>Often worn by marines, the HUD allows the wearer to see through the body cams of others in their unit, and connect to any smart-link upgraded weapon.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

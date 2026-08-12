@@ -1,33 +1,22 @@
 {
   "_id": "MLPSYfWrwY6R7JDy",
-  "name": "Nightmares",
-  "type": "condition",
+  "_key": "!items!MLPSYfWrwY6R7JDy",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
   "img": "systems/mothershiprpg/images/icons/ui/conditions/nightmares.png",
+  "name": "Nightmares",
+  "ownership": {
+    "default": 0
+  },
   "system": {
     "description": "<p>Sleep is difficult, gain [-] on Rest Saves.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.AM9nIK5l7mC5Ho8C]{Rest Save [-]}</p>",
     "severity": 1,
     "treatment": {
-      "value": 0,
-      "html": ""
+      "html": "",
+      "value": 0
     }
   },
-  "effects": [],
-  "flags": {},
-  "folder": null,
-  "sort": 0,
-  "_stats": {
-    "systemId": "mosh",
-    "systemVersion": "0.4.0",
-    "coreVersion": "13.348",
-    "createdTime": 1685936572185,
-    "modifiedTime": 1693515520278,
-    "lastModifiedBy": "6EeM38DJkcBWNAmw",
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "exportSource": null
-  },
-  "ownership": {
-    "default": 0
-  },
-  "_key": "!items!MLPSYfWrwY6R7JDy"
+  "type": "condition"
 }

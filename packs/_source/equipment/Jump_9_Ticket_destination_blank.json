@@ -1,0 +1,20 @@
+{
+  "_id": "focgU4KstNCjS4u0",
+  "_key": "!items!focgU4KstNCjS4u0",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Jump-9 Ticket (destination blank)",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 0,
+    "description": "<p>One passage, anywhere on the network. The destination field has not been filled in.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

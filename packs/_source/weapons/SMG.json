@@ -1,0 +1,36 @@
+{
+  "_id": "Xevyr8GSS1jVyURx",
+  "_key": "!items!Xevyr8GSS1jVyURx",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/sword.svg",
+  "name": "SMG",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "ammo": 5,
+    "ammoType": "",
+    "antiArmor": false,
+    "bonus": 0,
+    "cost": 1000,
+    "critDmg": "",
+    "curShots": 5,
+    "damage": "2d10",
+    "description": "<p>Can be fired one-handed.</p>",
+    "ranges": {
+      "long": 0,
+      "medium": 0,
+      "short": 0,
+      "value": "Long"
+    },
+    "shots": 5,
+    "shotsPerFire": 1,
+    "useAmmo": true,
+    "weight": 0,
+    "woundEffect": "Gunshot"
+  },
+  "type": "weapon"
+}

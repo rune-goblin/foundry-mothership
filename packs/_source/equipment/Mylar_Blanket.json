@@ -1,0 +1,20 @@
+{
+  "_id": "ZNNqfL126ZqjmY94",
+  "_key": "!items!ZNNqfL126ZqjmY94",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Mylar Blanket",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 10,
+    "description": "<p>Lightweight blanket made of heat-reflective material. Often used for thermal regulation of patients suffering from extreme cold or other trauma.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

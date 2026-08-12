@@ -1,0 +1,20 @@
+{
+  "_id": "EKbpiNFi54yjUfCM",
+  "_key": "!items!EKbpiNFi54yjUfCM",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Defibrillator",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 0,
+    "description": "<p>Portable paddles and a charge pack, for restarting a stopped heart.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

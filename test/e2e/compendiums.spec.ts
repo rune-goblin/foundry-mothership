@@ -30,10 +30,15 @@ test('every rolltable setting resolves to a real document', async ({ gmPage }) =
 // Foundry actually reading the documents back. A pack missing its .ldb opens as an empty
 // database rather than failing, so counts are the assertion that matters.
 const EXPECTED = {
-  conditions_1e: 11,
-  macros_hotbar_1e: 11,
-  macros_triggered_1e: 107,
-  rolltables_1e: 7,
+  skills_1e: 42,
+  classes_1e: 4,
+  weapons_1e: 22,
+  armor_1e: 15,
+  equipment_1e: 65,
+  conditions_1e: 9,
+  rolltables_1e: 13,
+  macros_hotbar_1e: 9,
+  macros_triggered_1e: 95,
 } as const;
 
 test.describe('compendium packs', () => {

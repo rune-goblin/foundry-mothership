@@ -1,0 +1,1319 @@
+{
+  "_id": "7UZoTawQGpwxrcLx",
+  "_key": "!tables!7UZoTawQGpwxrcLx",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "description": "<p>What you carry that you cannot explain.</p>",
+  "displayRoll": true,
+  "formula": "1d100-1",
+  "img": "icons/svg/coins.svg",
+  "name": "Trinkets",
+  "ownership": {
+    "default": 0
+  },
+  "replacement": true,
+  "results": [
+    {
+      "_id": "VYw4xuOp8mr8nTvp",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.VYw4xuOp8mr8nTvp",
+      "description": "Manual: PANIC: Harbinger of Catastrophe",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        0,
+        0
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "nyJRPaqAXJXC3zGM",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.nyJRPaqAXJXC3zGM",
+      "description": "Antique Company Scrip (Asteroid Mine)",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        1,
+        1
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "n0xcALEYmIeaQKWu",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.n0xcALEYmIeaQKWu",
+      "description": "Manual: SURVIVAL: Eat Soup With a Knife",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        2,
+        2
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "607c9KnmO6grh2Ce",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.607c9KnmO6grh2Ce",
+      "description": "Desiccated Husk Doll",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        3,
+        3
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "euNglobqyFhS7PLa",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.euNglobqyFhS7PLa",
+      "description": "Pressed Alien Flower (common)",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        4,
+        4
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "cMfD3LC3Pbyb1f3k",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.cMfD3LC3Pbyb1f3k",
+      "description": "Necklace of Shell Casings",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        5,
+        5
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "dk5ghVU3G8k5ss5p",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.dk5ghVU3G8k5ss5p",
+      "description": "Corroded Android Logic Core",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        6,
+        6
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "JJZc3Sgh6BjHDh8I",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.JJZc3Sgh6BjHDh8I",
+      "description": "Pamphlet: Signs of Parasitical Infection",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        7,
+        7
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "6APFRJKv3YFpBwXy",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.6APFRJKv3YFpBwXy",
+      "description": "Manual: Treat Your Rifle Like A Lady",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        8,
+        8
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "rh0fGsyohy4Wg40G",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.rh0fGsyohy4Wg40G",
+      "description": "Bone Knife",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        9,
+        9
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "NLusfnEo5lpdvkWl",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.NLusfnEo5lpdvkWl",
+      "description": "Calendar: Alien Pin-Up Art",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        10,
+        10
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "oQXqlpP7GdjXSFh1",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.oQXqlpP7GdjXSFh1",
+      "description": "Rejected Application (Colony Ship)",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        11,
+        11
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "QGNV5oT7SowggL9F",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.QGNV5oT7SowggL9F",
+      "description": "Holographic Serpentine Dancer",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        12,
+        12
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "WF9bfdgRokdX4r30",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.WF9bfdgRokdX4r30",
+      "description": "Snake Whiskey",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        13,
+        13
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "XyLlHwb0MkRPC4hd",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.XyLlHwb0MkRPC4hd",
+      "description": "Medical Container, Purple Powder",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        14,
+        14
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "KbACicrscL7Mtma3",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.KbACicrscL7Mtma3",
+      "description": "Pills: Male Enhancement, Shoddy",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        15,
+        15
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "NHzV34T6n3N7JMMK",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.NHzV34T6n3N7JMMK",
+      "description": "Casino Playing Cards",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        16,
+        16
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "H9hzpI2tnIPXG7VA",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.H9hzpI2tnIPXG7VA",
+      "description": "Lagomorph Foot",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        17,
+        17
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "DLgA5QPAziQgfMol",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.DLgA5QPAziQgfMol",
+      "description": "Moonstone Ring",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        18,
+        18
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "BJQUztiwprr6GRhN",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.BJQUztiwprr6GRhN",
+      "description": "Manual: Mining Safety and You",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        19,
+        19
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "Igu0MGgBoZ9g9Zqh",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.Igu0MGgBoZ9g9Zqh",
+      "description": "Pamphlet: Against Human Simulacra",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        20,
+        20
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "3V2OmewqKoSuTAc5",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.3V2OmewqKoSuTAc5",
+      "description": "Animal Skull, 3 Eyes, Curled Horns",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        21,
+        21
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "7HmzR3Mpl8hsIA1x",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.7HmzR3Mpl8hsIA1x",
+      "description": "Bartender's Certification (Expired)",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        22,
+        22
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "4nsAVKEZGRCCXMmE",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.4nsAVKEZGRCCXMmE",
+      "description": "Bunraku Puppet",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        23,
+        23
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "I9tkMgOY1MO1r710",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.I9tkMgOY1MO1r710",
+      "description": "Prospecting Mug, Dented",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        24,
+        24
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "01ffCT2PGsrW8MVT",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.01ffCT2PGsrW8MVT",
+      "description": "Eerie Mask",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        25,
+        25
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "6HKLfwZUVoMATPfh",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.6HKLfwZUVoMATPfh",
+      "description": "Ultrablack Marble",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        26,
+        26
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "fPWTGEgC76ScGeyy",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.fPWTGEgC76ScGeyy",
+      "description": "Ivory Dice",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        27,
+        27
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "gSZ9Dh5gAZhJ52TK",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.gSZ9Dh5gAZhJ52TK",
+      "description": "Tarot Cards, Worn, Pyrite Gilded Edges",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        28,
+        28
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "rsrUH13nCTu8qqJH",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.rsrUH13nCTu8qqJH",
+      "description": "Bag of Assorted Teeth",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        29,
+        29
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "dAQc7CrTjRe3gh3D",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.dAQc7CrTjRe3gh3D",
+      "description": "Ashes (A Relative)",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        30,
+        30
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "Z8eTRN4f88vbm4j1",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.Z8eTRN4f88vbm4j1",
+      "description": "DNR Beacon Necklace",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        31,
+        31
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "T4U1Q8FmSTpjAlLp",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.T4U1Q8FmSTpjAlLp",
+      "description": "Cigarettes (Grinning Skull)",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        32,
+        32
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "NqdZ9CZWLOOUjfrS",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.NqdZ9CZWLOOUjfrS",
+      "description": "Pills: Areca Nut",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        33,
+        33
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "uqS0FlXb64kTO5Rw",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.uqS0FlXb64kTO5Rw",
+      "description": "Pendant: Shell Fragments Suspended in Plastic",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        34,
+        34
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "n9c7XVSPwk4Yrkmc",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.n9c7XVSPwk4Yrkmc",
+      "description": "Pamphlet: Zen and the Art of Cargo Arrangement",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        35,
+        35
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "Mrz9DIrjbpJjR7UT",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.Mrz9DIrjbpJjR7UT",
+      "description": "Pair of Shot Glasses (Spent Shotgun Shells)",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        36,
+        36
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "Fy6pyv5XjTRT3RI7",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.Fy6pyv5XjTRT3RI7",
+      "description": "Key (Childhood Home)",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        37,
+        37
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "9VMKaeKFjAK7HlWP",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.9VMKaeKFjAK7HlWP",
+      "description": "Dog Tags (Heirloom)",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        38,
+        38
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "GLEZ5UsQDpKHXHPk",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.GLEZ5UsQDpKHXHPk",
+      "description": "Token: \"Is Your Morale Improving?\"",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        39,
+        39
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "W9nSy19KPaShGnDP",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.W9nSy19KPaShGnDP",
+      "description": "Pamphlet: The Relic of Flesh",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        40,
+        40
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "x1ueQRpK8sxk5zaI",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.x1ueQRpK8sxk5zaI",
+      "description": "Pamphlet: The Indifferent Stars",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        41,
+        41
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "PcWp9PG6uQrL3Ehm",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.PcWp9PG6uQrL3Ehm",
+      "description": "Calendar: Military Battles",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        42,
+        42
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "1n6QwC8SkRfMTNtT",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.1n6QwC8SkRfMTNtT",
+      "description": "Manual: Rich Captain, Poor Captain",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        43,
+        43
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "iv8ygZ7dXwNhFv5v",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.iv8ygZ7dXwNhFv5v",
+      "description": "Campaign Poster (Home Planet)",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        44,
+        44
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "nzTxRhCVrTKcU7r9",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.nzTxRhCVrTKcU7r9",
+      "description": "Preserved Insectile Aberration",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        45,
+        45
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "2iE4cc0DznCqy9qC",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.2iE4cc0DznCqy9qC",
+      "description": "Titanium Toothpick",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        46,
+        46
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "JXs4vWiH4Fvdp1Yh",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.JXs4vWiH4Fvdp1Yh",
+      "description": "Gloves, Leather (Xenomorph Hide)",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        47,
+        47
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "eTNvjcyMIrxk6f5x",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.eTNvjcyMIrxk6f5x",
+      "description": "Smut (Seditious): The Captain, Ordered",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        48,
+        48
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "2y4lhwp4U7awRbV7",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.2y4lhwp4U7awRbV7",
+      "description": "Towel, Slightly Frayed",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        49,
+        49
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "BcFXwsG1HKvicjEs",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.BcFXwsG1HKvicjEs",
+      "description": "Brass Knuckles",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        50,
+        50
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "13uQuJuEpjV3puUN",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.13uQuJuEpjV3puUN",
+      "description": "Fuzzy Handcuffs",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        51,
+        51
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "Wo1mj7S8RuOF6sPX",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.Wo1mj7S8RuOF6sPX",
+      "description": "Journal of Grudges",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        52,
+        52
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "Lt69I5urUjtDXSNu",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.Lt69I5urUjtDXSNu",
+      "description": "Stylized Cigarette Case",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        53,
+        53
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "hnurXtq6lqUTiMwN",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.hnurXtq6lqUTiMwN",
+      "description": "Ball of Assorted Gauge Wire",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        54,
+        54
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "qMyiQ3UEe2k2rUWP",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.qMyiQ3UEe2k2rUWP",
+      "description": "Spanner",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        55,
+        55
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "ralyDK2PG4Ur510F",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.ralyDK2PG4Ur510F",
+      "description": "Switchblade, Ornamental",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        56,
+        56
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "kRKFXp7RfjvFzDs8",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.kRKFXp7RfjvFzDs8",
+      "description": "Powdered Xenomorph Horn",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        57,
+        57
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "npWdkcy3dieugwtf",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.npWdkcy3dieugwtf",
+      "description": "Bonsai Tree, Potted",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        58,
+        58
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "3vOdBK8bNxVqlJ2o",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.3vOdBK8bNxVqlJ2o",
+      "description": "Golf Club (Putter)",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        59,
+        59
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "sKrYssxTMoawI644",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.sKrYssxTMoawI644",
+      "description": "Trilobite Fossil",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        60,
+        60
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "m2NaHWLHt1SEoY2I",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.m2NaHWLHt1SEoY2I",
+      "description": "Pamphlet: A Lover In Every Port",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        61,
+        61
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "CyRkCr47P0QbWWCT",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.CyRkCr47P0QbWWCT",
+      "description": "Patched Overalls, Personalized",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        62,
+        62
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "ivGkNZHzwPUaBZOn",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.ivGkNZHzwPUaBZOn",
+      "description": "Fleshy Thing Sealed in a Murky Jar",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        63,
+        63
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "x2aB8xcU94CZ1Jg9",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.x2aB8xcU94CZ1Jg9",
+      "description": "Spiked Bracelet",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        64,
+        64
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "wSOzO1i5swY1u3OW",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.wSOzO1i5swY1u3OW",
+      "description": "Harmonica",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        65,
+        65
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "2uF7J3wbo6K4J6IU",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.2uF7J3wbo6K4J6IU",
+      "description": "Pictorial Pornography, Dog-eared, Well-thumbed",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        66,
+        66
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "X8t2o7TxHzX5hTRQ",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.X8t2o7TxHzX5hTRQ",
+      "description": "Coffee Cup, Chipped, reads: HAPPINESS IS MANDATORY",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        67,
+        67
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "JQzK5sFNSQD0sXTS",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.JQzK5sFNSQD0sXTS",
+      "description": "Manual: Moonshining With Gun Oil & Fuel",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        68,
+        68
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "LRFLq7HHQ9QNqlhR",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.LRFLq7HHQ9QNqlhR",
+      "description": "Miniature Chess Set, Bone, Pieces Missing",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        69,
+        69
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "vvkV54zngPG8t7Us",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.vvkV54zngPG8t7Us",
+      "description": "Gyroscope, Bent, Tin",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        70,
+        70
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "4YOFpXI0fYD05Z6d",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.4YOFpXI0fYD05Z6d",
+      "description": "Faded Green Poker Chip",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        71,
+        71
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "Q3RlBMUuba1vHQcF",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.Q3RlBMUuba1vHQcF",
+      "description": "Ukulele",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        72,
+        72
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "6KK5JmUwfnzP3wdB",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.6KK5JmUwfnzP3wdB",
+      "description": "Spray Paint",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        73,
+        73
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "EJFZd1wug8o54PNh",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.EJFZd1wug8o54PNh",
+      "description": "Wanted Poster, Weathered",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        74,
+        74
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "ppvHRdVCtimmF0xU",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.ppvHRdVCtimmF0xU",
+      "description": "Locket, Hair Braid",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        75,
+        75
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "9FUfrKfbZGQLiyHE",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.9FUfrKfbZGQLiyHE",
+      "description": "Sculpture of a Rat (Gold)",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        76,
+        76
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "folfLlJ5HOHsfKHk",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.folfLlJ5HOHsfKHk",
+      "description": "Blanket, Fire Retardant",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        77,
+        77
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "0MQBDq7mJ7UsIZ32",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.0MQBDq7mJ7UsIZ32",
+      "description": "Hooded Parka, Fleece-Lined",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        78,
+        78
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "BCuuDxb3sAIwyinM",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.BCuuDxb3sAIwyinM",
+      "description": "BB Gun",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        79,
+        79
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "gp9VmjRVJ3JtmZWi",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.gp9VmjRVJ3JtmZWi",
+      "description": "Flint Hatchet",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        80,
+        80
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "TKDDhgNULjt7O6u8",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.TKDDhgNULjt7O6u8",
+      "description": "Pendant: Two Astronauts form a Skull",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        81,
+        81
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "lRA9NYaQrc7zWZqN",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.lRA9NYaQrc7zWZqN",
+      "description": "Rubik's Cube",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        82,
+        82
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "U9YnRadWyYk1FUUI",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.U9YnRadWyYk1FUUI",
+      "description": "Stress Ball, reads: Zero Stress in Zero G",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        83,
+        83
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "6nE8Jhl3CL710Lnq",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.6nE8Jhl3CL710Lnq",
+      "description": "Sputnik Pin",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        84,
+        84
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "CegjGHBWl8OkbEtv",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.CegjGHBWl8OkbEtv",
+      "description": "Ushanka",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        85,
+        85
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "6UOFj2zLkOkszZ1d",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.6UOFj2zLkOkszZ1d",
+      "description": "Trucker Cap, Mesh, Grey Alien Logo",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        86,
+        86
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "AvMwZ8gsebuHj5B8",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.AvMwZ8gsebuHj5B8",
+      "description": "Menthol Balm",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        87,
+        87
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "qgFeJj8dM3z1tnFI",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.qgFeJj8dM3z1tnFI",
+      "description": "Pith Helmet",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        88,
+        88
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "tOlzXd7WIgtv9ATA",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.tOlzXd7WIgtv9ATA",
+      "description": "10m x 10m Tarp",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        89,
+        89
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "2qaVQxTcOkAQIDO7",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.2qaVQxTcOkAQIDO7",
+      "description": "I Ching, Missing Sticks",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        90,
+        90
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "0gFMWuhYTKQsLVT1",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.0gFMWuhYTKQsLVT1",
+      "description": "Kukri",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        91,
+        91
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "neYyuudyeH8zatNt",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.neYyuudyeH8zatNt",
+      "description": "Trench Shovel",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        92,
+        92
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "oXjcSYhSnoE7RTyf",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.oXjcSYhSnoE7RTyf",
+      "description": "Shiv, Sharpened Butter Knife",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        93,
+        93
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "XLq8z5WoBkCcF4gG",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.XLq8z5WoBkCcF4gG",
+      "description": "Taxidermied Cat",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        94,
+        94
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "gSrmAfvcELv8697H",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.gSrmAfvcELv8697H",
+      "description": "Pamphlet: Interpreting Sheep Dreams",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        95,
+        95
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "FkdA8nDQkoGaEO8i",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.FkdA8nDQkoGaEO8i",
+      "description": "Faded Photograph, A Windswept Heath",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        96,
+        96
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "maKEk6sCAnP8cIha",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.maKEk6sCAnP8cIha",
+      "description": "Opera Glasses",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        97,
+        97
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "CEDP24oD37O40GF1",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.CEDP24oD37O40GF1",
+      "description": "Pamphlet: Android Overlords",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        98,
+        98
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "x7RPon0UtqOhdHgc",
+      "_key": "!tables.results!7UZoTawQGpwxrcLx.x7RPon0UtqOhdHgc",
+      "description": "Interstellar Compass, Always Points to Homeworld",
+      "img": "icons/svg/coins.svg",
+      "name": "",
+      "range": [
+        99,
+        99
+      ],
+      "type": "text",
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "_id": "HyVBj1aVkqNu2WD2",
+  "_key": "!items!HyVBj1aVkqNu2WD2",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Sophontology",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 20,
+    "description": "<p>The study of the behavior and mind of inhuman entities.</p>",
+    "prerequisite_ids": [
+      "Compendium.mothershiprpg.skills_1e.Item.c7OGreem6GLr3sxP"
+    ],
+    "rank": "Master"
+  },
+  "type": "skill"
+}

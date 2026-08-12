@@ -1,0 +1,20 @@
+{
+  "_id": "iNJM23aYaji5SLCJ",
+  "_key": "!items!iNJM23aYaji5SLCJ",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Rucksack",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 50,
+    "description": "<p>Large, durable, waterproof backpack.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

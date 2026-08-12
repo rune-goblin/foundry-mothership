@@ -1,0 +1,20 @@
+{
+  "_id": "Is5dU70QvQBqbcbt",
+  "_key": "!items!Is5dU70QvQBqbcbt",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Geology",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 10,
+    "description": "<p>The study of the solid features of any terrestrial planet or its satellites.</p>",
+    "prerequisite_ids": [],
+    "rank": "Trained"
+  },
+  "type": "skill"
+}

@@ -1,0 +1,20 @@
+{
+  "_id": "kPbc3ZWQ2rIyVPa2",
+  "_key": "!items!kPbc3ZWQ2rIyVPa2",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Subsurface Scanner",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 0,
+    "description": "<p>Reads density and voids through rock and hull plate.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

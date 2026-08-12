@@ -1,0 +1,149 @@
+{
+  "_id": "3nNJNWJzcA81zpPx",
+  "_key": "!tables!3nNJNWJzcA81zpPx",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "description": "<p>The gear a Scientist starts with.</p>",
+  "displayRoll": true,
+  "formula": "1d10-1",
+  "img": "icons/svg/chest.svg",
+  "name": "Scientist Loadouts",
+  "ownership": {
+    "default": 0
+  },
+  "replacement": true,
+  "results": [
+    {
+      "_id": "fCP2Uo7j7wu2kcid",
+      "_key": "!tables.results!3nNJNWJzcA81zpPx.fCP2Uo7j7wu2kcid",
+      "description": "Hazard Suit (AP 5), Tranq Pistol (3 shots), Bioscanner, Sample Collection Kit<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.v4puMALT4uFgU1eX]{Hazard Suit (AP 5)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.EekwI5S5qvNnT2Wz]{Tranq Pistol (3 shots)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.y09CU9EvhzTTkHJ4]{Bioscanner}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.2KYiNyKCboVTKFcD]{Sample Collection Kit}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        0,
+        0
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "l7JdQY9LbAiNQg5q",
+      "_key": "!tables.results!3nNJNWJzcA81zpPx.l7JdQY9LbAiNQg5q",
+      "description": "Hazard Suit (AP 5), Flamethrower (1 charge), Stimpak, Electronic Tool Set<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.v4puMALT4uFgU1eX]{Hazard Suit (AP 5)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.WaYpSuGDpe07n7OW]{Flamethrower (1 charge)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.E496Z3oUgdzAWxib]{Stimpak}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.pBfFt5UiGQEFEOaV]{Electronic Tool Set}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        1,
+        1
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "tRKyjLNk996nxGFV",
+      "_key": "!tables.results!3nNJNWJzcA81zpPx.tRKyjLNk996nxGFV",
+      "description": "Vaccsuit (AP 3), Rigging Gun, Sample Collection Kit, Flashlight, Lab Rat (pet)<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.H7j9UNfJhAsj1ayu]{Vaccsuit (AP 3)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.hIhYSrExV2U2gHY1]{Rigging Gun}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.2KYiNyKCboVTKFcD]{Sample Collection Kit}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.cMvO4sWQIqSekvWh]{Flashlight}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.3WzP2XLfSQDDGmOr]{Lab Rat (pet)}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        2,
+        2
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "M3jDjpGF4xEWyFZH",
+      "_key": "!tables.results!3nNJNWJzcA81zpPx.M3jDjpGF4xEWyFZH",
+      "description": "Vaccsuit (AP 3), Foam Gun (2 charges), Foldable Stretcher, First Aid Kit, Radiation Pills (x5)<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.H7j9UNfJhAsj1ayu]{Vaccsuit (AP 3)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.KgYp9G6ElA1lnP1P]{Foam Gun (2 charges)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.xjJN017Yxi5LOek0]{Foldable Stretcher}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.KyM0RTkhf0PwEFy3]{First Aid Kit}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.86nnNmFLbOdM3oUf]{Radiation Pills (x5)}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        3,
+        3
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "l7VdU2n0Hmx3OBgU",
+      "_key": "!tables.results!3nNJNWJzcA81zpPx.l7VdU2n0Hmx3OBgU",
+      "description": "Lab Coat (AP 1), Screwdriver (as Assorted Tools), Medscanner, Vaccine (1 dose)<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.NUFO6rgAmkkjZjky]{Lab Coat (AP 1)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.IBkf92WqC13tu7f8]{Screwdriver (as Assorted Tools)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.XNiPs7oPZpd5gGq9]{Medscanner}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.m2iSLplStmiu0GHQ]{Vaccine (1 dose)}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        4,
+        4
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "RfmWtDkjV7kC7xpQ",
+      "_key": "!tables.results!3nNJNWJzcA81zpPx.RfmWtDkjV7kC7xpQ",
+      "description": "Lab Coat (AP 1), Cybernetic Diagnostic Scanner, Portable Computer Terminal<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.NUFO6rgAmkkjZjky]{Lab Coat (AP 1)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.x0vksby5YZZx9Ajt]{Cybernetic Diagnostic Scanner}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.H8xvUp6DtFuxACZC]{Portable Computer Terminal}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        5,
+        5
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "LRmbUSLlgIgo1Cfe",
+      "_key": "!tables.results!3nNJNWJzcA81zpPx.LRmbUSLlgIgo1Cfe",
+      "description": "Scrubs (AP 1), Scalpel, Automed (x5), Oxygen Tank with Filter Mask<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.p66hv0M53sHtQQAy]{Scrubs (AP 1)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.tjFU8Fbh2fcfnWGL]{Scalpel}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.ONGdRHZRqtgdDHX0]{Automed (x5)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.MR32idv0JSMzPmVv]{Oxygen Tank with Filter Mask}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        6,
+        6
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "qi8FmwruvxACQNbE",
+      "_key": "!tables.results!3nNJNWJzcA81zpPx.qi8FmwruvxACQNbE",
+      "description": "Scrubs (AP 1), Vial of Acid, Mylar Blanket, First Aid Kit<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.p66hv0M53sHtQQAy]{Scrubs (AP 1)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.kFpmtQaXCbzkqmOK]{Vial of Acid}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.ZNNqfL126ZqjmY94]{Mylar Blanket}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.KyM0RTkhf0PwEFy3]{First Aid Kit}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        7,
+        7
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "17JYZupXb7aWCnmK",
+      "_key": "!tables.results!3nNJNWJzcA81zpPx.17JYZupXb7aWCnmK",
+      "description": "Standard Crew Attire (AP 1), Utility Knife (as Scalpel), Cybernetic Diagnostic Scanner, Duct Tape<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.BtLRzXEGLvpqJJJM]{Standard Crew Attire (AP 1)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.tjFU8Fbh2fcfnWGL]{Utility Knife (as Scalpel)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.x0vksby5YZZx9Ajt]{Cybernetic Diagnostic Scanner}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.5AHPd9ZSRMCfHoTs]{Duct Tape}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        8,
+        8
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "CIjlkl4oB2IYEPVL",
+      "_key": "!tables.results!3nNJNWJzcA81zpPx.CIjlkl4oB2IYEPVL",
+      "description": "Civilian Clothes (AP 1), Briefcase, Prescription Pad, Fountain Pen (Poison Injector)<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.jvEuobsyQwU7EBtR]{Civilian Clothes (AP 1)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.xs82tRmYmMVvIJPC]{Briefcase}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.IRZIIZKaCeEdg4lz]{Prescription Pad}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.mRILYG4LzTKFtxQG]{Fountain Pen (Poison Injector)}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        9,
+        9
+      ],
+      "type": "text",
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "_id": "jOEFDbSpumKD03JU",
+  "_key": "!tables!jOEFDbSpumKD03JU",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "description": "<p>The gear a Android starts with.</p>",
+  "displayRoll": true,
+  "formula": "1d10-1",
+  "img": "icons/svg/chest.svg",
+  "name": "Android Loadouts",
+  "ownership": {
+    "default": 0
+  },
+  "replacement": true,
+  "results": [
+    {
+      "_id": "mpXl1duwBAnU9CB4",
+      "_key": "!tables.results!jOEFDbSpumKD03JU.mpXl1duwBAnU9CB4",
+      "description": "Vaccsuit (AP 3), Smart Rifle (2 mags), Infrared Goggles, Mylar Blanket<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.H7j9UNfJhAsj1ayu]{Vaccsuit (AP 3)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.l0MMb2Bf2qAodiBQ]{Smart Rifle (2 mags)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.mMPEawEnGsQtFQJ9]{Infrared Goggles}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.ZNNqfL126ZqjmY94]{Mylar Blanket}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        0,
+        0
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "UrzDdHfmwAWbDfmX",
+      "_key": "!tables.results!jOEFDbSpumKD03JU.UrzDdHfmwAWbDfmX",
+      "description": "Vaccsuit (AP 3), Revolver (12 rounds), Long-range Comms, Satchel<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.H7j9UNfJhAsj1ayu]{Vaccsuit (AP 3)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.zdTy7gabLeCwsJBh]{Revolver (12 rounds)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.2625WktddR8gVS1d]{Long-range Comms}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.WbvJu2ZM7GfFeCTx]{Satchel}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        1,
+        1
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "NHsQmTmg7jOGwcsm",
+      "_key": "!tables.results!jOEFDbSpumKD03JU.NHsQmTmg7jOGwcsm",
+      "description": "Hazard Suit (AP 5), Revolver (6 rounds), Defibrillator, First Aid Kit, Flashlight<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.v4puMALT4uFgU1eX]{Hazard Suit (AP 5)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.zdTy7gabLeCwsJBh]{Revolver (6 rounds)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.EKbpiNFi54yjUfCM]{Defibrillator}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.KyM0RTkhf0PwEFy3]{First Aid Kit}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.cMvO4sWQIqSekvWh]{Flashlight}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        2,
+        2
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "oEnhStNHa3VvWCTt",
+      "_key": "!tables.results!jOEFDbSpumKD03JU.oEnhStNHa3VvWCTt",
+      "description": "Hazard Suit (AP 5), Foam Gun (2 charges), Sample Collection Kit, Screwdriver (as Assorted Tools)<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.v4puMALT4uFgU1eX]{Hazard Suit (AP 5)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.KgYp9G6ElA1lnP1P]{Foam Gun (2 charges)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.2KYiNyKCboVTKFcD]{Sample Collection Kit}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.IBkf92WqC13tu7f8]{Screwdriver (as Assorted Tools)}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        3,
+        3
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "D8YFHmZYriKKfHAg",
+      "_key": "!tables.results!jOEFDbSpumKD03JU.D8YFHmZYriKKfHAg",
+      "description": "Standard Battle Dress (AP 7), Tranq Pistol (3 shots), Paracord (100m)<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.si2hHyiehKcoQ7eh]{Standard Battle Dress (AP 7)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.EekwI5S5qvNnT2Wz]{Tranq Pistol (3 shots)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.SqEc9R1KaTLIIcUO]{Paracord (100m) (x2)}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        4,
+        4
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "xCPymjFeifgOhn2D",
+      "_key": "!tables.results!jOEFDbSpumKD03JU.xCPymjFeifgOhn2D",
+      "description": "Standard Crew Attire (AP 1), Stun Baton, Small Pet (organic).<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.BtLRzXEGLvpqJJJM]{Standard Crew Attire (AP 1)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.ZqZLZxUuQt7U6nmD]{Stun Baton}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.3WzP2XLfSQDDGmOr]{Small Pet (organic).}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        5,
+        5
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "phVG6QDOAz5S9NUC",
+      "_key": "!tables.results!jOEFDbSpumKD03JU.phVG6QDOAz5S9NUC",
+      "description": "Standard Crew Attire (AP 1), Scalpel, Bioscanner<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.BtLRzXEGLvpqJJJM]{Standard Crew Attire (AP 1)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.tjFU8Fbh2fcfnWGL]{Scalpel}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.y09CU9EvhzTTkHJ4]{Bioscanner}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        6,
+        6
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "wt8kA5Y7fupOJJRM",
+      "_key": "!tables.results!jOEFDbSpumKD03JU.wt8kA5Y7fupOJJRM",
+      "description": "Standard Crew Attire (AP 1), Frag Grenade, Pen Knife<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.BtLRzXEGLvpqJJJM]{Standard Crew Attire (AP 1)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.G1fzLVKSXRPKH2af]{Frag Grenade}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.A2KlHCM8EV2dVzP7]{Pen Knife}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        7,
+        7
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "x0qyCUhnb8aK3s4W",
+      "_key": "!tables.results!jOEFDbSpumKD03JU.x0qyCUhnb8aK3s4W",
+      "description": "Manufacturer Supplied Attire (AP 1), Jump-9 Ticket (destination blank)<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.BuMqwmtOpmCQd33K]{Manufacturer Supplied Attire (AP 1)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.focgU4KstNCjS4u0]{Jump-9 Ticket (destination blank)}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        8,
+        8
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "qx6PRu90KjLzRrpS",
+      "_key": "!tables.results!jOEFDbSpumKD03JU.qx6PRu90KjLzRrpS",
+      "description": "Corporate Attire (AP 1), VIP Corporate Key Card<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.NefhWmy9d7vKXzrA]{Corporate Attire (AP 1)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.qFYUpFBFSxPa2bYB]{VIP Corporate Key Card}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        9,
+        9
+      ],
+      "type": "text",
+      "weight": 1
+    }
+  ]
+}

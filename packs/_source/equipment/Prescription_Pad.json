@@ -1,0 +1,20 @@
+{
+  "_id": "IRZIIZKaCeEdg4lz",
+  "_key": "!items!IRZIIZKaCeEdg4lz",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Prescription Pad",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 0,
+    "description": "<p>Blank, signed, and worth a great deal to the wrong person.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

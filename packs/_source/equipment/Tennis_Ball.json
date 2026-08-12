@@ -1,0 +1,20 @@
+{
+  "_id": "B1TyrUuH9C5ulac7",
+  "_key": "!items!B1TyrUuH9C5ulac7",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Tennis Ball",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 0,
+    "description": "<p>For throwing. Something will bring it back.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

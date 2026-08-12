@@ -1,0 +1,20 @@
+{
+  "_id": "MR32idv0JSMzPmVv",
+  "_key": "!items!MR32idv0JSMzPmVv",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Oxygen Tank",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 50,
+    "description": "<p>When attached to a vaccsuit provides up to 12 hours of oxygen under normal circumstances, 4 hours under stressful circumstances. Explosive.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

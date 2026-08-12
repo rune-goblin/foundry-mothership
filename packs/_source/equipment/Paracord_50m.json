@@ -1,0 +1,20 @@
+{
+  "_id": "SqEc9R1KaTLIIcUO",
+  "_key": "!items!SqEc9R1KaTLIIcUO",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Paracord (50m)",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 10,
+    "description": "<p>General purpose lightweight nylon rope.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

@@ -1,0 +1,26 @@
+{
+  "_id": "v4puMALT4uFgU1eX",
+  "_key": "!items!v4puMALT4uFgU1eX",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/shield.svg",
+  "name": "Hazard Suit",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "armorPoints": 5,
+    "cost": 4000,
+    "damageReduction": 0,
+    "description": "<p>Environmental protection while exploring unknown planets.</p>",
+    "equipped": false,
+    "features": "Includes air filter, extreme heat/cold protection, hydration reclamation (1L of water lasts 4 days), short-range comms, headlamp, and radiation shielding.",
+    "oxygenCurrent": 1,
+    "oxygenMax": 1,
+    "speed": "Normal",
+    "weight": 0
+  },
+  "type": "armor"
+}

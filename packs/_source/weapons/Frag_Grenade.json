@@ -1,0 +1,36 @@
+{
+  "_id": "G1fzLVKSXRPKH2af",
+  "_key": "!items!G1fzLVKSXRPKH2af",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/sword.svg",
+  "name": "Frag Grenade",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "ammo": 1,
+    "ammoType": "",
+    "antiArmor": false,
+    "bonus": 0,
+    "cost": 400,
+    "critDmg": "",
+    "curShots": 1,
+    "damage": "3d10",
+    "description": "<p>On a hit, damages all Adjacent to enemy.</p>",
+    "ranges": {
+      "long": 0,
+      "medium": 0,
+      "short": 0,
+      "value": "Close"
+    },
+    "shots": 1,
+    "shotsPerFire": 1,
+    "useAmmo": true,
+    "weight": 0,
+    "woundEffect": "Fire & Explosives"
+  },
+  "type": "weapon"
+}

@@ -1,26 +1,16 @@
 {
   "_id": "kVNV9vZPY0j77VTo",
-  "name": "Panic Check +",
-  "type": "script",
-  "scope": "global",
-  "img": "icons/svg/d10-grey.svg",
-  "command": "game.mothershiprpg.initRollTable(`panicCheck`,`[+]`,null,false,false,null,null);",
-  "folder": null,
-  "flags": {},
+  "_key": "!macros!kVNV9vZPY0j77VTo",
   "_stats": {
-    "systemId": "mosh",
-    "systemVersion": "0.4.0",
-    "coreVersion": "13.348",
-    "createdTime": 1685936572185,
-    "modifiedTime": 1693515520278,
-    "lastModifiedBy": "6EeM38DJkcBWNAmw",
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "exportSource": null
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
   },
-  "sort": 0,
+  "command": "game.mothershiprpg.initRollTable(`panicCheck`,`[+]`,null,false,false,null,null);",
+  "img": "icons/svg/d10-grey.svg",
+  "name": "Panic Check +",
   "ownership": {
     "default": 0
   },
-  "_key": "!macros!kVNV9vZPY0j77VTo"
+  "scope": "global",
+  "type": "script"
 }

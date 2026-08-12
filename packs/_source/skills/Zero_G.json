@@ -1,0 +1,20 @@
+{
+  "_id": "F1RR6Oc5rhyciqad",
+  "_key": "!items!F1RR6Oc5rhyciqad",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Zero-G",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 10,
+    "description": "<p>Practice and know-how of working in a vacuum, orientation, vaccsuit operation, etc.</p>",
+    "prerequisite_ids": [],
+    "rank": "Trained"
+  },
+  "type": "skill"
+}

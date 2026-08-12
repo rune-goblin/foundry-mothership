@@ -1,0 +1,20 @@
+{
+  "_id": "XNiPs7oPZpd5gGq9",
+  "_key": "!items!XNiPs7oPZpd5gGq9",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Medscanner",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 8000,
+    "description": "<p>Allows the user to scan a living or dead body to analyze it for disease or abnormalities, without having to do a biopsy or autopsy. Results may not be instantaneous and may require a lab for complete analysis.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

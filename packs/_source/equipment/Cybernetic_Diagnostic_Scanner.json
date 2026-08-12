@@ -1,0 +1,20 @@
+{
+  "_id": "x0vksby5YZZx9Ajt",
+  "_key": "!items!x0vksby5YZZx9Ajt",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Cybernetic Diagnostic Scanner",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 2000,
+    "description": "<p>Allows the user to scan androids and other cybernetic organisms in order to diagnose any physical or mental issues they may be having. Often distrusted by androids.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

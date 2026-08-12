@@ -3,7 +3,9 @@ import { join } from 'node:path';
 import type { Emitted } from './emit.ts';
 import { allIds, type Registry } from './ids.ts';
 
-const UUID = /@UUID\[Compendium\.([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]+)\.(Item|Macro|RollTable|JournalEntry)\.([A-Za-z0-9]+)\]/g;
+// Deliberately not anchored to `@UUID[…]`: a class's `skills_granted` is a bare compendium UUID in
+// an array, and that join breaks just as silently as a bad link in prose.
+const UUID = /Compendium\.([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]+)\.(Item|Macro|RollTable|JournalEntry)\.([A-Za-z0-9]+)/g;
 
 export interface IntegrityInput {
   systemId: string;

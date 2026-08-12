@@ -16,11 +16,15 @@ else
   FVTT=(npx --yes @foundryvtt/foundryvtt-cli@3)
 fi
 
-PACKS=(
-  "conditions:conditions_1e"
-  "hotbar:macros_hotbar_1e"
-  "triggered:macros_triggered_1e"
-  "rolltables:rolltables_1e"
+# content/ids.json already maps every source directory to the compendium it builds into, and the
+# content build keeps it current. Listing them a second time here is how the two drift apart.
+# (`mapfile` would read this in one line; macOS ships bash 3.2, which has no `mapfile`.)
+PACKS=()
+while IFS= read -r entry; do PACKS+=("$entry"); done < <(python3 - <<'PY'
+import json
+for pack, entry in sorted(json.load(open("content/ids.json"))["packs"].items()):
+    print(f'{pack}:{entry["compendium"]}')
+PY
 )
 
 # Deliberately blanket: it only matters when this repo is linked into Foundry's

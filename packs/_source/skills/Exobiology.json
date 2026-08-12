@@ -1,0 +1,22 @@
+{
+  "_id": "unQaxpbFpxpuTz3G",
+  "_key": "!items!unQaxpbFpxpuTz3G",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Exobiology",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 20,
+    "description": "<p>The study of and search for intelligent alien life.</p>",
+    "prerequisite_ids": [
+      "Compendium.mothershiprpg.skills_1e.Item.EGqLcFB5KUBM9Gf1"
+    ],
+    "rank": "Master"
+  },
+  "type": "skill"
+}

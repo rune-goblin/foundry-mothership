@@ -1,0 +1,20 @@
+{
+  "_id": "d940nMwyM2OFUIbJ",
+  "_key": "!items!d940nMwyM2OFUIbJ",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Pet (Synthetic)",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 15000,
+    "description": "<p>Small to medium-sized synthetic pet animal. Larger or rare pets cost 2d10x base pet cost.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

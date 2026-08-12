@@ -1,0 +1,22 @@
+{
+  "_id": "fzxbxh9nNN7vBUhF",
+  "_key": "!items!fzxbxh9nNN7vBUhF",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Pharmacology",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 15,
+    "description": "<p>Study of drugs and medication.</p>",
+    "prerequisite_ids": [
+      "Compendium.mothershiprpg.skills_1e.Item.pelunoA5ojLPKGRa"
+    ],
+    "rank": "Expert"
+  },
+  "type": "skill"
+}

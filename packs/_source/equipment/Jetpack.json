@@ -1,0 +1,20 @@
+{
+  "_id": "hJE0ZSPTwAsYw8qU",
+  "_key": "!items!hJE0ZSPTwAsYw8qU",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Jetpack",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 75000,
+    "description": "<p>Allows wearer to fly up to 100m high and up to a speed of 100km/hr for 2 hours on a tank of fuel. Deals 1d100[+] DMG if destroyed. Fuel can be refilled for 200cr.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

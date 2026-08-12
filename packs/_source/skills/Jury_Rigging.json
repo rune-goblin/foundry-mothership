@@ -1,0 +1,20 @@
+{
+  "_id": "vMifA7Xg7t3J2Ntx",
+  "_key": "!items!vMifA7Xg7t3J2Ntx",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Jury-Rigging",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 10,
+    "description": "<p>Makeshift repair, using only the tools and materials at hand.</p>",
+    "prerequisite_ids": [],
+    "rank": "Trained"
+  },
+  "type": "skill"
+}

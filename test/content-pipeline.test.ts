@@ -1,9 +1,9 @@
 // The standing content tests, and the proof that each fails when it should.
 //
-// No book declares a pack until S3, so these run against test/fixtures/content/books/fixture —
-// three packs, one per document type, cross-linked by @UUID the way the shipped content is. A
-// green run here means the machinery works; S3 points the same checks at real records by filling
-// in scripts/content/books/psg.ts.
+// These run against test/fixtures/content/books/fixture — three packs, one per document type,
+// cross-linked by @UUID the way the shipped content is — because a negative case has to be staged,
+// and staging one by damaging the real book would mean editing the book. What the same machinery
+// produces from the PSG is asserted in content-psg.test.ts.
 import { beforeAll, describe, expect, it } from 'vitest';
 import { copyFileSync, mkdirSync, mkdtempSync, readdirSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -51,7 +51,7 @@ function mutated(pack: string, edit: (record: ContentRecord) => ContentRecord | 
       ...FIXTURE_BOOK,
       packs: FIXTURE_BOOK.packs.map((def) =>
         def.pack === pack
-          ? { ...def, load: () => def.load().map(edit).filter((r): r is ContentRecord => r !== null) }
+          ? { ...def, load: (ids) => def.load(ids).map(edit).filter((r): r is ContentRecord => r !== null) }
           : def,
       ),
     },
@@ -204,11 +204,11 @@ describe('id preservation', () => {
     expect(FIXTURE_IDS_BEFORE.has('FiXaaaaaaaaaaa03')).toBe(true);
   });
 
-  it('fails when a document stops being emitted', () => {
-    const result = run(mutated('gadgets', (r) => (r.contentId === 'flux-capacitor' ? null : r)));
-    expect(checkIdPreservation(FIXTURE_IDS_BEFORE, result.emitted, result.registry)).toEqual([
-      'FiXaaaaaaaaaaa01 vanished — emit it, or retire it in content/ids.json with a reason',
-    ]);
+  it('fails the build when a document stops being emitted', () => {
+    expect(() => run(mutated('gadgets', (r) => (r.contentId === 'flux-capacitor' ? null : r)))).toThrow(
+      'ids went missing:\n' +
+        '  FiXaaaaaaaaaaa01 vanished — emit it, or retire it in content/ids.json with a reason',
+    );
   });
 
   // Dropping a document something links to is caught earlier still, by the reference check.
@@ -218,17 +218,16 @@ describe('id preservation', () => {
     );
   });
 
-  it('fails when a rolltable result stops being emitted', () => {
-    const result = run(
-      mutated('mishaps', (r) =>
-        r.body.kind === 'RollTable'
-          ? { ...r, body: { ...r.body, results: r.body.results.filter((x) => x.contentId !== 'r03') } }
-          : r,
+  it('fails the build when a rolltable result stops being emitted', () => {
+    expect(() =>
+      run(
+        mutated('mishaps', (r) =>
+          r.body.kind === 'RollTable'
+            ? { ...r, body: { ...r.body, results: r.body.results.filter((x) => x.contentId !== 'r03') } }
+            : r,
+        ),
       ),
-    );
-    expect(checkIdPreservation(FIXTURE_IDS_BEFORE, result.emitted, result.registry)).toEqual([
-      'FiXddddddddddd03 vanished — emit it, or retire it in content/ids.json with a reason',
-    ]);
+    ).toThrow('FiXddddddddddd03 vanished — emit it, or retire it in content/ids.json with a reason');
   });
 
   it('fails when a retirement carries no reason', () => {
@@ -454,7 +453,7 @@ describe('the emitted document', () => {
   it('refuses a record whose shape does not match its pack', () => {
     const ids = new IdRegistry(loadRegistry(FIXTURE_REGISTRY));
     const def = FIXTURE_BOOK.packs.find((p) => p.pack === 'gadgets')!;
-    const record = def.load()[0]!;
+    const record = def.load(ids)[0]!;
     expect(() =>
       emit(
         def,
@@ -481,7 +480,7 @@ describe('the registry gate', () => {
       ...FIXTURE_BOOK,
       packs: FIXTURE_BOOK.packs.map((def) =>
         def.pack === 'gadgets'
-          ? { ...def, load: () => [...def.load(), newcomer(contentId)] }
+          ? { ...def, load: (ids) => [...def.load(ids), newcomer(contentId)] }
           : def,
       ),
     },

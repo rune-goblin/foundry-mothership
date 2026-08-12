@@ -1,0 +1,36 @@
+{
+  "_id": "KgYp9G6ElA1lnP1P",
+  "_key": "!items!KgYp9G6ElA1lnP1P",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/sword.svg",
+  "name": "Foam Gun",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "ammo": 3,
+    "ammoType": "",
+    "antiArmor": false,
+    "bonus": 0,
+    "cost": 500,
+    "critDmg": "",
+    "curShots": 3,
+    "damage": "1",
+    "description": "<p>Body Save or become stuck. Strength Check [-] to escape.<br><br>Rolls at [-].</p>",
+    "ranges": {
+      "long": 0,
+      "medium": 0,
+      "short": 0,
+      "value": "Close"
+    },
+    "shots": 3,
+    "shotsPerFire": 1,
+    "useAmmo": true,
+    "weight": 0,
+    "woundEffect": "Blunt Force"
+  },
+  "type": "weapon"
+}

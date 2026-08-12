@@ -1,33 +1,22 @@
 {
   "_id": "x41AwiI03h7wNjaM",
-  "name": "Doomed",
-  "type": "condition",
+  "_key": "!items!x41AwiI03h7wNjaM",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
   "img": "systems/mothershiprpg/images/icons/ui/conditions/doomed.png",
+  "name": "Doomed",
+  "ownership": {
+    "default": 0
+  },
   "system": {
     "description": "<p>You feel cursed and unlucky. All Critical Successes are instead Critical Failures.</p>",
     "severity": 1,
     "treatment": {
-      "value": 0,
-      "html": ""
+      "html": "",
+      "value": 0
     }
   },
-  "effects": [],
-  "flags": {},
-  "folder": null,
-  "sort": 0,
-  "_stats": {
-    "systemId": "mosh",
-    "systemVersion": "0.4.0",
-    "coreVersion": "13.348",
-    "createdTime": 1685936572185,
-    "modifiedTime": 1693515520278,
-    "lastModifiedBy": "6EeM38DJkcBWNAmw",
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "exportSource": null
-  },
-  "ownership": {
-    "default": 0
-  },
-  "_key": "!items!x41AwiI03h7wNjaM"
+  "type": "condition"
 }

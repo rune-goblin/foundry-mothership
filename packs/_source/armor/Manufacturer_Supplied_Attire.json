@@ -1,0 +1,26 @@
+{
+  "_id": "BuMqwmtOpmCQd33K",
+  "_key": "!items!BuMqwmtOpmCQd33K",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/shield.svg",
+  "name": "Manufacturer Supplied Attire",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "armorPoints": 1,
+    "cost": 0,
+    "damageReduction": 0,
+    "description": "<p>The outfit your manufacturer shipped you in.</p>",
+    "equipped": false,
+    "features": "",
+    "oxygenCurrent": 0,
+    "oxygenMax": 0,
+    "speed": "Normal",
+    "weight": 0
+  },
+  "type": "armor"
+}

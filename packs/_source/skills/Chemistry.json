@@ -1,0 +1,20 @@
+{
+  "_id": "pelunoA5ojLPKGRa",
+  "_key": "!items!pelunoA5ojLPKGRa",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Chemistry",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 10,
+    "description": "<p>The study of matter and its chemical elements and compounds.</p>",
+    "prerequisite_ids": [],
+    "rank": "Trained"
+  },
+  "type": "skill"
+}

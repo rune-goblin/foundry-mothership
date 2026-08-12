@@ -1,0 +1,20 @@
+{
+  "_id": "2625WktddR8gVS1d",
+  "_key": "!items!2625WktddR8gVS1d",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Long-range Comms",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 1000,
+    "description": "<p>Rucksack-sized communication device for use in surface-to-ship communication.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

@@ -1,0 +1,20 @@
+{
+  "_id": "mRILYG4LzTKFtxQG",
+  "_key": "!items!mRILYG4LzTKFtxQG",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Fountain Pen (Poison Injector)",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 0,
+    "description": "<p>Writes. Also does one other thing, once.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

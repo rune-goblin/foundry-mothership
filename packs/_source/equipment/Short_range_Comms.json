@@ -1,0 +1,20 @@
+{
+  "_id": "N0IfzEtU3WTkYhuG",
+  "_key": "!items!N0IfzEtU3WTkYhuG",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Short-range Comms",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 100,
+    "description": "<p>Allows communication from ship-to-ship within a reasonable distance, as well as surface-to-surface within a dozen kilometers. Blocked by radio jammer.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

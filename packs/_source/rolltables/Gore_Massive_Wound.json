@@ -1,289 +1,149 @@
 {
   "_id": "uVfC1CqYdojaJ7yR",
-  "name": "Gore & Massive Wound",
-  "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
-  "description": "<p>Whenever you gain a Gore &amp; Massive Wound, roll on this table to determine the effect. <strong>Flesh Wounds</strong> are small inconveniences. <strong>Minor/Major Injuries</strong> cause lasting issues which require medical treatment. <strong>Lethal Injuries</strong> can kill you if not dealt with immediately. <strong>Fatal Injuries</strong> can kill outright. <strong>Bleeding</strong> wounds, if not treated can quickly overwhelm you.</p>",
-  "formula": "1d10-1",
-  "replacement": true,
+  "_key": "!tables!uVfC1CqYdojaJ7yR",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "description": "<p>Whenever you gain this kind of Wound, roll on this table to determine the effect. <strong>Flesh Wounds</strong> are small inconveniences. <strong>Minor/Major Injuries</strong> cause lasting issues which require medical treatment. <strong>Lethal Injuries</strong> can kill you if not dealt with immediately. <strong>Fatal Injuries</strong> can kill outright. <strong>Bleeding</strong> wounds, if not treated can quickly overwhelm you.</p>",
   "displayRoll": true,
+  "formula": "1d10-1",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
+  "name": "Gore & Massive Wound",
+  "ownership": {
+    "default": 0
+  },
+  "replacement": true,
   "results": [
     {
       "_id": "aJN3DtKVY9bG3ubv",
-      "type": "text",
+      "_key": "!tables.results!uVfC1CqYdojaJ7yR.aJN3DtKVY9bG3ubv",
+      "description": "<strong>Flesh Wound:</strong> Vomit. [-] on next action.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
-      "weight": 1,
+      "name": "",
       "range": [
         0,
         0
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Flesh Wound:</strong> Vomit. [-] on next action.",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!uVfC1CqYdojaJ7yR.aJN3DtKVY9bG3ubv"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "Lf5EQIYpu4DXFQix",
-      "type": "text",
+      "_key": "!tables.results!uVfC1CqYdojaJ7yR.Lf5EQIYpu4DXFQix",
+      "description": "<strong>Minor Injury:</strong> Awesome scar. +1 Minimum Stress.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
-      "weight": 1,
+      "name": "",
       "range": [
         1,
         1
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Minor Injury:</strong> Awesome scar. +1 Minimum Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.BmEHWH7YxV9qb21p]{+1 Minimum Stress}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!uVfC1CqYdojaJ7yR.Lf5EQIYpu4DXFQix"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "1NnoNAENwZjlIxh8",
-      "type": "text",
+      "_key": "!tables.results!uVfC1CqYdojaJ7yR.1NnoNAENwZjlIxh8",
+      "description": "<strong>Minor Injury:</strong> Digit mangled.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
-      "weight": 1,
+      "name": "",
       "range": [
         2,
         2
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Minor Injury:</strong> Digit mangled.",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!uVfC1CqYdojaJ7yR.1NnoNAENwZjlIxh8"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "8iAPqxJpCEgQJXq6",
-      "type": "text",
+      "_key": "!tables.results!uVfC1CqYdojaJ7yR.8iAPqxJpCEgQJXq6",
+      "description": "<strong>Minor Injury:</strong> Eyes gouged out.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
-      "weight": 1,
+      "name": "",
       "range": [
         3,
         3
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Minor Injury:</strong> Eyes gouged out.",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!uVfC1CqYdojaJ7yR.8iAPqxJpCEgQJXq6"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "NcPFW20iV54oar6P",
-      "type": "text",
+      "_key": "!tables.results!uVfC1CqYdojaJ7yR.NcPFW20iV54oar6P",
+      "description": "<strong>Minor Injury:</strong> Ripped off flesh. -1d10 Strength.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
-      "weight": 1,
+      "name": "",
       "range": [
         4,
         4
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Minor Injury:</strong> Ripped off flesh. -1d10 Strength.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.V3L1iRkWwyTzCZK9]{-1d10 Strength}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!uVfC1CqYdojaJ7yR.NcPFW20iV54oar6P"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "QP4863dIgMJ28XWs",
-      "type": "text",
+      "_key": "!tables.results!uVfC1CqYdojaJ7yR.QP4863dIgMJ28XWs",
+      "description": "<strong>Major Injury:</strong> Paralyzed waist down.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
-      "weight": 1,
+      "name": "",
       "range": [
         5,
         5
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Major Injury:</strong> Paralysed waist down.",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!uVfC1CqYdojaJ7yR.QP4863dIgMJ28XWs"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "ayHuDn1OuCcbgCZt",
-      "type": "text",
+      "_key": "!tables.results!uVfC1CqYdojaJ7yR.ayHuDn1OuCcbgCZt",
+      "description": "<strong>Major Injury:</strong> Limb severed. Bleeding +5.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
-      "weight": 1,
+      "name": "",
       "range": [
         6,
         6
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Major Injury:</strong> Limb severed. Bleeding +5.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.CZ2gqnRHcOpCLlG0]{+5 Bleeding}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!uVfC1CqYdojaJ7yR.ayHuDn1OuCcbgCZt"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "h2hZbBnnY5DVnyLL",
-      "type": "text",
+      "_key": "!tables.results!uVfC1CqYdojaJ7yR.h2hZbBnnY5DVnyLL",
+      "description": "<strong>Lethal Injury (Death Save in 1d10 rounds):</strong> Impaled. Bleeding +6.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
-      "weight": 1,
+      "name": "",
       "range": [
         7,
         7
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Lethal Injury:</strong> Impaled. Bleeding +6. Death Save in [[/r 1d10]] rounds.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.Tx19z2BhTY6onldp]{+6 Bleeding}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!uVfC1CqYdojaJ7yR.h2hZbBnnY5DVnyLL"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "JB623Z5gI9hP5cOs",
-      "type": "text",
+      "_key": "!tables.results!uVfC1CqYdojaJ7yR.JB623Z5gI9hP5cOs",
+      "description": "<strong>Lethal Injury (Death Save in 1d10 rounds):</strong> Guts spooled on floor. Bleeding +7.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
-      "weight": 1,
+      "name": "",
       "range": [
         8,
         8
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Lethal Injury:</strong> Guts spooled on floor. Bleeding +7. Death Save in [[/r 1d10]] rounds.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.ZJaVFBB0Kslv1k4f]{+7 Bleeding}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!uVfC1CqYdojaJ7yR.JB623Z5gI9hP5cOs"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "9LPNxRgcnpZHjENW",
-      "type": "text",
+      "_key": "!tables.results!uVfC1CqYdojaJ7yR.9LPNxRgcnpZHjENW",
+      "description": "<strong>Fatal Injury (Death Save):</strong> Head explodes. No Death Save. You have died.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gore_&_massive.png",
-      "weight": 1,
+      "name": "",
       "range": [
         9,
         9
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Fatal Injury:</strong> Head explodes.<br><br><strong>No Death Save. You have died.</strong>",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!uVfC1CqYdojaJ7yR.9LPNxRgcnpZHjENW"
+      "type": "text",
+      "weight": 1
     }
-  ],
-  "_stats": {
-    "systemId": "mosh",
-    "systemVersion": "0.4.0",
-    "coreVersion": "13.348",
-    "createdTime": 1685936572185,
-    "modifiedTime": 1693515520278,
-    "lastModifiedBy": "6EeM38DJkcBWNAmw",
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "exportSource": null
-  },
-  "folder": null,
-  "sort": 0,
-  "ownership": {
-    "default": 0
-  },
-  "flags": {},
-  "_key": "!tables!uVfC1CqYdojaJ7yR"
+  ]
 }

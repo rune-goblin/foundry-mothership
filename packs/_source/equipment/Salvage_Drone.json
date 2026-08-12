@@ -1,0 +1,20 @@
+{
+  "_id": "4n1EgFXSCrqxBwPe",
+  "_key": "!items!4n1EgFXSCrqxBwPe",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Salvage Drone",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 10000,
+    "description": "<p>Battery operated remote controlled drone. Requires two hands to operate receiver. Can fly up to 450m high, to a distance of 3km from operator. Can run for 2 hours. Can record and transmit footage to receiver. If purchased separately, can be equipped with up to two of the following: binoculars, radio jammer, Geiger counter, laser cutter, medscanner, personal locator, infrared goggles, emergency beacon, cybernetic diagnostic scanner, bioscanner. Can carry up to 20-30kg.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

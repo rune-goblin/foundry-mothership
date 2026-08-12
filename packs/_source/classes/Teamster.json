@@ -1,0 +1,50 @@
+{
+  "_id": "hJmP2oECqjTFqWEK",
+  "_key": "!items!hJmP2oECqjTFqWEK",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/mystery-man.svg",
+  "name": "Teamster",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "base_adjustment": {
+      "body": 10,
+      "combat": 5,
+      "fear": 10,
+      "intellect": 5,
+      "max_wounds": 0,
+      "sanity": 10,
+      "skills_granted": [
+        "Compendium.mothershiprpg.skills_1e.Item.zqapA0bwytCdpGMH",
+        "Compendium.mothershiprpg.skills_1e.Item.F1RR6Oc5rhyciqad"
+      ],
+      "speed": 5,
+      "strength": 5
+    },
+    "common_skills": [],
+    "description": "<p>Teamsters are rough and tumble blue-collar space workers, mechanics, engineers, miners, and pilots.</p>",
+    "robotic": false,
+    "roll_tables": {
+      "loadout": "Compendium.mothershiprpg.rolltables_1e.RollTable.ZIgtxTA7b1LwvyjO",
+      "patch": "Compendium.mothershiprpg.rolltables_1e.RollTable.bW8BN8bIk13iVhwx",
+      "trinket": "Compendium.mothershiprpg.rolltables_1e.RollTable.7UZoTawQGpwxrcLx"
+    },
+    "selected_adjustment": {
+      "choose_skill_and": {
+        "expert": 1,
+        "expert_full_set": 0,
+        "master": 0,
+        "master_full_set": 0,
+        "trained": 1
+      },
+      "choose_skill_or": [],
+      "choose_stat": []
+    },
+    "trauma_response": "Once per session, you may take Advantage on a Panic Check."
+  },
+  "type": "class"
+}

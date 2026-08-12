@@ -1,26 +1,16 @@
 {
   "_id": "bFPoNLOGusT1ocqt",
-  "name": "+2 Minimum Stress",
-  "type": "script",
-  "scope": "global",
-  "img": "icons/svg/d10-grey.svg",
-  "command": "game.mothershiprpg.initModifyActor('system.other.stress.min',2,null,true);",
-  "folder": null,
-  "flags": {},
+  "_key": "!macros!bFPoNLOGusT1ocqt",
   "_stats": {
-    "systemId": "mosh",
-    "systemVersion": "0.4.0",
-    "coreVersion": "13.348",
-    "createdTime": 1685936572185,
-    "modifiedTime": 1693515520278,
-    "lastModifiedBy": "6EeM38DJkcBWNAmw",
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "exportSource": null
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
   },
-  "sort": 0,
+  "command": "game.mothershiprpg.initModifyActor('system.other.stress.min',2,null,true);",
+  "img": "icons/svg/d10-grey.svg",
+  "name": "+2 Minimum Stress",
   "ownership": {
     "default": 0
   },
-  "_key": "!macros!bFPoNLOGusT1ocqt"
+  "scope": "global",
+  "type": "script"
 }

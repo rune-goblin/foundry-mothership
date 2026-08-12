@@ -1,0 +1,20 @@
+{
+  "_id": "m2iSLplStmiu0GHQ",
+  "_key": "!items!m2iSLplStmiu0GHQ",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Vaccine (1 dose)",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 0,
+    "description": "<p>A single dose against one named pathogen. Useless against any other.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

@@ -1,33 +1,22 @@
 {
   "_id": "z0avrplKe6M0RcXk",
-  "name": "Frightened",
-  "type": "condition",
-  "img": "systems/mothershiprpg/images/icons/ui/conditions/frightened.png",
-  "system": {
-    "description": "<p>When encountering what frightened you make a Fear Save [-] or gain 1d5 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.wVhApjRP5MXue2kh]{Fear Save -}<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.luNKvwmm2tjUJhT6]{+1d5 Stress}</p>",
-    "severity": 1,
-    "treatment": {
-      "value": 0,
-      "html": ""
-    }
-  },
-  "effects": [],
-  "flags": {},
-  "folder": null,
-  "sort": 0,
+  "_key": "!items!z0avrplKe6M0RcXk",
   "_stats": {
-    "systemId": "mosh",
-    "systemVersion": "0.4.0",
-    "coreVersion": "13.348",
-    "createdTime": 1685936572185,
-    "modifiedTime": 1693515520278,
-    "lastModifiedBy": "6EeM38DJkcBWNAmw",
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "exportSource": null
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
   },
+  "img": "systems/mothershiprpg/images/icons/ui/conditions/frightened.png",
+  "name": "Frightened",
   "ownership": {
     "default": 0
   },
-  "_key": "!items!z0avrplKe6M0RcXk"
+  "system": {
+    "description": "<p>When encountering what frightened you make a Fear Save [-] or gain 1d5 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.wVhApjRP5MXue2kh]{Fear Save [-]}<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.luNKvwmm2tjUJhT6]{+1d5 Stress}</p>",
+    "severity": 1,
+    "treatment": {
+      "html": "",
+      "value": 0
+    }
+  },
+  "type": "condition"
 }

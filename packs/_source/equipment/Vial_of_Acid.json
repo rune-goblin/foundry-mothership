@@ -1,0 +1,20 @@
+{
+  "_id": "kFpmtQaXCbzkqmOK",
+  "_key": "!items!kFpmtQaXCbzkqmOK",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Vial of Acid",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 0,
+    "description": "<p>A stoppered vial. Eats through most seals given time.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

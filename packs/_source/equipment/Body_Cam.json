@@ -1,0 +1,20 @@
+{
+  "_id": "5XNeJOsEiHM0WyYG",
+  "_key": "!items!5XNeJOsEiHM0WyYG",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Body Cam",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 50,
+    "description": "<p>A camera worn on your clothing that can stream video back to a control center so your other crewmembers can see what you're seeing. Add night vision (+300cr) or thermal vision (+1kcr).</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

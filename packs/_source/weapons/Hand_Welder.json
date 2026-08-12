@@ -1,0 +1,36 @@
+{
+  "_id": "6NPvsID02E0jgwsG",
+  "_key": "!items!6NPvsID02E0jgwsG",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/sword.svg",
+  "name": "Hand Welder",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "ammo": 0,
+    "ammoType": "",
+    "antiArmor": false,
+    "bonus": 0,
+    "cost": 250,
+    "critDmg": "",
+    "curShots": 0,
+    "damage": "1d10",
+    "description": "<p>Can cut through airlock doors.</p>",
+    "ranges": {
+      "long": 0,
+      "medium": 0,
+      "short": 0,
+      "value": "Adjacent"
+    },
+    "shots": 0,
+    "shotsPerFire": 1,
+    "useAmmo": false,
+    "weight": 0,
+    "woundEffect": "Bleeding"
+  },
+  "type": "weapon"
+}

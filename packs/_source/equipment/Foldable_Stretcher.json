@@ -1,0 +1,20 @@
+{
+  "_id": "xjJN017Yxi5LOek0",
+  "_key": "!items!xjJN017Yxi5LOek0",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Foldable Stretcher",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 150,
+    "description": "<p>Portable stretcher that can fit within a rucksack. Allows the user to safely strap down the patient and carry them to a location where their wounds can be better treated. Unfolds to roughly 2m.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

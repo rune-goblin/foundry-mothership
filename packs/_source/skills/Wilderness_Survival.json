@@ -1,0 +1,23 @@
+{
+  "_id": "870HRtE4TIQPdJjX",
+  "_key": "!items!870HRtE4TIQPdJjX",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Wilderness Survival",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 15,
+    "description": "<p>Applicable know-how regarding the basic necessities of life (food, water, shelter) in a natural environment.</p>",
+    "prerequisite_ids": [
+      "Compendium.mothershiprpg.skills_1e.Item.r1n6vraIyUgPuO6b",
+      "Compendium.mothershiprpg.skills_1e.Item.jmPKHUjTglQyIIgj"
+    ],
+    "rank": "Expert"
+  },
+  "type": "skill"
+}

@@ -1,33 +1,22 @@
 {
   "_id": "olC4JytslvUrQN8g",
-  "name": "Haunted",
-  "type": "condition",
+  "_key": "!items!olC4JytslvUrQN8g",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
   "img": "systems/mothershiprpg/images/icons/ui/conditions/haunted.png",
+  "name": "Haunted",
+  "ownership": {
+    "default": 0
+  },
   "system": {
     "description": "<p>Something starts visiting you at night. In your dreams. Out of the corner of your eye. And soon it will start making demands.</p>",
     "severity": 1,
     "treatment": {
-      "value": 0,
-      "html": ""
+      "html": "",
+      "value": 0
     }
   },
-  "effects": [],
-  "flags": {},
-  "folder": null,
-  "sort": 0,
-  "_stats": {
-    "systemId": "mosh",
-    "systemVersion": "0.4.0",
-    "coreVersion": "13.348",
-    "createdTime": 1685936572185,
-    "modifiedTime": 1693515520278,
-    "lastModifiedBy": "6EeM38DJkcBWNAmw",
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "exportSource": null
-  },
-  "ownership": {
-    "default": 0
-  },
-  "_key": "!items!olC4JytslvUrQN8g"
+  "type": "condition"
 }

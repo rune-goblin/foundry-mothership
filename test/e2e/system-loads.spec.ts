@@ -67,7 +67,8 @@ test.describe('system loads', () => {
     });
     expect(packs.filter((n: string) => n.endsWith('_0e'))).toEqual([]);
     expect(packs.sort()).toEqual([
-      'conditions_1e', 'macros_hotbar_1e', 'macros_triggered_1e', 'rolltables_1e',
+      'armor_1e', 'classes_1e', 'conditions_1e', 'equipment_1e', 'macros_hotbar_1e',
+      'macros_triggered_1e', 'rolltables_1e', 'skills_1e', 'weapons_1e',
     ]);
   });
 });

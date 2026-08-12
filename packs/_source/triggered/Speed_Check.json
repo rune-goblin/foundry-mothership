@@ -1,26 +1,16 @@
 {
   "_id": "uxrWvijfqDVnaXMj",
-  "name": "Speed Check",
-  "type": "script",
-  "scope": "global",
-  "img": "icons/svg/d10-grey.svg",
-  "command": "game.mothershiprpg.initRollCheck('1d100','low','speed',null,null,null);",
-  "folder": null,
-  "flags": {},
+  "_key": "!macros!uxrWvijfqDVnaXMj",
   "_stats": {
-    "systemId": "mosh",
-    "systemVersion": "0.4.0",
-    "coreVersion": "13.348",
-    "createdTime": 1685936572185,
-    "modifiedTime": 1693515520278,
-    "lastModifiedBy": "6EeM38DJkcBWNAmw",
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "exportSource": null
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
   },
-  "sort": 0,
+  "command": "game.mothershiprpg.initRollCheck('1d100','low','speed',null,null,null);",
+  "img": "icons/svg/d10-grey.svg",
+  "name": "Speed Check",
   "ownership": {
     "default": 0
   },
-  "_key": "!macros!uxrWvijfqDVnaXMj"
+  "scope": "global",
+  "type": "script"
 }

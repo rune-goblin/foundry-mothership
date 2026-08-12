@@ -1,0 +1,149 @@
+{
+  "_id": "jX5jvQYVBcGE8obY",
+  "_key": "!tables!jX5jvQYVBcGE8obY",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "description": "<p>The gear a Marine starts with.</p>",
+  "displayRoll": true,
+  "formula": "1d10-1",
+  "img": "icons/svg/chest.svg",
+  "name": "Marine Loadouts",
+  "ownership": {
+    "default": 0
+  },
+  "replacement": true,
+  "results": [
+    {
+      "_id": "dtLlEGFGL619kqlV",
+      "_key": "!tables.results!jX5jvQYVBcGE8obY.dtLlEGFGL619kqlV",
+      "description": "Tank Top and Camo Pants (AP 1), Combat Knife (as Scalpel DMG [+]), Stimpak (x5)<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.FU5u4cDDPFoe1eCW]{Tank Top and Camo Pants (AP 1)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.tjFU8Fbh2fcfnWGL]{Combat Knife (as Scalpel DMG [+])}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.E496Z3oUgdzAWxib]{Stimpak (x5)}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        0,
+        0
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "GtK9JozLCqBRqzHt",
+      "_key": "!tables.results!jX5jvQYVBcGE8obY.GtK9JozLCqBRqzHt",
+      "description": "Advanced Battle Dress (AP 10), Flamethrower (4 shots), Boarding Axe<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.W8Xn3FatU13DrWzl]{Advanced Battle Dress (AP 10)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.WaYpSuGDpe07n7OW]{Flamethrower (4 shots)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.TwB9DG94xWhpW66O]{Boarding Axe}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        1,
+        1
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "hY1n8wD7xqXHVTRj",
+      "_key": "!tables.results!jX5jvQYVBcGE8obY.hY1n8wD7xqXHVTRj",
+      "description": "Standard Battle Dress (AP 7), Combat Shotgun (4 rounds), Rucksack, Camping Gear<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.si2hHyiehKcoQ7eh]{Standard Battle Dress (AP 7)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.QATsbe6Ua7yvGCuo]{Combat Shotgun (4 rounds)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.iNJM23aYaji5SLCJ]{Rucksack}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.0fZESt6TOIzbeVJ8]{Camping Gear}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        2,
+        2
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "pETEuRDjuzuxZY1v",
+      "_key": "!tables.results!jX5jvQYVBcGE8obY.pETEuRDjuzuxZY1v",
+      "description": "Standard Battle Dress (AP 7), Pulse Rifle (3 mags), Infrared Goggles<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.si2hHyiehKcoQ7eh]{Standard Battle Dress (AP 7)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.aqhg71t52NSmDu5a]{Pulse Rifle (3 mags)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.mMPEawEnGsQtFQJ9]{Infrared Goggles}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        3,
+        3
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "2o5DH34torPmiFHR",
+      "_key": "!tables.results!jX5jvQYVBcGE8obY.2o5DH34torPmiFHR",
+      "description": "Standard Battle Dress (AP 7), Smart Rifle (3 mags), Binoculars, Personal Locator<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.si2hHyiehKcoQ7eh]{Standard Battle Dress (AP 7)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.l0MMb2Bf2qAodiBQ]{Smart Rifle (3 mags)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.JBfGJ6NGBsDAxYnL]{Binoculars}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.Dib4YNAOo4WnAtES]{Personal Locator}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        4,
+        4
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "1o83eA5X2CAr3mKq",
+      "_key": "!tables.results!jX5jvQYVBcGE8obY.1o83eA5X2CAr3mKq",
+      "description": "Standard Battle Dress (AP 7), SMG (3 mags), MRE (x7)<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.si2hHyiehKcoQ7eh]{Standard Battle Dress (AP 7)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.Xevyr8GSS1jVyURx]{SMG (3 mags)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.iRBnXTRIF52bf7An]{MRE (x7)}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        5,
+        5
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "eyXP3w9XOeomWerY",
+      "_key": "!tables.results!jX5jvQYVBcGE8obY.eyXP3w9XOeomWerY",
+      "description": "Fatigues (AP 2), Combat Shotgun (2 rounds), Dog (pet), Leash, Tennis Ball<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.rCEb8D5OXNRHtsKX]{Fatigues (AP 2)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.QATsbe6Ua7yvGCuo]{Combat Shotgun (2 rounds)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.3WzP2XLfSQDDGmOr]{Dog (pet)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.SjmfiRUZhphAjEil]{Leash}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.B1TyrUuH9C5ulac7]{Tennis Ball}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        6,
+        6
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "iAquUSDmpeakqO19",
+      "_key": "!tables.results!jX5jvQYVBcGE8obY.iAquUSDmpeakqO19",
+      "description": "Fatigues (AP 2), Revolver (12 rounds), Frag Grenade<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.rCEb8D5OXNRHtsKX]{Fatigues (AP 2)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.zdTy7gabLeCwsJBh]{Revolver (12 rounds)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.G1fzLVKSXRPKH2af]{Frag Grenade}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        7,
+        7
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "9Mu7Uztgldw6BdIE",
+      "_key": "!tables.results!jX5jvQYVBcGE8obY.9Mu7Uztgldw6BdIE",
+      "description": "Dress Uniform (AP 1), Revolver (1 round), Challenge Coin<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.ANuna6lV2hdXC0fe]{Dress Uniform (AP 1)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.zdTy7gabLeCwsJBh]{Revolver (1 round)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.o3D8T4MsF6HUKxbh]{Challenge Coin}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        8,
+        8
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "es0PGA5bldCWRusJ",
+      "_key": "!tables.results!jX5jvQYVBcGE8obY.es0PGA5bldCWRusJ",
+      "description": "Advanced Battle Dress (AP 10), General-Purpose Machine Gun (1 Can of ammo), HUD<br><br>@UUID[Compendium.mothershiprpg.armor_1e.Item.W8Xn3FatU13DrWzl]{Advanced Battle Dress (AP 10)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.8HliP5IV0Ghs4CAp]{General-Purpose Machine Gun (1 Can of ammo)}<br>@UUID[Compendium.mothershiprpg.weapons_1e.Item.qO1ZNkuSyIx31whP]{General-Purpose Machine Gun (1 Can of ammo)}<br>@UUID[Compendium.mothershiprpg.equipment_1e.Item.nPpSm7DWq8Ph9y56]{HUD}",
+      "img": "icons/svg/chest.svg",
+      "name": "",
+      "range": [
+        9,
+        9
+      ],
+      "type": "text",
+      "weight": 1
+    }
+  ]
+}

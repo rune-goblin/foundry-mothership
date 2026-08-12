@@ -1,0 +1,20 @@
+{
+  "_id": "pBfFt5UiGQEFEOaV",
+  "_key": "!items!pBfFt5UiGQEFEOaV",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Electronic Tool Set",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 100,
+    "description": "<p>A full set of tools for doing detailed repair or construction work on electronics.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

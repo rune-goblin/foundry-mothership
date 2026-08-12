@@ -1,0 +1,23 @@
+{
+  "_id": "U3u4pefWyZNPBfDB",
+  "_key": "!items!U3u4pefWyZNPBfDB",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Planetology",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 20,
+    "description": "<p>Study of planets and other celestial bodies.</p>",
+    "prerequisite_ids": [
+      "Compendium.mothershiprpg.skills_1e.Item.gLaH4ald8hyJMsB4",
+      "Compendium.mothershiprpg.skills_1e.Item.iZLMM7JYPeVk6WpR"
+    ],
+    "rank": "Master"
+  },
+  "type": "skill"
+}

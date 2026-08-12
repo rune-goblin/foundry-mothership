@@ -1,0 +1,57 @@
+{
+  "_id": "RkosT1XWGmbdWLQ7",
+  "_key": "!items!RkosT1XWGmbdWLQ7",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/mystery-man.svg",
+  "name": "Scientist",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "base_adjustment": {
+      "body": 0,
+      "combat": 0,
+      "fear": 0,
+      "intellect": 10,
+      "max_wounds": 0,
+      "sanity": 30,
+      "skills_granted": [],
+      "speed": 0,
+      "strength": 0
+    },
+    "common_skills": [],
+    "description": "<p>Scientists are doctors, researchers, or anyone who wants to slice open creatures (or infected crewmembers) with a scalpel.</p>",
+    "robotic": false,
+    "roll_tables": {
+      "loadout": "Compendium.mothershiprpg.rolltables_1e.RollTable.3nNJNWJzcA81zpPx",
+      "patch": "Compendium.mothershiprpg.rolltables_1e.RollTable.bW8BN8bIk13iVhwx",
+      "trinket": "Compendium.mothershiprpg.rolltables_1e.RollTable.7UZoTawQGpwxrcLx"
+    },
+    "selected_adjustment": {
+      "choose_skill_and": {
+        "expert": 0,
+        "expert_full_set": 0,
+        "master": 0,
+        "master_full_set": 1,
+        "trained": 1
+      },
+      "choose_skill_or": [],
+      "choose_stat": [
+        {
+          "modification": 5,
+          "stats": [
+            "strength",
+            "speed",
+            "intellect",
+            "combat"
+          ]
+        }
+      ]
+    },
+    "trauma_response": "Whenever you fail a Sanity Save, all Close friendly players gain 1 Stress."
+  },
+  "type": "class"
+}

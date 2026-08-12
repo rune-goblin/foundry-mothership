@@ -1,0 +1,20 @@
+{
+  "_id": "E496Z3oUgdzAWxib",
+  "_key": "!items!E496Z3oUgdzAWxib",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Stimpak",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 1000,
+    "description": "<p>Cures cryosickness, reduces Stress by 1, restores 1d10 Health, and grants [+] to all rolls for 1d10 min. Roll 1d10. If you roll under the amount of doses you've taken in the past 24 hours, make a Death Save.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

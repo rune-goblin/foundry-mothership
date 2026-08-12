@@ -88,11 +88,12 @@ describe('the books', () => {
   });
 
   // Every dataset carried costs a transcription to keep faithful. The seven that shipped with no
-  // runtime consumer were deleted; this list is what stops them creeping back. `source.ts` is the
-  // book's citation helper, not a dataset.
-  it('ships the twelve PSG datasets that have a consumer, and no others', () => {
+  // runtime consumer were deleted; this list is what stops them creeping back. The three authored
+  // catalogs are held apart on purpose — they are this repo's work, not the book's words, and a
+  // reader has to be able to tell which is which. `source.ts` is the citation helper.
+  it('ships the twelve transcribed PSG datasets, the three authored ones, and nothing else', () => {
     const dir = bookDir(ROOT, BOOKS.find((b) => b.id === 'psg')!);
-    expect(readdirSync(dir).filter((f) => f.endsWith('.ts') && f !== 'source.ts').sort()).toEqual([
+    const transcribed = [
       'armor.ts',
       'character-creation.ts',
       'classes.ts',
@@ -105,7 +106,14 @@ describe('the books', () => {
       'trinkets.ts',
       'weapons.ts',
       'wounds.ts',
-    ]);
+    ];
+    // conditions: the book states these inside the Panic table and has no list of its own.
+    // gear: the loadout rows are free text, so the mapping onto documents is hand-checked here.
+    // macros: the scripts that automate the book's procedures.
+    const authored = ['conditions.ts', 'gear.ts', 'macros.ts'];
+    expect(readdirSync(dir).filter((f) => f.endsWith('.ts') && f !== 'source.ts').sort()).toEqual(
+      [...transcribed, ...authored].sort(),
+    );
   });
 
   it('leaves no JSON dataset behind for the catalogs to drift from', () => {

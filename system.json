@@ -11,11 +11,83 @@
   ],
   "packs": [
     {
+      "name": "skills_1e",
+      "label": "Skills (1e)",
+      "system": "mothershiprpg",
+      "path": "packs/skills_1e",
+      "type": "Item",
+      "flags": {},
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "classes_1e",
+      "label": "Classes (1e)",
+      "system": "mothershiprpg",
+      "path": "packs/classes_1e",
+      "type": "Item",
+      "flags": {},
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "weapons_1e",
+      "label": "Weapons (1e)",
+      "system": "mothershiprpg",
+      "path": "packs/weapons_1e",
+      "type": "Item",
+      "flags": {},
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "armor_1e",
+      "label": "Armor (1e)",
+      "system": "mothershiprpg",
+      "path": "packs/armor_1e",
+      "type": "Item",
+      "flags": {},
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "equipment_1e",
+      "label": "Equipment (1e)",
+      "system": "mothershiprpg",
+      "path": "packs/equipment_1e",
+      "type": "Item",
+      "flags": {},
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
       "name": "conditions_1e",
       "label": "Conditions (1e)",
       "system": "mothershiprpg",
       "path": "packs/conditions_1e",
       "type": "Item",
+      "flags": {},
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "rolltables_1e",
+      "label": "Rolltables (1e)",
+      "system": "mothershiprpg",
+      "path": "packs/rolltables_1e",
+      "type": "RollTable",
       "flags": {},
       "ownership": {
         "PLAYER": "OBSERVER",
@@ -40,18 +112,6 @@
       "system": "mothershiprpg",
       "path": "packs/macros_triggered_1e",
       "type": "Macro",
-      "flags": {},
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "rolltables_1e",
-      "label": "Rolltables (1e)",
-      "system": "mothershiprpg",
-      "path": "packs/rolltables_1e",
-      "type": "RollTable",
       "flags": {},
       "ownership": {
         "PLAYER": "OBSERVER",

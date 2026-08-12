@@ -1,0 +1,20 @@
+{
+  "_id": "xs82tRmYmMVvIJPC",
+  "_key": "!items!xs82tRmYmMVvIJPC",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Briefcase",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 0,
+    "description": "<p>A hard-shell case for documents nobody is meant to read.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

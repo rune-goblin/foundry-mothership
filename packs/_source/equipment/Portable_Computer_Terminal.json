@@ -1,0 +1,20 @@
+{
+  "_id": "H8xvUp6DtFuxACZC",
+  "_key": "!items!H8xvUp6DtFuxACZC",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Portable Computer Terminal",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 1500,
+    "description": "<p>Flat computer monitor, keyboard and interface which allows the user to hack into pre-existing computers and networks, as well as perform standard computer tasks.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

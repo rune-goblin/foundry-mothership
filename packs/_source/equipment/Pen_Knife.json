@@ -1,0 +1,20 @@
+{
+  "_id": "A2KlHCM8EV2dVzP7",
+  "_key": "!items!A2KlHCM8EV2dVzP7",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Pen Knife",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 0,
+    "description": "<p>A folding blade, small enough to forget you are carrying.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

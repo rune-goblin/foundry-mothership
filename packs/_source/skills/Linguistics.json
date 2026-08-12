@@ -1,0 +1,20 @@
+{
+  "_id": "eaijjQUYLF6U7lC2",
+  "_key": "!items!eaijjQUYLF6U7lC2",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Linguistics",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 10,
+    "description": "<p>The study of languages (alive, dead, and undiscovered).</p>",
+    "prerequisite_ids": [],
+    "rank": "Trained"
+  },
+  "type": "skill"
+}

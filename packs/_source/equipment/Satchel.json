@@ -1,0 +1,20 @@
+{
+  "_id": "WbvJu2ZM7GfFeCTx",
+  "_key": "!items!WbvJu2ZM7GfFeCTx",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Satchel",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 0,
+    "description": "<p>A shoulder bag. Holds what a rucksack would not be worth carrying for.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

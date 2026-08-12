@@ -1,0 +1,20 @@
+{
+  "_id": "2KYiNyKCboVTKFcD",
+  "_key": "!items!2KYiNyKCboVTKFcD",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Sample Collection Kit",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 50,
+    "description": "<p>Used to research xenoflora and xenofauna in the field. Can take vital signs, DNA samples, and collect other data on foreign material. Results may not be instantaneous and may require a lab for complete analysis.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

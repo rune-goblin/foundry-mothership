@@ -1,0 +1,20 @@
+{
+  "_id": "ZrnvgS52tmNWXmTQ",
+  "_key": "!items!ZrnvgS52tmNWXmTQ",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Water Filtration Device",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 50,
+    "description": "<p>Can pump 4 liters of filtered water per hour from even the most brackish swamps.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

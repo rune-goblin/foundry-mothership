@@ -1,0 +1,20 @@
+{
+  "_id": "O6UBiKt8oQx6oeks",
+  "_key": "!items!O6UBiKt8oQx6oeks",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Rimwise",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 10,
+    "description": "<p>Practical knowledge and know-how regarding outer Rim colonies, their customs, and the seedier parts of the galaxy.</p>",
+    "prerequisite_ids": [],
+    "rank": "Trained"
+  },
+  "type": "skill"
+}

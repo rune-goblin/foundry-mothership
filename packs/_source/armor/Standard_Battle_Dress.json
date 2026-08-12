@@ -1,0 +1,26 @@
+{
+  "_id": "si2hHyiehKcoQ7eh",
+  "_key": "!items!si2hHyiehKcoQ7eh",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/shield.svg",
+  "name": "Standard Battle Dress",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "armorPoints": 7,
+    "cost": 2000,
+    "damageReduction": 0,
+    "description": "<p>Lightly-plated armor worn by most marines.</p>",
+    "equipped": false,
+    "features": "Includes short-range comms.",
+    "oxygenCurrent": 0,
+    "oxygenMax": 0,
+    "speed": "Normal",
+    "weight": 0
+  },
+  "type": "armor"
+}

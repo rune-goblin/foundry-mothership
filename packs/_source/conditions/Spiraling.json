@@ -1,33 +1,22 @@
 {
   "_id": "Bt2rl2c5jGyt3QAr",
-  "name": "Spiraling",
-  "type": "condition",
+  "_key": "!items!Bt2rl2c5jGyt3QAr",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
   "img": "systems/mothershiprpg/images/icons/ui/conditions/spiraling.png",
+  "name": "Spiraling",
+  "ownership": {
+    "default": 0
+  },
   "system": {
     "description": "<p>Panic Checks are at [-].<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.EwZbGIwHB3JuRvx5]{Panic Check [-]}</p>",
     "severity": 1,
     "treatment": {
-      "value": 0,
-      "html": ""
+      "html": "",
+      "value": 0
     }
   },
-  "effects": [],
-  "flags": {},
-  "folder": null,
-  "sort": 0,
-  "_stats": {
-    "systemId": "mosh",
-    "systemVersion": "0.4.0",
-    "coreVersion": "13.348",
-    "createdTime": 1685936572185,
-    "modifiedTime": 1693515520278,
-    "lastModifiedBy": "6EeM38DJkcBWNAmw",
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "exportSource": null
-  },
-  "ownership": {
-    "default": 0
-  },
-  "_key": "!items!Bt2rl2c5jGyt3QAr"
+  "type": "condition"
 }

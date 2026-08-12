@@ -1,0 +1,279 @@
+{
+  "_id": "ypcoikqHLhnc9tNs",
+  "_key": "!tables!ypcoikqHLhnc9tNs",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "description": "<p>Roll the Panic Die and try to roll above your current Stress. Some results are severe enough to leave a lasting impression, called <strong>Conditions</strong>, which affect you until they are treated.</p>",
+  "displayRoll": true,
+  "formula": "1d20",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+  "name": "Panic Check",
+  "ownership": {
+    "default": 0
+  },
+  "replacement": true,
+  "results": [
+    {
+      "_id": "C3v1mSfDXIklIAUB",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.C3v1mSfDXIklIAUB",
+      "description": "<strong>ADRENALINE RUSH.</strong> [+] on all rolls for the next 2d10 minutes. Reduce Stress by 1d5.",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        1,
+        1
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "U9WjdvVrVvGEWA9e",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.U9WjdvVrVvGEWA9e",
+      "description": "<strong>NERVOUS.</strong> Gain 1 Stress.",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        2,
+        2
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "qrw2SQ9MMwmmz5U1",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.qrw2SQ9MMwmmz5U1",
+      "description": "<strong>JUMPY.</strong> Gain 1 Stress. All Close crewmembers gain 2 Stress.",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        3,
+        3
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "xfR9AtZFClqK4Tkk",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.xfR9AtZFClqK4Tkk",
+      "description": "<strong>OVERWHELMED.</strong> [-] on all rolls for the next 1d10 minutes. Increase Minimum Stress by 1.",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        4,
+        4
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "6O6QNEIIVFSTifl6",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.6O6QNEIIVFSTifl6",
+      "description": "<strong>COWARD.</strong> Gain a new Condition: You must make a Fear Save to engage in violence, otherwise you flee.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.b0jk4XwP7by8a3uc]{+1 Coward}",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        5,
+        5
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "HclQqfxT8Q9NShBa",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.HclQqfxT8Q9NShBa",
+      "description": "<strong>FRIGHTENED.</strong> Gain a new Condition: When encountering what frightened you, make a Fear Save [-] or gain 1d5 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.BEQvMZ5N7QOBqnId]{+1 Frightened}",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        6,
+        6
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "j1jjGls1snJ3uCWS",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.j1jjGls1snJ3uCWS",
+      "description": "<strong>NIGHTMARES.</strong> Gain a new Condition: Sleep is difficult, gain [-] on Rest Saves.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.AZbaGWu663wio9mI]{+1 Nightmares}",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        7,
+        7
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "qnBXWm15pc7Kn7bf",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.qnBXWm15pc7Kn7bf",
+      "description": "<strong>LOSS OF CONFIDENCE.</strong> Gain a new Condition: Choose one Skill and lose that Skill's bonus.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.54Krt3opbJe1WATH]{+1 Loss of Confidence}",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        8,
+        8
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "5YQKw63GB18XUYDp",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.5YQKw63GB18XUYDp",
+      "description": "<strong>DEFLATED.</strong> Gain a new Condition: Whenever a Close crewmember fails a Save, gain 1 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.2aD5avpn35wdzdm5]{+1 Deflated}",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        9,
+        9
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "FpTmgA9FxG4W1x0a",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.FpTmgA9FxG4W1x0a",
+      "description": "<strong>DOOMED.</strong> Gain a new Condition: You feel cursed and unlucky. All Critical Successes are instead Critical Failures.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.8IPhlAuMEQJC6zxA]{+1 Doomed}",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        10,
+        10
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "6qInELrRmGGogpkW",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.6qInELrRmGGogpkW",
+      "description": "<strong>SUSPICIOUS.</strong> For the next week, whenever someone joins the crew (even if they only left for a short period of time), make a Fear Save or gain 1 Stress.",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        11,
+        11
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "SjCav3ZLlpQ9fyo3",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.SjCav3ZLlpQ9fyo3",
+      "description": "<strong>HAUNTED.</strong> Gain a new Condition: Something starts visiting the character at night. In their dreams. Out of the corner of their eye. And soon it will start making demands.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.Eo56QFyTeoCcFmD8]{+1 Haunted}",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        12,
+        12
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "2aJpNteB4MaFIbVn",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.2aJpNteB4MaFIbVn",
+      "description": "<strong>DEATH WISH.</strong> For the next 24 hours, whenever encountering a stranger or known enemy, make a Sanity Save or immediately attack them.",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        13,
+        13
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "g6JDKtnXUFWlTPMV",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.g6JDKtnXUFWlTPMV",
+      "description": "<strong>PROPHETIC VISION.</strong> Character immediately experiences an intense hallucination or vision of an impending terror or horrific event. Increase Minimum Stress by 2.",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        14,
+        14
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "wFbLrig0F2WSM6hM",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.wFbLrig0F2WSM6hM",
+      "description": "<strong>CATATONIC.</strong> Become unresponsive and unmoving for 2d10 minutes. Reduce Stress by 1d10.",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        15,
+        15
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "mN1KTYh1TcDKLMjj",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.mN1KTYh1TcDKLMjj",
+      "description": "<strong>RAGE.</strong> [+] on all Damage rolls for the next 1d10 hours. All crewmembers gain 1 Stress.",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        16,
+        16
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "fFp8wFcomRNUgtdP",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.fFp8wFcomRNUgtdP",
+      "description": "<strong>SPIRALING.</strong> Gain a new Condition: Panic Checks are at [-].<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.3AjUWUSRvYy8Mwji]{+1 Spiraling}",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        17,
+        17
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "RI06IV89j3Bxtxkz",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.RI06IV89j3Bxtxkz",
+      "description": "<strong>COMPOUNDING PROBLEMS.</strong> Roll twice on this table. Increase your Minimum Stress by 1.",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        18,
+        18
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "zJkYrssfrdWBSeRm",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.zJkYrssfrdWBSeRm",
+      "description": "<strong>HEART ATTACK / SHORT CIRCUIT (ANDROIDS).</strong> Reduce Maximum Wounds by 1. Gain [-] on all rolls for 1d10 hours. Increase Minimum Stress by 1.",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        19,
+        19
+      ],
+      "type": "text",
+      "weight": 1
+    },
+    {
+      "_id": "uluHEycHi6Ul2GMj",
+      "_key": "!tables.results!ypcoikqHLhnc9tNs.uluHEycHi6Ul2GMj",
+      "description": "<strong>RETIRE.</strong> Roll up a new character to play.",
+      "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
+      "name": "",
+      "range": [
+        20,
+        20
+      ],
+      "type": "text",
+      "weight": 1
+    }
+  ]
+}

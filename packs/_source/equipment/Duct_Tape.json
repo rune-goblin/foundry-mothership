@@ -1,0 +1,20 @@
+{
+  "_id": "5AHPd9ZSRMCfHoTs",
+  "_key": "!items!5AHPd9ZSRMCfHoTs",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Duct Tape",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 0,
+    "description": "<p>A roll of it. Fixes most things once.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

@@ -1,0 +1,36 @@
+{
+  "_id": "9fnBhaEpLm2cFbNL",
+  "_key": "!items!9fnBhaEpLm2cFbNL",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/sword.svg",
+  "name": "Flare Gun",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "ammo": 2,
+    "ammoType": "",
+    "antiArmor": false,
+    "bonus": 0,
+    "cost": 25,
+    "critDmg": "",
+    "curShots": 2,
+    "damage": "1d5",
+    "description": "<p>High intensity flare visible day and night from Long Range.</p>",
+    "ranges": {
+      "long": 0,
+      "medium": 0,
+      "short": 0,
+      "value": "Long"
+    },
+    "shots": 2,
+    "shotsPerFire": 1,
+    "useAmmo": true,
+    "weight": 0,
+    "woundEffect": "Fire & Explosives [-]"
+  },
+  "type": "weapon"
+}

@@ -1,0 +1,23 @@
+{
+  "_id": "iZLMM7JYPeVk6WpR",
+  "_key": "!items!iZLMM7JYPeVk6WpR",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Ecology",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 15,
+    "description": "<p>The study of organisms and how they relate to their environment.</p>",
+    "prerequisite_ids": [
+      "Compendium.mothershiprpg.skills_1e.Item.btrjRAk3mIsprn9M",
+      "Compendium.mothershiprpg.skills_1e.Item.Is5dU70QvQBqbcbt"
+    ],
+    "rank": "Expert"
+  },
+  "type": "skill"
+}

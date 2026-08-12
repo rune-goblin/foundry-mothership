@@ -1,0 +1,20 @@
+{
+  "_id": "gvf7ENEyNoFmEjQG",
+  "_key": "!items!gvf7ENEyNoFmEjQG",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Lunch Box",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 0,
+    "description": "<p>A sealed metal box. Contents vary; the smell does not.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

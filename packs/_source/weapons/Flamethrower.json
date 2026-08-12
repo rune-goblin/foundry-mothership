@@ -1,0 +1,36 @@
+{
+  "_id": "WaYpSuGDpe07n7OW",
+  "_key": "!items!WaYpSuGDpe07n7OW",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/sword.svg",
+  "name": "Flamethrower",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "ammo": 4,
+    "ammoType": "",
+    "antiArmor": false,
+    "bonus": 0,
+    "cost": 4000,
+    "critDmg": "",
+    "curShots": 4,
+    "damage": "2d10",
+    "description": "<p>Body Save [-] or be set on fire (2d10 DMG / round).<br><br>Rolls at [-].</p>",
+    "ranges": {
+      "long": 0,
+      "medium": 0,
+      "short": 0,
+      "value": "Close"
+    },
+    "shots": 4,
+    "shotsPerFire": 1,
+    "useAmmo": true,
+    "weight": 0,
+    "woundEffect": "Fire & Explosives [+]"
+  },
+  "type": "weapon"
+}

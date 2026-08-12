@@ -1,289 +1,149 @@
 {
   "_id": "XjDU2xFOWEasaZK0",
-  "name": "Gunshot Wound",
-  "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gunshot.png",
-  "description": "<p>Whenever you gain a Gunshot Wound, roll on this table to determine the effect. <strong>Flesh Wounds</strong> are small inconveniences. <strong>Minor/Major Injuries</strong> cause lasting issues which require medical treatment. <strong>Lethal Injuries</strong> can kill you if not dealt with immediately. <strong>Fatal Injuries</strong> can kill outright. <strong>Bleeding</strong> wounds, if not treated can quickly overwhelm you.</p>",
-  "formula": "1d10-1",
-  "replacement": true,
+  "_key": "!tables!XjDU2xFOWEasaZK0",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "description": "<p>Whenever you gain this kind of Wound, roll on this table to determine the effect. <strong>Flesh Wounds</strong> are small inconveniences. <strong>Minor/Major Injuries</strong> cause lasting issues which require medical treatment. <strong>Lethal Injuries</strong> can kill you if not dealt with immediately. <strong>Fatal Injuries</strong> can kill outright. <strong>Bleeding</strong> wounds, if not treated can quickly overwhelm you.</p>",
   "displayRoll": true,
+  "formula": "1d10-1",
+  "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gunshot.png",
+  "name": "Gunshot Wound",
+  "ownership": {
+    "default": 0
+  },
+  "replacement": true,
   "results": [
     {
       "_id": "LubF6RyYnl11EmUj",
-      "type": "text",
+      "_key": "!tables.results!XjDU2xFOWEasaZK0.LubF6RyYnl11EmUj",
+      "description": "<strong>Flesh Wound:</strong> Grazed. Knocked down.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gunshot.png",
-      "weight": 1,
+      "name": "",
       "range": [
         0,
         0
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Flesh Wound:</strong> Grazed. Knocked down.",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!XjDU2xFOWEasaZK0.LubF6RyYnl11EmUj"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "EFQBqcegsqHQ4Jih",
-      "type": "text",
+      "_key": "!tables.results!XjDU2xFOWEasaZK0.EFQBqcegsqHQ4Jih",
+      "description": "<strong>Minor Injury:</strong> Bleeding +1.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gunshot.png",
-      "weight": 1,
+      "name": "",
       "range": [
         1,
         1
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Minor Injury:</strong> Bleeding +1.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.BH7tgbDVH6jdcZ4u]{+1 Bleeding}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!XjDU2xFOWEasaZK0.EFQBqcegsqHQ4Jih"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "tNz8bKJY9cDDQmQ6",
-      "type": "text",
+      "_key": "!tables.results!XjDU2xFOWEasaZK0.tNz8bKJY9cDDQmQ6",
+      "description": "<strong>Minor Injury:</strong> Broken rib.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gunshot.png",
-      "weight": 1,
+      "name": "",
       "range": [
         2,
         2
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Minor Injury:</strong> Broken rib.",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!XjDU2xFOWEasaZK0.tNz8bKJY9cDDQmQ6"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "YwdH5Q7uuxu78jQp",
-      "type": "text",
+      "_key": "!tables.results!XjDU2xFOWEasaZK0.YwdH5Q7uuxu78jQp",
+      "description": "<strong>Minor Injury:</strong> Fractured extremity.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gunshot.png",
-      "weight": 1,
+      "name": "",
       "range": [
         3,
         3
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Minor Injury:</strong> Fractured extremity.",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!XjDU2xFOWEasaZK0.YwdH5Q7uuxu78jQp"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "kOw2Sk8NgE5zWvGz",
-      "type": "text",
+      "_key": "!tables.results!XjDU2xFOWEasaZK0.kOw2Sk8NgE5zWvGz",
+      "description": "<strong>Minor Injury:</strong> Internal bleeding. Bleeding +2.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gunshot.png",
-      "weight": 1,
+      "name": "",
       "range": [
         4,
         4
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Minor Injury:</strong> Internal bleeding. Bleeding +2.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.IIVNXuhckFQfzXah]{+2 Bleeding}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!XjDU2xFOWEasaZK0.kOw2Sk8NgE5zWvGz"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "1EEfUVqLk1vcvmBl",
-      "type": "text",
+      "_key": "!tables.results!XjDU2xFOWEasaZK0.1EEfUVqLk1vcvmBl",
+      "description": "<strong>Major Injury:</strong> Lodged bullet. Surgery required.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gunshot.png",
-      "weight": 1,
+      "name": "",
       "range": [
         5,
         5
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Major Injury:</strong> Lodged bullet. Surgery required.",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!XjDU2xFOWEasaZK0.1EEfUVqLk1vcvmBl"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "4si8KPgRXJSi2R94",
-      "type": "text",
+      "_key": "!tables.results!XjDU2xFOWEasaZK0.4si8KPgRXJSi2R94",
+      "description": "<strong>Major Injury:</strong> Gunshot wound to the neck.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gunshot.png",
-      "weight": 1,
+      "name": "",
       "range": [
         6,
         6
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Major Injury:</strong> Gunshot wound to the neck.",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!XjDU2xFOWEasaZK0.4si8KPgRXJSi2R94"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "wbmBeO70jbk5cNAi",
-      "type": "text",
+      "_key": "!tables.results!XjDU2xFOWEasaZK0.wbmBeO70jbk5cNAi",
+      "description": "<strong>Lethal Injury (Death Save in 1d10 rounds):</strong> Major blood loss. Bleeding +4.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gunshot.png",
-      "weight": 1,
+      "name": "",
       "range": [
         7,
         7
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Lethal Injury:</strong> Major blood loss. Bleeding +4. Death Save in [[/r 1d10]] rounds.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.QkCJK7Vmda5bGAA7]{+4 Bleeding}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!XjDU2xFOWEasaZK0.wbmBeO70jbk5cNAi"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "SXF0bbAqIyqvPvb9",
-      "type": "text",
+      "_key": "!tables.results!XjDU2xFOWEasaZK0.SXF0bbAqIyqvPvb9",
+      "description": "<strong>Lethal Injury (Death Save in 1d10 rounds):</strong> Sucking chest wound. Bleeding +5.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gunshot.png",
-      "weight": 1,
+      "name": "",
       "range": [
         8,
         8
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Lethal Injury:</strong> Sucking chest wound. Bleeding +5. Death Save in [[/r 1d10]] rounds.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.CZ2gqnRHcOpCLlG0]{+5 Bleeding}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!XjDU2xFOWEasaZK0.SXF0bbAqIyqvPvb9"
+      "type": "text",
+      "weight": 1
     },
     {
       "_id": "8rlgfH4GJ8H0LHhL",
-      "type": "text",
+      "_key": "!tables.results!XjDU2xFOWEasaZK0.8rlgfH4GJ8H0LHhL",
+      "description": "<strong>Fatal Injury (Death Save):</strong> Headshot. Death Save.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/wounds_gunshot.png",
-      "weight": 1,
+      "name": "",
       "range": [
         9,
         9
       ],
-      "drawn": false,
-      "_stats": {
-        "coreVersion": "13.348",
-        "systemId": null,
-        "systemVersion": null,
-        "createdTime": null,
-        "modifiedTime": null,
-        "lastModifiedBy": null,
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      },
-      "description": "<strong>Fatal Injury:</strong> Headshot. Death Save.<br><br>@UUID[Compendium.mothershiprpg.macros_hotbar_1e.Macro.NsRHfRuuNGPfkYVf]{Death Save}",
-      "name": "",
-      "flags": {},
-      "_key": "!tables.results!XjDU2xFOWEasaZK0.8rlgfH4GJ8H0LHhL"
+      "type": "text",
+      "weight": 1
     }
-  ],
-  "_stats": {
-    "systemId": "mosh",
-    "systemVersion": "0.4.0",
-    "coreVersion": "13.348",
-    "createdTime": 1685936572185,
-    "modifiedTime": 1693515520278,
-    "lastModifiedBy": "6EeM38DJkcBWNAmw",
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "exportSource": null
-  },
-  "folder": null,
-  "sort": 0,
-  "ownership": {
-    "default": 0
-  },
-  "flags": {},
-  "_key": "!tables!XjDU2xFOWEasaZK0"
+  ]
 }

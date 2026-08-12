@@ -1,0 +1,22 @@
+{
+  "_id": "mfvbkKv1R3a7YFyP",
+  "_key": "!items!mfvbkKv1R3a7YFyP",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Xenoesotericism",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 20,
+    "description": "<p>Obscure beliefs, mysticism, and religion regarding non-human entities.</p>",
+    "prerequisite_ids": [
+      "Compendium.mothershiprpg.skills_1e.Item.PZ9DLKqPCgZTamjX"
+    ],
+    "rank": "Master"
+  },
+  "type": "skill"
+}

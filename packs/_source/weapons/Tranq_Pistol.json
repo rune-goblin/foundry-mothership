@@ -1,0 +1,36 @@
+{
+  "_id": "EekwI5S5qvNnT2Wz",
+  "_key": "!items!EekwI5S5qvNnT2Wz",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/sword.svg",
+  "name": "Tranq Pistol",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "ammo": 6,
+    "ammoType": "",
+    "antiArmor": false,
+    "bonus": 0,
+    "cost": 250,
+    "critDmg": "",
+    "curShots": 6,
+    "damage": "1d5",
+    "description": "<p>If DMG dealt: enemy must Body Save or be unconscious 1d10 rounds.</p>",
+    "ranges": {
+      "long": 0,
+      "medium": 0,
+      "short": 0,
+      "value": "Close"
+    },
+    "shots": 6,
+    "shotsPerFire": 1,
+    "useAmmo": true,
+    "weight": 0,
+    "woundEffect": "Blunt Force"
+  },
+  "type": "weapon"
+}

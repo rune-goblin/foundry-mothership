@@ -1,0 +1,20 @@
+{
+  "_id": "r1n6vraIyUgPuO6b",
+  "_key": "!items!r1n6vraIyUgPuO6b",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Military Training",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 10,
+    "description": "<p>Basic training provided to all military personnel.</p>",
+    "prerequisite_ids": [],
+    "rank": "Trained"
+  },
+  "type": "skill"
+}

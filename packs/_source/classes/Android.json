@@ -1,0 +1,82 @@
+{
+  "_id": "CZbx1KIL6KBAjf46",
+  "_key": "!items!CZbx1KIL6KBAjf46",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/mystery-man.svg",
+  "name": "Android",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "base_adjustment": {
+      "body": 0,
+      "combat": 0,
+      "fear": 60,
+      "intellect": 20,
+      "max_wounds": 1,
+      "sanity": 0,
+      "skills_granted": [
+        "Compendium.mothershiprpg.skills_1e.Item.eaijjQUYLF6U7lC2",
+        "Compendium.mothershiprpg.skills_1e.Item.YsDtuUkWSC4TdaTZ",
+        "Compendium.mothershiprpg.skills_1e.Item.xH7oT5nMoDgBZnrT"
+      ],
+      "speed": 0,
+      "strength": 0
+    },
+    "common_skills": [],
+    "description": "<p>Androids are a terrifying and exciting addition to any crew. They tend to unnerve other crewmembers with their cold inhumanity.</p>",
+    "robotic": true,
+    "roll_tables": {
+      "loadout": "Compendium.mothershiprpg.rolltables_1e.RollTable.jOEFDbSpumKD03JU",
+      "patch": "Compendium.mothershiprpg.rolltables_1e.RollTable.bW8BN8bIk13iVhwx",
+      "trinket": "Compendium.mothershiprpg.rolltables_1e.RollTable.7UZoTawQGpwxrcLx"
+    },
+    "selected_adjustment": {
+      "choose_skill_and": {
+        "expert": 0,
+        "expert_full_set": 0,
+        "master": 0,
+        "master_full_set": 0,
+        "trained": 0
+      },
+      "choose_skill_or": [
+        [
+          {
+            "expert": 1,
+            "expert_full_set": 0,
+            "from_list": [],
+            "master": 0,
+            "master_full_set": 0,
+            "name": "1 Expert Skill",
+            "trained": 0
+          },
+          {
+            "expert": 0,
+            "expert_full_set": 0,
+            "from_list": [],
+            "master": 0,
+            "master_full_set": 0,
+            "name": "2 Trained Skills",
+            "trained": 2
+          }
+        ]
+      ],
+      "choose_stat": [
+        {
+          "modification": -10,
+          "stats": [
+            "strength",
+            "speed",
+            "intellect",
+            "combat"
+          ]
+        }
+      ]
+    },
+    "trauma_response": "Fear Saves made by Close friendly players are at Disadvantage."
+  },
+  "type": "class"
+}

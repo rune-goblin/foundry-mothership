@@ -1,6 +1,75 @@
 {
   "version": 1,
   "packs": {
+    "armor": {
+      "compendium": "armor_1e",
+      "documentType": "Item",
+      "documents": {
+        "advanced-battle-dress": {
+          "id": "W8Xn3FatU13DrWzl"
+        },
+        "civilian-clothes": {
+          "id": "jvEuobsyQwU7EBtR"
+        },
+        "corporate-attire": {
+          "id": "NefhWmy9d7vKXzrA"
+        },
+        "dress-uniform": {
+          "id": "ANuna6lV2hdXC0fe"
+        },
+        "fatigues": {
+          "id": "rCEb8D5OXNRHtsKX"
+        },
+        "hazard-suit": {
+          "id": "v4puMALT4uFgU1eX"
+        },
+        "heavy-duty-work-clothes": {
+          "id": "xmtb96lXeNXuWTzT"
+        },
+        "lab-coat": {
+          "id": "NUFO6rgAmkkjZjky"
+        },
+        "lounge-wear": {
+          "id": "gsuRxgAZgvv5dCob"
+        },
+        "manufacturer-supplied-attire": {
+          "id": "BuMqwmtOpmCQd33K"
+        },
+        "scrubs": {
+          "id": "p66hv0M53sHtQQAy"
+        },
+        "standard-battle-dress": {
+          "id": "si2hHyiehKcoQ7eh"
+        },
+        "standard-crew-attire": {
+          "id": "BtLRzXEGLvpqJJJM"
+        },
+        "tank-top-and-camo-pants": {
+          "id": "FU5u4cDDPFoe1eCW"
+        },
+        "vaccsuit": {
+          "id": "H7j9UNfJhAsj1ayu"
+        }
+      }
+    },
+    "classes": {
+      "compendium": "classes_1e",
+      "documentType": "Item",
+      "documents": {
+        "android": {
+          "id": "CZbx1KIL6KBAjf46"
+        },
+        "marine": {
+          "id": "FUgg703iLDJFhUip"
+        },
+        "scientist": {
+          "id": "RkosT1XWGmbdWLQ7"
+        },
+        "teamster": {
+          "id": "hJmP2oECqjTFqWEK"
+        }
+      }
+    },
     "conditions": {
       "compendium": "conditions_1e",
       "documentType": "Item",
@@ -10,9 +79,6 @@
         },
         "coward": {
           "id": "YIF9QkUlexxauSCE"
-        },
-        "death-wish": {
-          "id": "srws3n4rpl4oCj83"
         },
         "deflated": {
           "id": "waimTU6LXaADcJrT"
@@ -34,9 +100,207 @@
         },
         "spiraling": {
           "id": "Bt2rl2c5jGyt3QAr"
+        }
+      }
+    },
+    "equipment": {
+      "compendium": "equipment_1e",
+      "documentType": "Item",
+      "documents": {
+        "assorted-tools": {
+          "id": "IBkf92WqC13tu7f8"
         },
-        "suspicious": {
-          "id": "8lOkseRbg09YFvv7"
+        "automed": {
+          "id": "ONGdRHZRqtgdDHX0"
+        },
+        "battery-high-power": {
+          "id": "rNcBzhlszNXO6kLf"
+        },
+        "binoculars": {
+          "id": "JBfGJ6NGBsDAxYnL"
+        },
+        "bioscanner": {
+          "id": "y09CU9EvhzTTkHJ4"
+        },
+        "body-cam": {
+          "id": "5XNeJOsEiHM0WyYG"
+        },
+        "briefcase": {
+          "id": "xs82tRmYmMVvIJPC"
+        },
+        "camping-gear": {
+          "id": "0fZESt6TOIzbeVJ8"
+        },
+        "challenge-coin": {
+          "id": "o3D8T4MsF6HUKxbh"
+        },
+        "chemlight": {
+          "id": "TJdV8OpkoMSe0udV"
+        },
+        "cigarettes": {
+          "id": "l98DW87Jp7r7uCQV"
+        },
+        "cybernetic-diagnostic-scanner": {
+          "id": "x0vksby5YZZx9Ajt"
+        },
+        "defibrillator": {
+          "id": "EKbpiNFi54yjUfCM"
+        },
+        "duct-tape": {
+          "id": "5AHPd9ZSRMCfHoTs"
+        },
+        "electronic-tool-set": {
+          "id": "pBfFt5UiGQEFEOaV"
+        },
+        "emergency-beacon": {
+          "id": "G9ppAQvYEXDQVXTd"
+        },
+        "exoloader": {
+          "id": "0FujF4mN9fpTS9cV"
+        },
+        "explosives-detonator": {
+          "id": "ZAwZFH6hERdFOQii"
+        },
+        "extension-cord": {
+          "id": "aLtsUIysVrGOt3Wf"
+        },
+        "first-aid-kit": {
+          "id": "KyM0RTkhf0PwEFy3"
+        },
+        "flashlight": {
+          "id": "cMvO4sWQIqSekvWh"
+        },
+        "foldable-stretcher": {
+          "id": "xjJN017Yxi5LOek0"
+        },
+        "fountain-pen-poison-injector": {
+          "id": "mRILYG4LzTKFtxQG"
+        },
+        "geiger-counter": {
+          "id": "Qihxhje10vCNvEnZ"
+        },
+        "head-lamp": {
+          "id": "5nAJsAFBNnsZbZuD"
+        },
+        "heads-up-display-hud": {
+          "id": "nPpSm7DWq8Ph9y56"
+        },
+        "infrared-goggles": {
+          "id": "mMPEawEnGsQtFQJ9"
+        },
+        "jetpack": {
+          "id": "hJE0ZSPTwAsYw8qU"
+        },
+        "jump-9-ticket": {
+          "id": "focgU4KstNCjS4u0"
+        },
+        "leash": {
+          "id": "SjmfiRUZhphAjEil"
+        },
+        "lockpick-set": {
+          "id": "6Pl6de02hs5bO1yc"
+        },
+        "long-range-comms": {
+          "id": "2625WktddR8gVS1d"
+        },
+        "lunch-box": {
+          "id": "gvf7ENEyNoFmEjQG"
+        },
+        "mag-boots": {
+          "id": "Zm2txy0l8cspFIe4"
+        },
+        "medscanner": {
+          "id": "XNiPs7oPZpd5gGq9"
+        },
+        "mohab-unit": {
+          "id": "llaJHC8gK0W4MKvk"
+        },
+        "mre": {
+          "id": "iRBnXTRIF52bf7An"
+        },
+        "mylar-blanket": {
+          "id": "ZNNqfL126ZqjmY94"
+        },
+        "oxygen-tank": {
+          "id": "MR32idv0JSMzPmVv"
+        },
+        "paracord-50m": {
+          "id": "SqEc9R1KaTLIIcUO"
+        },
+        "patch-kit": {
+          "id": "NJx0o7Kcxxza5ZVz"
+        },
+        "pen-knife": {
+          "id": "A2KlHCM8EV2dVzP7"
+        },
+        "personal-locator": {
+          "id": "Dib4YNAOo4WnAtES"
+        },
+        "pet-organic": {
+          "id": "3WzP2XLfSQDDGmOr"
+        },
+        "pet-synthetic": {
+          "id": "d940nMwyM2OFUIbJ"
+        },
+        "portable-computer-terminal": {
+          "id": "H8xvUp6DtFuxACZC"
+        },
+        "prescription-pad": {
+          "id": "IRZIIZKaCeEdg4lz"
+        },
+        "radiation-pills": {
+          "id": "86nnNmFLbOdM3oUf"
+        },
+        "radio-jammer": {
+          "id": "EBBAFX7qJd7r18bz"
+        },
+        "rebreather": {
+          "id": "oEGAHxSlgriTge85"
+        },
+        "rucksack": {
+          "id": "iNJM23aYaji5SLCJ"
+        },
+        "salvage-drone": {
+          "id": "4n1EgFXSCrqxBwPe"
+        },
+        "sample-collection-kit": {
+          "id": "2KYiNyKCboVTKFcD"
+        },
+        "satchel": {
+          "id": "WbvJu2ZM7GfFeCTx"
+        },
+        "short-range-comms": {
+          "id": "N0IfzEtU3WTkYhuG"
+        },
+        "shovel": {
+          "id": "xs63Go4h0xWpGrWi"
+        },
+        "six-pack-of-beer": {
+          "id": "qG0vbc0nsg6nxz3o"
+        },
+        "smart-link-add-on": {
+          "id": "IBD9vdCQ7A9GsgV3"
+        },
+        "stimpak": {
+          "id": "E496Z3oUgdzAWxib"
+        },
+        "subsurface-scanner": {
+          "id": "kPbc3ZWQ2rIyVPa2"
+        },
+        "tennis-ball": {
+          "id": "B1TyrUuH9C5ulac7"
+        },
+        "vaccine": {
+          "id": "m2iSLplStmiu0GHQ"
+        },
+        "vial-of-acid": {
+          "id": "kFpmtQaXCbzkqmOK"
+        },
+        "vip-corporate-key-card": {
+          "id": "qFYUpFBFSxPa2bYB"
+        },
+        "water-filtration-device": {
+          "id": "ZrnvgS52tmNWXmTQ"
         }
       }
     },
@@ -50,14 +314,8 @@
         "death-save": {
           "id": "NsRHfRuuNGPfkYVf"
         },
-        "gain-calm": {
-          "id": "GSFEBhrKC9yuD88V"
-        },
         "gain-stress": {
           "id": "X0L0NnWt53b0rHYG"
-        },
-        "lose-calm": {
-          "id": "trU0DtBJvJCPddsQ"
         },
         "panic-check": {
           "id": "IgWvaabVqzKDzLL4"
@@ -167,6 +425,66 @@
             "r10": "8rlgfH4GJ8H0LHhL"
           }
         },
+        "loadout-android": {
+          "id": "jOEFDbSpumKD03JU",
+          "results": {
+            "r01": "mpXl1duwBAnU9CB4",
+            "r02": "UrzDdHfmwAWbDfmX",
+            "r03": "NHsQmTmg7jOGwcsm",
+            "r04": "oEnhStNHa3VvWCTt",
+            "r05": "D8YFHmZYriKKfHAg",
+            "r06": "xCPymjFeifgOhn2D",
+            "r07": "phVG6QDOAz5S9NUC",
+            "r08": "wt8kA5Y7fupOJJRM",
+            "r09": "x0qyCUhnb8aK3s4W",
+            "r10": "qx6PRu90KjLzRrpS"
+          }
+        },
+        "loadout-marine": {
+          "id": "jX5jvQYVBcGE8obY",
+          "results": {
+            "r01": "dtLlEGFGL619kqlV",
+            "r02": "GtK9JozLCqBRqzHt",
+            "r03": "hY1n8wD7xqXHVTRj",
+            "r04": "pETEuRDjuzuxZY1v",
+            "r05": "2o5DH34torPmiFHR",
+            "r06": "1o83eA5X2CAr3mKq",
+            "r07": "eyXP3w9XOeomWerY",
+            "r08": "iAquUSDmpeakqO19",
+            "r09": "9Mu7Uztgldw6BdIE",
+            "r10": "es0PGA5bldCWRusJ"
+          }
+        },
+        "loadout-scientist": {
+          "id": "3nNJNWJzcA81zpPx",
+          "results": {
+            "r01": "fCP2Uo7j7wu2kcid",
+            "r02": "l7JdQY9LbAiNQg5q",
+            "r03": "tRKyjLNk996nxGFV",
+            "r04": "M3jDjpGF4xEWyFZH",
+            "r05": "l7VdU2n0Hmx3OBgU",
+            "r06": "RfmWtDkjV7kC7xpQ",
+            "r07": "LRmbUSLlgIgo1Cfe",
+            "r08": "qi8FmwruvxACQNbE",
+            "r09": "17JYZupXb7aWCnmK",
+            "r10": "CIjlkl4oB2IYEPVL"
+          }
+        },
+        "loadout-teamster": {
+          "id": "ZIgtxTA7b1LwvyjO",
+          "results": {
+            "r01": "19tOHxtpaAfn20Kn",
+            "r02": "wyWEZ9USC2DtdJw3",
+            "r03": "kbibeonAvQgGhxR1",
+            "r04": "jb6m43LPHMBCJW5F",
+            "r05": "FHjIeAqK4kVzTGrF",
+            "r06": "HkPLbnW37LrtO6GP",
+            "r07": "49Mf5ze5OYwnYxgh",
+            "r08": "f2MTgFqGAqEbI5L8",
+            "r09": "D32f0Y3V2LtHfkk6",
+            "r10": "zTmA9Uwv6cAwKWj7"
+          }
+        },
         "panic-check-stress-normal": {
           "id": "ypcoikqHLhnc9tNs",
           "results": {
@@ -191,6 +509,348 @@
             "r19": "zJkYrssfrdWBSeRm",
             "r20": "uluHEycHi6Ul2GMj"
           }
+        },
+        "patches": {
+          "id": "bW8BN8bIk13iVhwx",
+          "results": {
+            "r001": "G9i6vL798KayKJqk",
+            "r002": "qOjPtq5FFs8howTg",
+            "r003": "fjTDLzJDzm9hQfNp",
+            "r004": "pl5aHjvkdMVfHlVM",
+            "r005": "T22eB53IcF3DJ1AM",
+            "r006": "OTeEEbJ6sY8cMsmQ",
+            "r007": "bGU0HcD4io8muo8B",
+            "r008": "1BT0pxjw5SIXp8aw",
+            "r009": "HouRalGHmbZh3zEq",
+            "r010": "OMLAopRk8S4pDB1r",
+            "r011": "PFClXT7MTTukozRg",
+            "r012": "ySP8DYRoCCTiUPQK",
+            "r013": "YpgI4KFULTAniUBp",
+            "r014": "nyklo2IzDrB2iE7t",
+            "r015": "ZXo6w0CciSOp5wEs",
+            "r016": "Q6x3usq5DqYa85Vn",
+            "r017": "0l8UK0dY494zGZHs",
+            "r018": "nNANDBy9NTOQcR5L",
+            "r019": "qiZYO75ge1SLheSp",
+            "r020": "t9RTFSK2eZvDYyaO",
+            "r021": "FPBAQbx0lm4zD4Qi",
+            "r022": "JsDAzs79NorEOp0S",
+            "r023": "b9qAr5r0yY10wSDi",
+            "r024": "Z03hn6O1QpNFNSxQ",
+            "r025": "Rs34OoCTRQb0wQZ9",
+            "r026": "oQpG9uYBsAEoJNjV",
+            "r027": "vYKkvWzaGUOId5mc",
+            "r028": "Ju1lbNySbfRRmhPb",
+            "r029": "Rfm5fI1SmFalasyf",
+            "r030": "RN2HHGbfU7Fzm2PJ",
+            "r031": "31YdGPTuDFn3hMzt",
+            "r032": "10H4OiYeh49qvnlA",
+            "r033": "fr2AH90KkI88CT14",
+            "r034": "mql6oRj5xx7YK3Dc",
+            "r035": "4sRHPIVB3yFwahMb",
+            "r036": "WvVESZlz63fIhrUR",
+            "r037": "tmtTdzaedmF0vIDP",
+            "r038": "BAnBxyxbe4wBnQ87",
+            "r039": "XIolUC4r9NlDGDqE",
+            "r040": "QRnJlEpwMdTBMP9G",
+            "r041": "go7e7w0q7tLlp4Xm",
+            "r042": "hSR1t5ch6Tkd7SY0",
+            "r043": "QJfId4s5MP03EO4d",
+            "r044": "fQD9WmjQNLb03Wiq",
+            "r045": "FhjJrZXsH9KAnsPh",
+            "r046": "rbFXHtuvp77YT80n",
+            "r047": "alVwagZb2ZIm0J0N",
+            "r048": "4XWkj7c8dwDDjPOO",
+            "r049": "VpOnVKlE7UnfzB0Z",
+            "r050": "alFZcLWMj4dun4fX",
+            "r051": "vYHmOugPw6BsNHDB",
+            "r052": "76srknCPZ0qu8qgh",
+            "r053": "VdFPexDHg2eu70YW",
+            "r054": "hD1aReOmYPKCaq0n",
+            "r055": "JDcTTcV9VWd50lLH",
+            "r056": "Dy77FnVnF0ZruvDI",
+            "r057": "oBciiCXc4ioljnxS",
+            "r058": "iugZmbBFZtzNYNOb",
+            "r059": "u1UHfLuWzFN6SB7e",
+            "r060": "8JWnUHzS29TVxveA",
+            "r061": "3ygr29CcaO3IEWmw",
+            "r062": "KJaJCsebuslSdOwN",
+            "r063": "Di1YtCF4CkK1qgro",
+            "r064": "cYav7TMoNmbLJAOJ",
+            "r065": "cB5T6yaAlF1zn6Hz",
+            "r066": "IP2kpNCrEtAGiWeU",
+            "r067": "ohl9G3sYzHfmsA9L",
+            "r068": "b2WFHeEmdR98FDkZ",
+            "r069": "78K2dW8GUnYqMmIV",
+            "r070": "RC4PTtmiikaoNnEA",
+            "r071": "pApzE5Lmf6Ctsmug",
+            "r072": "RjK6W04iD9ICFPLJ",
+            "r073": "wqFlAdGX8W4VmORQ",
+            "r074": "sKSY2S6N702q3yuv",
+            "r075": "XNvRgOGMAOoyEdvC",
+            "r076": "akZrKhwhZ0cZRZOn",
+            "r077": "D1jTcG5qQthvUzT9",
+            "r078": "yY8pENo4Rp2phFLf",
+            "r079": "8wiyQD1tNAIkffn4",
+            "r080": "xct4Ps5iKDz8IV7R",
+            "r081": "VM2Nhk6l8eByaxOU",
+            "r082": "kLgJALPofGja0QYq",
+            "r083": "qr0w4b8td9w8LYco",
+            "r084": "JH7d9OJb4lQf2iB5",
+            "r085": "PUYrodQFe5ZVW0ip",
+            "r086": "01UZsPFGEzScxL4I",
+            "r087": "EUWDl66sNihzE2d8",
+            "r088": "VP5GN4CvCxf3VPJS",
+            "r089": "hLV2otnFTppJOjkZ",
+            "r090": "RJGWqnYc5DnsnF4d",
+            "r091": "n0KFoo9NxftwOXCw",
+            "r092": "gDODo9B2p4J3ghKg",
+            "r093": "DNRNgvHBi0TEUNUZ",
+            "r094": "52AHAiq4p58I3xig",
+            "r095": "fjJlcI2U9v544h4w",
+            "r096": "LfAI9Su6Gc4rTaMd",
+            "r097": "rp0ssnjlonbXcVmV",
+            "r098": "QQQ5q4p3b03urgx8",
+            "r099": "5WSwxPl3FSGZduhD",
+            "r100": "FHd7p7qye2mF106a"
+          }
+        },
+        "trinkets": {
+          "id": "7UZoTawQGpwxrcLx",
+          "results": {
+            "r001": "VYw4xuOp8mr8nTvp",
+            "r002": "nyJRPaqAXJXC3zGM",
+            "r003": "n0xcALEYmIeaQKWu",
+            "r004": "607c9KnmO6grh2Ce",
+            "r005": "euNglobqyFhS7PLa",
+            "r006": "cMfD3LC3Pbyb1f3k",
+            "r007": "dk5ghVU3G8k5ss5p",
+            "r008": "JJZc3Sgh6BjHDh8I",
+            "r009": "6APFRJKv3YFpBwXy",
+            "r010": "rh0fGsyohy4Wg40G",
+            "r011": "NLusfnEo5lpdvkWl",
+            "r012": "oQXqlpP7GdjXSFh1",
+            "r013": "QGNV5oT7SowggL9F",
+            "r014": "WF9bfdgRokdX4r30",
+            "r015": "XyLlHwb0MkRPC4hd",
+            "r016": "KbACicrscL7Mtma3",
+            "r017": "NHzV34T6n3N7JMMK",
+            "r018": "H9hzpI2tnIPXG7VA",
+            "r019": "DLgA5QPAziQgfMol",
+            "r020": "BJQUztiwprr6GRhN",
+            "r021": "Igu0MGgBoZ9g9Zqh",
+            "r022": "3V2OmewqKoSuTAc5",
+            "r023": "7HmzR3Mpl8hsIA1x",
+            "r024": "4nsAVKEZGRCCXMmE",
+            "r025": "I9tkMgOY1MO1r710",
+            "r026": "01ffCT2PGsrW8MVT",
+            "r027": "6HKLfwZUVoMATPfh",
+            "r028": "fPWTGEgC76ScGeyy",
+            "r029": "gSZ9Dh5gAZhJ52TK",
+            "r030": "rsrUH13nCTu8qqJH",
+            "r031": "dAQc7CrTjRe3gh3D",
+            "r032": "Z8eTRN4f88vbm4j1",
+            "r033": "T4U1Q8FmSTpjAlLp",
+            "r034": "NqdZ9CZWLOOUjfrS",
+            "r035": "uqS0FlXb64kTO5Rw",
+            "r036": "n9c7XVSPwk4Yrkmc",
+            "r037": "Mrz9DIrjbpJjR7UT",
+            "r038": "Fy6pyv5XjTRT3RI7",
+            "r039": "9VMKaeKFjAK7HlWP",
+            "r040": "GLEZ5UsQDpKHXHPk",
+            "r041": "W9nSy19KPaShGnDP",
+            "r042": "x1ueQRpK8sxk5zaI",
+            "r043": "PcWp9PG6uQrL3Ehm",
+            "r044": "1n6QwC8SkRfMTNtT",
+            "r045": "iv8ygZ7dXwNhFv5v",
+            "r046": "nzTxRhCVrTKcU7r9",
+            "r047": "2iE4cc0DznCqy9qC",
+            "r048": "JXs4vWiH4Fvdp1Yh",
+            "r049": "eTNvjcyMIrxk6f5x",
+            "r050": "2y4lhwp4U7awRbV7",
+            "r051": "BcFXwsG1HKvicjEs",
+            "r052": "13uQuJuEpjV3puUN",
+            "r053": "Wo1mj7S8RuOF6sPX",
+            "r054": "Lt69I5urUjtDXSNu",
+            "r055": "hnurXtq6lqUTiMwN",
+            "r056": "qMyiQ3UEe2k2rUWP",
+            "r057": "ralyDK2PG4Ur510F",
+            "r058": "kRKFXp7RfjvFzDs8",
+            "r059": "npWdkcy3dieugwtf",
+            "r060": "3vOdBK8bNxVqlJ2o",
+            "r061": "sKrYssxTMoawI644",
+            "r062": "m2NaHWLHt1SEoY2I",
+            "r063": "CyRkCr47P0QbWWCT",
+            "r064": "ivGkNZHzwPUaBZOn",
+            "r065": "x2aB8xcU94CZ1Jg9",
+            "r066": "wSOzO1i5swY1u3OW",
+            "r067": "2uF7J3wbo6K4J6IU",
+            "r068": "X8t2o7TxHzX5hTRQ",
+            "r069": "JQzK5sFNSQD0sXTS",
+            "r070": "LRFLq7HHQ9QNqlhR",
+            "r071": "vvkV54zngPG8t7Us",
+            "r072": "4YOFpXI0fYD05Z6d",
+            "r073": "Q3RlBMUuba1vHQcF",
+            "r074": "6KK5JmUwfnzP3wdB",
+            "r075": "EJFZd1wug8o54PNh",
+            "r076": "ppvHRdVCtimmF0xU",
+            "r077": "9FUfrKfbZGQLiyHE",
+            "r078": "folfLlJ5HOHsfKHk",
+            "r079": "0MQBDq7mJ7UsIZ32",
+            "r080": "BCuuDxb3sAIwyinM",
+            "r081": "gp9VmjRVJ3JtmZWi",
+            "r082": "TKDDhgNULjt7O6u8",
+            "r083": "lRA9NYaQrc7zWZqN",
+            "r084": "U9YnRadWyYk1FUUI",
+            "r085": "6nE8Jhl3CL710Lnq",
+            "r086": "CegjGHBWl8OkbEtv",
+            "r087": "6UOFj2zLkOkszZ1d",
+            "r088": "AvMwZ8gsebuHj5B8",
+            "r089": "qgFeJj8dM3z1tnFI",
+            "r090": "tOlzXd7WIgtv9ATA",
+            "r091": "2qaVQxTcOkAQIDO7",
+            "r092": "0gFMWuhYTKQsLVT1",
+            "r093": "neYyuudyeH8zatNt",
+            "r094": "oXjcSYhSnoE7RTyf",
+            "r095": "XLq8z5WoBkCcF4gG",
+            "r096": "gSrmAfvcELv8697H",
+            "r097": "FkdA8nDQkoGaEO8i",
+            "r098": "maKEk6sCAnP8cIha",
+            "r099": "CEDP24oD37O40GF1",
+            "r100": "x7RPon0UtqOhdHgc"
+          }
+        }
+      }
+    },
+    "skills": {
+      "compendium": "skills_1e",
+      "documentType": "Item",
+      "documents": {
+        "archaeology": {
+          "id": "5JWIrPhbNszOMTh4"
+        },
+        "art": {
+          "id": "O2XKfBUKNuAfgmvM"
+        },
+        "artificial-intelligence": {
+          "id": "CFwcejCmAqGfdHZw"
+        },
+        "asteroid-mining": {
+          "id": "gLaH4ald8hyJMsB4"
+        },
+        "athletics": {
+          "id": "PCysCTzypE43tNup"
+        },
+        "botany": {
+          "id": "btrjRAk3mIsprn9M"
+        },
+        "chemistry": {
+          "id": "pelunoA5ojLPKGRa"
+        },
+        "command": {
+          "id": "VhK80PSXbjYTJlgb"
+        },
+        "computers": {
+          "id": "YsDtuUkWSC4TdaTZ"
+        },
+        "cybernetics": {
+          "id": "LcZo3UeN7Ols8b7g"
+        },
+        "ecology": {
+          "id": "iZLMM7JYPeVk6WpR"
+        },
+        "engineering": {
+          "id": "aCoGvH0ql97gEOjS"
+        },
+        "exobiology": {
+          "id": "unQaxpbFpxpuTz3G"
+        },
+        "explosives": {
+          "id": "F2vXkKxzg90turLN"
+        },
+        "field-medicine": {
+          "id": "LWqcNd1J9jTihhp4"
+        },
+        "firearms": {
+          "id": "TpfBG4dYpuXc5rtJ"
+        },
+        "geology": {
+          "id": "Is5dU70QvQBqbcbt"
+        },
+        "hacking": {
+          "id": "xqJxLtLFuBcVnWnt"
+        },
+        "hand-to-hand-combat": {
+          "id": "hfJXvY6eQJGxJf1h"
+        },
+        "hyperspace": {
+          "id": "bZnTk3JwWOm9VNhJ"
+        },
+        "industrial-equipment": {
+          "id": "zqapA0bwytCdpGMH"
+        },
+        "jury-rigging": {
+          "id": "vMifA7Xg7t3J2Ntx"
+        },
+        "linguistics": {
+          "id": "eaijjQUYLF6U7lC2"
+        },
+        "mathematics": {
+          "id": "xH7oT5nMoDgBZnrT"
+        },
+        "mechanical-repair": {
+          "id": "Cb5sZO5QZ6aZYZX0"
+        },
+        "military-training": {
+          "id": "r1n6vraIyUgPuO6b"
+        },
+        "mysticism": {
+          "id": "PZ9DLKqPCgZTamjX"
+        },
+        "pathology": {
+          "id": "EGqLcFB5KUBM9Gf1"
+        },
+        "pharmacology": {
+          "id": "fzxbxh9nNN7vBUhF"
+        },
+        "physics": {
+          "id": "qJJBDLcA6Hi1yOoY"
+        },
+        "piloting": {
+          "id": "WMFQdiEz6PKLTjml"
+        },
+        "planetology": {
+          "id": "U3u4pefWyZNPBfDB"
+        },
+        "psychology": {
+          "id": "c7OGreem6GLr3sxP"
+        },
+        "rimwise": {
+          "id": "O6UBiKt8oQx6oeks"
+        },
+        "robotics": {
+          "id": "8TlIvtuhKLu9FMnl"
+        },
+        "sophontology": {
+          "id": "HyVBj1aVkqNu2WD2"
+        },
+        "surgery": {
+          "id": "L49xbj6M4hILGaMi"
+        },
+        "theology": {
+          "id": "jmPKHUjTglQyIIgj"
+        },
+        "wilderness-survival": {
+          "id": "870HRtE4TIQPdJjX"
+        },
+        "xenoesotericism": {
+          "id": "mfvbkKv1R3a7YFyP"
+        },
+        "zero-g": {
+          "id": "F1RR6Oc5rhyciqad"
+        },
+        "zoology": {
+          "id": "qqbflJqocoPwwuFf"
         }
       }
     },
@@ -291,14 +951,8 @@
         "lower-wounds-to-0": {
           "id": "YLitGkgwIi8GqFAg"
         },
-        "minus-1-all-stats-saves": {
-          "id": "V1PPeCwryXNQAkUe"
-        },
         "minus-1-health": {
           "id": "vwpxRBbMwjfDCQVG"
-        },
-        "minus-1-hull": {
-          "id": "uPY19Y49bGCLGK3N"
         },
         "minus-1-maximum-wound": {
           "id": "qD8Mvegkf3zVarFr"
@@ -309,20 +963,11 @@
         "minus-1-stress": {
           "id": "qbq694JMbXeZrHjj"
         },
-        "minus-1-upgrade": {
-          "id": "06NSvDYTtmkeUtLq"
-        },
         "minus-1-wound": {
           "id": "p7tp3aMkcVLAhiD5"
         },
         "minus-10-health": {
           "id": "C9iTlPOpROuuYi2F"
-        },
-        "minus-1d10-all-stats-saves": {
-          "id": "2MuANcdgp2g8SDlF"
-        },
-        "minus-1d10-battle": {
-          "id": "X3cL9eS2HOPxhLH5"
         },
         "minus-1d10-body-save": {
           "id": "nT2AsZwrYhJyxizF"
@@ -342,17 +987,8 @@
         "minus-1d10-stress": {
           "id": "jHyqXb2yDFTNWxpy"
         },
-        "minus-1d10-systems": {
-          "id": "oDftFxRKkCQRNY2O"
-        },
-        "minus-1d5-all-stats-saves": {
-          "id": "SeMStXQGIaeiLwvw"
-        },
         "minus-1d5-maximum-health": {
           "id": "yYujq1tBZPqGrQlh"
-        },
-        "minus-1d5-oxygen": {
-          "id": "u7TchSo3qutnzaKF"
         },
         "minus-1d5-sanity-save": {
           "id": "xNLdumzjtYwQmBeP"
@@ -369,14 +1005,8 @@
         "minus-2d10-health": {
           "id": "pS6A6OklvM6S3bvO"
         },
-        "minus-2d10-thrusters": {
-          "id": "jmOh8n2ps0YIeBC0"
-        },
         "minus-3d10-health": {
           "id": "nECUu4pcwsNTE8C5"
-        },
-        "minus-50-crew-capacity": {
-          "id": "DUuRY7kHKd7n5luv"
         },
         "panic-check-minus": {
           "id": "EwZbGIwHB3JuRvx5"
@@ -389,9 +1019,6 @@
         },
         "plus-1-coward": {
           "id": "b0jk4XwP7by8a3uc"
-        },
-        "plus-1-death-wish": {
-          "id": "Yh2CTFXfWMe9o2lv"
         },
         "plus-1-deflated": {
           "id": "2aD5avpn35wdzdm5"
@@ -422,9 +1049,6 @@
         },
         "plus-1-stress": {
           "id": "dvJR9DYXI2kV0BbR"
-        },
-        "plus-1-suspicious": {
-          "id": "5K7wZEvEXjOH4IM7"
         },
         "plus-1d10-combat": {
           "id": "hNdUPkEYauPuCHcm"
@@ -520,7 +1144,192 @@
           "id": "aur5HWqZJNspwdCd"
         }
       }
+    },
+    "weapons": {
+      "compendium": "weapons_1e",
+      "documentType": "Item",
+      "documents": {
+        "ammo": {
+          "id": "qO1ZNkuSyIx31whP"
+        },
+        "boarding-axe": {
+          "id": "TwB9DG94xWhpW66O"
+        },
+        "combat-shotgun": {
+          "id": "QATsbe6Ua7yvGCuo"
+        },
+        "crowbar": {
+          "id": "9C5s2vIWjbVV0tSp"
+        },
+        "flamethrower": {
+          "id": "WaYpSuGDpe07n7OW"
+        },
+        "flare-gun": {
+          "id": "9fnBhaEpLm2cFbNL"
+        },
+        "foam-gun": {
+          "id": "KgYp9G6ElA1lnP1P"
+        },
+        "frag-grenade": {
+          "id": "G1fzLVKSXRPKH2af"
+        },
+        "general-purpose-machine-gun": {
+          "id": "8HliP5IV0Ghs4CAp"
+        },
+        "hand-welder": {
+          "id": "6NPvsID02E0jgwsG"
+        },
+        "laser-cutter": {
+          "id": "EEXtQQkmHTWFK1FU"
+        },
+        "nail-gun": {
+          "id": "Rs0xEt7BcCvHku5v"
+        },
+        "pulse-rifle": {
+          "id": "aqhg71t52NSmDu5a"
+        },
+        "revolver": {
+          "id": "zdTy7gabLeCwsJBh"
+        },
+        "rigging-gun": {
+          "id": "hIhYSrExV2U2gHY1"
+        },
+        "scalpel": {
+          "id": "tjFU8Fbh2fcfnWGL"
+        },
+        "smart-rifle": {
+          "id": "l0MMb2Bf2qAodiBQ"
+        },
+        "smg": {
+          "id": "Xevyr8GSS1jVyURx"
+        },
+        "stun-baton": {
+          "id": "ZqZLZxUuQt7U6nmD"
+        },
+        "tranq-pistol": {
+          "id": "EekwI5S5qvNnT2Wz"
+        },
+        "unarmed": {
+          "id": "dceGyb1yjTLxdSSi"
+        },
+        "vibechete": {
+          "id": "iIf6fmrMqlKPYsww"
+        }
+      }
     }
   },
-  "retired": []
+  "retired": [
+    {
+      "pack": "conditions",
+      "contentId": "death-wish",
+      "id": "srws3n4rpl4oCj83",
+      "retired": "2026-08-12",
+      "reason": "no PSG panic result grants it; it came from the Calm/android tables (§25)"
+    },
+    {
+      "pack": "conditions",
+      "contentId": "suspicious",
+      "id": "8lOkseRbg09YFvv7",
+      "retired": "2026-08-12",
+      "reason": "no PSG panic result grants it; it came from the Calm/android tables (§25)"
+    },
+    {
+      "pack": "hotbar",
+      "contentId": "gain-calm",
+      "id": "GSFEBhrKC9yuD88V",
+      "retired": "2026-08-12",
+      "reason": "Calm was cut with the panic variants (§25)"
+    },
+    {
+      "pack": "hotbar",
+      "contentId": "lose-calm",
+      "id": "trU0DtBJvJCPddsQ",
+      "retired": "2026-08-12",
+      "reason": "Calm was cut with the panic variants (§25)"
+    },
+    {
+      "pack": "triggered",
+      "contentId": "minus-1-all-stats-saves",
+      "id": "V1PPeCwryXNQAkUe",
+      "retired": "2026-08-12",
+      "reason": "the radiation and cryosickness conditions it served had no book source and were cut (§25)"
+    },
+    {
+      "pack": "triggered",
+      "contentId": "minus-1-hull",
+      "id": "uPY19Y49bGCLGK3N",
+      "retired": "2026-08-12",
+      "reason": "the ship actor type was cut with the PSG cut (MODERNIZATION.md §25); this macro writes a field no surviving model declares"
+    },
+    {
+      "pack": "triggered",
+      "contentId": "minus-1-upgrade",
+      "id": "06NSvDYTtmkeUtLq",
+      "retired": "2026-08-12",
+      "reason": "the ship actor type was cut with the PSG cut (MODERNIZATION.md §25); this macro writes a field no surviving model declares"
+    },
+    {
+      "pack": "triggered",
+      "contentId": "minus-1d10-all-stats-saves",
+      "id": "2MuANcdgp2g8SDlF",
+      "retired": "2026-08-12",
+      "reason": "the radiation and cryosickness conditions it served had no book source and were cut (§25)"
+    },
+    {
+      "pack": "triggered",
+      "contentId": "minus-1d10-battle",
+      "id": "X3cL9eS2HOPxhLH5",
+      "retired": "2026-08-12",
+      "reason": "the ship actor type was cut with the PSG cut (MODERNIZATION.md §25); this macro writes a field no surviving model declares"
+    },
+    {
+      "pack": "triggered",
+      "contentId": "minus-1d10-systems",
+      "id": "oDftFxRKkCQRNY2O",
+      "retired": "2026-08-12",
+      "reason": "the ship actor type was cut with the PSG cut (MODERNIZATION.md §25); this macro writes a field no surviving model declares"
+    },
+    {
+      "pack": "triggered",
+      "contentId": "minus-1d5-all-stats-saves",
+      "id": "SeMStXQGIaeiLwvw",
+      "retired": "2026-08-12",
+      "reason": "the radiation and cryosickness conditions it served had no book source and were cut (§25)"
+    },
+    {
+      "pack": "triggered",
+      "contentId": "minus-1d5-oxygen",
+      "id": "u7TchSo3qutnzaKF",
+      "retired": "2026-08-12",
+      "reason": "the ship actor type was cut with the PSG cut (MODERNIZATION.md §25); this macro writes a field no surviving model declares"
+    },
+    {
+      "pack": "triggered",
+      "contentId": "minus-2d10-thrusters",
+      "id": "jmOh8n2ps0YIeBC0",
+      "retired": "2026-08-12",
+      "reason": "the ship actor type was cut with the PSG cut (MODERNIZATION.md §25); this macro writes a field no surviving model declares"
+    },
+    {
+      "pack": "triggered",
+      "contentId": "minus-50-crew-capacity",
+      "id": "DUuRY7kHKd7n5luv",
+      "retired": "2026-08-12",
+      "reason": "the ship actor type was cut with the PSG cut (MODERNIZATION.md §25); this macro writes a field no surviving model declares"
+    },
+    {
+      "pack": "triggered",
+      "contentId": "plus-1-death-wish",
+      "id": "Yh2CTFXfWMe9o2lv",
+      "retired": "2026-08-12",
+      "reason": "the condition it raises had no book source and was cut (§25)"
+    },
+    {
+      "pack": "triggered",
+      "contentId": "plus-1-suspicious",
+      "id": "5K7wZEvEXjOH4IM7",
+      "retired": "2026-08-12",
+      "reason": "the condition it raises had no book source and was cut (§25)"
+    }
+  ]
 }

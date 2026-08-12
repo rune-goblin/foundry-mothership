@@ -1,0 +1,20 @@
+{
+  "_id": "y09CU9EvhzTTkHJ4",
+  "_key": "!items!y09CU9EvhzTTkHJ4",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Bioscanner",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 3000,
+    "description": "<p>Long Range. Allows the user to scan for signs of life. Can tell the location of signs of life, but not what that life is. Blocked by some materials at the Warden's discretion.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

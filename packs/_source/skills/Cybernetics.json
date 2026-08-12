@@ -1,0 +1,22 @@
+{
+  "_id": "LcZo3UeN7Ols8b7g",
+  "_key": "!items!LcZo3UeN7Ols8b7g",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Cybernetics",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 20,
+    "description": "<p>The physical and neural interfaces between organisms and machines.</p>",
+    "prerequisite_ids": [
+      "Compendium.mothershiprpg.skills_1e.Item.Cb5sZO5QZ6aZYZX0"
+    ],
+    "rank": "Master"
+  },
+  "type": "skill"
+}

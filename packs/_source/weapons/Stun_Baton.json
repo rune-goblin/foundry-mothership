@@ -1,0 +1,36 @@
+{
+  "_id": "ZqZLZxUuQt7U6nmD",
+  "_key": "!items!ZqZLZxUuQt7U6nmD",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/sword.svg",
+  "name": "Stun Baton",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "ammo": 0,
+    "ammoType": "",
+    "antiArmor": false,
+    "bonus": 0,
+    "cost": 150,
+    "critDmg": "",
+    "curShots": 0,
+    "damage": "1d5",
+    "description": "<p>Body Save or stunned 1 round.</p>",
+    "ranges": {
+      "long": 0,
+      "medium": 0,
+      "short": 0,
+      "value": "Adjacent"
+    },
+    "shots": 0,
+    "shotsPerFire": 1,
+    "useAmmo": false,
+    "weight": 0,
+    "woundEffect": "Blunt Force"
+  },
+  "type": "weapon"
+}

@@ -1,0 +1,23 @@
+{
+  "_id": "Cb5sZO5QZ6aZYZX0",
+  "_key": "!items!Cb5sZO5QZ6aZYZX0",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/book.svg",
+  "name": "Mechanical Repair",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "bonus": 15,
+    "description": "<p>Fixing broken machines.</p>",
+    "prerequisite_ids": [
+      "Compendium.mothershiprpg.skills_1e.Item.zqapA0bwytCdpGMH",
+      "Compendium.mothershiprpg.skills_1e.Item.vMifA7Xg7t3J2Ntx"
+    ],
+    "rank": "Expert"
+  },
+  "type": "skill"
+}

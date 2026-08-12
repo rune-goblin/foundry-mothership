@@ -1,0 +1,20 @@
+{
+  "_id": "o3D8T4MsF6HUKxbh",
+  "_key": "!items!o3D8T4MsF6HUKxbh",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/item-bag.svg",
+  "name": "Challenge Coin",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "cost": 0,
+    "description": "<p>A unit token. Produce it when asked, or buy the round.</p>",
+    "quantity": 1,
+    "weight": 0
+  },
+  "type": "item"
+}

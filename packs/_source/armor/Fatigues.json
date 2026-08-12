@@ -1,0 +1,26 @@
+{
+  "_id": "rCEb8D5OXNRHtsKX",
+  "_key": "!items!rCEb8D5OXNRHtsKX",
+  "_stats": {
+    "systemId": "mothershiprpg",
+    "systemVersion": "0.0.0"
+  },
+  "img": "icons/svg/shield.svg",
+  "name": "Fatigues",
+  "ownership": {
+    "default": 0
+  },
+  "system": {
+    "armorPoints": 2,
+    "cost": 0,
+    "damageReduction": 0,
+    "description": "<p>Hard-wearing military working dress.</p>",
+    "equipped": false,
+    "features": "",
+    "oxygenCurrent": 0,
+    "oxygenMax": 0,
+    "speed": "Normal",
+    "weight": 0
+  },
+  "type": "armor"
+}
