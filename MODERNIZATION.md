@@ -1751,3 +1751,87 @@ It is worth noting what caught this: the compendium count spec, which exists pre
 pack missing its .ldb opens as an empty database rather than failing". The same reasoning covers
 the opposite case, and it was the only thing standing between the cut and shipping a system whose
 compendia still contained everything supposedly removed.
+
+
+---
+
+## 26. S2 — one book-tiered source, and the guard that had to exist first
+
+`content/` is now organised by **book**, and the pipeline no longer pretends to have an upstream.
+
+```
+content/books/psg/   the 12 datasets with a consumer, their schemas, and BOOK.md
+content/ids.json     stable ids per emitted document
+```
+
+Deleted: `sync-content.ts` and its drift detection, `CHECKSUMS`, `PROVENANCE.md`, the
+`local`/`data` two-tier split, and the seven datasets with no runtime consumer (`contractors`,
+`pets`, `cover`, `radiation`, `medical-treatments`, `shore-leave`, `rules-index`). **−2,368 lines,
++802.**
+
+The sync machinery went because the premise under it was false: `../mothership-data` **has no
+`.git` directory**. There was never an upstream to sync from, only a folder — which is why C1 had
+to substitute per-file checksums for the "source commit hash" the plan asked for. The corpus is
+imported once and owned here. `BOOK.md` records that so nobody rebuilds it.
+
+`TierPaths.strict` also went. It existed only because the vendored schemas failed Ajv's
+`strictTypes` / `strictRequired`; with one tier that we own, five schemas were fixed instead
+(`required` without a sibling `"type": "object"`, then local `$ref` declarations Ajv will not
+follow through `allOf`). All 13 now pass strict mode, so a keyword typo in a schema fails loudly
+instead of silently accepting everything.
+
+### The DataModel guard
+
+**The gap the C1 gate found.** C1 validated records against JSON Schema — the content side.
+Nothing checked the emitted `system` object against the DataModel that *receives* it, and Foundry's
+`SchemaField` silently discards keys it does not declare. That is how armour `equipped` stopped
+working, how the creature `swarm` toggle destroyed data, and how twelve more were found in §10.
+`sheet-bindings.test.ts` guards the UI side; nothing guarded content.
+
+`scripts/content/model-guard.ts` now runs inside `build()`, between emission and the reference
+check, and **throws** — so `npm run content` exits 1. Not a test that can be skipped: a build
+failure.
+
+The schema walk is **shared, not duplicated**. `installFoundryFieldStubs`, `defaultsOf` and
+`leaves` moved from `test/field-stubs.ts` into `scripts/model-schema.ts`; the test file re-exports
+them and keeps only the `template.json` / `system.json` oracles. Direction is `test → scripts`.
+The models must be `import()`ed after the stubs install — a static import hoists above it, and the
+model modules read `foundry.data.fields` at module scope.
+
+Verified independently of the agent's own specs, by injecting a key I invented into a real record
+and driving the actual `build()`:
+
+```
+emitted content does not fit its DataModel:
+  fixture_gadgets_1e/flux-capacitor: condition declares no system.bogusUndeclaredKey
+                                     — Foundry would discard it on load
+```
+
+The fixture keeps `modifiers` on the **book** side and deliberately does not map it into `system`,
+because `MoshCondition` declares no such field — the live negative case stays live until S3/S8 adds
+it.
+
+### Adding the next book
+
+The layout is the deliverable, and it is now four steps: a `content/books/<id>/` directory, a
+`scripts/content/books/<id>.ts` describing its packs, one entry in `BOOKS`, then
+`npm run content -- --allocate` and commit `content/ids.json`. Merging the new compendia into
+`system.json` stays orchestrator-only. The build refuses two books claiming the same id, pack name
+or compendium, and refuses a book whose directory does not exist — each pinned by a spec.
+
+### Two judgement calls carried forward to S3
+
+**`content/ids.json` was rewritten — reordered only, not re-issued.** The committed file was in
+seed order rather than the canonical sorted order, so the first `--allocate` would have produced a
+115-line phantom diff. Checked before merging: **210 ids before, 210 after, none lost, none
+gained.**
+
+**`checkIdPreservation` exists and is tested, but is not wired into `build()`.** Turning it on
+today would fail every build until all 210 registered ids are emitted, and S3 regenerates the macro
+pack from a table rather than reproducing all 107. **S3 must retire what it drops** — the registry
+takes a reason — and then wire the check on. That is one line in `pipeline.ts`, and it is the thing
+protecting the `@UUID`s the surviving rolltables still hold.
+
+**Verified:** `npm run check` 0 errors / 0 warnings (221 files) · **178 vitest** (168 + 10) ·
+**56 Playwright** · `npm run build`. `packs/_source`, `module/`, `templates/` and `system.json`
+untouched — confirmed by diff, so the runtime could not have moved.
