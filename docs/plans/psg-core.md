@@ -10,9 +10,9 @@ the book instead. What survives from it is noted at the end.
 
 | | |
 |---|---|
-| **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26), **S2b** the TypeScript catalogs and **S3** the content (§27) |
-| **Next** | **S4 — the class sheet and the class-adjustment schema.** S3 emits `base_adjustment`/`selected_adjustment` as free-form objects; S4 tightens them into real SchemaFields and kills the last AppV1 item-sheet base. |
-| **Green at** | `check` 0/0 (221 files) · **217 vitest** · **61 Playwright** · `build` |
+| **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26), **S2b** the TypeScript catalogs and **S3** the content (§27), **S4** the class sheet and `base_adjustment` (§28) |
+| **Next** | **S5 — actor-generator on a draft store.** It is the last window on a bare `FormApplication`, it extracts one `_id` per loadout row, and it is what `selected_adjustment` is waiting on before that half can be tightened too. |
+| **Green at** | `check` 0/0 (224 files) · **220 vitest** · **70 Playwright** · `build` |
 | **Preserved** | Everything cut is on the pushed `archive/pre-psg-cut` branch **and** tag |
 
 What the system ships today: 2 actor types (character, creature), 7 item types, and **274
@@ -319,56 +319,181 @@ before any content is generated, because generating first means shipping silentl
 Cut first. Every later step is smaller for it — fewer sheets to convert, fewer specs to keep green,
 one less actor type in every schema test.
 
-```
-S1  the cut                                                          orchestrator + Sonnet sweep
-    ships out of module/, actor.js, DataModels, template.json,
-    system.json, settings, lang, tests; panic variants and the
-    unsourced conditions out of packs/_source; archive branch pushed
-    first. Gate: check, 0-warning svelte-check, vitest, e2e green
-    with the ship specs removed rather than skipped.
+| | Unit | |
+|---|---|---|
+| S1 | the cut | ✅ §25 |
+| S2 | content pipeline, simplified | ✅ §26 |
+| S2b | the book becomes a TypeScript catalog | ✅ §27 |
+| S3 | generate the book | ✅ §27 |
+| S4 | class-sheet + `base_adjustment` | ✅ §28 |
+| S5 | actor-generator on a draft store | **next** |
+| S6 | creature-sheet | |
+| S7 | actor-sheet — last, most player-visible | |
+| S8 | conditions contribute advantage/disadvantage to rolls | |
+| S9 | trailing, ungated | |
 
-S2  content pipeline, simplified                          ✅ done (§26)  Opus
-    strip C1 to one tier; content/books/psg/; the DataModel guard
-    above; determinism + integrity retained.
+**Each remaining unit is briefed in full below, so a prompt does not have to be.** The prompt names
+the unit and points here; the gate commands and their order are in `CLAUDE.md`, the ten standing
+rules and the review gate are in `run-to-the-end.md` (rule 11's rescue clause no longer applies,
+rule 12 — schema deletions ride the wave that removes their last reader — still does), and the
+change boundary is `architecture.md` Decision 2. Restating any of those in a prompt is duplication,
+and duplication is how they drift.
 
-S2b the book becomes a TypeScript catalog                 ✅ done (§27)  Opus
-    twelve typed .ts catalogs, converted mechanically and verified
-    byte-identical. Ajv, the 13 schemas and validate.ts deleted;
-    counts and die coverage moved to content-catalogs.test.ts.
+`system.json` and `lang/` stay orchestrator-merge-only.
 
-S3  generate the book                                     ✅ done (§27)  Opus
-    274 documents across 9 compendia: 148 new Items, 13 tables,
-    104 macros, 9 conditions. Loadouts link real gear through the
-    99-row mapping in gear.ts. 16 ids retired with a reason and
-    checkIdPreservation wired into build().
-    Left for S5: the generator extracts one _id per loadout row,
-    so a three-item row still grants one item.
+Every unit gates on all four tiers — `check` 0/0, vitest, `npm run content` (clean **and**
+byte-identical on a second build), then `packs.sh pack` → `npm run setup` → `test:e2e`. Add specs
+for what you change and mutation-check them; **a mutation test of the e2e tier must rebuild first**,
+because `npx playwright test` runs against whatever `dist/` already holds (§28).
 
-S4  class-sheet + the class-adjustment schema                  <- next  Opus
-    derive first, then tighten base_adjustment/selected_adjustment
-    into real SchemaFields with template.json in lockstep. Kills the
-    last AppV1 item-sheet base.
+---
 
-S5  actor-generator on a draft store                                 Opus (needs S3 + S4)
-    formulas from character-creation.json; capstone e2e: generate a
-    Marine end to end and assert stats, skills and loadout.
+### S5 — actor-generator on a draft store
 
-S6  creature-sheet                                                   Opus
-S7  actor-sheet — last, most player-visible                          Opus
-    deletes xp.html, treatment.html, ranges.value and the weight
-    fields with template.json.
+The last window on a bare `FormApplication`, and the one place where the DOM is the source of truth.
 
-S8  conditions contribute advantage/disadvantage to rolls            Opus
-    the requirement recorded in architecture.md. Seed the three the
-    book vouches for; the rest neutral, per the owner's decision.
+| Surface | |
+|---|---|
+| `module/windows/actor-generator.js` | 772 lines, `extends FormApplication` |
+| `templates/dialogs/actor-generator-dialog.html` | 305 lines |
+| `templates/dialogs/actor-generator/*.html` | 4 dialogs, 168 lines |
+| Entry point | `actor-sheet.js:651`, a header button — **that sheet is AppV1 until S7**, so the entry must keep working from AppV1 code |
 
-S9  trailing, ungated: CSS dissolution; TypeScript, checkJs per file,
-    actor.js split into tested modules.
-```
+**1. The draft store.** `architecture.md` Decision 3 reserves a second, explicitly named pattern for
+this window, distinct from §10's document store: the generator is a wizard whose product is one
+batch write, so `CharacterDraft` holds `$state` for the rolled stats, health and credits, the chosen
+class UUID and the applied bonuses, and the actor is written once on submit.
 
-`system.json` and `lang/` stay orchestrator-merge-only. The ten standing rules and the review gate
-in `run-to-the-end.md` continue unchanged; rule 11's rescue clause no longer applies, rule 12
-(schema deletions ride the wave that removes their last reader) still does.
+What that replaces, measured:
+
+- `getData()` does `let data = this.object; data.system.class = []` — it writes render scaffolding
+  onto the **live actor document**. Not a copy; the actor's own prepared `system.class` is stomped
+  in memory on every render.
+- Every step pokes the form: `this._element.find('input[name="system.stats.x.bonus"]').prop(…)`.
+  `statOptions`, `showSkillDialog`, `showOptionsDialog` and `popUpSkillOptions` all resolve into the
+  DOM and the submit reads it back out of `formData`. Those become draft mutations; the four dialogs
+  become DialogV2, built the way `module/ui/class/stat-option.js` builds one.
+
+**2. Formulas from the book.** Lines 58–98 hardcode `2d10+25`, `2d10+10`, `1d10+10`, `2d10*10`.
+All four are `CHARACTER_CREATION.steps[].roll.formula` in `content/books/psg/character-creation.ts`,
+pinned by `test/content-catalogs.test.ts:128`. Import them — the catalog is a typed module, not
+documents, because nobody browses a creation step.
+
+Step 4 also says *"Characters' current Stress and Minimum Stress both start at 2"*, which the
+generator does not do: it sets `hits.max = 2 + max_wounds bonus` (~line 703) and nothing else.
+**Reserved for the owner**: set Stress from the book, or leave it to the sheet's defaults — decide
+deliberately and record which.
+
+**3. The loadout extraction — the bug S3 found and left.** `rollTable()` (~line 103) handles two
+result types. The `text` branch runs `match(/(.*)(@UUID.*)/i)` and two greedy replaces and pushes
+**one** bare id per row (~lines 123–131), while the submit splits `system.class.loadout.uuid` on
+commas and calls `modifyItem` per entry (~line 745) — the structure always expected several.
+Measure which result type the emitted rows actually use before writing the fix; §27 says every row
+links real gear and `test/e2e/psg-content.spec.ts` already asserts it. `modifyItem`
+(`actor.js:1807`) resolves through `fromIdUuid` and then dedupes **by name** on the actor, so
+passing three ids is correct and aggregating quantity stays the caller's job. Its signature is
+public API — shipped compendium macros call it.
+
+**4. `selected_adjustment`, if this unit earns it.** S4 left it a free-form `ObjectField` for one
+reason, recorded in `item-models.js` and §28: `showOptionsDialog` resolves one `choose_skill_or`
+option and hands it straight to `popUpSkillOptions`, which reads the same object as a pick-set. If
+the draft store untangles that, tighten it to the shape `architecture.md` Decision 2c already
+writes out, with `template.json` in lockstep and the content build's DataModel guard as the fast
+feedback loop. If it does not, leave it and update the comment to say what is still in the way.
+Decision 2c's two side effects stay features: `NumberField` coerces the strings the dialogs write,
+and the schema retires the legacy nested-array `skills_granted` the generator itself calls "legacy".
+
+**Capstone:** an e2e that generates a Marine end to end against the real headless Foundry and
+asserts the stats, the granted skills and the loadout **items** on the actor — a three-item loadout
+row must yield three items.
+
+---
+
+### S6 — creature-sheet
+
+`module/actor/creature-sheet.js` (661 lines) + `templates/actor/creature-sheet.html` (434). The
+settings window it used to carry is already ApplicationV2 (§24).
+
+**This is where the sections land, not S7.** Evidence 1.1 measured the two actor sheets sharing 24
+of 25 bindings and byte-identical item-list blocks; `architecture.md` Decision 1 answers that with
+shared sections — `ItemPanel`, `HealthBlock`, `ArmorBlock` under `module/ui/parts/sections/` — and
+**still two sheets**, no variant-flag mega-component. The creature is the smaller consumer, so it
+proves the sections before the player-visible sheet depends on them. Decision 1's falsifier stands:
+a section needing more than ~3 divergence props splits.
+
+- **Deletes `creature.xp.html`** (a string here, a number on the character) with `template.json`,
+  replaced by `PipTrack` + `$derived`. `creature-sheet.js:92–114` builds those pips as an HTML
+  string and writes them onto `system` during render.
+- The same `getData()` writes `item.ranges.value` and `item.treatment.html` onto **embedded item**
+  objects while rendering (lines ~163, ~172) — same defect class, and it is why those two fields
+  exist at all.
+- **Out of bounds:** the swarm rescaling arithmetic and everything else in `prepareDerivedData`
+  (Decision 2). `data-models.spec.ts` drives the swarm toggle end to end; if a unit spec has to
+  change for an edit to pass, the edit is out of scope.
+
+---
+
+### S7 — actor-sheet
+
+`module/actor/actor-sheet.js` (656 lines) + `templates/actor/actor-sheet.html` (526). Last, because
+it is the most player-visible thing in the system. It composes S6's sections and keeps its
+genuinely divergent parts local — the dial header, the saves, the stress panic split.
+
+Deletions it carries, each in the DataModel **and** `template.json` (Decision 2a):
+
+| Field | Replaced by | Note |
+|---|---|---|
+| `character.xp.html` (a *number*) | `PipTrack` + `$derived` | built as an HTML string at `actor-sheet.js:52–63` |
+| `condition.treatment.html` | `PipTrack` from `treatment.value` | written onto embedded items at `actor-sheet.js:129–145`; the `.treatment-button` handler at 207 stays |
+| `character.weight.current` / `.capacity` | computed in `prepareDerivedData`, not stored | explicitly inside Decision 2's may-change list |
+
+**`weapon.ranges.value` is a correction to Decision 2a, and a decision for the owner.** That table
+says the converted item sheet already derives it. It does not: `Weapon.svelte:52` still *binds*
+`name="system.ranges.value"` as a free-text field, and lines 16–22 only fall back to
+short/medium/long when it is empty. Deleting it means deciding that a weapon's range is three
+numbers and never a typed string like `10/20/30`. **Decide that deliberately; do not let a
+conversion agent infer it.** Both actor sheets also recompute it onto embedded items during render
+(`actor-sheet.js:120`, `creature-sheet.js:163`) — that half goes either way.
+
+---
+
+### S8 — conditions contribute advantage/disadvantage to rolls
+
+The requirement `architecture.md` records, and the one unit that is **allowed to change the roll
+pipeline** — so it changes the specs first, on purpose, exactly as Decision 2 provides for. Not a
+conversion wave; its own proposal.
+
+The chain is three links, and two of them do not exist yet:
+
+1. **The book's data exists.** `content/books/psg/conditions.ts` seeds `modifiers: ['disadvantage']`
+   on the three the panic results vouch for — Frightened, Nightmares, Spiraling — and leaves the
+   other six empty, per the owner's decision.
+2. **The schema has no field for it and the emitter drops it.** `MoshCondition` declares
+   `description`, `severity`, `treatment`; `scripts/content/books/psg/documents.ts:20–44` never
+   reads `modifiers`. So a condition document ships today with nothing a roll could consult.
+3. **Nothing consults it.** Advantage and disadvantage are a *dialog button* — `1d100 [+]` /
+   `1d100 [-]` — at three sites in `actor.js` (~786, ~934, ~1008). An owned condition has to reach
+   that decision, and the honest question is whether it forces the roll string or preselects a
+   default the player can override. **Reserved for the owner.**
+
+Do all three or none: a schema field with no reader fails `field-usage.test.ts`, which is the
+ratchet working.
+
+---
+
+### S9 — trailing, ungated
+
+Not a wave; a list that only makes sense once the conversions are done.
+
+- **The Svelte architecture audit** (§23) — the hybrid CSS decision itself, and `ClassSheet.svelte`'s
+  six tabs in one component.
+- **The CSS dissolution.** §13 parked it as a styling project with real visual risk; `architecture.md`
+  C14/C15 give it an order and a verification method.
+- **TypeScript, `checkJs` per file**, then globally — `module/**/*.js` is unchecked today.
+- **`actor.js` split into tested modules.** 2,338 lines, and the largest single file in the system.
+- **`template.json` retirement** (Decision 4): once a generated, committed type snapshot exists and
+  its staleness check is mutation-proven, it takes over the oracle's job. v16 removes support
+  regardless.
 
 ---
 
