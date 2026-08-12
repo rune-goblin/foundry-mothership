@@ -2,8 +2,7 @@
   "Actor": {
     "types": [
       "character",
-      "creature",
-      "ship"
+      "creature"
     ],
     "templates": {
       "base": {
@@ -11,24 +10,24 @@
           "value": 10,
           "min": 0,
           "max": 10,
-          "label" : "Health"
+          "label": "Health"
         },
         "hits": {
           "value": 0,
           "min": 0,
-          "max" : 2,
-          "label" : "Wounds"
+          "max": 2,
+          "label": "Wounds"
         },
         "netHP": {
           "value": 20,
           "min": 0,
-          "max" : 20,
-          "label" : "Net HP"
+          "max": 20,
+          "label": "Net HP"
         },
         "bleeding": {
           "value": 0,
           "min": 0,
-          "label" : "Bleeding"
+          "label": "Bleeding"
         }
       }
     },
@@ -38,9 +37,9 @@
       ],
       "biography": "",
       "notes": "",
-      "weight" : {
-        "current" : 0,
-        "capacity" : 0
+      "weight": {
+        "current": 0,
+        "capacity": 0
       },
       "class": {
         "value": ""
@@ -56,8 +55,8 @@
       },
       "xp": {
         "value": 0,
-        "html" : 0,
-        "selectedSkill" : ""
+        "html": 0,
+        "selectedSkill": ""
       },
       "attributes": {
         "level": {
@@ -137,13 +136,13 @@
           "value": 2,
           "min": 2,
           "max": 20,
-          "label" : "Stress"
+          "label": "Stress"
         },
         "resolve": {
           "value": 0,
           "min": 0,
           "max": 15,
-          "label" : "Resolve"
+          "label": "Resolve"
         },
         "stressdesc": {
           "value": ""
@@ -169,7 +168,7 @@
           "max": 99,
           "label": "Combat",
           "rollLabel": "Combat Check",
-          "enabled" : true
+          "enabled": true
         },
         "instinct": {
           "value": 10,
@@ -177,7 +176,7 @@
           "max": 99,
           "label": "Instinct",
           "rollLabel": "Instinct Check",
-          "enabled" : true
+          "enabled": true
         },
         "speed": {
           "value": 10,
@@ -185,7 +184,7 @@
           "max": 99,
           "label": "Speed",
           "rollLabel": "Speed Check",
-          "enabled" : false
+          "enabled": false
         },
         "loyalty": {
           "value": 10,
@@ -193,7 +192,7 @@
           "max": 99,
           "label": "Loyalty",
           "rollLabel": "Loyalty Check",
-          "enabled" : false
+          "enabled": false
         },
         "armor": {
           "value": 0,
@@ -204,7 +203,7 @@
           "cover": "none",
           "label": "Armor",
           "rollLabel": "Armor Save",
-          "enabled" : false
+          "enabled": false
         },
         "sanity": {
           "value": 10,
@@ -212,7 +211,7 @@
           "max": 99,
           "label": "Sanity",
           "rollLabel": "Sanity Save",
-          "enabled" : false
+          "enabled": false
         }
       },
       "swarm": {
@@ -220,153 +219,6 @@
         "combat": {
           "value": 0
         }
-      }
-    },
-    "ship": {
-      "templates": [
-        "base"
-      ],
-      "biography": "",
-      "description": "This is a description",
-      "type": "",
-      "class": "",
-      "cost": "",
-      "owed": "",
-      "make": "",
-      "transponder": false,
-      "xp": {
-        "value": 1
-      },
-      "images" : {
-        "layout" : "systems/mothershiprpg/images/Galloway_Top.png",
-        "beauty" : "systems/mothershiprpg/images/Galloway_Top.png"
-      },
-      "runSetup" : true,
-      "megadamage" : {
-        "html" : "",
-        "hits" : [],
-        "menu" : {
-          "html" : ""
-        },
-        "open" : false
-      },
-      "stats": {
-        "armor": {
-          "value": 10,
-          "mod": 0,
-          "min": 0,
-          "max": 99,
-          "label": "Armor",
-          "rollLabel": "Armor Save"
-        },
-        "combat": {
-          "value": 10,
-          "mod": 0,
-          "min": 0,
-          "max": 99,
-          "label": "Combat",
-          "rollLabel": "Combat Check"
-        },
-        "intellect": {
-          "value": 10,
-          "mod": 0,
-          "min": 0,
-          "max": 99,
-          "label": "Intellect",
-          "rollLabel": "Intellect Check"
-        },
-        "speed": {
-          "value": 10,
-          "mod": 0,
-          "min": 0,
-          "max": 99,
-          "label": "Speed",
-          "rollLabel": "Speed Check"
-        },
-        "thrusters": {
-          "value": 10,
-          "mod": 0,
-          "min": 0,
-          "max": 99,
-          "label": "Thrusters",
-          "rollLabel": "Thrusters Save"
-        },
-        "battle": {
-          "value": 10,
-          "mod": 0,
-          "min": 0,
-          "max": 99,
-          "label": "Battle",
-          "rollLabel": "Battle Save"
-        },
-        "systems": {
-          "value": 10,
-          "mod": 0,
-          "min": 0,
-          "max": 99,
-          "label": "Systems",
-          "rollLabel": "Systems Save"
-        },
-        "bankruptcy": {
-          "value": 10,
-          "mod": 0,
-          "min": 0,
-          "max": 99,
-          "label": "Bankruptcy",
-          "rollLabel": "Bankruptcy Save"
-        }
-      },
-      "supplies": {
-        "hull": {
-          "value": 10,
-          "max": 10,
-          "75" : 0,
-          "50" : 0,
-          "25" : 0
-        },
-        "fuel": {
-          "value": 10,
-          "max": 10
-        },
-        "stock": {
-          "value": 10,
-          "max": 10
-        },
-        "crew": {
-          "value": 10,
-          "max": 10
-        },
-        "oxygen": {
-          "value": 0
-        },
-        "warp-cores": {
-          "value": 0
-        },
-        "cryopods": {
-          "value": 0
-        },
-        "escape-pods": {
-          "value": 0
-        },
-        "upgrades": {
-          "value": 0,
-          "max" : 0
-        }
-      },
-      "weapon-stats" : {
-        "weapons": {
-          "value": 0,
-          "max": 1
-        },
-        "megadamage": {
-          "value": 0,
-          "max": 1
-        },
-        "hardpoints": {
-          "value": 0,
-          "max": 1
-        }
-
       }
     }
   },
@@ -377,10 +229,7 @@
       "weapon",
       "armor",
       "ability",
-      "module",
       "condition",
-      "crew",
-      "repair",
       "class"
     ],
     "templates": {
@@ -394,7 +243,7 @@
       ],
       "quantity": 1,
       "weight": 0,
-      "cost" : 0
+      "cost": 0
     },
     "skill": {
       "templates": [
@@ -413,19 +262,19 @@
       "ammo": 10,
       "shots": 1,
       "curShots": 0,
-      "shotsPerFire" : 1,
+      "shotsPerFire": 1,
       "useAmmo": false,
       "ammoType": "",
       "critDmg": "",
       "woundEffect": "",
       "bonus": 0,
       "weight": 0,
-      "cost" : 0,
+      "cost": 0,
       "ranges": {
         "short": 0,
         "medium": 0,
         "long": 0,
-        "value" : ""
+        "value": ""
       }
     },
     "armor": {
@@ -433,12 +282,12 @@
         "base"
       ],
       "armorPoints": 1,
-      "damageReduction":0,
+      "damageReduction": 0,
       "speed": "",
       "oxygenMax": 0,
       "oxygenCurrent": 0,
       "weight": 0,
-      "cost" : 0,
+      "cost": 0,
       "equipped": false,
       "features": ""
     },
@@ -447,9 +296,9 @@
         "base"
       ],
       "severity": 1,
-      "treatment" : {
-        "value" : 0,
-        "html" : ""
+      "treatment": {
+        "value": 0,
+        "html": ""
       }
     },
     "ability": {
@@ -457,29 +306,6 @@
         "base"
       ],
       "roll": ""
-    },
-    "crew": {
-      "templates": [
-        "base"
-      ],
-      "job" : ""
-    },
-    "repair": {
-      "templates": [
-        "base"
-      ],
-      "quantity": 1,
-      "major": false
-    },
-    "module": {
-      "templates": [
-        "base"
-      ],
-      "quantity": 1,
-      "hull": 1,
-      "totalHull" : 1,
-      "feature" : "",
-      "cost" : 0
     },
     "class": {
       "templates": [

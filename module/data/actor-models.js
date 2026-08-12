@@ -104,76 +104,7 @@ export class MoshCreature extends foundry.abstract.TypeDataModel {
   }
 }
 
-export class MoshShip extends foundry.abstract.TypeDataModel {
-  static defineSchema() {
-    return {
-      ...baseSchema(),
-      biography: html(''),
-      description: html('This is a description'),
-      type: str(''),
-      class: str(''),
-      // The ship-sheet header treats these as free text, not currency: no data-dtype, and
-      // values like "2,000,000cr" are what the sheet is for.
-      cost: str(''),
-      owed: str(''),
-      make: str(''),
-      transponder: bool(false),
-      xp: new fields.SchemaField({ value: num(1) }),
-      images: new fields.SchemaField({
-        layout: new fields.FilePathField({
-          categories: ['IMAGE'], required: true, blank: true,
-          initial: 'systems/mothershiprpg/images/Galloway_Top.png',
-        }),
-        beauty: new fields.FilePathField({
-          categories: ['IMAGE'], required: true, blank: true,
-          initial: 'systems/mothershiprpg/images/Galloway_Top.png',
-        }),
-      }),
-      runSetup: bool(true),
-      megadamage: new fields.SchemaField({
-        html: str(''),
-        hits: new fields.ArrayField(new fields.StringField()),
-        menu: new fields.SchemaField({ html: str('') }),
-        open: bool(false),
-      }),
-      // Every ship stat carries `mod`: parseRollResult's caller adds `stats[attribute].mod` to
-      // the target of any stat roll, and _deriveShip() is empty, so nothing recomputes it.
-      // Only four are exposed by ship-sheet.html today; the rest would be the same latent hole.
-      stats: new fields.SchemaField({
-        armor: stat(10, 'Armor', 'Armor Save', { mod: true }),
-        combat: stat(10, 'Combat', 'Combat Check', { mod: true }),
-        intellect: stat(10, 'Intellect', 'Intellect Check', { mod: true }),
-        speed: stat(10, 'Speed', 'Speed Check', { mod: true }),
-        thrusters: stat(10, 'Thrusters', 'Thrusters Save', { mod: true }),
-        battle: stat(10, 'Battle', 'Battle Save', { mod: true }),
-        systems: stat(10, 'Systems', 'Systems Save', { mod: true }),
-        bankruptcy: stat(10, 'Bankruptcy', 'Bankruptcy Save', { mod: true }),
-      }),
-      supplies: new fields.SchemaField({
-        // The numeric keys are the damage thresholds the hull has already crossed.
-        hull: new fields.SchemaField({
-          value: num(10), max: num(10), 75: num(0), 50: num(0), 25: num(0),
-        }),
-        fuel: counter(10, 10),
-        stock: counter(10, 10),
-        crew: counter(10, 10),
-        oxygen: new fields.SchemaField({ value: num(0) }),
-        'warp-cores': new fields.SchemaField({ value: num(0) }),
-        cryopods: new fields.SchemaField({ value: num(0) }),
-        'escape-pods': new fields.SchemaField({ value: num(0) }),
-        upgrades: counter(0, 0),
-      }),
-      'weapon-stats': new fields.SchemaField({
-        weapons: counter(0, 1),
-        megadamage: counter(0, 1),
-        hardpoints: counter(0, 1),
-      }),
-    };
-  }
-}
-
 export const ACTOR_MODELS = {
   character: MoshCharacter,
   creature: MoshCreature,
-  ship: MoshShip,
 };

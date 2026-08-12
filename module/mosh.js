@@ -5,8 +5,6 @@ import { ACTOR_MODELS } from "./data/actor-models.js";
 import { MothershipActor } from "./actor/actor.js";
 import { MothershipActorSheet } from "./actor/actor-sheet.js";
 import { MothershipCreatureSheet } from "./actor/creature-sheet.js";
-import { MothershipShipSheet } from "./actor/ship-sheet.js";
-import { MothershipShipSheetSBT } from "./actor/ship-sheet-sbt.js";
 
 import { MothershipItem } from "./item/item.js";
 import { MoshItemSheet } from "./ui/item/ItemSheetApp.js";
@@ -57,8 +55,6 @@ Hooks.once('init', async function () {
   foundry.documents.collections.Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
   foundry.documents.collections.Actors.registerSheet("mothershiprpg", MothershipActorSheet, {types: ['character'], makeDefault: true});
   foundry.documents.collections.Actors.registerSheet("mothershiprpg", MothershipCreatureSheet, {types: ['creature'], makeDefault: false});
-  foundry.documents.collections.Actors.registerSheet("mothershiprpg", MothershipShipSheetSBT, {types: ['ship'], makeDefault: true});
-  foundry.documents.collections.Actors.registerSheet("mothershiprpg", MothershipShipSheet, {types: ['ship'], makeDefault: false});
   foundry.documents.collections.Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
   foundry.documents.collections.Items.registerSheet("mothershiprpg", MothershipClassSheet, {types: ['class'], makeDefault: true});
   foundry.documents.collections.Items.registerSheet("mothershiprpg", MoshSkillSheet, {types: ['skill'], makeDefault: true});
@@ -68,11 +64,8 @@ Hooks.once('init', async function () {
       "weapon",
       "armor",
       "ability",
-      "module",
-      "condition",
-      "crew",
-      "repair"
-    ], 
+      "condition"
+    ],
     makeDefault: true 
   });
 
@@ -486,38 +479,6 @@ async function noCharSelected() {
   });
 }
 
-//tell user no ship is selected
-async function noShipSelected() {
-  //wrap the whole thing in a promise, so that it waits for the form to be interacted with
-  return new Promise(async (resolve) => {
-    //init vars
-    let errorMessage = ``;
-    //create error text based on current settings
-    if (game.settings.get('mothershiprpg','macroTarget') === 'character') {
-      errorMessage = `<h3>No Ship Selected</h3>Macro Target is set to the currently selected character. To select a ship, modify your User Configuration in the Players menu located in the lower-left of the interface.<br><br>If you prefer Macros to be run on the currently selected token(s) in the scene, you should change your settings accordingly.<br><br>`;
-    } else if (game.settings.get('mothershiprpg','macroTarget') === 'token') {
-      errorMessage = `<h3>No Ship Selected</h3>Macro Target is set to the currently selected token(s) in the scene. To select token(s), click or draw a box around token(s) in the current scene.<br><br>If you prefer Macros to be run on the currently selected character for your user, you should change your settings accordingly.<br><br>`;
-    }
-    //create final dialog data
-    const dialogData = {
-      window: {title: `Macro Issue`},
-      classes: ["macro-popup-dialog"],
-      content: errorMessage,
-      buttons: [
-        {
-          label: `Ok`,
-          action: 'action_ok',
-          callback: () => { },
-          icon: 'fas fa-check'
-        }
-      ]
-    };
-    //render dialog
-    const dialog = foundry.applications.api.DialogV2(dialogData).render({force: true});
-    //log what was done
-    console.log(`Told the user that no character was selected.`);
-  });
-}
 
 
 /**

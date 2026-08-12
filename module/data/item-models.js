@@ -80,19 +80,6 @@ export class MoshAbility extends foundry.abstract.TypeDataModel {
   }
 }
 
-export class MoshModule extends foundry.abstract.TypeDataModel {
-  static defineSchema() {
-    return {
-      ...base(),
-      quantity: num(1, true),
-      hull: num(1),
-      totalHull: num(1),
-      feature: str(''),
-      cost: num(0),
-    };
-  }
-}
-
 export class MoshCondition extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
@@ -100,18 +87,6 @@ export class MoshCondition extends foundry.abstract.TypeDataModel {
       severity: num(1),
       treatment: new fields.SchemaField({ value: num(0), html: str('') }),
     };
-  }
-}
-
-export class MoshCrew extends foundry.abstract.TypeDataModel {
-  static defineSchema() {
-    return { ...base(), job: str('') };
-  }
-}
-
-export class MoshRepair extends foundry.abstract.TypeDataModel {
-  static defineSchema() {
-    return { ...base(), quantity: num(1, true), major: bool(false) };
   }
 }
 
@@ -157,9 +132,6 @@ export const ITEM_MODELS = {
   weapon: MoshWeapon,
   armor: MoshArmor,
   ability: MoshAbility,
-  module: MoshModule,
   condition: MoshCondition,
-  crew: MoshCrew,
-  repair: MoshRepair,
   class: MoshClass,
 };

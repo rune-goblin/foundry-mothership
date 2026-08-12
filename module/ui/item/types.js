@@ -2,10 +2,7 @@ import Ability from './types/Ability.svelte';
 import Armor from './types/Armor.svelte';
 import ArmorExtra from './types/ArmorExtra.svelte';
 import Condition from './types/Condition.svelte';
-import Crew from './types/Crew.svelte';
 import Item from './types/Item.svelte';
-import Module from './types/Module.svelte';
-import Repair from './types/Repair.svelte';
 import Weapon from './types/Weapon.svelte';
 import WeaponExtra from './types/WeaponExtra.svelte';
 
@@ -14,10 +11,7 @@ export const ITEM_BODIES = {
   ability: Ability,
   armor: Armor,
   condition: Condition,
-  crew: Crew,
   item: Item,
-  module: Module,
-  repair: Repair,
   weapon: Weapon,
 };
 

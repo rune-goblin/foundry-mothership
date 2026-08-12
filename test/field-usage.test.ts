@@ -43,27 +43,12 @@ type Entry = { pattern: RegExp; reason: string };
 const DYNAMIC: Entry[] = [
   {
     pattern: /^stats\.[a-z]+\.(label|rollLabel)$/,
-    reason: 'actor.js:1247,1256,1428,1517,1614,1616 read stats[attribute].label/.rollLabel',
-  },
-  {
-    pattern: /^stats\.(thrusters|battle|systems|bankruptcy)\.mod$/,
-    reason: 'actor.js:1373 reads stats[attribute].mod; the ship stats have no literal reader',
+    reason: 'rollCheck and chooseSkill read stats[attribute].label/.rollLabel by computed key',
   },
   {
     pattern: /^netHP\.(min|label)$/,
-    reason: 'actor.js:44,81 write netHP as an object literal, not through system.netHP.min',
+    reason: '_deriveCharacter/_deriveCreature write netHP as an object literal, not by path',
   },
-];
-
-/**
- * Dead, and scheduled. architecture.md defers the ship half of the audited prune to phase 3 (C11)
- * so phases 1-2 touch no ship schema and the SBT megadamage e2e specs cannot be disturbed.
- * These come off this list and out of the schema together.
- */
-const DEFERRED_TO_PHASE_3: Entry[] = [
-  { pattern: /^images\.beauty$/, reason: 'C11' },
-  { pattern: /^megadamage\.menu\.html$/, reason: 'C11' },
-  { pattern: /^supplies\.hull\.(25|50|75)$/, reason: 'C11 -- the sheet computes hull.percentage' },
 ];
 
 /**
@@ -87,7 +72,7 @@ const GRANDFATHERED: Entry[] = [
   },
 ];
 
-const ALLOWLIST = [...DYNAMIC, ...DEFERRED_TO_PHASE_3, ...GRANDFATHERED];
+const ALLOWLIST = [...DYNAMIC, ...GRANDFATHERED];
 const allowed = (path: string) => ALLOWLIST.some((e) => e.pattern.test(path));
 
 // Sheets bind `actor.system.<path>` and `item.system.<path>` as well as the bare form, so match the

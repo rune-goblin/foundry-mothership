@@ -15,7 +15,6 @@ export class MothershipActor extends Actor {
     // ----- per-type derived -----
     if (this.type === "character") this._deriveCharacter();
     else if (this.type === "creature") this._deriveCreature();
-    else if (this.type === "ship") this._deriveShip();
   }
 
   // Prepare Character type specific data
@@ -100,11 +99,6 @@ export class MothershipActor extends Actor {
     if (system.swarm && system.swarm.enabled){
       system.stats.combat.value = system.swarm.combat.value * ( system.hits.max - system.hits.value ); 
     }
-  }
-
-  // Prepare Ship type specific data
-  _deriveShip() {
-    //nothing needed yet
   }
 
   //central flavor text library for all chat messages
@@ -608,8 +602,6 @@ export class MothershipActor extends Actor {
     let androidPanic = game.settings.get('mothershiprpg', 'androidPanic');
     let tableResultNumber = null;
     let secondRoll = false;
-    let rollResult2 = null;
-    let parsedRollResult2 = null;
     //customize this roll if its a unique use-case
       //panic check
       if (tableId === 'panicCheck') {
@@ -657,17 +649,6 @@ export class MothershipActor extends Actor {
           rollString = '1d20' + rollString;
         }
         }
-      }
-      //maintenance check
-      if (tableId === 'maintenanceCheck') {
-        //set special roll value for use later
-        specialRoll = tableId;
-        //assign variables
-      tableId = game.settings.get('mothershiprpg', 'table1eMaintenance');
-        zeroBased = true;
-        checkCrit = true;
-        rollAgainst = 'system.stats.systems.value';
-        comparison = '<';
       }
     //bounce this request away if certain parameters are NULL
       //if rollString is STILL blank, redirect player to choose the roll
@@ -730,22 +711,6 @@ export class MothershipActor extends Actor {
       let rollResult = await new Roll(parsedRollString).evaluate();
       //interpret the results
     let parsedRollResult = this.parseRollResult(rollString, rollResult, zeroBased, checkCrit, rollTarget, comparison, specialRoll);
-    //if this is a maintenance check, we need to roll again if a failure
-      //roll a second die if needed
-      if (!parsedRollResult.success && specialRoll === 'maintenanceCheck') {
-        //determine the rollString
-        let rollString2 = '1d100';
-        //roll second dice
-        rollResult2 = await new Roll(rollString2).evaluate();
-        //roll second set of dice
-      parsedRollResult2 = this.parseRollResult(rollString2, rollResult2, true, false, null, null, specialRoll);
-        //set marker for HTML
-        secondRoll = true;
-        //set table result number
-        tableResultNumber = parsedRollResult2.total;
-        //log second die
-        console.log(`Rolled second die`);
-      }
     //set table result number if null
     if (!tableResultNumber) {
       tableResultNumber = parsedRollResult.total;
@@ -774,26 +739,6 @@ export class MothershipActor extends Actor {
       if (useCalm && !parsedRollResult.success && parsedRollResult.critical) {
         tableResultFooter = `<br><br>You lose 1d10 Calm because you critically failed.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.jHyqXb2yDFTNWxpy]{-1d10 Calm}`;
       }
-      //append effects for Stress + Maintenance Check Failure
-      if (specialRoll === 'maintenanceCheck' && !useCalm && !parsedRollResult.success && !parsedRollResult.critical) {
-        tableResultFooter = `<br><br>Everyone on board the ship takes 1 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.dvJR9DYXI2kV0BbR]{+1 Stress}`;
-      }
-      //append effects for Stress + Critical Maintenance Check Failure
-      if (specialRoll === 'maintenanceCheck' && !useCalm && !parsedRollResult.success && parsedRollResult.critical) {
-        tableResultFooter = `<br><br>Everyone on board the ship takes 1 Stress. You must roll for another maintenance issue because you critically failed.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.dvJR9DYXI2kV0BbR]{+1 Stress}<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.hRapiXGVW8WZQH12]{Roll for Maintenance Issue}`;
-      }
-      //append effects for Calm + Maintenance Check Failure
-      if (specialRoll === 'maintenanceCheck' && useCalm && !parsedRollResult.success && !parsedRollResult.critical) {
-        tableResultFooter = `<br><br>Everyone on board the ship loses 1d10 Calm.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.jHyqXb2yDFTNWxpy]{-1d10 Calm}`;
-      }
-      //append effects for Calm + Critical Maintenance Check Failure
-      if (specialRoll === 'maintenanceCheck' && useCalm && !parsedRollResult.success && parsedRollResult.critical) {
-        tableResultFooter = `<br><br>Everyone on board the ship loses 1d10 Calm. You must roll for another maintenance issue because you critically failed.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.jHyqXb2yDFTNWxpy]{-1d10 Calm}<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.hRapiXGVW8WZQH12]{Roll for Maintenance Issue}`;
-      }
-      //append effects for Calm + Critical Maintenance Check Success
-      if (specialRoll === 'maintenanceCheck' && useCalm && parsedRollResult.success && parsedRollResult.critical) {
-        flavorText = flavorText + ` Gain 1d10 Calm.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.k2TtLFOG9mGaWVx3]{+1d10 Calm}`;
-      }
     //set table result type (using first value)
     if (tableResult[0].type === 0 || tableResult[0].type === 'text') {
       tableResultType = `text`;
@@ -817,7 +762,6 @@ export class MothershipActor extends Actor {
         flavorText: flavorText,
         woundText: woundText,
         secondRoll: secondRoll,
-        parsedRollResult2: parsedRollResult2,
         specialRoll: specialRoll
       };
       //prepare template
@@ -1212,24 +1156,6 @@ export class MothershipActor extends Actor {
             attribute = 'body';
           }
       }
-      //bankruptcy save
-      if (attribute === 'bankruptcySave') {  
-        //set special roll value for use later
-        specialRoll = attribute;
-        //set attribute value
-        attribute = 'bankruptcy';
-      }
-      //morale check
-      if (attribute === 'moraleCheck') {  
-        //set special roll value for use later
-        specialRoll = attribute;
-        //disable criticals for this roll
-        checkCrit = false;
-        //set attribute value
-        attribute = 'megadamage';
-        //lets get the max megadamage value
-        rollTargetOverride = Math.max.apply(null, this.system.megadamage.hits);
-      }
     //bounce this request away if certain parameters are NULL
       //if attribute is blank, redirect player to choose an attribute
       if (!attribute && !specialRoll) {
@@ -1560,53 +1486,6 @@ export class MothershipActor extends Actor {
             }
           }
         //0e rest save
-        }
-        //bankruptcy save
-        if (specialRoll === 'bankruptcySave') {
-          //message header
-          msgHeader = game.i18n.localize("Mosh.BankrupcySave");
-          //set header image
-          msgImgPath = 'systems/mothershiprpg/images/icons/ui/rolltables/bankruptcy_save.png';
-          //prepare attribute label
-          attributeLabel = game.i18n.localize("Mosh.Bankrupcy");
-          //get the bankruptcy table
-          let tableId = game.settings.get('mothershiprpg','table1eBankruptcy');
-          //get Table Data
-          let tableData = await fromIdUuid(tableId,{type:"RollTable"});
-          //prep text for success
-          if (parsedRollResult.success && parsedRollResult.critical) {
-            //flavor text
-            flavorText = tableData.getResultsForRoll(0)[0].description;
-          //prep text for critical success
-          } else if (parsedRollResult.success && !parsedRollResult.critical) {
-            //flavor text
-            flavorText = tableData.getResultsForRoll(1)[0].description;
-          //prep text for failure
-          } else if (!parsedRollResult.success && !parsedRollResult.critical) {
-            //flavor text
-            flavorText = tableData.getResultsForRoll(2)[0].description;
-          //prep text for critical failure
-          } else if (!parsedRollResult.success && parsedRollResult.critical) {
-            //flavor text
-            flavorText = tableData.getResultsForRoll(3)[0].description;
-          }
-        }
-        //morale check
-        if (specialRoll === 'moraleCheck') {
-          //message header
-          msgHeader = game.i18n.localize("Mosh.MoraleCheck") 
-          //set header image
-          msgImgPath = 'systems/mothershiprpg/images/icons/ui/macros/morale_check.png';
-          //prepare attribute label
-          attributeLabel = 'Megadamage';
-          //prep text based on success or failure
-          if (!parsedRollResult.success) {
-            //flavor text
-            flavorText = `The crew, once focused on their tasks, now exchange anxious glances as the reality of the situation set in. Struggling to maintain composure in the chaos, the crew decides to send a hail and hope for mercy.`;
-          } else {
-          //flavor texattributes/
-            flavorText = `As the ship shudders under the impact of enemy fire, a sense of urgency fills the control room. Alarms blare, emergency lights bath the crew in a stark glow, but there is no panic. The crew, seasoned and unyielding, maintain their focus on the task at hand.`;
-          }
         }
       //prepare flavor text for regular checks
       } else {
@@ -2504,205 +2383,6 @@ export class MothershipActor extends Actor {
     
   }
 
-  //activate ship's distress signal
-  async distressSignal() {
-    //wrap the whole thing in a promise, so that it waits for the form to be interacted with
-    return new Promise(async (resolve) => {
-      //create pop-up HTML
-      let msgContent = await foundry.applications.handlebars.renderTemplate('systems/mothershiprpg/templates/dialogs/distress-signal-dialog.html');
-      
-      //create final dialog data
-      const dialogData = {
-        window: {title: game.i18n.localize("Mosh.DistressSignal")},
-        classes: ["macro-popup-dialog"],
-        position: {width: 600,height: 265},
-        content: msgContent,
-        buttons: [
-          {
-            label: game.i18n.localize("Mosh.Advantage"),
-			      action: `action_advantage`,
-            callback: () => this.rollTable(game.settings.get('mothershiprpg', 'table1eDistressSignal'), `1d10 [+]`, `low`, true, false, null, null),
-            icon: `fas fa-angle-double-up`
-          },
-          {
-            label: game.i18n.localize("Mosh.Normal"),
-			      action: `action_normal`,
-            callback: () => this.rollTable(game.settings.get('mothershiprpg', 'table1eDistressSignal'), `1d10`, `low`, true, false, null, null),
-            icon: `fas fa-minus`
-          },
-          {
-            label: game.i18n.localize("Mosh.Disadvantage"),
-			      action: `action_disadvantage`,
-            callback: () => this.rollTable(game.settings.get('mothershiprpg', 'table1eDistressSignal'), `1d10 [-]`, `low`, true, false, null, null),
-            icon: `fas fa-angle-double-down`
-          }
-        ]
-      };
-      //render dialog
-      const dialog = new foundry.applications.api.DialogV2(dialogData).render({force: true});
-    
-    });
-    
-  }
-
-  //activate ship's distress signal
-  async maintenanceCheck() {
-    //wrap the whole thing in a promise, so that it waits for the form to be interacted with
-    return new Promise(async (resolve) => {
-      //create pop-up HTML
-      let msgContent = await foundry.applications.handlebars.renderTemplate('systems/mothershiprpg/templates/dialogs/maintenance-check-dialog.html');
-      //create final dialog data
-      const dialogData = {
-        window: {title: game.i18n.localize("Mosh.MaintenanceCheck")},
-        classes: ["macro-popup-dialog"],
-        position: {width: 600,height: 265},
-        content: msgContent,
-        buttons: [
-          {
-            label: game.i18n.localize("Mosh.Advantage"),
-			      action: `action_advantage`,
-            callback: () => this.rollTable(`maintenanceCheck`, `1d100 [+]`, `low`, null, null, null, null),
-            icon: `fas fa-angle-double-up`
-          },
-          {
-            label: game.i18n.localize("Mosh.Normal"),
-			      action: `action_normal`,
-            callback: () => this.rollTable(`maintenanceCheck`, `1d100`, `low`, null, null, null, null),
-            icon: `fas fa-minus`
-          },
-          {
-            label: game.i18n.localize("Mosh.Disadvantage"),
-			      action: `action_disadvantage`,
-            callback: () => this.rollTable(`maintenanceCheck`, `1d100 [-]`, `low`, null, null, null, null),
-            icon: `fas fa-angle-double-down`
-          }
-        ]
-      };
-      //render dialog
-      const dialog = new foundry.applications.api.DialogV2(dialogData).render({force: true});
-    
-    });
-    
-  }
-
-  //activate ship's distress signal
-  async bankruptcySave() {
-    //wrap the whole thing in a promise, so that it waits for the form to be interacted with
-    return new Promise(async (resolve) => {
-      //create pop-up HTML
-      let msgContent = await foundry.applications.handlebars.renderTemplate('systems/mothershiprpg/templates/dialogs/bankruptcy-save-dialog.html');
-      //create final dialog data
-      const dialogData = {
-        window: {title: game.i18n.localize("Mosh.BankrupcySave")},
-        classes: ["macro-popup-dialog"],
-        position: {width: 600,height: 265},
-        content: msgContent,
-        buttons: [
-          {
-            label: game.i18n.localize("Mosh.Advantage"),
-			      action: `action_advantage`,
-            callback: () => this.rollCheck(`1d100 [+]`, `low`, `bankruptcySave`, null, null, null),
-            icon: `fas fa-angle-double-up`
-          },
-          {
-            label: game.i18n.localize("Mosh.Normal"),
-			      action: `action_normal`,
-            callback: () => this.rollCheck(`1d100`, `low`, `bankruptcySave`, null, null, null),
-            icon: `fas fa-minus`
-          },
-          {
-            label: game.i18n.localize("Mosh.Disadvantage"),
-			      action: `action_disadvantage`,
-            callback: () => this.rollCheck(`1d100 [-]`, `low`, `bankruptcySave`, null, null, null),
-            icon: `fas fa-angle-double-down`
-          }
-        ]
-      };
-      //render dialog
-      new foundry.applications.api.DialogV2(dialogData).render({force: true});
-
-    });
-    
-  }
-
-  //activate ship's distress signal
-  async moraleCheck() {
-    //wrap the whole thing in a promise, so that it waits for the form to be interacted with
-    return new Promise(async (resolve) => {
-      //create pop-up HTML
-
-      let moraleCheck = game.i18n.localize("Mosh.MoraleCheck")
-      let moraleCheckDescription = game.i18n.localize("Mosh.MoraleCheckDescription")
-
-      let msgContent = `
-      <style>
-        .macro_window{
-          background: rgb(230,230,230);
-          border-radius: 9px;
-        }
-        .macro_img{
-          display: flex;
-          justify-content: center;
-        }
-        .macro_desc{
-          font-family: "Roboto", sans-serif;
-          font-size: 10.5pt;
-          font-weight: 400;
-          padding-top: 8px;
-          padding-right: 8px;
-          padding-bottom: 8px;
-        }
-        .grid-2col {
-          display: grid;
-          grid-column: span 2 / span 2;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 2px;
-          padding: 0;
-        }
-      </style>
-      <div class ="macro_window" style="margin-bottom : 7px;">
-        <div class="grid grid-2col" style="grid-template-columns: 150px auto">
-          <div class="macro_img"><img src="icon_file_macro_momnsrale_check.png" style="border:none"/></div>
-          <div class="macro_desc"><h3>${moraleCheck}</h3>${moraleCheckDescription}</div>
-        </div>
-      </div>
-      <h4>Select your roll type:</h4>
-      `;
-      //create final dialog data
-      const dialogData = {
-        window: {title: `Morale Check`},
-        classes: ["macro-popup-dialog"],
-        position: {width: 600,height: 265},
-        content: msgContent,
-        buttons: [
-          {
-            label: game.i18n.localize("Mosh.Advantage"),
-			      action: `action_advantage`,
-            callback: () => this.rollCheck(`1d10 [+]`, `high-equal`, `moraleCheck`, null, null, null),
-            icon: `fas fa-angle-double-up`
-          },
-          {
-            label: game.i18n.localize("Mosh.Normal"),
-			      action: `action_normal`,
-            callback: () => this.rollCheck(`1d10`, `high-equal`, `moraleCheck`, null, null, null),
-            icon: `fas fa-minus`
-          },
-          {
-            label: game.i18n.localize("Mosh.Disadvantage"),
-			      action: `action_disadvantage`,
-            callback: () => this.rollCheck(`1d10 [-]`, `high-equal`, `moraleCheck`, null, null, null),
-            icon: `fas fa-angle-double-down`
-          }
-        ]
-      };
-      //render dialog
-      const dialog = new foundry.applications.api.DialogV2(dialogData).render({force: true});
-
-    });
-    
-  }
-
-  // print description
   printDescription(itemId, options = {event: null}) {
     var item;
     item = foundry.utils.duplicate(this.getEmbeddedDocument('Item', itemId));
@@ -2730,7 +2410,7 @@ export class MothershipActor extends Actor {
     }
 
     // add flag to swap name and description, if desc contains trinket or patch
-    if (["<p>Patch</p>", "<p>Trinket</p>", "<p>Maintenance Issue</p>"].includes(item.system.description)) {
+    if (["<p>Patch</p>", "<p>Trinket</p>"].includes(item.system.description)) {
       swapNameDesc = true;
       swapName = item.system.description.replaceAll('<p>', '').replaceAll('</p>', '');
     }

@@ -120,8 +120,7 @@
   "documentTypes": {
     "Actor": {
       "character": {},
-      "creature": {},
-      "ship": {}
+      "creature": {}
     },
     "Item": {
       "item": {},
@@ -129,10 +128,7 @@
       "weapon": {},
       "armor": {},
       "ability": {},
-      "module": {},
       "condition": {},
-      "crew": {},
-      "repair": {},
       "class": {}
     }
   },
