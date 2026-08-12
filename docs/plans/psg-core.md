@@ -466,7 +466,7 @@ a section needing more than ~3 divergence props splits.
 
 ### S7 — actor-sheet
 
-`module/actor/actor-sheet.js` (656 lines) + `templates/actor/actor-sheet.html` (526). Last, because
+`module/actor/actor-sheet.js` (653 lines) + `templates/actor/actor-sheet.html` (522). Last, because
 it is the most player-visible thing in the system. It composes S6's sections and keeps its
 genuinely divergent parts local — the dial header, the saves, the stress panic split.
 
@@ -474,8 +474,8 @@ Deletions it carries, each in the DataModel **and** `template.json` (Decision 2a
 
 | Field | Replaced by | Note |
 |---|---|---|
-| `character.xp.html` (a *number*) | `PipTrack` + `$derived` | built as an HTML string at `actor-sheet.js:52–63` |
-| `condition.treatment.html` | `PipTrack` from `treatment.value` | written onto embedded items at `actor-sheet.js:129–145`; the `.treatment-button` handler at 207 stays |
+| `character.xp.html` (a *number*) | `PipTrack` + `$derived` | built as an HTML string at `actor-sheet.js:52–79` |
+| `condition.treatment.html` | `PipTrack` from `treatment.value` | written onto embedded items at `actor-sheet.js:123–139`; the `.treatment-button` handler at 201 stays |
 | `character.weight.current` / `.capacity` | computed in `prepareDerivedData`, not stored | explicitly inside Decision 2's may-change list |
 
 **`weapon.ranges.value` is done — §31, landed after the S6 review, and Decision 2a's row is
