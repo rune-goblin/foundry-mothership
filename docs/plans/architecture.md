@@ -398,7 +398,28 @@ The rescue machinery is exercised **first on conditions in phase 1** (50 documen
 the character tier) and reused on the ship content in phase 3 (200+ documents) — the risky
 program gets its shakedown on the smaller, earlier set.
 
-### The conditions straddle: rescue all 50, cross-check the 15
+### The conditions straddle: rescue all 50 — and the cross-check does not survive measurement
+
+> **Correction, measured 2026-08-12 during phase 0.** The ruling below rests on "15 of 50
+> conditions match PSG content by name". Re-measured against the whole vendored corpus, **12**
+> match as an exact quoted string — and **10 of those 12 are panic-table results**, not condition
+> definitions (`Coward`, `Doomed`, `Deflated`, `Frightened`, `Haunted`, `Loss of Confidence`,
+> `Nightmares`, `Spiraling`, `Suspicious`, `Death Wish`). The other two are `Bleeding` (a wound
+> type and a weapon property) and `Cryosickness` (a rules-index entry).
+>
+> **There is no conditions dataset upstream at all.** So a build-time check that "warns when one of
+> the 15 PSG-matching entries drifts from the extraction's text" would be comparing a condition's
+> description against a *panic result's* description — different documents describing different
+> things. **Do not build it.** The straddle is not a straddle: all 50 conditions are rescued tier,
+> full stop, which makes the ruling below simpler rather than weaker.
+>
+> The genuine relationship the measurement did turn up is worth capturing instead: 8 panic results
+> carry `grantsCondition: true` and name a shipped condition. That is a real cross-reference — a
+> panic result should be able to apply the condition it names — and it is the seed for the
+> advantage/disadvantage requirement above. Note `Loss of Confidence` (packs) vs `Loss Of
+> Confidence` (upstream) differ in capitalisation, so the join must be case-insensitive.
+
+### The original ruling: rescue all 50, cross-check the 15
 
 Part 4.2: 15 of 50 conditions match PSG content by name; 35 have no source. Ruling: **rescue
 all 50 into one maintained `content/local/conditions.json`**, and add a build-time cross-check
@@ -629,6 +650,25 @@ It is well-founded in the data, which is why it belongs after phase 1 rather tha
   vocabulary `{disadvantage: 22, advantage: 13}`**, plus `grantsCondition` (8 true).
 - That vocabulary is exactly what the roll pipeline already speaks: `parseRollString` translates
   `[+]` / `[-]` into keep-highest / keep-lowest formulas, and it is unit-tested.
+
+> **Correction, measured 2026-08-12 during phase 0.** The "125" above conflates two counts. 125
+> records carry a `modifiers` **key**; only **35** carry a non-empty value — and the
+> `{disadvantage: 22, advantage: 13}` vocabulary is the breakdown of those 35, not of 125. They sit
+> in `weapons.json` (14), `wounds.json` (11), `panic.json` (7), `armor.json` (2) and
+> `shore-leave.json` (1).
+>
+> **None of them is on a condition, because there is no conditions dataset upstream.** The only
+> condition-linked modifiers reachable from the corpus are indirect: 8 panic results carry
+> `grantsCondition: true` and name a condition this system already ships — Coward, Frightened,
+> Nightmares, Loss Of Confidence, Deflated, Doomed, Haunted, Spiraling — and of those, exactly
+> **three** also carry a modifier (`Frightened`, `Nightmares`, `Spiraling`, all `disadvantage`).
+>
+> So the feature cannot be delivered by generation. **The condition → modifier mapping is new
+> authored data on the rescued conditions**, seeded by those three and otherwise decided by us (or
+> derived from the existing `severity` field, which is a design question, not a data one). The
+> requirement stands and the roll pipeline still speaks the vocabulary; the estimate does not — it
+> is an authoring job on 50 documents, not a wiring job over an existing corpus. Worth the owner
+> knowing before C2 fixes the condition schema, since that is the moment the field has to exist.
 
 **Consequence for the content filter:** `modifiers` and `grantsCondition` are *gameplay* data and
 must survive the "cut metadata, keep gameplay" rule. A naive strip to name + description would
