@@ -618,6 +618,12 @@ These settle the product calls the plan left open. A new session should treat th
 | Backward compatibility | **Not a constraint.** Schemas may change freely; breaking existing worlds is acceptable, consistent with §18. |
 | Stable document ids | **Valuable, and kept.** See below — the reason is not backward compatibility. |
 
+### Decided 2026-08-12, after the phase-0 measurements
+
+| Question | Decision |
+|---|---|
+| How the 50 conditions get their advantage/disadvantage modifier, given only 3 have upstream data | **Seed the 3, leave 47 neutral.** C2 adds `modifiers` to the condition schema and fills in `Frightened`, `Nightmares` and `Spiraling` (all `disadvantage`) from the panic results that grant them. The other 47 ship `[]`. No rule is invented from `severity`, and no content is authored on a guess — the 47 are authored later, against a feature that already works end to end. |
+
 ### Why stable ids still matter with backward compatibility abandoned
 
 Not for old worlds. For the content's **own internal integrity**: the shipped packs contain
