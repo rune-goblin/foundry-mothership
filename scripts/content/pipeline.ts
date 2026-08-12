@@ -1,20 +1,21 @@
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { bookDir, type Book } from './book.ts';
 import { canonical, emit, type Emitted, type Stamp } from './emit.ts';
 import { IdRegistry, type Registry } from './ids.ts';
 import { checkReferences } from './integrity.ts';
-import type { PackDefinition } from './record.ts';
+import { checkModelFields } from './model-guard.ts';
+import type { Provenance } from './record.ts';
 import { fileSlug } from './slug.ts';
-import { validateTier, type TierPaths } from './validate.ts';
+import { validateDatasets } from './validate.ts';
 
 export interface BuildOptions {
   root: string;
-  packs: PackDefinition[];
+  books: Book[];
   registryPath: string;
   outDir: string;
   manifestPath?: string;
   allocate?: boolean;
-  tiers?: TierPaths[];
 }
 
 export interface BuildResult {
@@ -33,27 +34,44 @@ export function readStamp(root: string): Stamp {
 }
 
 export function build(options: BuildOptions): BuildResult {
-  const { root, packs, registryPath, outDir, allocate = false } = options;
+  const { root, books, registryPath, outDir, allocate = false } = options;
 
-  const validationErrors = (options.tiers ?? []).flatMap((tier) => validateTier(tier));
+  const validationErrors = books.flatMap((book) =>
+    validateDatasets({ schema: join(bookDir(root, book), 'schema'), data: bookDir(root, book) }),
+  );
   if (validationErrors.length) throw new Error(`content failed validation:\n  ${validationErrors.join('\n  ')}`);
+
+  const packs = books.flatMap((b) => b.packs);
+  // A second book is meant to be additive. It stops being additive the moment it reuses a pack
+  // name — the registry key and the output directory — or a compendium another book already fills.
+  const collision =
+    firstDuplicate(books.map((b) => b.id)) ??
+    firstDuplicate(packs.map((p) => p.pack)) ??
+    firstDuplicate(packs.map((p) => p.compendium));
+  if (collision) throw new Error(`two books claim "${collision}"`);
 
   const stamp = readStamp(root);
   const ids = IdRegistry.load(registryPath, allocate);
 
   const emitted: Emitted[] = [];
-  for (const def of packs) {
-    const records = [...def.load(root)].sort((a, b) => (a.contentId < b.contentId ? -1 : 1));
-    const filenames = new Map<string, string>();
-    for (const record of records) {
-      const doc = emit(def, record, ids, stamp);
-      const filename = `${fileSlug(record.name)}.json`;
-      const clash = filenames.get(filename);
-      if (clash) throw new Error(`${def.pack}: "${record.name}" and "${clash}" both slug to ${filename}`);
-      filenames.set(filename, record.name);
-      emitted.push({ ...doc, filename });
+  for (const book of books) {
+    for (const def of book.packs) {
+      ids.declarePack(def.pack, def.compendium, def.documentType);
+      const records = [...def.load(root)].sort((a, b) => (a.contentId < b.contentId ? -1 : 1));
+      const filenames = new Map<string, string>();
+      for (const record of records) {
+        const doc = emit(def, record, ids, stamp, book.id);
+        const filename = `${fileSlug(record.name)}.json`;
+        const clash = filenames.get(filename);
+        if (clash) throw new Error(`${def.pack}: "${record.name}" and "${clash}" both slug to ${filename}`);
+        filenames.set(filename, record.name);
+        emitted.push({ ...doc, filename });
+      }
     }
   }
+
+  const modelErrors = checkModelFields(emitted);
+  if (modelErrors.length) throw new Error(`emitted content does not fit its DataModel:\n  ${modelErrors.join('\n  ')}`);
 
   const compendia = new Set(packs.map((p) => p.compendium));
   const refErrors = checkReferences({ systemId: stamp.systemId, emitted, compendia });
@@ -69,24 +87,37 @@ export function build(options: BuildOptions): BuildResult {
   }
   for (const [rel, text] of files) writeFileSync(join(outDir, rel), text);
 
-  if (options.manifestPath) writeManifest(options.manifestPath, emitted, stamp);
+  if (options.manifestPath) writeManifest(options.manifestPath, books, emitted, stamp);
   if (allocate && ids.allocations) ids.save(registryPath);
 
   return { emitted, registry: ids.registry, stamp, files };
 }
 
-function writeManifest(path: string, emitted: Emitted[], stamp: Stamp): void {
+function firstDuplicate(names: string[]): string | undefined {
+  return names.find((name, i) => names.indexOf(name) !== i);
+}
+
+function writeManifest(path: string, books: Book[], emitted: Emitted[], stamp: Stamp): void {
   const documents = [...emitted]
     .sort((a, b) => (`${a.compendium}/${a.contentId}` < `${b.compendium}/${b.contentId}` ? -1 : 1))
-    .map((doc) => ({
-      id: doc.id,
-      compendium: doc.compendium,
-      contentId: doc.contentId,
-      name: doc.name,
-      file: join(doc.pack, doc.filename),
-      provenance: doc.record.provenance,
-      results: doc.results,
-    }));
+    .map((doc) => {
+      const provenance: Provenance = { book: doc.book, ...doc.record.provenance };
+      return {
+        id: doc.id,
+        compendium: doc.compendium,
+        contentId: doc.contentId,
+        name: doc.name,
+        file: join(doc.pack, doc.filename),
+        provenance,
+        results: doc.results,
+      };
+    });
+  const sources = books.map((book) => ({
+    id: book.id,
+    title: book.title,
+    dir: book.dir,
+    documents: emitted.filter((d) => d.book === book.id).length,
+  }));
   mkdirSync(join(path, '..'), { recursive: true });
-  writeFileSync(path, canonical({ ...stamp, documents }));
+  writeFileSync(path, canonical({ ...stamp, books: sources, documents }));
 }

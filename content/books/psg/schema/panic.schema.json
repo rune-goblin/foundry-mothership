@@ -3,16 +3,24 @@
   "$id": "https://runegoblin.dev/mothership/panic.schema.json",
   "title": "Panic",
   "allOf": [{ "$ref": "common.schema.json#/$defs/rollTable" }],
+  "type": "object",
   "required": ["rule", "source"],
   "properties": {
     "die": { "const": "1d20" },
+    "rule": { "type": "string" },
+    "source": { "$ref": "common.schema.json#/$defs/source" },
     "results": {
+      "type": "array",
       "minItems": 20,
       "items": {
+        "type": "object",
         "required": ["range", "name", "effect", "grantsCondition", "modifiers"],
         "properties": {
+          "range": { "$ref": "common.schema.json#/$defs/rollRange" },
           "name": { "type": "string", "minLength": 1 },
-          "effect": { "type": "string", "minLength": 1 }
+          "effect": { "type": "string", "minLength": 1 },
+          "grantsCondition": { "type": "boolean" },
+          "modifiers": { "$ref": "common.schema.json#/$defs/modifiers" }
         }
       }
     }

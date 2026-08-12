@@ -3,28 +3,23 @@ import { basename, join } from 'node:path';
 import Ajv2020 from 'ajv/dist/2020.js';
 import type { ErrorObject, ValidateFunction } from 'ajv';
 
-export interface TierPaths {
+export interface DatasetPaths {
   /** Directory of `*.schema.json`. */
   schema: string;
-  /** Directory of `*.json` records; `schema/` beneath it is skipped. */
+  /** Directory of `*.json` datasets; `schema/` beneath it is skipped. */
   data: string;
-  /**
-   * Ajv strict mode — a keyword typo in a schema would otherwise validate everything and prove
-   * nothing, so it is on for schemas we author. Off for the vendored upstream schemas, which are
-   * not ours to relint: its complaints (`strictTypes`, `strictRequired`) are about how a schema is
-   * written, never about what it accepts, so data validation is unaffected either way.
-   */
-  strict?: boolean;
 }
 
 /**
- * One validator for both tiers. `content/schema` covers `content/local`, the vendored upstream
- * schemas cover `content/data`, and the generator downstream cannot tell which produced a record.
+ * Ajv strict mode is on for every book: a keyword typo in a schema would otherwise validate
+ * everything and prove nothing.
  */
-export function validateTier({ schema, data, strict = true }: TierPaths): string[] {
-  if (!existsSync(schema) || !existsSync(data)) return [];
+export function validateDatasets({ schema, data }: DatasetPaths): string[] {
+  // A book whose `dir` is a typo would otherwise emit nothing and pass every check.
+  if (!existsSync(data)) return [`${data}: no such directory`];
+  if (!existsSync(schema)) return [`${schema}: no such directory`];
 
-  const ajv = new Ajv2020({ strict, allErrors: true, allowUnionTypes: true, validateSchema: true });
+  const ajv = new Ajv2020({ strict: true, allErrors: true, allowUnionTypes: true, validateSchema: true });
   const byFile = new Map<string, ValidateFunction>();
 
   const schemaFiles = readdirSync(schema).filter((f) => f.endsWith('.schema.json')).sort();

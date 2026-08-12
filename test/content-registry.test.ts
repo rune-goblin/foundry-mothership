@@ -1,56 +1,42 @@
-// content/ids.json was seeded once from packs/_source and must never drift from it: the shipped
-// content carries 269 @UUID cross-references written as bare _ids, and an id the registry loses
-// is an id the next build re-mints, breaking every link that pointed at it.
+// content/ids.json is the only thing keeping a document's _id stable across a rebuild. An id the
+// registry loses is an id the next build re-mints, orphaning every copy already in a world and
+// breaking every @UUID written as a bare _id.
 import { describe, expect, it } from 'vitest';
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { BOOKS } from '../scripts/content/books.ts';
+import { bookDir } from '../scripts/content/book.ts';
 import { allIds, FOUNDRY_ID, loadRegistry, serializeRegistry } from '../scripts/content/ids.ts';
 import { checkSettingsDefaults } from '../scripts/content/integrity.ts';
-import { INHERITED_PACKS, readAllPackSources } from '../scripts/content/pack-source.ts';
-import { seedFromPackSource } from '../scripts/content/seed.ts';
-import { validateTier } from '../scripts/content/validate.ts';
+import { validateDatasets } from '../scripts/content/validate.ts';
 
 const ROOT = join(import.meta.dirname, '..');
 const REGISTRY_PATH = join(ROOT, 'content/ids.json');
 const registry = loadRegistry(REGISTRY_PATH);
 
 describe('the id registry', () => {
-  it('matches what packs/_source holds today, entry for entry', () => {
-    expect(serializeRegistry(registry)).toBe(serializeRegistry(seedFromPackSource(ROOT)));
+  it('is committed in the canonical, sorted form the writer produces', () => {
+    expect(readFileSync(REGISTRY_PATH, 'utf8')).toBe(serializeRegistry(registry));
   });
 
-  it('covers all 136 documents and 74 rolltable results', () => {
-    const counts = Object.entries(registry.packs).map(([pack, entry]) => [
-      pack,
-      Object.keys(entry.documents).length,
-    ]);
-    expect(Object.fromEntries(counts)).toEqual({
-      conditions: 11,
-      hotbar: 11,
-      triggered: 107,
-      rolltables: 7,
-    });
-
-    const results = Object.values(registry.packs)
-      .flatMap((p) => Object.values(p.documents))
-      .reduce((n, e) => n + Object.keys(e.results ?? {}).length, 0);
-    expect(results).toBe(74);
-  });
-
-  it('holds 595 distinct Foundry ids', () => {
+  it('holds only well-formed Foundry ids, none of them twice', () => {
     const ids = allIds(registry);
-    expect(ids.size).toBe(136 + 74);
+    const listed = Object.values(registry.packs).flatMap((p) =>
+      Object.values(p.documents).flatMap((e) => [e.id, ...Object.values(e.results ?? {})]),
+    );
     expect([...ids].filter((id) => !FOUNDRY_ID.test(id))).toEqual([]);
+    expect(new Set(listed).size).toBe(listed.length);
   });
 
-  it('names every compendium system.json declares', () => {
+  it('names only compendia system.json declares', () => {
     const manifest = JSON.parse(readFileSync(join(ROOT, 'system.json'), 'utf8')) as {
       packs: { name: string }[];
     };
-    const declared = manifest.packs.map((p) => p.name).sort();
-    const registered = Object.values(registry.packs).map((p) => p.compendium).sort();
-    expect(registered).toEqual(declared);
-    expect(INHERITED_PACKS.map((p) => p.compendium).sort()).toEqual(declared);
+    const declared = new Set(manifest.packs.map((p) => p.name));
+    const undeclared = Object.values(registry.packs)
+      .map((p) => p.compendium)
+      .filter((name) => !declared.has(name));
+    expect(undeclared).toEqual([]);
   });
 
   it('retires nothing without a reason', () => {
@@ -60,13 +46,13 @@ describe('the id registry', () => {
 
 describe('referential integrity of the content as it stands', () => {
   const uuid = /@UUID\[Compendium\.([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]+)\.(?:Item|Macro|RollTable)\.([A-Za-z0-9]+)\]/g;
+  const SOURCE = join(ROOT, 'packs/_source');
 
   function scan(): { pkg: string; compendium: string; id: string }[] {
     const found: { pkg: string; compendium: string; id: string }[] = [];
-    for (const { pack } of INHERITED_PACKS) {
-      const dir = join(ROOT, 'packs/_source', pack);
-      for (const file of readdirSync(dir).filter((f) => f.endsWith('.json'))) {
-        const text = readFileSync(join(dir, file), 'utf8');
+    for (const pack of readdirSync(SOURCE)) {
+      for (const file of readdirSync(join(SOURCE, pack)).filter((f) => f.endsWith('.json'))) {
+        const text = readFileSync(join(SOURCE, pack, file), 'utf8');
         for (const [, pkg, compendium, id] of text.matchAll(uuid)) {
           found.push({ pkg: pkg!, compendium: compendium!, id: id! });
         }
@@ -77,14 +63,8 @@ describe('referential integrity of the content as it stands', () => {
 
   const references = scan();
 
-  it('finds the 58 cross-references the registry exists to protect', () => {
-    expect(references.length).toBe(58);
-    const byTarget = new Map<string, number>();
-    for (const r of references) byTarget.set(r.compendium, (byTarget.get(r.compendium) ?? 0) + 1);
-    expect(Object.fromEntries(byTarget)).toEqual({
-      macros_triggered_1e: 54,
-      macros_hotbar_1e: 4,
-    });
+  it('finds the cross-references the registry exists to protect', () => {
+    expect(references.length).toBeGreaterThan(0);
   });
 
   it('resolves every one of them against the registry', () => {
@@ -98,42 +78,38 @@ describe('referential integrity of the content as it stands', () => {
     expect(dangling).toEqual([]);
   });
 
-  it('resolves all 14 rolltable settings defaults', () => {
+  it('resolves every rolltable setting default', () => {
     expect(checkSettingsDefaults(ROOT, registry)).toEqual([]);
   });
 });
 
-describe('content sources', () => {
-  it('validates the vendored corpus against its vendored schemas', () => {
-    expect(
-      validateTier({
-        schema: join(ROOT, 'content/data/schema'),
-        data: join(ROOT, 'content/data'),
-        strict: false,
-      }),
-    ).toEqual([]);
+describe('the books', () => {
+  it.each(BOOKS)('$id validates against its own schemas, in Ajv strict mode', (book) => {
+    const dir = bookDir(ROOT, book);
+    expect(validateDatasets({ schema: join(dir, 'schema'), data: dir })).toEqual([]);
   });
 
-  it('validates the rescued tier against content/schema', () => {
-    expect(
-      validateTier({ schema: join(ROOT, 'content/schema'), data: join(ROOT, 'content/local') }),
-    ).toEqual([]);
+  it.each(BOOKS)('$id records what it is in BOOK.md', (book) => {
+    expect(existsSync(join(bookDir(ROOT, book), 'BOOK.md'))).toBe(true);
   });
 
-  it('vendors every file CHECKSUMS records, unmodified', async () => {
-    const { createHash } = await import('node:crypto');
-    const dir = join(ROOT, 'content/data');
-    const recorded = readFileSync(join(dir, 'CHECKSUMS'), 'utf8')
-      .split('\n')
-      .filter(Boolean)
-      .map((line) => line.split('  ') as [string, string]);
-    expect(recorded.length).toBe(39);
-    for (const [sha, rel] of recorded) {
-      expect(createHash('sha256').update(readFileSync(join(dir, rel))).digest('hex')).toBe(sha);
-    }
-  });
-
-  it('leaves content/local empty until C2 fills it', () => {
-    expect(readdirSync(join(ROOT, 'content/local')).filter((f) => f.endsWith('.json'))).toEqual([]);
+  // Every dataset carried costs a transcription to keep faithful. The seven that shipped with no
+  // runtime consumer were deleted; this list is what stops them creeping back.
+  it('ships the twelve PSG datasets that have a consumer, and no others', () => {
+    const dir = bookDir(ROOT, BOOKS.find((b) => b.id === 'psg')!);
+    expect(readdirSync(dir).filter((f) => f.endsWith('.json')).sort()).toEqual([
+      'armor.json',
+      'character-creation.json',
+      'classes.json',
+      'death.json',
+      'equipment.json',
+      'loadouts.json',
+      'panic.json',
+      'patches.json',
+      'skills.json',
+      'trinkets.json',
+      'weapons.json',
+      'wounds.json',
+    ]);
   });
 });

@@ -12,10 +12,9 @@ export interface IntegrityInput {
 }
 
 /**
- * Every `@UUID` in emitted content must resolve to a document the same build emitted. 269 of them
- * live inside the shipped packs — rolltable results linking the stress and calm macros,
- * maintenance items linking their effect macros — and a broken one is invisible until a player
- * clicks it.
+ * Every `@UUID` in emitted content must resolve to a document the same build emitted. A broken
+ * link is invisible until a player clicks it, and this build is the only place it is cheap to
+ * catch.
  */
 export function checkReferences({ systemId, emitted, compendia }: IntegrityInput): string[] {
   const byCompendium = new Map<string, Set<string>>();
@@ -43,7 +42,11 @@ export function checkReferences({ systemId, emitted, compendia }: IntegrityInput
   return errors;
 }
 
-/** Every id the pre-pipeline packs held is emitted, or retired with a reason. */
+/**
+ * Every id the registry has handed out is emitted again, or retired with a reason. Dropping one
+ * silently means the next build mints a fresh id for the same document, and every world built on
+ * an earlier release loses track of it.
+ */
 export function checkIdPreservation(before: Set<string>, emitted: Emitted[], registry: Registry): string[] {
   const now = new Set<string>();
   for (const doc of emitted) {
@@ -64,7 +67,7 @@ export function checkIdPreservation(before: Set<string>, emitted: Emitted[], reg
 
 const TABLE_SETTING = /game\.settings\.register\('[^']+',\s*'(table1e[A-Za-z]+)',[^}]*?default:\s*"([A-Za-z0-9]+)"/g;
 
-/** The 14 rolltable settings default to bare `_id`s; each must still name a registered table. */
+/** The rolltable settings default to bare `_id`s; each must still name a registered table. */
 export function checkSettingsDefaults(root: string, registry: Registry): string[] {
   const source = readFileSync(join(root, 'module/settings.js'), 'utf8');
   const known = allIds(registry);

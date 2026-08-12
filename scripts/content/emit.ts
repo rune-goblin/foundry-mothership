@@ -13,6 +13,7 @@ export interface EmittedResult {
 
 export interface Emitted {
   pack: string;
+  book: string;
   compendium: string;
   contentId: string;
   id: string;
@@ -36,6 +37,7 @@ export function emit(
   record: ContentRecord,
   ids: IdRegistry,
   stamp: Stamp,
+  book: string,
 ): Emitted {
   const id = ids.documentId(def.pack, record.contentId);
   const _stats = { systemId: stamp.systemId, systemVersion: stamp.systemVersion };
@@ -94,6 +96,7 @@ export function emit(
 
   return {
     pack: def.pack,
+    book,
     compendium: def.compendium,
     contentId: record.contentId,
     id,
