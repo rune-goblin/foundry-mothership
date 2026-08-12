@@ -1523,3 +1523,116 @@ Those are compromises with a scheduled end. What the audit should revisit, as it
   exist only to hold rendered strings should go.
 - **Anything else a conversion flags.** The rule during phase 4 is: port, verify, ship, and
   **record** the compromise here — do not fix component architecture piecemeal mid-phase.
+
+
+---
+
+## 24. Phase 0 — the prune, the ratchet, `creature-settings`, and a deletion undone
+
+The first phase of the re-sequenced plan (`docs/plans/architecture.md`). Four things landed.
+
+### P0.2 — the audited dead fields, and a test so the audit does not have to be repeated
+
+Eight leaves that no code and no template referenced came out of the DataModel **and**
+`template.json` together: `weapon.wound` (not `woundEffect`, which is used), `ability.text`,
+`crew.text`, `module.offline`, `class.source`/`author`/`link`, and the duplicate top-level
+`character.stressdesc` — `system.other.stressdesc.value` is the one the sheet and the generator
+actually read. The ship half of the same audit is **deliberately still in the schema**; it comes
+out with C11, so phases 1–2 touch no ship schema and the SBT megadamage specs cannot be disturbed.
+
+`test/field-usage.test.ts` turns the one-off measurement into a ratchet: walk every declared leaf
+through `test/field-stubs.ts`, and fail unless each is referenced as a literal `system.<path>` in
+`module/` or `templates/`, or excused by an allowlist. Three allowlists, because the reasons
+differ — **DYNAMIC** (reached by computed key or object literal: `stats[attribute].label` /
+`.rollLabel` / `.mod`, and `netHP.min`/`.label` written as a literal at `actor.js:44,81`),
+**DEFERRED_TO_PHASE_3** (dead and scheduled for C11), and **GRANDFATHERED** (dead, unaudited, and
+labelled as such — resource-pool `min`/`max` and the labels the sheets hardcode; the list should
+only ever shrink).
+
+Two meta-tests stop the allowlist rotting into a rubber stamp: every entry must still match a
+declared leaf, and no entry may excuse a leaf that has a literal reader. **The second one earned
+its place immediately** — it rejected two patterns written while the spec was being drafted,
+because `stats.armor.mod` and `health`/`hits`/`netHP` `.max` are all genuinely read.
+
+### P0.3 — `creature-settings` on ApplicationV2
+
+`module/settings/creature-settings.js` (the last bare `FormApplication` but one) and
+`templates/dialogs/creature-settings-dialog.html` are gone, replaced by
+`module/ui/creature/CreatureSettingsApp.js` + `CreatureSettings.svelte`. `module/settings/` held
+nothing else and no longer exists.
+
+§12's ruling held: **the conversion declares no form handler for the toggles that need one and
+none for the rest.** The six stat toggles keep `name="system.stats.<stat>.enabled"` and ride
+Foundry's own `submitOnChange`, exactly as the item sheets do — six hand-written click handlers
+deleted, replaced by nothing. The swarm toggle is deliberately **unnamed**, so it never reaches
+`formData`, and owns an explicit handler because it carries arithmetic plain form persistence
+cannot express. That handler now issues **one** batched update where the old code issued two.
+
+Two deliberate changes worth knowing: the window takes `DocumentSheetV2`'s per-document id instead
+of the old fixed `sheet-modifiers`, so two creatures can now have two settings windows open; and
+all seven toggles render through `CheckField`, so their markup changed together and consistently.
+
+### The z-order finding, which turned out to be a spec bug
+
+The first e2e run failed because the settings window opened *underneath* the creature sheet — the
+inputs could not be clicked. Measured, not guessed: the window at `z-index: 101`, the sheet at
+`102`. It reads exactly like a product bug, and it is not one. **AppV1's `render()` resolves
+before its DOM injection finishes**, and its late `_render` bumps the z-index counter that both
+window generations share. The spec was firing the header button mid-render. Waiting for the sheet
+to be visible first fixes it, and a real user cannot hit that interleaving. Recorded because the
+same trap is waiting for every remaining conversion that opens a V2 window from a V1 sheet.
+
+### P0.1 was wrong, and is undone
+
+`d279206` deleted three dialog templates on the finding that they were referenced by nothing and
+that `actor.js` "builds all three dialogs inline with DialogV2". Verifying that finding is what
+this phase was supposed to do, and the finding did not survive it. `actor.js` builds the
+**dialogs** inline; it does not build their **content**:
+
+| | |
+|---|---|
+| `distressSignal()` | rendered `distres-signal-dialog.html` — **one `s`**, a path that has never existed in any commit. `renderTemplate` rejects, the promise never resolves, and the dialog never opens. |
+| `maintenanceCheck()` | `msgContent = ``​`` — an empty template literal. |
+| `bankruptcySave()` | the same. |
+
+So the templates were not superseded. The code had lost its content, and deleting them destroyed
+the only copy. All three are reachable from `ship-sheet-sbt.js:316,322,328` — the **default** ship
+sheet — and `maintenanceCheck` and `bankruptcySave` are called by shipped compendium macros too.
+
+Restored from `d279206^` and repaired, because they carried defects of their own that plausibly
+explain why they were stubbed out: `minteance-check-dialog.html` had an **unterminated Handlebars
+expression** (`{{ localize 'Mosh.SelectYourRollType:</h4>`) so it could not compile at all, and a
+Major Repairs sentence that stopped mid-clause; `bankrupcy-save-dialog.html` had a **trailing space
+inside a localization key**. Three keys the templates wanted did not exist under those names —
+`MayorRepairs`, `MayorRepairsExplanation` and `OrQuarterAsDeterminedBWarden` were the strings, with
+zero references anywhere — renamed to the correct spellings in `en` and `pt-BR` together.
+`Mosh.BankrupcySave` keeps its misspelling: `actor.js` reads it. Filenames corrected while all
+three call sites were being rewritten anyway.
+
+`test/e2e/ship-dialogs.spec.ts` asserts the **localized prose**, not the markup, because both
+failure modes here — a template that will not compile, a key that does not resolve — leave the
+dialog frame looking perfectly fine. One test scans all three for a raw `Mosh.` key or an
+uncompiled `{{`.
+
+**The lesson is the one this repo keeps relearning, pointed the other way.** Four dead sources have
+been found and deleted here, each genuinely dead. That track record is exactly what made the fifth
+finding easy to accept without checking whether the *code* still wanted what it referenced. "Grep
+found no references" answers a different question from "is this content still needed" when the
+reference that should exist is misspelled.
+
+### One trap for mutation testing, worth writing down
+
+The first mutation run **passed**, which is the wrong answer, and the spec was fine. `module/ui/**`
+only reaches the running Foundry through `dist/`, and `npx playwright test` reuses the existing
+server without rebuilding — only `npm run test:e2e` does `build && packs.sh pack && playwright`.
+Mutating a `.svelte` file and re-running Playwright therefore tests the *old* bundle. `templates/`
+and `lang/` are symlinked live and do not have this problem, which is why the dialog mutations
+behaved. **A mutation check of anything under `module/` needs `npm run build` between the mutation
+and the run**, or it proves nothing.
+
+### Verified
+
+`npm run check` 0 errors / 0 warnings (229 files) · **135 vitest** (120 + 15) · `npm run build` ·
+`npm run check:e2e`. Mutation-checked, each with a rebuild: breaking the swarm stash fails the
+swarm spec; dropping `submitOnChange` fails the persistence spec; an unread schema field fails the
+usage ratchet; a stale allowlist entry fails the honesty check.

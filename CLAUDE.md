@@ -14,25 +14,31 @@ Code style: global `~/.claude/CLAUDE.md` — comment only the non-obvious *why*.
 ## Where the project is
 
 Modernization from a dead gulp build to the runegoblin baseline. **Phases 1–3, the test
-harness, phase 4's step 0, the shared component layer, the skill sheet and the simple windows
-are done; `creature-settings.js` is next.** `MODERNIZATION.md` is the living plan — read its
-status header and §Phase 4 before starting UI work, §10 for the conventions the item sheet
-settled, §20 for the component layer, §22 for the windows, and update it as work lands.
+harness, the shared component layer, the skill sheet, the simple windows and phase 0 are done;
+phase 1 — the content system — is next.**
+
+**The order was re-planned on 2026-08-12 and now lives in `docs/plans/architecture.md`** — read
+that for what to do next, `docs/plans/evidence.md` for the measurements under it, and
+`docs/plans/run-to-the-end.md` for how a unit is delegated and gated (its ten standing rules and
+review gate are current; its *wave order* is superseded). `MODERNIZATION.md` is the **record**:
+§10 for the conventions the item sheet settled, §20 the component layer, §22 the windows, §24
+phase 0. Update it as work lands.
 
 **Port, verify, ship, and record the compromise.** Conversions deliberately keep AppV1-era
-shapes so each carries no visual risk; a Svelte best-practices audit is queued for after phase 4
-(§23). Don't fix component architecture piecemeal mid-phase — note it in §23 instead.
+shapes so each carries no visual risk; a Svelte best-practices audit is queued as C14/C15 (§23).
+Don't fix component architecture piecemeal mid-phase — note it in §23 instead.
 
 | Done | Not done |
 |---|---|
-| Vite build, TS tooling, CI | 7 AppV1 sheet classes |
-| DataModels for all 13 types | 2 bare-`FormApplication` windows |
-| Packs from JSON source, 0e removed | 24 Handlebars templates |
-| Svelte 5 wired into build, check, vitest | 8 sheets/windows left to convert |
-| 9 item sheets on ApplicationV2 + Svelte | |
-| Shared components in `module/ui/parts/` | |
+| Vite build, TS tooling, CI | 6 AppV1 sheet classes |
+| DataModels for all 13 types | 1 bare-`FormApplication` window (`actor-generator`) |
+| Packs from JSON source, 0e removed | 23 Handlebars templates |
+| Svelte 5 wired into build, check, vitest | 7 sheets/windows left to convert |
+| 9 item sheets on ApplicationV2 + Svelte | **the system ships no skills, classes, weapons, armour or equipment** — phase 1 |
+| Shared components in `module/ui/parts/` | conditions do not affect any roll — the new requirement |
 | 0e / `firstEdition` rules removed | |
-| 120 vitest + 75 Playwright specs | |
+| `creature-settings` on ApplicationV2 (§24) | |
+| 135 vitest + 83 Playwright specs | |
 
 ## Hard rules (override defaults)
 
