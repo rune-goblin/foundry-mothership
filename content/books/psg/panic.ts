@@ -1,0 +1,164 @@
+import { psg, type Source } from './source.ts';
+import type { Modifier, RollRange } from '../common.ts';
+
+export interface PanicResult {
+  range: RollRange;
+  name: string;
+  effect: string;
+  /** True where the result leaves a Condition behind — the eight the conditions pack comes from. */
+  grantsCondition: boolean;
+  modifiers: readonly Modifier[];
+}
+
+export interface Panic {
+  id: string;
+  name: string;
+  die: string;
+  rule: string;
+  results: readonly PanicResult[];
+  source: Source;
+}
+
+export const PANIC = {
+  id: 'panic',
+  name: 'Panic',
+  die: '1d20',
+  rule: 'Roll the Panic Die and try to roll above your current Stress.',
+  results: [
+    {
+      range: [1, 1],
+      name: 'Adrenaline Rush',
+      effect: '[+] on all rolls for the next 2d10 minutes. Reduce Stress by 1d5.',
+      grantsCondition: false,
+      modifiers: ['advantage'],
+    },
+    { range: [2, 2], name: 'Nervous', effect: 'Gain 1 Stress.', grantsCondition: false, modifiers: [] },
+    {
+      range: [3, 3],
+      name: 'Jumpy',
+      effect: 'Gain 1 Stress. All Close crewmembers gain 2 Stress.',
+      grantsCondition: false,
+      modifiers: [],
+    },
+    {
+      range: [4, 4],
+      name: 'Overwhelmed',
+      effect: '[-] on all rolls for the next 1d10 minutes. Increase Minimum Stress by 1.',
+      grantsCondition: false,
+      modifiers: ['disadvantage'],
+    },
+    {
+      range: [5, 5],
+      name: 'Coward',
+      effect: 'Gain a new Condition: You must make a Fear Save to engage in violence, otherwise you flee.',
+      grantsCondition: true,
+      modifiers: [],
+    },
+    {
+      range: [6, 6],
+      name: 'Frightened',
+      effect: 'Gain a new Condition: When encountering what frightened you, make a Fear Save [-] or gain 1d5 Stress.',
+      grantsCondition: true,
+      modifiers: ['disadvantage'],
+    },
+    {
+      range: [7, 7],
+      name: 'Nightmares',
+      effect: 'Gain a new Condition: Sleep is difficult, gain [-] on Rest Saves.',
+      grantsCondition: true,
+      modifiers: ['disadvantage'],
+    },
+    {
+      range: [8, 8],
+      name: 'Loss Of Confidence',
+      effect: "Gain a new Condition: Choose one Skill and lose that Skill's bonus.",
+      grantsCondition: true,
+      modifiers: [],
+    },
+    {
+      range: [9, 9],
+      name: 'Deflated',
+      effect: 'Gain a new Condition: Whenever a Close crewmember fails a Save, gain 1 Stress.',
+      grantsCondition: true,
+      modifiers: [],
+    },
+    {
+      range: [10, 10],
+      name: 'Doomed',
+      effect: 'Gain a new Condition: You feel cursed and unlucky. All Critical Successes are instead Critical Failures.',
+      grantsCondition: true,
+      modifiers: [],
+    },
+    {
+      range: [11, 11],
+      name: 'Suspicious',
+      effect: 'For the next week, whenever someone joins the crew (even if they only left for a short period of time), make a Fear Save or gain 1 Stress.',
+      grantsCondition: false,
+      modifiers: [],
+    },
+    {
+      range: [12, 12],
+      name: 'Haunted',
+      effect: 'Gain a new Condition: Something starts visiting the character at night. In their dreams. Out of the corner of their eye. And soon it will start making demands.',
+      grantsCondition: true,
+      modifiers: [],
+    },
+    {
+      range: [13, 13],
+      name: 'Death Wish',
+      effect: 'For the next 24 hours, whenever encountering a stranger or known enemy, make a Sanity Save or immediately attack them.',
+      grantsCondition: false,
+      modifiers: [],
+    },
+    {
+      range: [14, 14],
+      name: 'Prophetic Vision',
+      effect: 'Character immediately experiences an intense hallucination or vision of an impending terror or horrific event. Increase Minimum Stress by 2.',
+      grantsCondition: false,
+      modifiers: [],
+    },
+    {
+      range: [15, 15],
+      name: 'Catatonic',
+      effect: 'Become unresponsive and unmoving for 2d10 minutes. Reduce Stress by 1d10.',
+      grantsCondition: false,
+      modifiers: [],
+    },
+    {
+      range: [16, 16],
+      name: 'Rage',
+      effect: '[+] on all Damage rolls for the next 1d10 hours. All crewmembers gain 1 Stress.',
+      grantsCondition: false,
+      modifiers: ['advantage'],
+    },
+    {
+      range: [17, 17],
+      name: 'Spiraling',
+      effect: 'Gain a new Condition: Panic Checks are at [-].',
+      grantsCondition: true,
+      modifiers: ['disadvantage'],
+    },
+    {
+      range: [18, 18],
+      name: 'Compounding Problems',
+      effect: 'Roll twice on this table. Increase your Minimum Stress by 1.',
+      grantsCondition: false,
+      modifiers: [],
+    },
+    {
+      range: [19, 19],
+      name: 'Heart Attack / Short Circuit (Androids)',
+      effect: 'Reduce Maximum Wounds by 1. Gain [-] on all rolls for 1d10 hours. Increase Minimum Stress by 1.',
+      grantsCondition: false,
+      modifiers: ['disadvantage'],
+    },
+    {
+      range: [20, 20],
+      name: 'Retire',
+      effect: 'Roll up a new character to play.',
+      grantsCondition: false,
+      modifiers: [],
+    },
+  ],
+  source: psg(21, '21.1'),
+} as const satisfies Panic;

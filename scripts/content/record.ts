@@ -27,7 +27,7 @@ export interface MacroBody {
 export interface TableResult {
   contentId: string;
   description: string;
-  range: [number, number];
+  range: readonly [number, number];
   name?: string;
   img?: string;
   weight?: number;
@@ -61,5 +61,6 @@ export interface PackDefinition {
   pack: string;
   compendium: string;
   documentType: 'Item' | 'Macro' | 'RollTable';
-  load(root: string): ContentRecord[];
+  /** Reads the book's typed catalogs — imports, not the filesystem — and normalises them. */
+  load(): ContentRecord[];
 }

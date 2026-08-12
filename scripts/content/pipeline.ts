@@ -1,13 +1,12 @@
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { bookDir, type Book } from './book.ts';
+import { checkBookDir, type Book } from './book.ts';
 import { canonical, emit, type Emitted, type Stamp } from './emit.ts';
 import { IdRegistry, type Registry } from './ids.ts';
 import { checkReferences } from './integrity.ts';
 import { checkModelFields } from './model-guard.ts';
 import type { Provenance } from './record.ts';
 import { fileSlug } from './slug.ts';
-import { validateDatasets } from './validate.ts';
 
 export interface BuildOptions {
   root: string;
@@ -36,10 +35,8 @@ export function readStamp(root: string): Stamp {
 export function build(options: BuildOptions): BuildResult {
   const { root, books, registryPath, outDir, allocate = false } = options;
 
-  const validationErrors = books.flatMap((book) =>
-    validateDatasets({ schema: join(bookDir(root, book), 'schema'), data: bookDir(root, book) }),
-  );
-  if (validationErrors.length) throw new Error(`content failed validation:\n  ${validationErrors.join('\n  ')}`);
+  const bookErrors = books.flatMap((book) => checkBookDir(root, book));
+  if (bookErrors.length) throw new Error(`content failed validation:\n  ${bookErrors.join('\n  ')}`);
 
   const packs = books.flatMap((b) => b.packs);
   // A second book is meant to be additive. It stops being additive the moment it reuses a pack
@@ -57,7 +54,7 @@ export function build(options: BuildOptions): BuildResult {
   for (const book of books) {
     for (const def of book.packs) {
       ids.declarePack(def.pack, def.compendium, def.documentType);
-      const records = [...def.load(root)].sort((a, b) => (a.contentId < b.contentId ? -1 : 1));
+      const records = [...def.load()].sort((a, b) => (a.contentId < b.contentId ? -1 : 1));
       const filenames = new Map<string, string>();
       for (const record of records) {
         const doc = emit(def, record, ids, stamp, book.id);

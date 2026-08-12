@@ -8,7 +8,6 @@ import { BOOKS } from '../scripts/content/books.ts';
 import { bookDir } from '../scripts/content/book.ts';
 import { allIds, FOUNDRY_ID, loadRegistry, serializeRegistry } from '../scripts/content/ids.ts';
 import { checkSettingsDefaults } from '../scripts/content/integrity.ts';
-import { validateDatasets } from '../scripts/content/validate.ts';
 
 const ROOT = join(import.meta.dirname, '..');
 const REGISTRY_PATH = join(ROOT, 'content/ids.json');
@@ -84,32 +83,34 @@ describe('referential integrity of the content as it stands', () => {
 });
 
 describe('the books', () => {
-  it.each(BOOKS)('$id validates against its own schemas, in Ajv strict mode', (book) => {
-    const dir = bookDir(ROOT, book);
-    expect(validateDatasets({ schema: join(dir, 'schema'), data: dir })).toEqual([]);
-  });
-
   it.each(BOOKS)('$id records what it is in BOOK.md', (book) => {
     expect(existsSync(join(bookDir(ROOT, book), 'BOOK.md'))).toBe(true);
   });
 
   // Every dataset carried costs a transcription to keep faithful. The seven that shipped with no
-  // runtime consumer were deleted; this list is what stops them creeping back.
+  // runtime consumer were deleted; this list is what stops them creeping back. `source.ts` is the
+  // book's citation helper, not a dataset.
   it('ships the twelve PSG datasets that have a consumer, and no others', () => {
     const dir = bookDir(ROOT, BOOKS.find((b) => b.id === 'psg')!);
-    expect(readdirSync(dir).filter((f) => f.endsWith('.json')).sort()).toEqual([
-      'armor.json',
-      'character-creation.json',
-      'classes.json',
-      'death.json',
-      'equipment.json',
-      'loadouts.json',
-      'panic.json',
-      'patches.json',
-      'skills.json',
-      'trinkets.json',
-      'weapons.json',
-      'wounds.json',
+    expect(readdirSync(dir).filter((f) => f.endsWith('.ts') && f !== 'source.ts').sort()).toEqual([
+      'armor.ts',
+      'character-creation.ts',
+      'classes.ts',
+      'death.ts',
+      'equipment.ts',
+      'loadouts.ts',
+      'panic.ts',
+      'patches.ts',
+      'skills.ts',
+      'trinkets.ts',
+      'weapons.ts',
+      'wounds.ts',
     ]);
+  });
+
+  it('leaves no JSON dataset behind for the catalogs to drift from', () => {
+    for (const book of BOOKS) {
+      expect(readdirSync(bookDir(ROOT, book)).filter((f) => f.endsWith('.json'))).toEqual([]);
+    }
   });
 });

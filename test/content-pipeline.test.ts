@@ -5,7 +5,7 @@
 // green run here means the machinery works; S3 points the same checks at real records by filling
 // in scripts/content/books/psg.ts.
 import { beforeAll, describe, expect, it } from 'vitest';
-import { copyFileSync, cpSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, mkdtempSync, readdirSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { Book } from '../scripts/content/book.ts';
@@ -51,7 +51,7 @@ function mutated(pack: string, edit: (record: ContentRecord) => ContentRecord | 
       ...FIXTURE_BOOK,
       packs: FIXTURE_BOOK.packs.map((def) =>
         def.pack === pack
-          ? { ...def, load: (root: string) => def.load(root).map(edit).filter((r): r is ContentRecord => r !== null) }
+          ? { ...def, load: () => def.load().map(edit).filter((r): r is ContentRecord => r !== null) }
           : def,
       ),
     },
@@ -454,7 +454,7 @@ describe('the emitted document', () => {
   it('refuses a record whose shape does not match its pack', () => {
     const ids = new IdRegistry(loadRegistry(FIXTURE_REGISTRY));
     const def = FIXTURE_BOOK.packs.find((p) => p.pack === 'gadgets')!;
-    const record = def.load(ROOT)[0]!;
+    const record = def.load()[0]!;
     expect(() =>
       emit(
         def,
@@ -481,7 +481,7 @@ describe('the registry gate', () => {
       ...FIXTURE_BOOK,
       packs: FIXTURE_BOOK.packs.map((def) =>
         def.pack === 'gadgets'
-          ? { ...def, load: (root: string) => [...def.load(root), newcomer(contentId)] }
+          ? { ...def, load: () => [...def.load(), newcomer(contentId)] }
           : def,
       ),
     },
@@ -561,43 +561,23 @@ describe('the build manifest', () => {
   });
 });
 
-describe('validation', () => {
-  /** A repo root holding nothing but a copy of the fixture book, for the caller to damage. */
-  function forkedRoot(): { root: string; bookDir: string } {
-    const root = temp('broken');
-    const source = join(FIXTURE_ROOT, 'books/fixture');
-    const bookDir = join(root, FIXTURE_BOOK.dir);
-    mkdirSync(join(bookDir, 'schema'), { recursive: true });
-    cpSync(source, bookDir, { recursive: true });
-    copyFileSync(join(ROOT, 'system.json'), join(root, 'system.json'));
-    return { root, bookDir };
-  }
-
-  it('rejects a record the schema does not allow', () => {
-    const { root, bookDir } = forkedRoot();
-    const gadgets = JSON.parse(readFileSync(join(bookDir, 'gadgets.json'), 'utf8')) as {
-      severity: number;
-    }[];
-    gadgets[0]!.severity = -1;
-    writeFileSync(join(bookDir, 'gadgets.json'), JSON.stringify(gadgets));
-
-    expect(() =>
-      build({ root, books: [FIXTURE_BOOK], registryPath: FIXTURE_REGISTRY, outDir: temp('out') }),
-    ).toThrow(/gadgets\.json\/0\/severity/);
-  });
-
+// A book's records now arrive as imports, so a `dir` typo can no longer empty one silently. What
+// `dir` still decides is what the manifest cites as every document's provenance, and where BOOK.md
+// records the printing and the licence — so both have to be there.
+describe('the book directory', () => {
   it('rejects a book whose directory is not there', () => {
     expect(() =>
       run([{ ...FIXTURE_BOOK, dir: 'content/books/nonesuch' }]),
     ).toThrow(/content\/books\/nonesuch: no such directory/);
   });
 
-  it('rejects a dataset with no schema of its own', () => {
-    const { root, bookDir } = forkedRoot();
-    writeFileSync(join(bookDir, 'sidearms.json'), '[]');
+  it('rejects a book that records nothing about itself', () => {
+    const root = temp('bookless');
+    mkdirSync(join(root, FIXTURE_BOOK.dir), { recursive: true });
+    copyFileSync(join(ROOT, 'system.json'), join(root, 'system.json'));
 
     expect(() =>
       build({ root, books: [FIXTURE_BOOK], registryPath: FIXTURE_REGISTRY, outDir: temp('out') }),
-    ).toThrow(/sidearms\.json: no sidearms\.schema\.json/);
+    ).toThrow(/books\/fixture: no BOOK\.md/);
   });
 });

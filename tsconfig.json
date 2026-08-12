@@ -19,7 +19,9 @@
     "allowJs": true,
     "checkJs": false
   },
-  "include": ["test/**/*.ts", "scripts/**/*.ts", "*.config.ts"],
+  // content/** is the books themselves: typed catalogs whose ids are literal union types, so the
+  // cross-references between datasets are compiler-enforced rather than validated at build time.
+  "include": ["test/**/*.ts", "scripts/**/*.ts", "content/**/*.ts", "*.config.ts"],
   // test/e2e has its own tsconfig: Playwright globals, and it must not be type-checked
   // with the vitest surface.
   "exclude": ["node_modules", "dist", "test/e2e", "test/foundry-data"]

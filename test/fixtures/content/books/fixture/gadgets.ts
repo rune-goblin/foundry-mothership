@@ -1,0 +1,32 @@
+export interface Gadget {
+  id: string;
+  name: string;
+  img: string;
+  description: string;
+  severity: number;
+  modifiers: readonly ('advantage' | 'disadvantage')[];
+  treatment: { value: number; html: string };
+}
+
+export const GADGETS = [
+  {
+    id: 'flux-capacitor',
+    name: 'Flux Capacitor',
+    img: 'systems/mothershiprpg/images/icons/ui/conditions/exhausted.png',
+    description:
+      '<p>Bends the local timeline. On a failure, roll @UUID[Compendium.mothershiprpg.fixture_macros_1e.Macro.FiXbbbbbbbbbbb01]{+1 Stress}.</p>',
+    severity: 2,
+    modifiers: ['disadvantage'],
+    treatment: { value: 2, html: '<p>Rest.</p>' },
+  },
+  {
+    id: 'reactor-shim',
+    name: 'Reactor Shim',
+    img: 'systems/mothershiprpg/images/icons/ui/conditions/exhausted.png',
+    description:
+      '<p>Steadies a failing core. @UUID[Compendium.mothershiprpg.fixture_macros_1e.Macro.FiXbbbbbbbbbbb02]{-1 Stress}</p>',
+    severity: 1,
+    modifiers: ['advantage'],
+    treatment: { value: 1, html: '<p>Recalibrate.</p>' },
+  },
+] as const satisfies readonly Gadget[];

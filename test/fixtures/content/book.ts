@@ -1,35 +1,12 @@
 import { join } from 'node:path';
-import { dataset, type Book } from '../../../scripts/content/book.ts';
+import type { Book } from '../../../scripts/content/book.ts';
 import type { ContentRecord, PackDefinition, TableResult } from '../../../scripts/content/record.ts';
+import { GADGETS } from './books/fixture/gadgets.ts';
+import { MISHAPS } from './books/fixture/mishaps.ts';
+import { QUIPS } from './books/fixture/quips.ts';
 
 export const FIXTURE_ROOT = join(import.meta.dirname, '.');
 const SOURCE = 'test/fixtures/content/books/fixture';
-
-interface Gadget {
-  id: string;
-  name: string;
-  img: string;
-  description: string;
-  severity: number;
-  modifiers?: string[];
-  treatment: { value: number; html: string };
-}
-
-interface Quip {
-  id: string;
-  name: string;
-  img: string;
-  command: string;
-}
-
-interface Mishap {
-  id: string;
-  name: string;
-  img: string;
-  description?: string;
-  formula: string;
-  results: { id: string; range: [number, number]; description: string }[];
-}
 
 // `modifiers` is deliberately not mapped into `system`: MoshCondition declares no such field, so
 // emitting it is the exact defect the DataModel guard exists to catch. S8 adds the field; until
@@ -38,8 +15,8 @@ const gadgets: PackDefinition = {
   pack: 'gadgets',
   compendium: 'fixture_gadgets_1e',
   documentType: 'Item',
-  load: (root: string): ContentRecord[] =>
-    dataset<Gadget[]>(root, FIXTURE_BOOK, 'gadgets').map((g) => ({
+  load: (): ContentRecord[] =>
+    GADGETS.map((g) => ({
       contentId: g.id,
       name: g.name,
       img: g.img,
@@ -52,7 +29,7 @@ const gadgets: PackDefinition = {
           treatment: g.treatment,
         },
       },
-      provenance: { source: `${SOURCE}/gadgets.json`, sourceId: g.id },
+      provenance: { source: `${SOURCE}/gadgets.ts`, sourceId: g.id },
     })),
 };
 
@@ -60,13 +37,13 @@ const quips: PackDefinition = {
   pack: 'quips',
   compendium: 'fixture_macros_1e',
   documentType: 'Macro',
-  load: (root: string): ContentRecord[] =>
-    dataset<Quip[]>(root, FIXTURE_BOOK, 'quips').map((q) => ({
+  load: (): ContentRecord[] =>
+    QUIPS.map((q) => ({
       contentId: q.id,
       name: q.name,
       img: q.img,
       body: { kind: 'Macro', type: 'script', scope: 'global', command: q.command },
-      provenance: { source: `${SOURCE}/quips.json`, sourceId: q.id },
+      provenance: { source: `${SOURCE}/quips.ts`, sourceId: q.id },
     })),
 };
 
@@ -74,8 +51,8 @@ const mishaps: PackDefinition = {
   pack: 'mishaps',
   compendium: 'fixture_tables_1e',
   documentType: 'RollTable',
-  load: (root: string): ContentRecord[] =>
-    dataset<Mishap[]>(root, FIXTURE_BOOK, 'mishaps').map((m) => ({
+  load: (): ContentRecord[] =>
+    MISHAPS.map((m) => ({
       contentId: m.id,
       name: m.name,
       img: m.img,
@@ -87,7 +64,7 @@ const mishaps: PackDefinition = {
           (r): TableResult => ({ contentId: r.id, range: r.range, description: r.description }),
         ),
       },
-      provenance: { source: `${SOURCE}/mishaps.json`, sourceId: m.id },
+      provenance: { source: `${SOURCE}/mishaps.ts`, sourceId: m.id },
     })),
 };
 
