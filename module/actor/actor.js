@@ -2509,7 +2509,7 @@ export class MothershipActor extends Actor {
     //wrap the whole thing in a promise, so that it waits for the form to be interacted with
     return new Promise(async (resolve) => {
       //create pop-up HTML
-      let msgContent = await foundry.applications.handlebars.renderTemplate('systems/mothershiprpg/templates/dialogs/distres-signal-dialog.html');
+      let msgContent = await foundry.applications.handlebars.renderTemplate('systems/mothershiprpg/templates/dialogs/distress-signal-dialog.html');
       
       //create final dialog data
       const dialogData = {
@@ -2550,9 +2550,7 @@ export class MothershipActor extends Actor {
     //wrap the whole thing in a promise, so that it waits for the form to be interacted with
     return new Promise(async (resolve) => {
       //create pop-up HTML
-      let msgContent = `
-
-      `;
+      let msgContent = await foundry.applications.handlebars.renderTemplate('systems/mothershiprpg/templates/dialogs/maintenance-check-dialog.html');
       //create final dialog data
       const dialogData = {
         window: {title: game.i18n.localize("Mosh.MaintenanceCheck")},
@@ -2592,9 +2590,7 @@ export class MothershipActor extends Actor {
     //wrap the whole thing in a promise, so that it waits for the form to be interacted with
     return new Promise(async (resolve) => {
       //create pop-up HTML
-      let msgContent = `
-      
-      `;
+      let msgContent = await foundry.applications.handlebars.renderTemplate('systems/mothershiprpg/templates/dialogs/bankruptcy-save-dialog.html');
       //create final dialog data
       const dialogData = {
         window: {title: game.i18n.localize("Mosh.BankrupcySave")},
