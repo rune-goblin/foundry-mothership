@@ -13,7 +13,16 @@
       "img": { "$ref": "common.schema.json#/$defs/img" },
       "description": { "$ref": "common.schema.json#/$defs/html" },
       "severity": { "type": "integer", "minimum": 0 },
-      "modifiers": { "$ref": "common.schema.json#/$defs/modifiers" }
+      "modifiers": { "$ref": "common.schema.json#/$defs/modifiers" },
+      "treatment": {
+        "type": "object",
+        "required": ["value", "html"],
+        "additionalProperties": false,
+        "properties": {
+          "value": { "type": "integer", "minimum": 0 },
+          "html": { "$ref": "common.schema.json#/$defs/html" }
+        }
+      }
     }
   }
 }

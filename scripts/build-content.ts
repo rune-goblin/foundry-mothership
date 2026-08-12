@@ -1,12 +1,13 @@
-// content/ + content/ids.json -> packs/_source/**, then ./scripts/packs.sh pack as today.
+// content/books/** + content/ids.json -> packs/_source/**, then ./scripts/packs.sh pack as today.
 //
 //   node scripts/build-content.ts [--allocate] [--out DIR] [--manifest PATH]
 //
 // A record with no id in content/ids.json fails the build. --allocate mints one and rewrites the
 // registry, which must then be committed: ids are never derived from a record's name or content,
-// so the committed file is the only thing keeping the shipped @UUID cross-references resolving.
+// so the committed file is the only thing keeping an installed world's documents identifiable
+// across a rebuild.
 import { join } from 'node:path';
-import { PACKS } from './content/packs.ts';
+import { BOOKS } from './content/books.ts';
 import { build } from './content/pipeline.ts';
 
 const root = process.cwd();
@@ -21,23 +22,19 @@ const allocate = args.includes('--allocate');
 const outDir = flag('out') ?? join(root, 'packs/_source');
 const manifestPath = flag('manifest') ?? join(root, 'build/content-manifest.json');
 
-if (PACKS.length === 0) {
-  console.log('No content packs are defined yet (C1 ships the pipeline, C2 the first content).');
+if (BOOKS.every((book) => book.packs.length === 0)) {
+  console.log('No book declares a pack yet (S2 ships the pipeline, S3 the first content).');
   process.exit(0);
 }
 
 try {
   const result = build({
     root,
-    packs: PACKS,
+    books: BOOKS,
     registryPath: join(root, 'content/ids.json'),
     outDir,
     manifestPath,
     allocate,
-    tiers: [
-      { schema: join(root, 'content/schema'), data: join(root, 'content/local') },
-      { schema: join(root, 'content/data/schema'), data: join(root, 'content/data'), strict: false },
-    ],
   });
 
   const results = result.emitted.reduce((n, d) => n + d.results.length, 0);

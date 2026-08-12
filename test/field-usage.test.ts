@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { installFoundryFieldStubs, type Stub } from './field-stubs.ts';
+import { installFoundryFieldStubs, leaves, type Stub } from './field-stubs.ts';
 
 installFoundryFieldStubs();
 
@@ -11,12 +11,6 @@ const { ACTOR_MODELS } = (await import('../module/data/actor-models.js')) as {
 const { ITEM_MODELS } = (await import('../module/data/item-models.js')) as {
   ITEM_MODELS: Record<string, { defineSchema: () => Record<string, Stub> }>;
 };
-
-function leaves(schema: Record<string, Stub>, prefix = ''): string[] {
-  return Object.entries(schema).flatMap(([key, field]) =>
-    field.schema ? leaves(field.schema, `${prefix}${key}.`) : [`${prefix}${key}`],
-  );
-}
 
 // Only the runtime tree. test/foundry-data is a whole Foundry install plus third-party systems, and
 // scanning it matches almost any path by accident, which would make this assertion vacuous.

@@ -79,6 +79,121 @@
         }
       }
     },
+    "rolltables": {
+      "compendium": "rolltables_1e",
+      "documentType": "RollTable",
+      "documents": {
+        "bleeding-wound": {
+          "id": "ata3fRz3uoPfNCLh",
+          "results": {
+            "r01": "58jsAYGMOoYV0aXe",
+            "r02": "qVUXginkyIDKa6fe",
+            "r03": "uvF7ftDjXr9excYX",
+            "r04": "5ED6Ynmibq9pKDEk",
+            "r05": "hO9e9wmIsTXWfZns",
+            "r06": "8eTGRuBUdp9s2Z46",
+            "r07": "FZ9GwrHFQJUmHQ7k",
+            "r08": "kLAtlJUE9QfCX38s",
+            "r09": "806d8NZZaysIHJvm",
+            "r10": "439gBR7gGeLatpfl"
+          }
+        },
+        "blunt-force-wound": {
+          "id": "31YibfjueXuZdNLb",
+          "results": {
+            "r01": "kGDBRdD9azQLJRDl",
+            "r02": "mYsLkuttsbN0PPzE",
+            "r03": "RnmOw1OvhVaYQsJV",
+            "r04": "rCPAVwvuRI5PDapO",
+            "r05": "gYfGKit1I8vIlXas",
+            "r06": "Xvo8mQoXzQb18gms",
+            "r07": "AiacUbJlw1slbsW3",
+            "r08": "bxD3uLX6GcVG7kwG",
+            "r09": "5WHDRIu6o2xp1Vml",
+            "r10": "NzrMxLpPo52Ayoq7"
+          }
+        },
+        "death-save": {
+          "id": "W36WFIpCfMknKgHy",
+          "results": {
+            "r01": "4TFF3HjlrKsOCyT5",
+            "r02": "C0ht8FBreWQjhNi7",
+            "r03": "WTOIWYApDTqwAHu6",
+            "r04": "ygaJ1Gc5LuuXbJZq"
+          }
+        },
+        "fire-explosives-wound": {
+          "id": "lqiaWwh5cGcJhvnu",
+          "results": {
+            "r01": "VYN9lwpyPTW4Hnmh",
+            "r02": "V3np2nl2cIVshF5D",
+            "r03": "Wen5sWpWmN2j4Zcb",
+            "r04": "OD9Ilkg4OA11sU8H",
+            "r05": "0BvZK2vdM2oweYvg",
+            "r06": "syEHXuDiZFwD4l4G",
+            "r07": "MRl6Iid4Xgjb6myY",
+            "r08": "bHNeXD95WH4o2Rjz",
+            "r09": "F9aNmmfK5oSh4kAs",
+            "r10": "V0ZCYS4xQCoqnKuC"
+          }
+        },
+        "gore-massive-wound": {
+          "id": "uVfC1CqYdojaJ7yR",
+          "results": {
+            "r01": "aJN3DtKVY9bG3ubv",
+            "r02": "Lf5EQIYpu4DXFQix",
+            "r03": "1NnoNAENwZjlIxh8",
+            "r04": "8iAPqxJpCEgQJXq6",
+            "r05": "NcPFW20iV54oar6P",
+            "r06": "QP4863dIgMJ28XWs",
+            "r07": "ayHuDn1OuCcbgCZt",
+            "r08": "h2hZbBnnY5DVnyLL",
+            "r09": "JB623Z5gI9hP5cOs",
+            "r10": "9LPNxRgcnpZHjENW"
+          }
+        },
+        "gunshot-wound": {
+          "id": "XjDU2xFOWEasaZK0",
+          "results": {
+            "r01": "LubF6RyYnl11EmUj",
+            "r02": "EFQBqcegsqHQ4Jih",
+            "r03": "tNz8bKJY9cDDQmQ6",
+            "r04": "YwdH5Q7uuxu78jQp",
+            "r05": "kOw2Sk8NgE5zWvGz",
+            "r06": "1EEfUVqLk1vcvmBl",
+            "r07": "4si8KPgRXJSi2R94",
+            "r08": "wbmBeO70jbk5cNAi",
+            "r09": "SXF0bbAqIyqvPvb9",
+            "r10": "8rlgfH4GJ8H0LHhL"
+          }
+        },
+        "panic-check-stress-normal": {
+          "id": "ypcoikqHLhnc9tNs",
+          "results": {
+            "r01": "C3v1mSfDXIklIAUB",
+            "r02": "U9WjdvVrVvGEWA9e",
+            "r03": "qrw2SQ9MMwmmz5U1",
+            "r04": "xfR9AtZFClqK4Tkk",
+            "r05": "6O6QNEIIVFSTifl6",
+            "r06": "HclQqfxT8Q9NShBa",
+            "r07": "j1jjGls1snJ3uCWS",
+            "r08": "qnBXWm15pc7Kn7bf",
+            "r09": "5YQKw63GB18XUYDp",
+            "r10": "FpTmgA9FxG4W1x0a",
+            "r11": "6qInELrRmGGogpkW",
+            "r12": "SjCav3ZLlpQ9fyo3",
+            "r13": "2aJpNteB4MaFIbVn",
+            "r14": "g6JDKtnXUFWlTPMV",
+            "r15": "wFbLrig0F2WSM6hM",
+            "r16": "mN1KTYh1TcDKLMjj",
+            "r17": "fFp8wFcomRNUgtdP",
+            "r18": "RI06IV89j3Bxtxkz",
+            "r19": "zJkYrssfrdWBSeRm",
+            "r20": "uluHEycHi6Ul2GMj"
+          }
+        }
+      }
+    },
     "triggered": {
       "compendium": "macros_triggered_1e",
       "documentType": "Macro",
@@ -403,121 +518,6 @@
         },
         "take-bleeding-damage": {
           "id": "aur5HWqZJNspwdCd"
-        }
-      }
-    },
-    "rolltables": {
-      "compendium": "rolltables_1e",
-      "documentType": "RollTable",
-      "documents": {
-        "bleeding-wound": {
-          "id": "ata3fRz3uoPfNCLh",
-          "results": {
-            "r01": "58jsAYGMOoYV0aXe",
-            "r02": "qVUXginkyIDKa6fe",
-            "r03": "uvF7ftDjXr9excYX",
-            "r04": "5ED6Ynmibq9pKDEk",
-            "r05": "hO9e9wmIsTXWfZns",
-            "r06": "8eTGRuBUdp9s2Z46",
-            "r07": "FZ9GwrHFQJUmHQ7k",
-            "r08": "kLAtlJUE9QfCX38s",
-            "r09": "806d8NZZaysIHJvm",
-            "r10": "439gBR7gGeLatpfl"
-          }
-        },
-        "blunt-force-wound": {
-          "id": "31YibfjueXuZdNLb",
-          "results": {
-            "r01": "kGDBRdD9azQLJRDl",
-            "r02": "mYsLkuttsbN0PPzE",
-            "r03": "RnmOw1OvhVaYQsJV",
-            "r04": "rCPAVwvuRI5PDapO",
-            "r05": "gYfGKit1I8vIlXas",
-            "r06": "Xvo8mQoXzQb18gms",
-            "r07": "AiacUbJlw1slbsW3",
-            "r08": "bxD3uLX6GcVG7kwG",
-            "r09": "5WHDRIu6o2xp1Vml",
-            "r10": "NzrMxLpPo52Ayoq7"
-          }
-        },
-        "death-save": {
-          "id": "W36WFIpCfMknKgHy",
-          "results": {
-            "r01": "4TFF3HjlrKsOCyT5",
-            "r02": "C0ht8FBreWQjhNi7",
-            "r03": "WTOIWYApDTqwAHu6",
-            "r04": "ygaJ1Gc5LuuXbJZq"
-          }
-        },
-        "fire-explosives-wound": {
-          "id": "lqiaWwh5cGcJhvnu",
-          "results": {
-            "r01": "VYN9lwpyPTW4Hnmh",
-            "r02": "V3np2nl2cIVshF5D",
-            "r03": "Wen5sWpWmN2j4Zcb",
-            "r04": "OD9Ilkg4OA11sU8H",
-            "r05": "0BvZK2vdM2oweYvg",
-            "r06": "syEHXuDiZFwD4l4G",
-            "r07": "MRl6Iid4Xgjb6myY",
-            "r08": "bHNeXD95WH4o2Rjz",
-            "r09": "F9aNmmfK5oSh4kAs",
-            "r10": "V0ZCYS4xQCoqnKuC"
-          }
-        },
-        "gore-massive-wound": {
-          "id": "uVfC1CqYdojaJ7yR",
-          "results": {
-            "r01": "aJN3DtKVY9bG3ubv",
-            "r02": "Lf5EQIYpu4DXFQix",
-            "r03": "1NnoNAENwZjlIxh8",
-            "r04": "8iAPqxJpCEgQJXq6",
-            "r05": "NcPFW20iV54oar6P",
-            "r06": "QP4863dIgMJ28XWs",
-            "r07": "ayHuDn1OuCcbgCZt",
-            "r08": "h2hZbBnnY5DVnyLL",
-            "r09": "JB623Z5gI9hP5cOs",
-            "r10": "9LPNxRgcnpZHjENW"
-          }
-        },
-        "gunshot-wound": {
-          "id": "XjDU2xFOWEasaZK0",
-          "results": {
-            "r01": "LubF6RyYnl11EmUj",
-            "r02": "EFQBqcegsqHQ4Jih",
-            "r03": "tNz8bKJY9cDDQmQ6",
-            "r04": "YwdH5Q7uuxu78jQp",
-            "r05": "kOw2Sk8NgE5zWvGz",
-            "r06": "1EEfUVqLk1vcvmBl",
-            "r07": "4si8KPgRXJSi2R94",
-            "r08": "wbmBeO70jbk5cNAi",
-            "r09": "SXF0bbAqIyqvPvb9",
-            "r10": "8rlgfH4GJ8H0LHhL"
-          }
-        },
-        "panic-check-stress-normal": {
-          "id": "ypcoikqHLhnc9tNs",
-          "results": {
-            "r01": "C3v1mSfDXIklIAUB",
-            "r02": "U9WjdvVrVvGEWA9e",
-            "r03": "qrw2SQ9MMwmmz5U1",
-            "r04": "xfR9AtZFClqK4Tkk",
-            "r05": "6O6QNEIIVFSTifl6",
-            "r06": "HclQqfxT8Q9NShBa",
-            "r07": "j1jjGls1snJ3uCWS",
-            "r08": "qnBXWm15pc7Kn7bf",
-            "r09": "5YQKw63GB18XUYDp",
-            "r10": "FpTmgA9FxG4W1x0a",
-            "r11": "6qInELrRmGGogpkW",
-            "r12": "SjCav3ZLlpQ9fyo3",
-            "r13": "2aJpNteB4MaFIbVn",
-            "r14": "g6JDKtnXUFWlTPMV",
-            "r15": "wFbLrig0F2WSM6hM",
-            "r16": "mN1KTYh1TcDKLMjj",
-            "r17": "fFp8wFcomRNUgtdP",
-            "r18": "RI06IV89j3Bxtxkz",
-            "r19": "zJkYrssfrdWBSeRm",
-            "r20": "uluHEycHi6Ul2GMj"
-          }
         }
       }
     }

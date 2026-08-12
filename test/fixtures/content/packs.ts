@@ -1,12 +1,9 @@
-import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { dataset, type Book } from '../../../scripts/content/book.ts';
 import type { ContentRecord, PackDefinition, TableResult } from '../../../scripts/content/record.ts';
 
 export const FIXTURE_ROOT = join(import.meta.dirname, '.');
-
-function records<T>(file: string): T[] {
-  return JSON.parse(readFileSync(join(FIXTURE_ROOT, 'local', file), 'utf8')) as T[];
-}
+const SOURCE = 'test/fixtures/content/books/fixture';
 
 interface Gadget {
   id: string;
@@ -15,6 +12,7 @@ interface Gadget {
   description: string;
   severity: number;
   modifiers?: string[];
+  treatment: { value: number; html: string };
 }
 
 interface Quip {
@@ -33,12 +31,15 @@ interface Mishap {
   results: { id: string; range: [number, number]; description: string }[];
 }
 
+// `modifiers` is deliberately not mapped into `system`: MoshCondition declares no such field, so
+// emitting it is the exact defect the DataModel guard exists to catch. S8 adds the field; until
+// then test/content-pipeline.test.ts uses it as the negative case.
 const gadgets: PackDefinition = {
   pack: 'gadgets',
   compendium: 'fixture_gadgets_1e',
   documentType: 'Item',
-  load: (): ContentRecord[] =>
-    records<Gadget>('gadgets.json').map((g) => ({
+  load: (root: string): ContentRecord[] =>
+    dataset<Gadget[]>(root, FIXTURE_BOOK, 'gadgets').map((g) => ({
       contentId: g.id,
       name: g.name,
       img: g.img,
@@ -48,10 +49,10 @@ const gadgets: PackDefinition = {
         system: {
           description: g.description,
           severity: g.severity,
-          modifiers: g.modifiers ?? [],
+          treatment: g.treatment,
         },
       },
-      provenance: { tier: 'local', source: 'test/fixtures/content/local/gadgets.json', sourceId: g.id },
+      provenance: { source: `${SOURCE}/gadgets.json`, sourceId: g.id },
     })),
 };
 
@@ -59,13 +60,13 @@ const quips: PackDefinition = {
   pack: 'quips',
   compendium: 'fixture_macros_1e',
   documentType: 'Macro',
-  load: (): ContentRecord[] =>
-    records<Quip>('quips.json').map((q) => ({
+  load: (root: string): ContentRecord[] =>
+    dataset<Quip[]>(root, FIXTURE_BOOK, 'quips').map((q) => ({
       contentId: q.id,
       name: q.name,
       img: q.img,
       body: { kind: 'Macro', type: 'script', scope: 'global', command: q.command },
-      provenance: { tier: 'local', source: 'test/fixtures/content/local/quips.json', sourceId: q.id },
+      provenance: { source: `${SOURCE}/quips.json`, sourceId: q.id },
     })),
 };
 
@@ -73,8 +74,8 @@ const mishaps: PackDefinition = {
   pack: 'mishaps',
   compendium: 'fixture_tables_1e',
   documentType: 'RollTable',
-  load: (): ContentRecord[] =>
-    records<Mishap>('mishaps.json').map((m) => ({
+  load: (root: string): ContentRecord[] =>
+    dataset<Mishap[]>(root, FIXTURE_BOOK, 'mishaps').map((m) => ({
       contentId: m.id,
       name: m.name,
       img: m.img,
@@ -86,11 +87,16 @@ const mishaps: PackDefinition = {
           (r): TableResult => ({ contentId: r.id, range: r.range, description: r.description }),
         ),
       },
-      provenance: { tier: 'local', source: 'test/fixtures/content/local/mishaps.json', sourceId: m.id },
+      provenance: { source: `${SOURCE}/mishaps.json`, sourceId: m.id },
     })),
 };
 
-export const FIXTURE_PACKS: PackDefinition[] = [gadgets, quips, mishaps];
+export const FIXTURE_BOOK: Book = {
+  id: 'fixture',
+  title: 'Fixture book',
+  dir: SOURCE,
+  packs: [gadgets, quips, mishaps],
+};
 
 /** The ids the fixture's "pre-pipeline packs" held, standing in for packs/_source. */
 export const FIXTURE_IDS_BEFORE = new Set([

@@ -1,11 +1,14 @@
-export interface Provenance {
-  tier: 'local' | 'derived';
-  /** Repo-relative path of the file the record was read from. */
+export interface SourceRef {
+  /** Repo-relative path of the dataset the record was read from. */
   source: string;
-  /** The upstream record's own id, where it has one. */
+  /** The dataset record's own id, where it has one. */
   sourceId?: string;
-  book?: string;
   page?: number;
+}
+
+/** A `SourceRef` with the book stamped on by the pipeline, so a loader cannot get it wrong. */
+export interface Provenance extends SourceRef {
+  book: string;
 }
 
 export interface ItemBody {
@@ -42,7 +45,7 @@ export interface TableBody {
 export type Body = ItemBody | MacroBody | TableBody;
 
 /**
- * The one shape both tiers normalise to. The generator never learns which tier a record came
+ * The one shape every book normalises to. The emitter never learns which book a record came
  * from — `provenance` is carried for the build manifest and is never emitted into a pack.
  */
 export interface ContentRecord {
@@ -50,7 +53,7 @@ export interface ContentRecord {
   name: string;
   img: string;
   body: Body;
-  provenance: Provenance;
+  provenance: SourceRef;
 }
 
 export interface PackDefinition {
