@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://runegoblin.dev/mosh/fixture/common.schema.json",
-  "title": "Fixture value types — the local tier's idiom, in miniature",
+  "title": "Fixture value types — a book's schema idiom, in miniature",
   "$defs": {
     "contentId": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
     "html": { "type": "string" },

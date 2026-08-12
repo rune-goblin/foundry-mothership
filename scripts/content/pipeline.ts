@@ -41,12 +41,22 @@ export function build(options: BuildOptions): BuildResult {
   );
   if (validationErrors.length) throw new Error(`content failed validation:\n  ${validationErrors.join('\n  ')}`);
 
+  const packs = books.flatMap((b) => b.packs);
+  // A second book is meant to be additive. It stops being additive the moment it reuses a pack
+  // name — the registry key and the output directory — or a compendium another book already fills.
+  const collision =
+    firstDuplicate(books.map((b) => b.id)) ??
+    firstDuplicate(packs.map((p) => p.pack)) ??
+    firstDuplicate(packs.map((p) => p.compendium));
+  if (collision) throw new Error(`two books claim "${collision}"`);
+
   const stamp = readStamp(root);
   const ids = IdRegistry.load(registryPath, allocate);
 
   const emitted: Emitted[] = [];
   for (const book of books) {
     for (const def of book.packs) {
+      ids.declarePack(def.pack, def.compendium, def.documentType);
       const records = [...def.load(root)].sort((a, b) => (a.contentId < b.contentId ? -1 : 1));
       const filenames = new Map<string, string>();
       for (const record of records) {
@@ -63,7 +73,6 @@ export function build(options: BuildOptions): BuildResult {
   const modelErrors = checkModelFields(emitted);
   if (modelErrors.length) throw new Error(`emitted content does not fit its DataModel:\n  ${modelErrors.join('\n  ')}`);
 
-  const packs = books.flatMap((b) => b.packs);
   const compendia = new Set(packs.map((p) => p.compendium));
   const refErrors = checkReferences({ systemId: stamp.systemId, emitted, compendia });
   if (refErrors.length) throw new Error(`referential integrity failed:\n  ${refErrors.join('\n  ')}`);
@@ -82,6 +91,10 @@ export function build(options: BuildOptions): BuildResult {
   if (allocate && ids.allocations) ids.save(registryPath);
 
   return { emitted, registry: ids.registry, stamp, files };
+}
+
+function firstDuplicate(names: string[]): string | undefined {
+  return names.find((name, i) => names.indexOf(name) !== i);
 }
 
 function writeManifest(path: string, books: Book[], emitted: Emitted[], stamp: Stamp): void {

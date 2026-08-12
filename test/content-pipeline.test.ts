@@ -14,7 +14,7 @@ import { IdRegistry, loadRegistry } from '../scripts/content/ids.ts';
 import { checkIdPreservation, checkReferences } from '../scripts/content/integrity.ts';
 import { build, readStamp, type BuildResult } from '../scripts/content/pipeline.ts';
 import type { ContentRecord, PackDefinition } from '../scripts/content/record.ts';
-import { FIXTURE_BOOK, FIXTURE_IDS_BEFORE, FIXTURE_ROOT } from './fixtures/content/packs.ts';
+import { FIXTURE_BOOK, FIXTURE_IDS_BEFORE, FIXTURE_ROOT } from './fixtures/content/book.ts';
 
 const ROOT = join(import.meta.dirname, '..');
 const FIXTURE_REGISTRY = join(FIXTURE_ROOT, 'ids.json');
@@ -89,6 +89,61 @@ describe('the fixture is worth testing against', () => {
 
   it('stamps every document with the book it came from', () => {
     expect([...new Set(built.emitted.map((d) => d.book))]).toEqual(['fixture']);
+  });
+});
+
+// Adding the Warden's book must be a directory and a BOOKS entry, never a rework. It stops being
+// additive the moment two books claim the same id, pack name or compendium.
+describe('a second book is additive', () => {
+  it('refuses two books with the same id', () => {
+    expect(() => run([FIXTURE_BOOK, { ...FIXTURE_BOOK, packs: [] }])).toThrow('two books claim "fixture"');
+  });
+
+  it('refuses two books that fill the same compendium', () => {
+    const second = { ...FIXTURE_BOOK, id: 'second', packs: [FIXTURE_BOOK.packs[0]!] };
+    expect(() => run([FIXTURE_BOOK, second])).toThrow('two books claim "gadgets"');
+  });
+
+  it('emits both books when they claim nothing in common', () => {
+    const second: Book = {
+      ...FIXTURE_BOOK,
+      id: 'second',
+      packs: [{ ...FIXTURE_BOOK.packs[1]!, pack: 'asides', compendium: 'fixture_asides_1e' }],
+    };
+    const result = run([FIXTURE_BOOK, second], {
+      allocate: true,
+      registryPath: scratchRegistry(),
+    });
+    expect(result.emitted.filter((d) => d.book === 'second').map((d) => d.pack)).toEqual([
+      'asides',
+      'asides',
+    ]);
+    expect(result.registry.packs.asides!.compendium).toBe('fixture_asides_1e');
+  });
+
+  it('refuses a new pack without --allocate, rather than minting ids nobody committed', () => {
+    const second: Book = {
+      ...FIXTURE_BOOK,
+      id: 'second',
+      packs: [{ ...FIXTURE_BOOK.packs[1]!, pack: 'asides', compendium: 'fixture_asides_1e' }],
+    };
+    expect(() => run([FIXTURE_BOOK, second])).toThrow(
+      /content\/ids\.json declares no pack "asides".*--allocate/s,
+    );
+  });
+
+  it('refuses a pack whose compendium has moved out from under its ids', () => {
+    const moved = [
+      {
+        ...FIXTURE_BOOK,
+        packs: FIXTURE_BOOK.packs.map((p) =>
+          p.pack === 'gadgets' ? { ...p, compendium: 'fixture_widgets_1e' } : p,
+        ),
+      },
+    ];
+    expect(() => run(moved)).toThrow(
+      'content/ids.json has "gadgets" as Item in fixture_gadgets_1e, the build has it as Item in fixture_widgets_1e',
+    );
   });
 });
 

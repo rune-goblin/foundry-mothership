@@ -96,6 +96,31 @@ export class IdRegistry {
     return entry;
   }
 
+  /**
+   * A new book brings new packs, so the registry has to be able to grow one — but only under
+   * `--allocate`, and never silently under a compendium or document type it was not registered
+   * with, which would hand a pack's ids to somewhere else entirely.
+   */
+  declarePack(pack: string, compendium: string, documentType: string): void {
+    const entry = this.registry.packs[pack];
+    if (!entry) {
+      if (!this.allocate) {
+        throw new Error(
+          `content/ids.json declares no pack "${pack}". Re-run with --allocate and commit the registry.`,
+        );
+      }
+      this.registry.packs[pack] = { compendium, documentType, documents: {} };
+      this.allocated += 1;
+      return;
+    }
+    if (entry.compendium !== compendium || entry.documentType !== documentType) {
+      throw new Error(
+        `content/ids.json has "${pack}" as ${entry.documentType} in ${entry.compendium}, ` +
+          `the build has it as ${documentType} in ${compendium}`,
+      );
+    }
+  }
+
   documentId(pack: string, contentId: string): string {
     if (!CONTENT_ID.test(contentId)) {
       throw new Error(`${pack}/${contentId}: content ids must match ${CONTENT_ID}`);
