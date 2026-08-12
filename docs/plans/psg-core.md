@@ -10,9 +10,9 @@ the book instead. What survives from it is noted at the end.
 
 | | |
 |---|---|
-| **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26), **S2b** the TypeScript catalogs and **S3** the content (§27), **S4** the class sheet and `base_adjustment` (§28) |
-| **Next** | **S5 — actor-generator on a draft store.** It is the last window on a bare `FormApplication`, it extracts one `_id` per loadout row, and it is what `selected_adjustment` is waiting on before that half can be tightened too. |
-| **Green at** | `check` 0/0 (224 files) · **220 vitest** · **70 Playwright** · `build` |
+| **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26), **S2b** the TypeScript catalogs and **S3** the content (§27), **S4** the class sheet and `base_adjustment` (§28), **S5** the generator on a draft store and `selected_adjustment` (§29) |
+| **Next** | **S6 — creature-sheet.** The smaller of the two actor sheets, and where the shared sections land before the player-visible one depends on them. |
+| **Green at** | `check` 0/0 (233 files) · **234 vitest** · **74 Playwright** · `build` |
 | **Preserved** | Everything cut is on the pushed `archive/pre-psg-cut` branch **and** tag |
 
 What the system ships today: 2 actor types (character, creature), 7 item types, and **274
@@ -326,8 +326,8 @@ one less actor type in every schema test.
 | S2b | the book becomes a TypeScript catalog | ✅ §27 |
 | S3 | generate the book | ✅ §27 |
 | S4 | class-sheet + `base_adjustment` | ✅ §28 |
-| S5 | actor-generator on a draft store | **next** |
-| S6 | creature-sheet | |
+| S5 | actor-generator on a draft store | ✅ §29 |
+| S6 | creature-sheet | **next** |
 | S7 | actor-sheet — last, most player-visible | |
 | S8 | conditions contribute advantage/disadvantage to rolls | |
 | S9 | trailing, ungated | |
@@ -348,7 +348,22 @@ because `npx playwright test` runs against whatever `dist/` already holds (§28)
 
 ---
 
-### S5 — actor-generator on a draft store
+### S5 — actor-generator on a draft store ✅ §29
+
+**Landed.** Three things came out other than as written, and S6/S7 inherit them:
+
+- **The two owner decisions were both taken the affirmative way.** Stress is written from the book
+  on save, and the HEALTH bonus box — bound to `system.health.bonus`, read as
+  `system.health.mod`, so never once effective — was made to work rather than deleted.
+- **`selected_adjustment` was earned.** The blocker §28 recorded was not a conflict: a *pick-set*
+  is what `choose_skill_and` is and what each `choose_skill_or` option carries, which is why one
+  dialog reads both. `template.json` did not move, because tightening changed no default — the
+  option shape is pinned in `item-models.test.ts` and by the content guard, which now descends
+  into arrays.
+- **Rolling a patch or trinket threw**, not just the loadout. Those rows link nothing, the AppV1
+  regex matched `null`, and the next line indexed it.
+
+The brief as it stood follows, because S6 and S7 build on it.
 
 The last window on a bare `FormApplication`, and the one place where the DOM is the source of truth.
 

@@ -28,3 +28,34 @@ describe('item DataModels reproduce template.json exactly', () => {
     }
   });
 });
+
+// template.json is the oracle for defaults, and an empty array has none -- it cannot say what a
+// choose_stat entry or a choose_skill_or option looks like. That shape is what the generator reads
+// and the content build emits, so pin it here where the schema itself can be walked.
+describe('the class adjustment lists', () => {
+  const selected = () =>
+    ITEM_MODELS.class.defineSchema().selected_adjustment.schema as Record<string, Stub>;
+
+  it('describes one chosen stat as a modification and the stats it may be spent on', () => {
+    expect(defaultsOf(selected().choose_stat.element!.schema!)).toEqual({ modification: 0, stats: [] });
+  });
+
+  it('describes a choose_skill_or option as a named pick-set plus its own skill list', () => {
+    const option = selected().choose_skill_or.element!.element!.schema!;
+    expect(defaultsOf(option)).toEqual({
+      name: '',
+      trained: 0,
+      expert: 0,
+      expert_full_set: 0,
+      master: 0,
+      master_full_set: 0,
+      from_list: [],
+    });
+  });
+
+  it('gives choose_skill_and the same pick-set keys, so one dialog reads both', () => {
+    const option = selected().choose_skill_or.element!.element!.schema!;
+    const picks = Object.keys(option).filter((key) => key !== 'name' && key !== 'from_list');
+    expect(Object.keys(selected().choose_skill_and.schema!).sort()).toEqual(picks.sort());
+  });
+});

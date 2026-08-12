@@ -15,6 +15,16 @@ const bool = (initial = false) => new fields.BooleanField({ required: true, init
 
 const uuidList = () => new fields.ArrayField(new fields.StringField());
 
+// How many skills of each rank a class adjustment lets the player pick. A *_full_set is one skill
+// plus the prerequisite chain beneath it, which is a different dialog, hence a different key.
+const picks = () => ({
+  trained: num(0),
+  expert: num(0),
+  expert_full_set: num(0),
+  master: num(0),
+  master_full_set: num(0),
+});
+
 // Shared by every item type.
 const base = () => ({ description: new fields.HTMLField({ required: true, blank: true, initial: '' }) });
 
@@ -96,10 +106,10 @@ export class MoshClass extends foundry.abstract.TypeDataModel {
       ...base(),
       trauma_response: str(''),
       robotic: bool(true),
-      // These eight keys are a contract, not a bag: actor-generator.js writes every key except
-      // skills_granted into `input[name="system.stats.<key>.bonus"]`, so anything added here is
-      // applied as a stat bonus. Stats and saves share the one flat key space, which is what the
-      // book's adjustments map onto (MODERNIZATION.md §27).
+      // These eight keys are a contract, not a bag: the generator's draft copies every key except
+      // skills_granted straight into its own bonus map, so anything added here is applied as a
+      // stat bonus. Stats and saves share the one flat key space, which is what the book's
+      // adjustments map onto (MODERNIZATION.md §27).
       base_adjustment: new fields.SchemaField({
         strength: num(0),
         speed: num(0),
@@ -111,19 +121,22 @@ export class MoshClass extends foundry.abstract.TypeDataModel {
         max_wounds: num(0),
         skills_granted: uuidList(),
       }),
-      // Free-form until S5. choose_skill_or is an array of arrays whose entries the character
-      // generator treats as two things at once: showOptionsDialog resolves one and hands it
-      // straight to popUpSkillOptions, which reads it as a pick-set. A strict SchemaField would
-      // pin a shape the generator is still moving; S5 untangles that, and tightens this.
-      selected_adjustment: new fields.ObjectField({
-        required: true,
-        initial: () => ({
-          choose_stat: [],
-          choose_skill_and: {
-            trained: 0, expert: 0, expert_full_set: 0, master: 0, master_full_set: 0,
-          },
-          choose_skill_or: [],
-        }),
+      // The adjustments the player chooses rather than simply receives. choose_skill_or is an
+      // array of *groups*, each a set of packages the player takes one of; a package and
+      // choose_skill_and are the same pick-set shape, which is why they share `picks()`.
+      selected_adjustment: new fields.SchemaField({
+        choose_stat: new fields.ArrayField(
+          new fields.SchemaField({
+            modification: num(0),
+            stats: new fields.ArrayField(new fields.StringField()),
+          }),
+        ),
+        choose_skill_and: new fields.SchemaField(picks()),
+        choose_skill_or: new fields.ArrayField(
+          new fields.ArrayField(
+            new fields.SchemaField({ name: str(''), ...picks(), from_list: uuidList() }),
+          ),
+        ),
       }),
       roll_tables: new fields.SchemaField({
         loadout: str(''), trinket: str(''), patch: str(''),

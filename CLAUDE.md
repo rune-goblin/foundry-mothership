@@ -24,7 +24,7 @@ is delegated and gated (its ten standing rules and review gate are current; its 
 superseded). `MODERNIZATION.md` is the **record**: §10 the item-sheet conventions, §20 the
 component layer, §22 the windows, §24 phase 0, §25 the PSG cut, §26 the content pipeline, §27 the
 TypeScript catalogs and the generated content, §28 the class-adjustment schema and the last AppV1
-item sheet. Update it as work lands.
+item sheet, §29 the character generator on a draft store. Update it as work lands.
 
 **Ships, the Calm/android panic variants and all unsourced content were cut** (§25) and live on
 the pushed **`archive/pre-psg-cut`** branch and tag. Nothing was destroyed; ships return as an
@@ -37,16 +37,17 @@ Don't fix component architecture piecemeal mid-phase — note it in §23 instead
 | Done | Not done |
 |---|---|
 | Vite build, TS tooling, CI | 2 AppV1 sheet classes (actor, creature) |
-| DataModels for the 9 surviving types | 1 bare-`FormApplication` window (`actor-generator`) |
-| Packs generated from the book, 0e removed | 16 Handlebars templates, none of them an item |
-| Svelte 5 wired into build, check, vitest | 3 sheets/windows left to convert |
-| **Every item sheet on ApplicationV2 + Svelte** (§28) | the generator extracts one `_id` per loadout row — S5 |
-| Shared components in `module/ui/parts/` | conditions do not affect any roll — S8 |
-| 0e / `firstEdition` rules removed | `selected_adjustment` is still free-form, pending S5 (§28) |
+| DataModels for the 9 surviving types | 11 Handlebars templates, none of them an item |
+| Packs generated from the book, 0e removed | 2 sheets left to convert |
+| Svelte 5 wired into build, check, vitest | conditions do not affect any roll — S8 |
+| **Every item sheet on ApplicationV2 + Svelte** (§28) | |
+| Shared components in `module/ui/parts/` | |
+| 0e / `firstEdition` rules removed | |
 | `creature-settings` on ApplicationV2 (§24) | |
 | The PSG cut — 13,337 lines removed (§25) | |
 | **274 documents generated from the PSG** (§27) | |
-| `base_adjustment` is a real `SchemaField` (§28) | |
+| Both class adjustments are real `SchemaField`s (§28, §29) | |
+| **The character generator, on a draft store** (§29) — no `FormApplication` left | |
 
 ## Hard rules (override defaults)
 
@@ -69,9 +70,9 @@ npm run setup            # dev install: symlink scaffold (packs are COPIED — r
 npm run deploy           # release rehearsal: link-free copy, same shape as the zip
 ./scripts/packs.sh pack  # packs/_source/*.json → LevelDB (close Foundry first)
 npm run content -- --allocate  # content/books/** -> packs/_source/** (--allocate mints new ids)
-npm test                 # 217 vitest specs — the CI tier
+npm test                 # 234 vitest specs — the CI tier
 npm run check            # tsc over the .ts surface, then svelte-check over module/ui
-npm run test:e2e         # 61 Playwright specs vs a real headless Foundry
+npm run test:e2e         # 74 Playwright specs vs a real headless Foundry
 ```
 
 A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — both `dist/` and
@@ -95,8 +96,8 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   components (runes mode is forced on). `MODERNIZATION.md` §10 has the conventions: the
   document stays the source of truth, Foundry persists the form, mount once.
 - **`module/ui/parts/` holds the shared primitives** (§20) — `ItemList`/`ItemRow`/`ItemCell`/
-  `ItemControls`/`ItemControl`, `Tabs`/`TabPanel`, `CircleStats`/`CircleStat`, `Field`,
-  `CheckField`, `Editor`, `SheetHeader`, plus the `dropTarget` attachment. Build a conversion
+  `ItemControls`/`ItemControl`, `Tabs`/`TabPanel`, `CircleStats`/`CircleStat`, `MainStat`,
+  `Field`, `CheckField`, `Editor`, `SheetHeader`, plus the `dropTarget` attachment. Build a conversion
   out of these before writing bespoke markup. They emit the **global** class names from
   `css/mosh.css` on purpose and carry no `<style>` blocks; `test/ui-parts.test.ts` pins every
   one of those class names, because the stylesheet is a contract no compiler checks.

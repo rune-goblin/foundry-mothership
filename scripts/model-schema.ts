@@ -1,7 +1,7 @@
 // The model modules read foundry.data.fields at module scope. Rather than import Foundry, stub
 // each field class to record the default it would produce, then walk the real schema. Callers
 // therefore check the shipped schema itself, not a restatement of it.
-export type Stub = { initial?: unknown; schema?: Record<string, Stub> };
+export type Stub = { initial?: unknown; schema?: Record<string, Stub>; element?: Stub };
 
 class Recorded {
   initial: unknown;
@@ -18,7 +18,12 @@ export function installFoundryFieldStubs(): void {
         BooleanField: class extends Recorded { constructor(o?: { initial?: boolean }) { super(o?.initial ?? false); } },
         HTMLField: class extends Recorded { constructor(o?: { initial?: string }) { super(o?.initial ?? ''); } },
         FilePathField: class extends Recorded { constructor(o?: { initial?: string }) { super(o?.initial ?? ''); } },
-        ArrayField: class extends Recorded { constructor() { super([]); } },
+        // The element field is kept so undeclaredKeys can reach the shape inside a list --
+        // class.selected_adjustment.choose_skill_or is an array of arrays of SchemaFields.
+        ArrayField: class extends Recorded {
+          element: Stub;
+          constructor(element: Stub) { super([]); this.element = element; }
+        },
         ObjectField: class extends Recorded {
           constructor(o?: { initial?: unknown }) {
             super(typeof o?.initial === 'function' ? (o.initial as () => unknown)() : (o?.initial ?? {}));
@@ -61,13 +66,18 @@ export function undeclaredKeys(
   const out: string[] = [];
   for (const [key, child] of Object.entries(value)) {
     const field = schema[key];
-    if (!field) {
-      out.push(`${prefix}${key}`);
-    } else if (field.schema && isPlainObject(child)) {
-      out.push(...undeclaredKeys(child, field.schema, `${prefix}${key}.`));
-    }
+    if (!field) out.push(`${prefix}${key}`);
+    else out.push(...undeclaredIn(child, field, `${prefix}${key}`));
   }
   return out;
+}
+
+function undeclaredIn(value: unknown, field: Stub, path: string): string[] {
+  if (field.schema && isPlainObject(value)) return undeclaredKeys(value, field.schema, `${path}.`);
+  if (field.element && Array.isArray(value)) {
+    return value.flatMap((entry, index) => undeclaredIn(entry, field.element!, `${path}[${index}]`));
+  }
+  return [];
 }
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {

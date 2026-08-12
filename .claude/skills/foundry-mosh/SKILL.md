@@ -31,10 +31,10 @@ structured data `foundry.abstract.TypeDataModel` + `defineSchema()`.
 | Namespacing | ✅ `foundry.utils.*`, `foundry.documents.collections.*` |
 | Svelte | ✅ wired into vite, `npm run check`, vitest — runes mode forced on |
 | Shared components | ✅ `module/ui/parts/` — build conversions out of these, see `MODERNIZATION.md` §20 |
-| Item sheets | ✅ the 8 simple types (`module/ui/item/`) and `skill` (`module/ui/skill/`) |
-| **Sheets** | ❌ 6 classes still `foundry.appv1.sheets.*` with `getData`/`activateListeners` |
-| **Windows** | ❌ 4 still the bare `FormApplication` global with `_updateObject` |
-| **Templates** | ❌ 27 Handlebars `.html` files |
+| Item sheets | ✅ every type — the 8 simple ones (`module/ui/item/`), `skill`, `class` |
+| Windows | ✅ ApplicationV2 throughout — no `FormApplication` subclass left |
+| **Sheets** | ❌ 2 classes still `foundry.appv1.sheets.*` with `getData`/`activateListeners` — actor, creature |
+| **Templates** | ❌ 11 Handlebars `.html` files, none of them an item sheet |
 
 Converting those is phase 4 (see `MODERNIZATION.md`). Don't add new v1 code; when you
 *touch* a v1 class, prefer converting it whole over extending it.

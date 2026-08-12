@@ -141,6 +141,36 @@ describe('MainStat', () => {
     expect(input.checked).toBe(true);
     expect(input.getAttribute('data-dtype')).toBe('Boolean');
   });
+
+  // The generator swaps a clickable die for the rolled value and hangs the class bonus beside it,
+  // so it drives the circle and the wrapper's second slot itself.
+  it('lets a caller replace the circle and add beside it', () => {
+    const wrapper = render(MainStat, {
+      label: 'Strength',
+      key: 'strength',
+      control: text('die'),
+      after: text('bonus'),
+    }).firstElementChild!;
+
+    expect(wrapper.className).toBe('mainstatwrapper');
+    expect(wrapper.querySelector('.resource.mainstat')!.textContent).toContain('die');
+    expect(wrapper.querySelector('input')).toBeNull();
+    expect(wrapper.lastElementChild!.textContent).toBe('bonus');
+  });
+
+  // The generator's patch, trinket and loadout rows sit straight in a grid column; wrapping them
+  // in .mainstatwrapper would flex them to 95% width.
+  it('drops the wrapper on request, and takes an extra label class', () => {
+    const stat = render(MainStat, {
+      label: 'Skills',
+      key: 'skills',
+      labelClass: 'fulllabel',
+      wrapper: false,
+    }).firstElementChild!;
+
+    expect([...stat.classList]).toEqual(['resource', 'mainstat']);
+    expect([...stat.querySelector('div')!.classList]).toEqual(['fulllabel', 'mainstatlabel']);
+  });
 });
 
 describe('ItemImage', () => {

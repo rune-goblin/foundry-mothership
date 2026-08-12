@@ -2085,3 +2085,136 @@ test of the e2e tier must rebuild first**; `npm run test:e2e` does, a bare `play
 | `.mainstatwrapper` renamed | `ui-parts` fails |
 | `ItemRow`'s `{@attach}` dropped | `ui-parts` fails |
 | an emitted `common_skills` key restored | `npm run content` fails, 4 named errors |
+
+---
+
+## 29. S5 — the generator on a draft store, and the last `FormApplication`
+
+The window that has never worked. It scans compendia for `class` and `skill` documents, and until
+S3 no pack shipped either; the first thing this unit did was watch it find them. **`FormApplication`
+has no subclass left in the system**, and `module/windows/` is gone.
+
+```
+module/ui/generator/GeneratorApp.js      ApplicationV2 — no form, so no DocumentSheetV2
+module/ui/generator/draft.svelte.js      CharacterDraft — the $state the DOM used to hold
+module/ui/generator/Generator.svelte     the window body
+module/ui/generator/RollBox.svelte       die → value, plus the class bonus beside it
+module/ui/generator/dialogs.js           the four Handlebars popups, as three DialogV2s
+module/ui/generator/skills.js            the compendium scans, and the prerequisite rule
+module/ui/generator/table-result.js      a drawn row → the text to show and the items to hand out
+```
+
+**Six files died**: `actor-generator.js` (772), `actor-generator-dialog.html` (305) and the four
+dialog templates (168). 1,299 lines out, 1,006 in, of which 316 are new specs.
+
+### The draft store, and what it replaced
+
+`architecture.md` Decision 3's second pattern, built as written: the actor is read once when the
+window opens and written once on save. What that removed, in order of how bad it was:
+
+- **`getData()` wrote render scaffolding onto the live actor.** `let data = this.object;
+  data.system.class = []` — not a copy. Every render stomped the actor's own prepared
+  `system.class` in memory.
+- **Every step reached into the form.** `this._element.find('input[name="system.stats.x.bonus"]')`
+  at eleven sites, and the submit read it all back out of `formData`. The dialogs wrote their
+  results into the parent window's DOM; they now resolve values and touch nothing.
+- **A closed dialog hung its promise for good.** None of the four had a `close` handler, so
+  dismissing one stalled `applyClassSkills` forever. Each resolves empty now.
+- **`statOptions` opened every stat choice at once.** All the dialogs were built inside one
+  `Promise` executor that resolved on the first callback. One class ships two choices today; it
+  would have opened both and applied one.
+
+### Three bugs the generated content had already broken
+
+1. **A three-item loadout row handed out one item.** `rollTable` matched `/(.*)(@UUID.*)/` — a
+   greedy first group, so it kept the *last* link and dropped the rest, while the submit split
+   `system.class.loadout.uuid` on commas and expected several. `parseResults` takes every link;
+   `modifyItem` still dedupes by name and takes the quantity, so a row naming one item twice
+   arrives as quantity two.
+2. **Rolling a patch or a trinket threw.** Those rows carry no `@UUID` at all, so the match was
+   `null` and the next line indexed it. "Roll everything" died at the patch.
+3. **The HEALTH bonus input had never done anything.** It binds `system.health.bonus`; the submit
+   read `formData["system.health.mod"]`, a key nothing writes. **Owner's call: make it work.** It
+   lives in the draft and is added to the rolled value; no schema field, and unlike the seven stat
+   bonuses beside it a class never touches it, so choosing a class no longer wipes it.
+
+Also fixed on the way past: `system.class.uuid` was written to the actor by every save and
+**silently discarded** — the character schema declares `class.value` and nothing else. Nothing
+reads it, so the write is gone rather than the field added; a field with no reader fails
+`field-usage.test.ts`.
+
+### Stress, decided
+
+PSG step 5 — *"Characters' current Stress and Minimum Stress both start at 2"* — is the one
+creation rule the book states in prose rather than dice. **Owner's call: write it.** Regenerating
+a character now resets Stress the way it resets health and the stats. The four dice formulas come
+from `CHARACTER_CREATION.steps[].roll.formula` rather than the four hardcoded strings; the prose
+sentence is pinned by a spec, so the constant beside it cannot drift.
+
+### `selected_adjustment` is a SchemaField — S4's blocker was this unit
+
+§28 left it free-form for one reason: the generator resolved a `choose_skill_or` option and handed
+it to `popUpSkillOptions`, which read the same object as a pick-set. Untangled, that is not a
+conflict but a shared shape — a **pick-set** (five counts) is what `choose_skill_and` is and what
+each `choose_skill_or` option carries, which is why one dialog reads both. So the schema is
+`architecture.md` Decision 2c, written out, and the legacy nested-array `skills_granted` branch the
+generator itself called "we should never have this case" went with it.
+
+**`template.json` did not move, and that is the point.** Tightening changed no default — the
+oracle's job is defaults, and an empty array has none. It cannot say what a `choose_stat` entry or
+a `choose_skill_or` option looks like, which is why that shape is now pinned in
+`item-models.test.ts` against the walked schema itself.
+
+**The content guard had the same blind spot and no longer does.** `undeclaredKeys` stopped at any
+array, so the whole option shape was unchecked. `ArrayField`'s stub keeps its element field now and
+the walk descends, naming the offender by index:
+`choose_skill_or[0][1].bogus_key — Foundry would discard it on load`.
+
+### Built from the primitives
+
+`MainStat` grew three optional props rather than the window writing the class names again: a
+`control` snippet (the generator swaps a clickable die for the rolled value), an `after` snippet
+(the bonus box inside the wrapper), and `wrapper={false}` for the table rows, which sit straight in
+a grid column and would be flexed to 95% width by `.mainstatwrapper`. Both actor sheets need the
+same three in S6/S7. `RollBox` is local, per Decision 1's rule that recurrence inside one window
+gets a local component.
+
+`UUidListToNames` was deleted with its only consumer — the choice dialog template — and the
+misspelled `Mosh.CharacterGenerator.SkillOption.PopupFullExperDescription` was corrected in both
+`lang/` files. The template asked for the correct spelling, so that description had always rendered
+as its own key.
+
+### Two things left as they were
+
+- **Quantity in a loadout row is the label's, not the item's.** `Stimpak (x5)` links one Stimpak
+  document and one arrives. Aggregating that is the content mapping's business, not the window's.
+- **The AppV1 actor sheet still opens it**, and must until S7. The header button is unchanged apart
+  from the class it constructs.
+
+### Verified
+
+`npm run check` 0 errors / 0 warnings (233 files) · **234 vitest** · **74 Playwright** ·
+`npm run content` clean and byte-identical on a second build · `npm run build`.
+
+`test/generator.test.ts` is 9 specs over the halves the draft store made pure — the row parser and
+the prerequisite rule. `test/e2e/actor-generator.spec.ts` is 4, including the capstone: open the
+window from the actor sheet's header, choose a Marine, answer its skill dialogs, roll everything,
+save, and assert the stats, the wounds, the Stress, the four skills and **three items from one
+loadout row** on the actor. Every die is frozen through `CONFIG.Dice.randomUniform`, so the
+assertions name exact numbers and an exact table row.
+
+| Mutation | Result |
+|---|---|
+| the row parser keeps the last `@UUID` only, as AppV1 did | `generator` fails, and the capstone's loadout is 1 item |
+| `apply()` stops writing Stress | the capstone fails — the actor opens with Stress drifted to 9, on purpose |
+| a class's bonuses `+=` instead of `=` | the class-replacement spec fails, 25 for 20 |
+| `from_list` dropped from the option schema | `item-models` fails **and** `npm run content` names 4 documents |
+| `choose_stat.stats` renamed | `item-models` fails twice |
+| `MainStat`'s `after` snippet dropped | `ui-parts` fails |
+| a bogus key inside `choose_skill_or` | `npm run content` fails, naming `[0][0]` and `[0][1]` |
+
+**Two harness findings, both costing a cycle.** The AppV1 sheet finishes wiring its header a beat
+after `render` resolves, so a click landing too early does nothing — the spec retries. And
+Playwright's own `click` never reaches that button at all: the window header is draggable and
+swallows a synthesized mousedown/mouseup pair, so the click is made in the page. Neither applies to
+an ApplicationV2 window; both die with the sheet in S7.
