@@ -48,5 +48,7 @@ Tuesday Knight Games' third-party policy like the rest of this system — `MODER
 ## Adding the next book
 
 Copy the shape: `content/books/<id>/` with its datasets, its `schema/`, and a `BOOK.md` like this
-one; a loader module beside `scripts/content/books/psg.ts`; one entry in `BOOKS`. Nothing else
-moves — the validator, the emitter, the DataModel guard and the manifest are book-agnostic.
+one; a loader module beside `scripts/content/books/psg.ts`; one entry in `BOOKS`. Then
+`npm run content -- --allocate` mints ids for its packs and rewrites `content/ids.json`, which is
+committed. Nothing else moves — the validator, the emitter, the DataModel guard and the manifest
+are book-agnostic, and the build refuses a book that reuses another's pack name or compendium.

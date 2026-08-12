@@ -586,6 +586,12 @@ describe('validation', () => {
     ).toThrow(/gadgets\.json\/0\/severity/);
   });
 
+  it('rejects a book whose directory is not there', () => {
+    expect(() =>
+      run([{ ...FIXTURE_BOOK, dir: 'content/books/nonesuch' }]),
+    ).toThrow(/content\/books\/nonesuch: no such directory/);
+  });
+
   it('rejects a dataset with no schema of its own', () => {
     const { root, bookDir } = forkedRoot();
     writeFileSync(join(bookDir, 'sidearms.json'), '[]');

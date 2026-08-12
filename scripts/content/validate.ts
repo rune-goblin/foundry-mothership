@@ -15,7 +15,9 @@ export interface DatasetPaths {
  * everything and prove nothing.
  */
 export function validateDatasets({ schema, data }: DatasetPaths): string[] {
-  if (!existsSync(schema) || !existsSync(data)) return [];
+  // A book whose `dir` is a typo would otherwise emit nothing and pass every check.
+  if (!existsSync(data)) return [`${data}: no such directory`];
+  if (!existsSync(schema)) return [`${schema}: no such directory`];
 
   const ajv = new Ajv2020({ strict: true, allErrors: true, allowUnionTypes: true, validateSchema: true });
   const byFile = new Map<string, ValidateFunction>();
