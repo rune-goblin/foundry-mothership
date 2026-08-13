@@ -70,13 +70,36 @@ describe('RollSpec round trips', () => {
 
 describe('CHECK_SEMANTICS — how each kind of check is judged', () => {
   it('rolls stats and skills under, counting doubles', () => {
-    expect(CHECK_SEMANTICS.stat).toEqual({ aim: 'low', comparison: '<', crits: true, zeroBased: true });
+    expect(CHECK_SEMANTICS.stat).toEqual({
+      aim: 'low',
+      comparison: '<',
+      crits: true,
+      zeroBased: true,
+      autoFail: true,
+    });
     expect(CHECK_SEMANTICS.skill).toEqual(CHECK_SEMANTICS.stat);
     expect(CHECK_SEMANTICS['weapon-attack']).toEqual(CHECK_SEMANTICS.stat);
   });
 
   it('rolls a Panic Check over the Stress it is compared against, with no criticals', () => {
-    expect(CHECK_SEMANTICS.panic).toEqual({ aim: 'high', comparison: '>', crits: false, zeroBased: false });
+    expect(CHECK_SEMANTICS.panic).toEqual({
+      aim: 'high',
+      comparison: '>',
+      crits: false,
+      zeroBased: false,
+      autoFail: false,
+    });
+  });
+
+  // PSG 24 states the 90+ rule of the d100 Check or Save. Legacy compared every roll it made
+  // against 90 whatever the die, and no reachable roll differed — a d20 against Stress cannot
+  // reach 90 — so the scope is written down here rather than left to the next die size.
+  it('auto-fails at 90 only where the book says so: the d100 checks and saves', () => {
+    const autoFails = Object.entries(CHECK_SEMANTICS)
+      .filter(([, semantics]) => semantics.autoFail)
+      .map(([kind]) => kind);
+
+    expect(autoFails.sort()).toEqual(['rest-save', 'skill', 'stat', 'weapon-attack']);
   });
 
   // 10 damage is 10, not 0 — only the check dice read their top face as zero.

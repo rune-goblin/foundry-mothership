@@ -14,7 +14,7 @@
 
 import { localize } from '../i18n.ts';
 import { lookup, type LookupResult } from '../lookup.ts';
-import { parseRollSpec, toFormula } from '../rolls/parse.ts';
+import { parseRollSpec, themed, toFormula } from '../rolls/parse.ts';
 import { resolveOutcome, type EvaluatedRoll, type Outcome } from '../rolls/resolve.ts';
 import { CHECK_SEMANTICS, type Advantage, type CheckKind, type RollSpec } from '../rolls/spec.ts';
 import { DEATH_DIE, PANIC_DIE, WOUND_DIE } from '../rules.ts';
@@ -153,6 +153,8 @@ export interface RollOnTableOptions {
   /** What the roll is judged against — a Panic Check's Stress. A lookup table has none. */
   readonly target?: number | null;
   readonly robotic?: boolean;
+  /** A Dice So Nice colorset for the dice this table is rolled with; the card shows the plain spec. */
+  readonly colorset?: string;
 }
 
 declare const Roll: new (formula: string) => { evaluate(): Promise<RollDocument> };
@@ -189,7 +191,7 @@ export async function rollOnTable(
 ): Promise<TableDraw> {
   const kind = tableCheckKind(options.key);
   const semantics = CHECK_SEMANTICS[kind];
-  const roll = await new Roll(toFormula(options.spec)).evaluate();
+  const roll = await new Roll(themed(toFormula(options.spec), options.colorset ?? '')).evaluate();
 
   const outcome = resolveOutcome(roll, {
     spec: options.spec,
@@ -198,6 +200,7 @@ export async function rollOnTable(
     comparison: semantics.comparison,
     crits: semantics.crits,
     zeroBased: semantics.zeroBased,
+    autoFail: semantics.autoFail,
   });
 
   const robotic = options.robotic === true;

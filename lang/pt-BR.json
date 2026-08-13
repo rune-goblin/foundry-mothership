@@ -765,6 +765,7 @@
     "Background": "Antecedentes",
     "Base": "Base",
     "Bio": "Bio",
+    "Cancel": "Cancelar",
     "Body": "Corpo",
     "BodySave": "Salvaguarda do Corpo",
     "Bonus": "Bônus",
@@ -946,7 +947,11 @@
     "Errors": {
       "SkillAlreadyInList": "Essa habilidade já está na lista.",
       "NoDropTarget": "Algo deu errado com o drop, tente novamente",
-      "DocumentNotFound": "Nenhum {type} foi encontrado com o id {id}."
+      "DocumentNotFound": "Nenhum {type} foi encontrado com o id {id}.",
+      "CheckUnavailable": "{actor} não tem {check} para rolar.",
+      "NoCharacterTitle": "Nenhum Personagem Selecionado",
+      "NoCharacterSelected": "As macros são direcionadas ao seu personagem atribuído. Atribua um na sua Configuração de Usuário, no menu Jogadores, no canto inferior esquerdo.",
+      "NoTokenSelected": "As macros são direcionadas aos tokens selecionados na cena. Clique em um token, ou arraste uma caixa em volta de vários."
     },
     "Chat": {
       "Success": "SUCESSO!",
@@ -967,7 +972,9 @@
       "GainLabel": "{amount} {field}",
       "ApplyLabel": "{count} {condition}",
       "SufferLabel": "Sofrer Dano de {condition}",
-      "ActionUnavailable": "Essa ação ainda não está disponível."
+      "ActionUnavailable": "Essa ação ainda não está disponível.",
+      "DamageDealt": "Você inflige {damage} pontos de dano.",
+      "UnarmedDamage": "Você golpeia seu alvo causando {damage} de dano."
     },
     "Table": {
       "panic": "Cheque de Pânico",

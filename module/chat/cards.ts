@@ -312,8 +312,11 @@ export interface MutationCardInput {
  * apart on which of `Mosh.HealthZeroMessage`/`HealthZeroMessage2` they used (audit F7); the second
  * is the one that names the health the bar came back with, and since the last Wound now refills
  * the bar too (divergence R1-6) it is the only one left with anything to say.
+ *
+ * Exported because a check that costs Stress says this line inside its own card rather than
+ * posting a second one, which is what legacy's `modifyActor(…, false)` return value was for.
  */
-function mutationOutcome(input: MutationCardInput): string {
+export function mutationOutcome(input: MutationCardInput): string {
   const { result, voice } = input;
   const pod = result.field.address.pod;
   const label = result.field.label ?? pod;

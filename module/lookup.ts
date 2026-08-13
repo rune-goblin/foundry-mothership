@@ -82,6 +82,17 @@ async function compendiumGet(ref: string, type: CollectionName): Promise<unknown
   return null;
 }
 
+/**
+ * Whether the document found is the kind that was asked for. The keyed and compendium paths pick
+ * their collection by type, so they cannot answer with anything else; a UUID names its own
+ * collection, and `Actor.xxx` resolved a perfectly good Actor for a caller wanting a RollTable.
+ * A document always names itself — a value that does not is a caller's own stub, not a document.
+ */
+function isType(document: unknown, type: CollectionName): boolean {
+  const named = (document as { documentName?: unknown }).documentName;
+  return typeof named !== 'string' || named === type;
+}
+
 export async function lookup<T>(ref: string, type: CollectionName): Promise<LookupResult<T>> {
   const request: LookupRequest = { ref: String(ref ?? '').trim(), type };
   if (request.ref === '') return { found: false, request };
@@ -90,7 +101,7 @@ export async function lookup<T>(ref: string, type: CollectionName): Promise<Look
     ? await (typeof foundry === 'undefined' ? null : (foundry?.utils.fromUuid(request.ref) ?? null))
     : (worldGet(request.ref, type) ?? (await compendiumGet(request.ref, type)));
 
-  return document === null || document === undefined
+  return document === null || document === undefined || !isType(document, type)
     ? { found: false, request }
     : { found: true, document: document as T };
 }

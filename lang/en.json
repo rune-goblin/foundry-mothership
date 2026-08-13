@@ -765,6 +765,7 @@
     "Background": "Background",
     "Base": "Base",
     "Bio": "Bio",
+    "Cancel": "Cancel",
     "Body": "Body",
     "BodySave": "Body Save",
     "Bonus": "Bonus",
@@ -950,7 +951,11 @@
     "Errors": {
       "SkillAlreadyInList": "This skill is already in the list.",
       "NoDropTarget": "Something went wrong with the drop, please try again.",
-      "DocumentNotFound": "No {type} was found with the id {id}."
+      "DocumentNotFound": "No {type} was found with the id {id}.",
+      "CheckUnavailable": "{actor} has no {check} to roll.",
+      "NoCharacterTitle": "No Character Selected",
+      "NoCharacterSelected": "Macros are aimed at your assigned character. Assign one from your User Configuration, in the Players menu at the bottom left.",
+      "NoTokenSelected": "Macros are aimed at the tokens selected in the scene. Click a token, or drag a box around several."
     },
     "Chat": {
       "Success": "SUCCESS!",
@@ -971,7 +976,9 @@
       "GainLabel": "{amount} {field}",
       "ApplyLabel": "{count} {condition}",
       "SufferLabel": "Take {condition} Damage",
-      "ActionUnavailable": "That action is not available yet."
+      "ActionUnavailable": "That action is not available yet.",
+      "DamageDealt": "You inflict {damage} points of damage.",
+      "UnarmedDamage": "You strike your target for {damage} damage."
     },
     "Table": {
       "panic": "Panic Check",

@@ -31,7 +31,11 @@ export type CheckKind =
   | 'panic'
   | 'table';
 
-/** The stats and saves a check can target — the key space `system.stats` uses. */
+/**
+ * The stats and saves a check can target — the key space `system.stats` uses. The first seven are
+ * the character's, and are also the scopes a condition may name; `instinct` and `loyalty` belong
+ * to creatures, which roll checks no condition reaches.
+ */
 export type StatKey =
   | 'strength'
   | 'speed'
@@ -39,7 +43,9 @@ export type StatKey =
   | 'combat'
   | 'sanity'
   | 'fear'
-  | 'body';
+  | 'body'
+  | 'instinct'
+  | 'loyalty';
 
 /** What is being rolled. Each kind carries its own arguments, so no parameter means two things. */
 export type Check =
@@ -58,17 +64,19 @@ export interface CheckSemantics {
   readonly crits: boolean;
   /** Whether the die reads its top face as zero. Damage dice do not: 10 damage is 10. */
   readonly zeroBased: boolean;
+  /** Whether `AUTOFAIL_AT` applies — the book scopes it to the d100 (`rules.ts`). */
+  readonly autoFail: boolean;
 }
 
 /** How each kind of check is judged. A table roll may override this with the table's own die. */
 export const CHECK_SEMANTICS: Readonly<Record<CheckKind, CheckSemantics>> = {
-  stat: { aim: 'low', comparison: '<', crits: true, zeroBased: true },
-  skill: { aim: 'low', comparison: '<', crits: true, zeroBased: true },
-  'weapon-attack': { aim: 'low', comparison: '<', crits: true, zeroBased: true },
-  'weapon-damage': { aim: 'high', comparison: '>', crits: false, zeroBased: false },
-  'rest-save': { aim: 'low', comparison: '<', crits: false, zeroBased: true },
-  panic: { aim: 'high', comparison: '>', crits: false, zeroBased: false },
-  table: { aim: 'low', comparison: '<', crits: false, zeroBased: true },
+  stat: { aim: 'low', comparison: '<', crits: true, zeroBased: true, autoFail: true },
+  skill: { aim: 'low', comparison: '<', crits: true, zeroBased: true, autoFail: true },
+  'weapon-attack': { aim: 'low', comparison: '<', crits: true, zeroBased: true, autoFail: true },
+  'weapon-damage': { aim: 'high', comparison: '>', crits: false, zeroBased: false, autoFail: false },
+  'rest-save': { aim: 'low', comparison: '<', crits: false, zeroBased: true, autoFail: true },
+  panic: { aim: 'high', comparison: '>', crits: false, zeroBased: false, autoFail: false },
+  table: { aim: 'low', comparison: '<', crits: false, zeroBased: true, autoFail: false },
 };
 
 /**

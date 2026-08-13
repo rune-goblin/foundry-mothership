@@ -19,6 +19,12 @@ export interface ResolveOptions {
   readonly comparison: Comparison;
   readonly crits: boolean;
   readonly zeroBased: boolean;
+  /**
+   * Whether a 90 or more fails whatever the target. Legacy applied it to every comparison it
+   * made, whatever the die; the book states it of the d100 (`AUTOFAIL_AT`). Defaults to legacy's
+   * blanket rule so a caller that has not thought about it keeps the old answer.
+   */
+  readonly autoFail?: boolean;
 }
 
 export interface DieOutcome {
@@ -101,13 +107,15 @@ function pick(dice: readonly DieOutcome[], options: ResolveOptions): number {
 /** The evaluated roll judged against the check, as a record. It writes nothing and renders nothing. */
 export function resolveOutcome(roll: EvaluatedRoll, options: ResolveOptions): Outcome {
   const { target, comparison, crits } = options;
+  const autoFail = options.autoFail ?? true;
 
   const dice: DieOutcome[] = roll.dice.map((die) => {
     const result = faceValue(die.results[0]?.result ?? 0, die.faces, options.zeroBased);
     return {
       result,
       faces: die.faces,
-      success: target !== null && result < AUTOFAIL_AT && beats(result, comparison, target),
+      success:
+        target !== null && !(autoFail && result >= AUTOFAIL_AT) && beats(result, comparison, target),
       critical: crits && CRIT_DOUBLES.has(result),
     };
   });
@@ -115,7 +123,7 @@ export function resolveOutcome(roll: EvaluatedRoll, options: ResolveOptions): Ou
   const keptIndex = pick(dice, options);
   const kept = keptIndex === -1 ? Number(roll.total) || 0 : dice[keptIndex].result;
   const total = kept === 0 ? 0 : kept * options.spec.sign;
-  const autoFailed = target !== null && total >= AUTOFAIL_AT;
+  const autoFailed = autoFail && target !== null && total >= AUTOFAIL_AT;
 
   return {
     kept,

@@ -48,6 +48,26 @@ describe('lookup', () => {
     expect(items.get).not.toHaveBeenCalled();
   });
 
+  // A UUID names its own collection, and `fromUuid` answers with whatever it names. Asking for a
+  // RollTable and being handed an Actor is a miss, not a table that behaves strangely later.
+  it('refuses a UUID that names a different kind of document', async () => {
+    (globalThis as Globals).foundry = {
+      utils: { fromUuid: async () => ({ documentName: 'Actor', name: 'Sarah' }) },
+    };
+
+    await expect(lookup('Actor.abc', 'RollTable')).resolves.toEqual({
+      found: false,
+      request: { ref: 'Actor.abc', type: 'RollTable' },
+    });
+  });
+
+  it('accepts a UUID that names the kind asked for', async () => {
+    const document = { documentName: 'RollTable', name: 'Panic Check' };
+    (globalThis as Globals).foundry = { utils: { fromUuid: async () => document } };
+
+    await expect(lookup('RollTable.abc', 'RollTable')).resolves.toEqual({ found: true, document });
+  });
+
   it('falls back to the compendium a legacy id lives in, and only for its own type', async () => {
     const document = { name: 'Packed Table' };
     world({ tables: {} }, [pack('Item', { abc: { name: 'Wrong' } }), pack('RollTable', { abc: document })]);

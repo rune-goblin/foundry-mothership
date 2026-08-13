@@ -43,3 +43,12 @@ export function toRollString(spec: RollSpec): string {
 export function rollFormula(rollString: string, aim: Aim, fallbackDice = ''): string {
   return toFormula(parseRollSpec(rollString, aim, fallbackDice));
 }
+
+/**
+ * A formula wearing a Dice So Nice colorset. Foundry reads the suffix as flavour on the term and
+ * the module reads that flavour as the name of a dice theme, which is how the two shipped theme
+ * settings reach the table.
+ */
+export function themed(formula: string, colorset: string): string {
+  return colorset.trim() === '' ? formula : `${formula}[${colorset.trim()}]`;
+}
