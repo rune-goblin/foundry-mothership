@@ -1658,7 +1658,9 @@ the system now implements Mothership 1e's **Player's Survival Guide, completely 
 extends one book at a time. The Warden's Operations Manual is next; the Shipbreaker's Toolkit
 brings ships back.
 
-Everything cut is preserved on the **`archive/pre-psg-cut`** branch and tag, both pushed to the
+Everything cut is preserved in master's own history at ancestor **`11eee67`** (the archive
+branch and tag were trimmed 2026-08-13, alongside the legacy-remake refs — §35; both labelled
+ancestors, so nothing was lost), formerly the `archive/pre-psg-cut` refs pushed to the
 remote *before* a single deletion. Ships return by cherry-pick, not by re-authoring.
 
 ### Why the previous plan died

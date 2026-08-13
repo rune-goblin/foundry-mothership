@@ -34,7 +34,9 @@ the end of AppV1, §34 conditions reaching the roll they name, §35 the legacy r
 work lands.
 
 **Ships, the Calm/android panic variants and all unsourced content were cut** (§25) and live on
-the pushed **`archive/pre-psg-cut`** branch and tag. Nothing was destroyed; ships return as an
+master's own history at ancestor `11eee67` (the archive refs were trimmed 2026-08-13 — a label
+on an ancestor preserves nothing history doesn't; `git show 11eee67:<path>` recovers any cut
+file). Nothing was destroyed; ships return as an
 additive book tier. **Do not re-add content without a book behind it.**
 
 **Port, verify, ship, and record the compromise.** Conversions deliberately keep AppV1-era

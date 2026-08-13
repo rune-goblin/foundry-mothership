@@ -13,7 +13,7 @@ the book instead. What survives from it is noted at the end.
 | **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26), **S2b** the TypeScript catalogs and **S3** the content (§27), **S4** the class sheet and `base_adjustment` (§28), **S5** the generator on a draft store and `selected_adjustment` (§29), **S6** the creature sheet and the section tier (§30), **S7** the character sheet (§33) — **phase 4 is complete** — **S8** conditions reach the roll they name (§34) |
 | **Next** | **S9 — the trailing list**: the Svelte architecture audit, the CSS dissolution, `checkJs`, `template.json`'s retirement. The `actor.js` split left this list: the **legacy remake** (`docs/plans/legacy-remake.md`, MODERNIZATION §35) rebuilt the runtime core as TypeScript services; its R7 unit overlaps S9's service-facing items. |
 | **Green at** | `check` 0/0 (280 files) · **701 vitest** · **124 Playwright** · `build` |
-| **Preserved** | Everything cut is on the pushed `archive/pre-psg-cut` branch **and** tag |
+| **Preserved** | Everything cut is in master's history at ancestor `11eee67` (the archive refs were trimmed 2026-08-13; `git show 11eee67:<path>` recovers any file) |
 
 What the system ships today: 2 actor types (character, creature), 7 item types, and **274
 documents** across 9 compendia — 42 skills, 4 classes, 22 weapons, 15 armor, 65 equipment, 9
@@ -248,7 +248,7 @@ nothing and is ready for the next book.
 
 ## What is cut
 
-All of it is preserved on the **`archive/pre-psg-cut`** branch and the **`pre-psg-cut`** tag — the
+All of it is preserved at master's ancestor **`11eee67`** (formerly the `archive/pre-psg-cut` refs, trimmed 2026-08-13) — the
 complete pre-cut tree, 326 documents, both ship sheets, all four panic tables. Nothing is destroyed;
 ships return by cherry-pick when the Shipbreaker's Toolkit is transcribed.
 
@@ -587,5 +587,5 @@ tables, 40 + 10 = 50), and the `modifiers` count (35 real values, none on a cond
 | The cut removes something the character side quietly depends on | Cut in one reviewable commit per area, `npm run check` + vitest + e2e after each; the usage ratchet (`field-usage.test.ts`) fails on any schema leaf left without a reader |
 | Generated content is silently dropped by a `SchemaField` | The DataModel guard in S2, before any content is generated |
 | The book transcription is wrong or incomplete | It is now the only source, so errors ship. The capstone e2e (generate a Marine, assert the result) is the end-to-end check; per-dataset counts are pinned |
-| Ships are wanted back sooner than expected | `archive/pre-psg-cut` branch and tag, pushed before the cut; ships return as an additive book tier |
+| Ships are wanted back sooner than expected | master's ancestor `11eee67` holds the pre-cut tree; ships return as an additive book tier |
 | Adding the Warden book turns out to need a rework | The book-tiered layout is built in S2, before the PSG is generated, so the second book is exercised by construction rather than retrofitted |
