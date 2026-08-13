@@ -1,10 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 import { MothershipActor } from '../module/documents/actor.ts';
-
-vi.mock('../module/mosh.js', () => ({ fromIdUuid: () => undefined }));
-
-const { MothershipActor: LegacyActor } = await import('../module/actor/actor.js');
 
 /**
  * The creature derivation had no unit test at all (audit T8), though it carries the one derived
@@ -32,15 +28,8 @@ type CreatureSystem = {
   swarm: { enabled: boolean; combat: { value: number } };
 };
 
-type Derive = (actor: { items: Item[]; system: CreatureSystem }) => void;
-
-const implementations: [string, Derive][] = [
-  ['actor.js', (actor) => LegacyActor.prototype._deriveCreature.call(actor)],
-  [
-    'documents/actor.ts',
-    (actor) => MothershipActor.prototype._deriveCreature.call(actor as unknown as MothershipActor),
-  ],
-];
+const derive = (actor: { items: Item[]; system: CreatureSystem }): void =>
+  MothershipActor.prototype._deriveCreature.call(actor as unknown as MothershipActor);
 
 function fixture(opts: {
   combat?: number;
@@ -64,7 +53,7 @@ function fixture(opts: {
   } as unknown as CreatureSystem;
 }
 
-describe.each(implementations)('_deriveCreature — %s', (_name, derive) => {
+describe('_deriveCreature', () => {
   const run = (opts: Parameters<typeof fixture>[0], items: Item[] = []): CreatureSystem => {
     const system = fixture(opts);
     derive({ items, system });

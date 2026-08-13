@@ -14,15 +14,23 @@ import { test, expect } from './fixtures/foundry-clients.ts';
 // die to 1 -- stats 27, saves 12, health 11, credits 20, and row 0 of every table.
 const LOWEST_FACE = 0.9999;
 
-/** Every roll in the window, fixed, so the assertions can name exact numbers and an exact row. */
+/**
+ * Every roll in the window, fixed, so the assertions can name exact numbers and an exact row.
+ * `randomUniform` is Foundry's own function on `CONFIG.Dice`, so thawing has to put that function
+ * back: deleting the patch leaves the key undefined and every later die in the worker — `gmPage`
+ * is worker-scoped — throws `randomUniform is not a function` instead of rolling.
+ */
 const freezeDice = (page: Page, value: number) =>
   page.evaluate((v: number) => {
-    (window as any).CONFIG.Dice.randomUniform = () => v;
+    const dice = (window as any).CONFIG.Dice;
+    (window as any).__randomUniform ??= dice.randomUniform;
+    dice.randomUniform = () => v;
   }, value);
 
 const thawDice = (page: Page) =>
   page.evaluate(() => {
-    delete (window as any).CONFIG.Dice.randomUniform;
+    const w = window as any;
+    if (w.__randomUniform) w.CONFIG.Dice.randomUniform = w.__randomUniform;
   });
 
 const closeEverything = (page: Page) =>

@@ -18,7 +18,10 @@ import {
   chooseAdvantage,
   chooseAttribute,
   chooseCover,
+  chooseSave,
   chooseSkill,
+  chooseStress,
+  chooseWound,
   noCharacter,
   outOfAmmo,
 } from '../module/dialogs/prompts.ts';
@@ -109,6 +112,10 @@ beforeEach(() => {
     'Mosh.Reload': 'Reload',
     'Mosh.Cover': 'Cover',
     'Mosh.ChooseAStat': 'Choose a Stat',
+    'Mosh.ChooseASave': 'Choose a Save',
+    'Mosh.GainStress': 'Gain Stress',
+    'Mosh.RelieveStress': 'Relieve Stress',
+    'Mosh.WoundRoll': 'Wound Roll',
     'Mosh.SelectYourRollType': 'Select your roll type',
     'Mosh.OutOfAmmoNeedReload': 'Out of ammo, you need to reload',
     'Mosh.OutOfAmmo': 'Out of ammo',
@@ -311,6 +318,67 @@ describe('the prompts', () => {
     await only().press('advantage');
 
     await expect(answer).resolves.toEqual({ stat: 'combat', advantage: 'advantage' });
+  });
+
+  it('chooseSave offers the three Saves, not the four Stats', async () => {
+    const answer = chooseSave();
+
+    expect(only().title).toBe('Choose a Save');
+    expect([...only().element.querySelectorAll('input[name="stat"]')].map((node) => node.id)).toEqual([
+      'stat-sanity',
+      'stat-fear',
+      'stat-body',
+    ]);
+
+    only().element.querySelector<HTMLInputElement>('#stat-body')!.click();
+    flushSync();
+    await only().press('disadvantage');
+
+    await expect(answer).resolves.toEqual({ stat: 'body', advantage: 'disadvantage' });
+  });
+
+  // The two directions are one procedure: the sign is the argument, never a second function.
+  it.each([
+    ['gain', 'Gain Stress', { kind: 'amount', amount: 2 }, { kind: 'roll', dice: '1d5' }],
+    ['relieve', 'Relieve Stress', { kind: 'amount', amount: -2 }, { kind: 'roll', dice: '-1d5' }],
+  ] as const)('chooseStress answers %s with a flat amount or dice', async (direction, title, flat, dice) => {
+    const flatAnswer = chooseStress(direction);
+    expect(only().title).toBe(title);
+    expect(only().buttons.map((button) => button.action)).toEqual(['1', '2', '1d5']);
+    await only().press('2');
+    await expect(flatAnswer).resolves.toEqual(flat);
+
+    opened = [];
+    const rolled = chooseStress(direction);
+    await only().press('1d5');
+    await expect(rolled).resolves.toEqual(dice);
+
+    opened = [];
+    const dismissed = chooseStress(direction);
+    only().dismiss();
+    await expect(dismissed).resolves.toBeNull();
+  });
+
+  it('chooseWound answers with the table key and the modifier, and carries no document id', async () => {
+    const answer = chooseWound();
+
+    expect([...only().element.querySelectorAll('input[name="wound_table"]')].map((node) => node.id)).toEqual([
+      'wound-bleeding',
+      'wound-blunt-force',
+      'wound-fire-explosives',
+      'wound-gore-massive',
+      'wound-gunshot',
+    ]);
+    // Two of the five shipped filenames keep an `&` the table key spells as a dash.
+    for (const img of only().element.querySelectorAll('img')) {
+      expect(img.getAttribute('src')).not.toContain('undefined');
+    }
+
+    only().element.querySelector<HTMLInputElement>('#wound-gunshot')!.click();
+    flushSync();
+    await only().press('advantage');
+
+    await expect(answer).resolves.toEqual({ key: 'gunshot', advantage: 'advantage' });
   });
 
   it('askReload answers true, false, and false again when dismissed', async () => {

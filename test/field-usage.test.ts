@@ -15,7 +15,7 @@ const { ITEM_MODELS } = (await import('../module/data/item-models.js')) as {
 // Only the runtime tree. test/foundry-data is a whole Foundry install plus third-party systems, and
 // scanning it matches almost any path by accident, which would make this assertion vacuous.
 const ROOTS = ['module', 'templates'];
-const EXTENSIONS = ['.js', '.svelte', '.html', '.hbs'];
+const EXTENSIONS = ['.js', '.ts', '.svelte', '.html', '.hbs'];
 
 function sources(dir: string, out: string[] = []): string[] {
   for (const entry of readdirSync(dir)) {
@@ -37,7 +37,15 @@ type Entry = { pattern: RegExp; reason: string };
 const DYNAMIC: Entry[] = [
   {
     pattern: /^stats\.[a-z]+\.(label|rollLabel)$/,
-    reason: 'rollCheck and chooseSkill read stats[attribute].label/.rollLabel by computed key',
+    reason: "checks/actor.ts's statOf reads stats[key].label/.rollLabel by computed key",
+  },
+  {
+    pattern: /^stats\.(strength|speed|intellect|sanity|fear|body)\.value$/,
+    reason: "checks/actor.ts's statOf reads stats[key].value by computed key",
+  },
+  {
+    pattern: /^stats\.armor\.(mod|damageReduction)$/,
+    reason: 'deriveArmor writes them onto the armor pod it holds; ArmorBlock reads that pod as a prop',
   },
   {
     pattern: /^netHP\.(min|label)$/,
@@ -52,9 +60,8 @@ const DYNAMIC: Entry[] = [
     reason: 'CreatureSheet binds system.stats.<stat>.value by computed key',
   },
   {
-    // The saves' mods are read by name in rollCheck, so only the four stats land here.
-    pattern: /^stats\.(strength|speed|intellect|combat)\.mod$/,
-    reason: 'CharacterSheet binds system.stats.<stat>.mod by computed key',
+    pattern: /^stats\.(strength|speed|intellect|combat|sanity|fear|body)\.mod$/,
+    reason: "CharacterSheet binds system.stats.<stat>.mod, and statOf reads it, by computed key",
   },
 ];
 

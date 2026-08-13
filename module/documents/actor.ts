@@ -27,11 +27,12 @@ import {
 } from '../checks/checks.ts';
 import { evaluateRoll } from '../checks/roll.ts';
 import { runTable, type TableOptions, type TableResult } from '../checks/tables.ts';
-import { descriptionCard, flavor, itemCard, mutationCard, postCard } from '../chat/cards.ts';
+import { descriptionCard, flavor, itemCard, mutationCard, postCard, reloadCard } from '../chat/cards.ts';
 import { deprecated } from '../debug.ts';
 import { chooseCover } from '../dialogs/prompts.ts';
 import { format, localize } from '../i18n.ts';
-import { notifyMiss } from '../lookup.ts';
+import type { ReloadOutcome } from '../inventory/ammo.ts';
+import { lookup, notifyMiss } from '../lookup.ts';
 import { grantItem, type GrantDocument, type GrantResult } from '../mutation/items.ts';
 import { mutate, type Change, type MutationResult } from '../mutation/mutate.ts';
 import type { Outcome } from '../rolls/resolve.ts';
@@ -314,6 +315,33 @@ export class MothershipActor extends Actor {
 
     const arrival = flavor(voiceOfActor(this), 'item', CONDITION, change.created ? 'add' : 'increase');
     return arrival === '' ? changed : `${arrival} ${changed}`;
+  }
+
+  /**
+   * The same grant for a caller holding only a reference: the generator's loadout rows are UUIDs,
+   * and a macro names a Condition by id. Resolution is `lookup`'s, so a stale reference is a
+   * notification rather than a crash.
+   */
+  async applyItemRef(ref: string, count = 1): Promise<GrantResult | null> {
+    const found = await lookup<GrantDocument>(ref, 'Item');
+    if (!found.found) {
+      notifyMiss(found.request);
+      return null;
+    }
+    return await this.applyItem(found.document, count);
+  }
+
+  /** Refill a weapon's magazine from the rounds carried, and say so in chat. */
+  async reloadWeapon(itemId: string): Promise<ReloadOutcome | null> {
+    const item = this.items.get(itemId);
+    if (item === undefined) {
+      notifyMiss({ ref: itemId, type: 'Item' });
+      return null;
+    }
+    const outcome = await item.reload();
+    const card = reloadCard(item.toChat(), outcome, cardSource(this));
+    if (card !== null) await postCard(card, { speaker: speakerOf(this) });
+    return outcome;
   }
 
   /** Post an item's description to chat. The document keeps its accessors — nothing is cloned. */

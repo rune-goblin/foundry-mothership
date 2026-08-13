@@ -18,9 +18,16 @@ import { type TableOptions, type TableResult } from '../checks/tables.ts';
 import { SYSTEM_ID } from '../chat/cards.ts';
 import { CONDITION_IDS } from '../conditions.ts';
 import { debug } from '../debug.ts';
-import { noCharacter } from '../dialogs/prompts.ts';
+import {
+  chooseSave,
+  chooseStress,
+  chooseWound,
+  noCharacter,
+  type StressDirection,
+} from '../dialogs/prompts.ts';
 import { format } from '../i18n.ts';
 import { lookup, notifyMiss } from '../lookup.ts';
+import { addressOf } from '../mutation/fields.ts';
 import type { GrantDocument, GrantResult } from '../mutation/items.ts';
 import type { MutationResult } from '../mutation/mutate.ts';
 import type { StatKey } from '../rolls/spec.ts';
@@ -132,6 +139,30 @@ export async function modify(address: string, amount: Amount): Promise<MutationR
   return await forTargetActors((actor) => actor.modify(address, amount));
 }
 
+/* -------------------------------------------- */
+/*  The verbs that ask first                    */
+/* -------------------------------------------- */
+
+/**
+ * The three hotbar entry points whose argument is the player's, not the caller's. Each is one
+ * prompt from `dialogs/` followed by the verb above it — the 40-to-120-line dialogs those macros
+ * used to carry are gone, and the procedure is stated here where a sheet or a module can call it.
+ */
+export async function promptStress(direction: StressDirection): Promise<MutationResult[]> {
+  const amount = await chooseStress(direction);
+  return amount === null ? [] : await modify(addressOf('stress'), amount);
+}
+
+export async function promptSave(): Promise<(CheckOutcome | null)[]> {
+  const chosen = await chooseSave();
+  return chosen === null ? [] : await rollStat(chosen.stat, { advantage: chosen.advantage });
+}
+
+export async function promptWound(): Promise<(TableResult | null)[]> {
+  const chosen = await chooseWound();
+  return chosen === null ? [] : await rollTable(chosen.key, { advantage: chosen.advantage });
+}
+
 /**
  * The item a hotbar macro names. Legacy cloned the item through `duplicate()` — which keeps `_id`
  * and drops the `id` accessor — and then asked for `item.id`, so every gear, armour, ability and
@@ -211,6 +242,9 @@ export const NEW_API = {
   rollRestSave,
   rollTable,
   modify,
+  promptStress,
+  promptSave,
+  promptWound,
   applyCondition,
   forTargetActors,
   targetActors,

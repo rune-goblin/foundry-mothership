@@ -1,15 +1,14 @@
 <script>
-  import { localize } from '../i18n.ts';
-
   // The radio group is its own state: `value` is what it opens on, and the browser moves the
   // selection from there. Mirroring it into a rune would only be a second copy to keep in step.
-  let { stats, value, onchange } = $props();
+  // `intro` is our own lang string and carries the book's emphasis as markup.
+  let { stats, heading, intro, value, onchange } = $props();
 </script>
 
 <div class="macro_window" style="padding-left: 8px;">
   <div class="macro_desc">
-    <h4>{localize('Mosh.SelectAStat')}</h4>
-    {localize('Mosh.ChooseTheStatForSkillCheck')}<em>{localize('Mosh.GivingYouAHigherNumber')}</em>
+    <h4>{heading}</h4>
+    {@html intro}
   </div>
 </div>
 

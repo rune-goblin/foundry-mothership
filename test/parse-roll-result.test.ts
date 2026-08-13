@@ -1,11 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { parseRollSpec } from '../module/rolls/parse.ts';
 import { resolveOutcome } from '../module/rolls/resolve.ts';
 import type { Aim, CheckKind, Comparison } from '../module/rolls/spec.ts';
-
-vi.mock('../module/mosh.js', () => ({ fromIdUuid: () => undefined }));
-
-const { MothershipActor } = await import('../module/actor/actor.js');
 
 beforeEach(() => {
   (globalThis as Record<string, unknown>).game = {
@@ -61,19 +57,10 @@ function aimOf(o: Case): Aim {
   return (o.comparison ?? '<').startsWith('>') ? 'high' : 'low';
 }
 
-const legacy = (o: Case): Judgement =>
-  MothershipActor.prototype.parseRollResult.call(
-    {},
-    o.rollString,
-    roll(o.dice, o.formula ?? o.rollString, facesOf(o.rollString)),
-    o.zeroBased ?? false,
-    o.checkCrit ?? false,
-    o.rollTarget ?? null,
-    o.comparison ?? '<',
-    o.specialRoll ?? null,
-  );
-
-const remade = (o: Case): Judgement =>
+// These cases are legacy's `parseRollResult` contract, kept verbatim through the swap that deleted
+// it: R0 ran them against both implementations, and they now hold `rolls/resolve.ts` to the
+// verdicts the shipped system has always reached.
+const resolve = (o: Case): Judgement =>
   resolveOutcome(roll(o.dice, o.formula ?? o.rollString, facesOf(o.rollString)), {
     spec: parseRollSpec(o.rollString, aimOf(o)),
     kind: o.specialRoll === 'panicCheck' ? ('panic' satisfies CheckKind) : 'stat',
@@ -83,12 +70,7 @@ const remade = (o: Case): Judgement =>
     zeroBased: o.zeroBased ?? false,
   });
 
-const implementations: [string, (o: Case) => Judgement][] = [
-  ['actor.js', legacy],
-  ['rolls/resolve.ts', remade],
-];
-
-describe.each(implementations)('parseRollResult — %s', (_name, resolve) => {
+describe('resolveOutcome — how a roll is judged', () => {
   describe('single die', () => {
     it('takes the total from the only die', () => {
       expect(resolve({ rollString: '1d100', dice: [45] }).total).toBe(45);

@@ -8,13 +8,14 @@ import { test, expect } from './fixtures/foundry-clients.ts';
 
 const CONDITIONS = 'mothershiprpg.conditions_1e';
 
-/** Fires the roll and leaves its dialog open — rollCheck awaits the player, so nothing is awaited. */
+/** Fires the roll and leaves its dialog open — the call awaits the player, so nothing is awaited. */
 const roll = async (page: Page, uuid: string, call: 'restSave' | 'fear' | 'panic') => {
   await page.evaluate(
     async ({ u, c }: { u: string; c: string }) => {
       const actor = await (window as any).fromUuid(u);
-      if (c === 'panic') actor.rollTable('panicCheck', null, null, null, null, null, null);
-      else actor.rollCheck(null, 'low', c, null, null, null);
+      if (c === 'panic') actor.rollPanic();
+      else if (c === 'restSave') actor.rollRestSave();
+      else actor.rollStat(c);
     },
     { u: uuid, c: call },
   );
@@ -51,6 +52,9 @@ test.describe('conditions preselect the roll they name', () => {
       const g = (window as any).game;
       const actors = g.actors.filter((a: any) => a.name.startsWith('__e2e_')).map((a: any) => a.id);
       if (actors.length) await g.actors.documentClass.deleteDocuments(actors);
+      // Emptied so the roll assertions below can read "the last message" and mean this test's.
+      const messages = g.messages.contents.map((m: any) => m.id);
+      if (messages.length) await g.messages.documentClass.deleteDocuments(messages);
     });
   });
 
@@ -75,37 +79,34 @@ test.describe('conditions preselect the roll they name', () => {
     const dialog = await roll(gmPage, uuid, 'restSave');
 
     await expect(dialog.locator('.condition-modifier')).toHaveText('Nightmares: this roll is at [-].');
-    await expect(dialog.locator('button[data-action="action_disadvantage"]')).toHaveAttribute('autofocus', '');
-    await expect(dialog.locator('button[data-action="action_advantage"]')).not.toHaveAttribute('autofocus', '');
+    await expect(dialog.locator('button[data-action="disadvantage"]')).toHaveAttribute('autofocus', '');
+    await expect(dialog.locator('button[data-action="advantage"]')).not.toHaveAttribute('autofocus', '');
   });
 
-  // Preselect, not force: whichever button the player presses is the roll that happens. Spying on
-  // parseRollString catches it at the pipeline boundary, where the choice stops being reversible.
+  // Preselect, not force: whichever button the player presses is the roll that happens. The posted
+  // message carries the formula, which is where the choice stops being reversible.
   for (const [action, expected] of [
-    ['action_normal', '1d100'],
-    ['action_disadvantage', '1d100 [-]'],
-    ['action_advantage', '1d100 [+]'],
+    ['none', '1d100'],
+    ['disadvantage', '{1d100,1d100}kh'],
+    ['advantage', '{1d100,1d100}kl'],
   ] as const) {
     test(`pressing ${action} over the preselect rolls ${expected}`, async ({ gmPage }) => {
       const uuid = await character(gmPage, 'Nightmares');
-      await gmPage.evaluate(async (u: string) => {
-        const actor = await (window as any).fromUuid(u);
-        const original = actor.parseRollString.bind(actor);
-        (window as any).__rolled = [];
-        actor.parseRollString = (s: string, aim: string) => {
-          (window as any).__rolled.push(s);
-          return original(s, aim);
-        };
-        actor.rollCheck(null, 'low', 'restSave', null, null, null);
-      }, uuid);
-
-      const dialog = gmPage.locator('.macro-popup-dialog').last();
-      await expect(dialog).toBeVisible();
+      const dialog = await roll(gmPage, uuid, 'restSave');
       await dialog.locator(`button[data-action="${action}"]`).click();
 
+      // Generous, not lax: the first roll a fresh worker posts also fetches and compiles the chat
+      // template, and 10 seconds has proved too tight for that one card on a loaded machine.
       await expect
-        .poll(() => gmPage.evaluate(() => (window as any).__rolled))
-        .toEqual([expected]);
+        .poll(
+          () =>
+            gmPage.evaluate(() => {
+              const messages = (window as any).game.messages.contents;
+              return String(messages[messages.length - 1]?.rolls?.[0]?.formula ?? '');
+            }),
+          { timeout: 30_000 },
+        )
+        .toBe(expected);
     });
   }
 
@@ -114,7 +115,7 @@ test.describe('conditions preselect the roll they name', () => {
     const dialog = await roll(gmPage, uuid, 'fear');
 
     await expect(dialog.locator('.condition-modifier')).toHaveCount(0);
-    await expect(dialog.locator('button[data-action="action_advantage"]')).toHaveAttribute('autofocus', '');
+    await expect(dialog.locator('button[data-action="advantage"]')).toHaveAttribute('autofocus', '');
   });
 
   test('Spiraling defaults the panic check, which is a d20 and its own dialog', async ({ gmPage }) => {
@@ -122,7 +123,7 @@ test.describe('conditions preselect the roll they name', () => {
     const dialog = await roll(gmPage, uuid, 'panic');
 
     await expect(dialog.locator('.condition-modifier')).toHaveText('Spiraling: this roll is at [-].');
-    await expect(dialog.locator('button[data-action="action_disadvantage"]')).toHaveAttribute('autofocus', '');
+    await expect(dialog.locator('button[data-action="disadvantage"]')).toHaveAttribute('autofocus', '');
   });
 
   test('a character holding no condition sees the dialog it always saw', async ({ gmPage }) => {
@@ -130,6 +131,6 @@ test.describe('conditions preselect the roll they name', () => {
     const dialog = await roll(gmPage, uuid, 'restSave');
 
     await expect(dialog.locator('.condition-modifier')).toHaveCount(0);
-    await expect(dialog.locator('button[data-action="action_advantage"]')).toHaveAttribute('autofocus', '');
+    await expect(dialog.locator('button[data-action="advantage"]')).toHaveAttribute('autofocus', '');
   });
 });

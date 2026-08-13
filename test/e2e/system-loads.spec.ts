@@ -13,8 +13,9 @@ test.describe('system loads', () => {
       };
     });
     expect(api.system).toBe(SYSTEM_ID);
-    // mosh.js hangs the macro entry points off game.mothershiprpg during init.
-    expect(api.api).toContain('rollItemMacro');
+    // init.ts hangs the new verbs and the shim for imported macros off game.mothershiprpg.
+    expect(api.api).toContain('rollStat');
+    expect(api.api).toContain('rollTable');
     expect(api.api).toContain('initRollTable');
     expect(api.actorClass).toBe('MothershipActor');
   });

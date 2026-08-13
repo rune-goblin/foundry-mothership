@@ -18,7 +18,6 @@
     createItem,
     deleteItem,
     editItem,
-    itemData,
     promptNewSkill,
     stepBy,
     stepShots,
@@ -75,7 +74,7 @@
     15: { label: 'Master', left: -52 },
   };
 
-  const statRoll = (key) => () => actor.rollCheck(null, 'low', key, null, null, null);
+  const statRoll = (key) => () => actor.rollStat(key);
 
   const describe = (id) => () => actor.printDescription(id);
 
@@ -84,10 +83,7 @@
     actor.update({ 'system.xp.value': value });
   };
 
-  const skillRoll = (id) => () => {
-    const skill = itemData(actor, id);
-    actor.rollCheck(null, null, null, skill.name, skill.system.bonus, null);
-  };
+  const skillRoll = (id) => () => actor.rollSkill(id);
 
   /**
    * A swarm attacks once per remaining wound, so its damage scales with the dice count. A weapon
@@ -101,15 +97,11 @@
     return weapon.system.damage.replace(/([0-9]+)(d[0-9]+)/i, `${count}$2`);
   };
 
-  const weaponRoll = (id) => () => {
-    const weapon = itemData(actor, id);
-    actor.rollCheck(null, 'low', 'combat', null, null, weapon, swarmDamage(weapon));
-  };
+  const weaponRoll = (id) => () =>
+    actor.rollWeapon(id, { damage: swarmDamage(actor.items.get(id)) });
 
-  const damageRoll = (id) => () => {
-    const weapon = itemData(actor, id);
-    actor.rollCheck(null, null, 'damage', null, null, weapon, swarmDamage(weapon));
-  };
+  const damageRoll = (id) => () =>
+    actor.rollWeapon(id, { roll: 'damage', damage: swarmDamage(actor.items.get(id)) });
 
   const step = (id, path, bounds) => (event) => adjust(actor, id, path, stepBy(event), bounds);
 

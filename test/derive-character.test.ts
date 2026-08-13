@@ -1,12 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 import { MothershipActor } from '../module/documents/actor.ts';
-
-// actor.js imports fromIdUuid from the entry module, which registers hooks and Handlebars helpers
-// at module scope. None of that is needed to derive an actor.
-vi.mock('../module/mosh.js', () => ({ fromIdUuid: () => undefined }));
-
-const { MothershipActor: LegacyActor } = await import('../module/actor/actor.js');
 
 type Item = { type: string; name?: string; system: Record<string, unknown> };
 
@@ -27,16 +21,12 @@ type DerivedSystem = {
   weight: { current: number; capacity: number };
 };
 
-type Derive = (actor: { items: Item[]; system: DerivedSystem }) => void;
-
-/** The legacy method and its heir answer the same questions until the swap deletes the first. */
-const implementations: [string, Derive][] = [
-  ['actor.js', (actor) => LegacyActor.prototype._deriveCharacter.call(actor)],
-  [
-    'documents/actor.ts',
-    (actor) => MothershipActor.prototype._deriveCharacter.call(actor as unknown as MothershipActor),
-  ],
-];
+/**
+ * The answers legacy's `_deriveCharacter` gave, kept verbatim through the swap that deleted it:
+ * R0 ran every case below against both implementations.
+ */
+const derive = (actor: { items: Item[]; system: DerivedSystem }): void =>
+  MothershipActor.prototype._deriveCharacter.call(actor as unknown as MothershipActor);
 
 function fixture(opts: {
   items?: Item[];
@@ -59,7 +49,7 @@ function fixture(opts: {
   } as unknown as DerivedSystem;
 }
 
-describe.each(implementations)('_deriveCharacter — %s', (_name, derive) => {
+describe('_deriveCharacter', () => {
   const run = (opts: Parameters<typeof fixture>[0]): DerivedSystem => {
     const system = fixture(opts);
     derive({ items: opts.items ?? [], system });

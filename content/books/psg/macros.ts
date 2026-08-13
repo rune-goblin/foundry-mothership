@@ -1,8 +1,8 @@
 // The macros the shipped tables, sheets and conditions call. Macros are user interface, not the
 // system (docs/plans/legacy-remake.md decision 4): every command here is a one-liner into
-// `game.mothershiprpg`, and the four hotbar prompts that still choose something the API cannot
-// (an amount, a Save, a Wound table) keep the smallest DialogV2 that asks, never their own copy
-// of the roll or mutation logic.
+// `game.mothershiprpg`. Nothing in this file draws a dialog — the prompts that choose an amount,
+// a Save or a Wound table are the system's own, in `module/dialogs/`, so they are translated and
+// a sheet can open the same ones.
 //
 // The stat/save, wound-table and modify families are GENERATED from short lists (audit C9) rather
 // than transcribed one entry at a time — 700 lines of hand-unrolled cross-product used to hide the
@@ -110,17 +110,13 @@ function tableMacro(contentId: string, name: string, table: TableKey, advantage:
   };
 }
 
-/**
- * The five Wound tables PSG 29.1 names, the words the book's macro names used for each, and the
- * shipped icon filename — which keeps the `&` the table key's dashes do not spell (audit-adjacent:
- * a naive slug from the key would have 404ed two of these five images).
- */
-const WOUND_TABLES: readonly { readonly key: TableKey; readonly name: string; readonly icon: string }[] = [
-  { key: 'bleeding', name: 'Bleeding Wound', icon: 'wounds_bleeding.png' },
-  { key: 'blunt-force', name: 'Blunt Force Wound', icon: 'wounds_blunt_force.png' },
-  { key: 'fire-explosives', name: 'Fire & Explosives Wound', icon: 'wounds_fire_&_explosives.png' },
-  { key: 'gore-massive', name: 'Gore & Massive Wound', icon: 'wounds_gore_&_massive.png' },
-  { key: 'gunshot', name: 'Gunshot Wound', icon: 'wounds_gunshot.png' },
+/** The five Wound tables PSG 29.1 names, and the words the book's macro names used for each. */
+const WOUND_TABLES: readonly { readonly key: TableKey; readonly name: string }[] = [
+  { key: 'bleeding', name: 'Bleeding Wound' },
+  { key: 'blunt-force', name: 'Blunt Force Wound' },
+  { key: 'fire-explosives', name: 'Fire & Explosives Wound' },
+  { key: 'gore-massive', name: 'Gore & Massive Wound' },
+  { key: 'gunshot', name: 'Gunshot Wound' },
 ];
 
 const WOUND_CROSS_PRODUCT: readonly CommandMacro[] = WOUND_TABLES.flatMap(({ key, name }) =>
@@ -299,27 +295,6 @@ export type TriggeredMacroId = (typeof TRIGGERED_MACROS)[number]['contentId'];
 /*  open with is simply gone.                                                                      */
 /* -------------------------------------------------------------------------------------------- */
 
-const DIALOG_HEADER = (title: string, img: string, body: string): string => `
-  <div class="macro_window" style="margin-bottom: 7px;">
-    <div class="grid grid-2col" style="grid-template-columns: 150px auto">
-      <div class="macro_img"><img src="${img}" style="border:none"/></div>
-      <div class="macro_desc"><h4>${title}</h4>${body}</div>
-    </div>
-  </div>`;
-
-function amountButtons(
-  address: string,
-  amounts: readonly [action: string, label: string, icon: string, value: ModifyAmount][],
-): string {
-  return amounts
-    .map(
-      ([action, label, icon, value]) =>
-        `{ label: \`${label}\`, action: '${action}', icon: \`${icon}\`, ` +
-        `callback: () => game.mothershiprpg.modify('${address}', ${amountLiteral(value)}) }`,
-    )
-    .join(',\n      ');
-}
-
 export const HOTBAR_MACROS: readonly CommandMacro[] = [
   {
     contentId: 'cover',
@@ -338,28 +313,8 @@ export const HOTBAR_MACROS: readonly CommandMacro[] = [
     contentId: 'gain-stress',
     name: 'Gain Stress',
     img: 'systems/mothershiprpg/images/icons/ui/macros/gain_stress.png',
-    command: `new foundry.applications.api.DialogV2({
-  window: { title: "Gain Stress" },
-  classes: ["macro-popup-dialog"],
-  position: { width: 600 },
-  content: \`${DIALOG_HEADER(
-    'Gain Stress',
-    'systems/mothershiprpg/images/icons/ui/macros/gain_stress.png',
-    '<strong>You gain 1 Stress every time you fail a Stat Check or Save.</strong> Occasionally, ' +
-      'certain locations or entities can automatically give you Stress from interacting with or ' +
-      'witnessing them. Your <strong>Minimum Stress</strong> starts at 2, and the ' +
-      '<strong>Maximum Stress you can have is 20.</strong> Any Stress you take over 20 instead ' +
-      'reduces the most relevant Stat or Save by that amount.',
-  )}
-    <div class="macro_prompt">Select your modification:</div>\`,
-  buttons: [
-    ${amountButtons(STRESS, [
-      ['one', 'Gain 1 Stress', 'fas fa-angle-up', amount(1)],
-      ['two', 'Gain 2 Stress', 'fas fa-angle-double-up', amount(2)],
-      ['roll', 'Gain 1d5 Stress', 'fas fa-arrow-circle-up', roll('1d5')],
-    ])}
-  ]
-}).render({ force: true });`,
+    // The amount chooser is `dialogs/Amount.svelte` now, translated and shared with its opposite.
+    command: "game.mothershiprpg.promptStress('gain');",
   },
   {
     contentId: 'panic-check',
@@ -372,29 +327,7 @@ export const HOTBAR_MACROS: readonly CommandMacro[] = [
     contentId: 'relieve-stress',
     name: 'Relieve Stress',
     img: 'systems/mothershiprpg/images/icons/ui/macros/relieve_stress.png',
-    command: `new foundry.applications.api.DialogV2({
-  window: { title: "Relieve Stress" },
-  classes: ["macro-popup-dialog"],
-  position: { width: 600 },
-  content: \`${DIALOG_HEADER(
-    'Relieve Stress',
-    'systems/mothershiprpg/images/icons/ui/macros/relieve_stress.png',
-    'Occasionally, certain moments, places, or events can automatically <strong>relieve your ' +
-      'stress.</strong> Escaping perilous situations, finding a serene location, or experiencing a ' +
-      'touching moment with a loved one can have meaningful impacts on your mood and outlook on ' +
-      'life. If your stress is getting close to 20, you should consider making a ' +
-      '<strong>Rest Save</strong> - as the effects of a failed <strong>Panic Check</strong> can be ' +
-      'devastating.',
-  )}
-    <div class="macro_prompt">Select your modification:</div>\`,
-  buttons: [
-    ${amountButtons(STRESS, [
-      ['one', 'Relieve 1 Stress', 'fas fa-angle-down', amount(-1)],
-      ['two', 'Relieve 2 Stress', 'fas fa-angle-double-down', amount(-2)],
-      ['roll', 'Relieve 1d5 Stress', 'fas fa-arrow-circle-down', roll('-1d5')],
-    ])}
-  ]
-}).render({ force: true });`,
+    command: "game.mothershiprpg.promptStress('relieve');",
   },
   {
     contentId: 'rest-save',
@@ -407,45 +340,8 @@ export const HOTBAR_MACROS: readonly CommandMacro[] = [
     contentId: 'save',
     name: 'Save',
     img: 'systems/mothershiprpg/images/icons/ui/macros/save.png',
-    command: `new foundry.applications.api.DialogV2({
-  window: { title: "Save" },
-  classes: ["macro-popup-dialog"],
-  position: { width: 600 },
-  content: \`${DIALOG_HEADER(
-    'Save',
-    'systems/mothershiprpg/images/icons/ui/macros/save.png',
-    'You have three Saves which represent your ability to withstand different kinds of trauma. ' +
-      'In order to avoid certain dangers, you sometimes need to roll a Save. <strong>If you roll ' +
-      'less than your Save you succeed. Otherwise you fail, and gain 1 Stress.</strong> A roll of ' +
-      '90-99 is always a failure. A Critical Failure means something bad happens, and furthermore ' +
-      'you must make a Panic Check.',
-  )}
-    <label for="san"><div class="macro_window" style="padding-left: 3px;">
-      <div class="grid grid-3col" style="align-items: center; grid-template-columns: 20px 60px auto">
-        <input type="radio" id="san" name="save" value="sanity" checked>
-        <div class="macro_img"><img src="systems/mothershiprpg/images/icons/ui/attributes/sanity.png" style="border:none"/></div>
-        <div class="macro_desc"><span><strong>Sanity:</strong> Rationalize logical inconsistencies in the universe, make sense out of chaos, detect illusions and mimicry, cope with Stress.</span></div>
-      </div>
-    </div></label>
-    <label for="fer"><div class="macro_window" style="padding-left: 3px;">
-      <div class="grid grid-3col" style="align-items: center; grid-template-columns: 20px 60px auto">
-        <input type="radio" id="fer" name="save" value="fear">
-        <div class="macro_img"><img src="systems/mothershiprpg/images/icons/ui/attributes/fear.png" style="border:none"/></div>
-        <div class="macro_desc"><span><strong>Fear:</strong> Maintain a level head while struggling with fear, loneliness, depression, and other emotional surges.</span></div>
-      </div>
-    </div></label>
-    <label for="bod"><div class="macro_window" style="padding-left: 3px;">
-      <div class="grid grid-3col" style="align-items: center; grid-template-columns: 20px 60px auto">
-        <input type="radio" id="bod" name="save" value="body">
-        <div class="macro_img"><img src="systems/mothershiprpg/images/icons/ui/attributes/body.png" style="border:none"/></div>
-        <div class="macro_desc"><span><strong>Body:</strong> Employ quick reflexes and resist hunger, disease, or organisms that might try and invade your insides.</span></div>
-      </div>
-    </div></label>\`,
-  buttons: [
-    { label: \`Next\`, action: 'next', icon: \`fas fa-chevron-circle-right\`,
-      callback: (event, button) => game.mothershiprpg.rollStat(button.form.querySelector("input[name='save']:checked").value) }
-  ]
-}).render({ force: true });`,
+    // The three Saves are `dialogs/`'s stat picker with the book's other list in it.
+    command: 'game.mothershiprpg.promptSave();',
   },
   {
     contentId: 'stat-check',
@@ -458,33 +354,7 @@ export const HOTBAR_MACROS: readonly CommandMacro[] = [
     contentId: 'wound-roll',
     name: 'Wound Roll',
     img: 'systems/mothershiprpg/images/icons/ui/macros/wound_roll.png',
-    command: `new foundry.applications.api.DialogV2({
-  window: { title: "Wound Roll" },
-  classes: ["macro-popup-dialog"],
-  position: { width: 600 },
-  content: \`${DIALOG_HEADER(
-    'Wound Roll',
-    'systems/mothershiprpg/images/icons/ui/macros/wound_roll.png',
-    'Make a <strong>Wound Roll</strong> according to the type of Damage received.',
-  )}
-    ${WOUND_TABLES.map(
-      ({ key, name, icon }) => `<label for="wt-${key}"><div class="macro_window" style="padding-left: 3px;">
-      <div class="grid grid-3col" style="align-items: center; grid-template-columns: 20px 60px auto">
-        <input type="radio" id="wt-${key}" name="wound_table" value="${key}"${key === 'blunt-force' ? ' checked' : ''}>
-        <div class="macro_img"><img src="systems/mothershiprpg/images/icons/ui/rolltables/${icon}" style="border:none"/></div>
-        <div class="macro_desc"><span><strong>${name}</strong></span></div>
-      </div>
-    </div></label>`,
-    ).join('\n    ')}
-    <div class="macro_prompt">Select your roll type:</div>\`,
-  buttons: [
-    { label: \`Advantage\`, action: 'plus', icon: \`fas fa-angle-double-up\`,
-      callback: (event, button) => game.mothershiprpg.rollTable(button.form.querySelector("input[name='wound_table']:checked").value, { advantage: 'advantage' }) },
-    { label: \`Normal\`, action: 'normal', icon: \`fas fa-minus\`,
-      callback: (event, button) => game.mothershiprpg.rollTable(button.form.querySelector("input[name='wound_table']:checked").value, { advantage: 'none' }) },
-    { label: \`Disadvantage\`, action: 'minus', icon: \`fas fa-angle-double-down\`,
-      callback: (event, button) => game.mothershiprpg.rollTable(button.form.querySelector("input[name='wound_table']:checked").value, { advantage: 'disadvantage' }) }
-  ]
-}).render({ force: true });`,
+    // The five table keys are `tables/`'s, so this macro carries no document id at all (audit C2).
+    command: 'game.mothershiprpg.promptWound();',
   },
 ];

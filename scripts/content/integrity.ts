@@ -1,5 +1,4 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { tableSettings } from '../../module/tables/tables.ts';
 import type { Emitted } from './emit.ts';
 import { allIds, type Registry } from './ids.ts';
 
@@ -98,18 +97,22 @@ export function checkMacroCommands(emitted: Emitted[]): string[] {
   return errors;
 }
 
-const TABLE_SETTING = /game\.settings\.register\('[^']+',\s*'(table1e[A-Za-z]+)',[^}]*?default:\s*"([A-Za-z0-9]+)"/g;
-
-/** The rolltable settings default to bare `_id`s; each must still name a registered table. */
-export function checkSettingsDefaults(root: string, registry: Registry): string[] {
-  const source = readFileSync(join(root, 'module/settings.js'), 'utf8');
+/**
+ * The rolltable settings default to bare `_id`s; each must still name a registered table. The
+ * defaults are read from the runtime's own table definitions rather than scraped out of the
+ * registration source, which is what the swap deleted — `tables/tables.ts` is where a table's
+ * identity lives now (audit F13, RC13).
+ */
+export function checkSettingsDefaults(registry: Registry): string[] {
   const known = allIds(registry);
   const errors: string[] = [];
-  let found = 0;
-  for (const [, key, id] of source.matchAll(TABLE_SETTING)) {
-    found += 1;
-    if (!known.has(id!)) errors.push(`setting ${key} defaults to ${id}, which no pack provides`);
+  for (const table of tableSettings()) {
+    if (!known.has(table.default)) {
+      errors.push(`setting ${table.setting} defaults to ${table.default}, which no pack provides`);
+    }
   }
-  if (found === 0) errors.push('module/settings.js declares no table1e* defaults — has the shape changed?');
+  if (errors.length === 0 && tableSettings().length === 0) {
+    errors.push('tables/tables.ts declares no table settings — has the shape changed?');
+  }
   return errors;
 }

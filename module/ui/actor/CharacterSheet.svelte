@@ -20,7 +20,6 @@
     createItem,
     deleteItem,
     editItem,
-    itemData,
     promptNewSkill,
     stepBy,
     stepShots,
@@ -83,7 +82,7 @@
 
   const at = (path) => path.split('.').reduce((node, key) => node?.[key], doc);
 
-  const statRoll = (key) => () => actor.rollCheck(null, 'low', key, null, null, null);
+  const statRoll = (key) => () => actor.rollStat(key);
 
   const describe = (id) => () => actor.printDescription(id);
 
@@ -92,22 +91,17 @@
     actor.update({ 'system.xp.value': value });
   };
 
-  const skillRoll = (id) => () => {
-    const skill = itemData(actor, id);
-    actor.rollCheck(null, null, null, skill.name, skill.system.bonus, null);
-  };
+  const skillRoll = (id) => () => actor.rollSkill(id);
 
-  const weaponRoll = (id) => () =>
-    actor.rollCheck(null, 'low', 'combat', null, null, itemData(actor, id));
+  const weaponRoll = (id) => () => actor.rollWeapon(id);
 
-  const damageRoll = (id) => () =>
-    actor.rollCheck(null, null, 'damage', null, null, itemData(actor, id));
+  const damageRoll = (id) => () => actor.rollWeapon(id, { roll: 'damage' });
 
   const step = (id, path, bounds) => (event) => adjust(actor, id, path, stepBy(event), bounds);
 
   const shotStep = (id) => (event) => stepShots(actor, id, stepBy(event));
 
-  const panic = () => actor.rollTable('panicCheck', null, null, null, null, null, null);
+  const panic = () => actor.rollPanic();
 </script>
 
 <header class="char-header header-grid">

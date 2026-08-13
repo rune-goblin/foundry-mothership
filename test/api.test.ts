@@ -24,6 +24,9 @@ const prompts = vi.hoisted(() => ({
   askReload: vi.fn(),
   outOfAmmo: vi.fn(),
   chooseCover: vi.fn(),
+  chooseSave: vi.fn(),
+  chooseStress: vi.fn(),
+  chooseWound: vi.fn(),
   noCharacter: vi.fn(async () => undefined),
 }));
 
@@ -177,6 +180,54 @@ describe('the verbs', () => {
     expect(sarah[method]).toHaveBeenCalledWith(...args);
   });
 
+  // The four hotbar macros whose argument is the player's: each is one prompt, then the verb
+  // above it — no dialog of their own any more (divergence R4b-1's last clause).
+  describe('the verbs that ask first', () => {
+    it('promptStress applies the amount the prompt answered with', async () => {
+      const sarah = actor('Sarah');
+      assign(sarah);
+      prompts.chooseStress.mockResolvedValue({ kind: 'amount', amount: -2 });
+
+      await api.promptStress('relieve');
+
+      expect(prompts.chooseStress).toHaveBeenCalledWith('relieve');
+      expect(sarah.modify).toHaveBeenCalledWith('system.other.stress.value', { kind: 'amount', amount: -2 });
+    });
+
+    it('promptSave rolls the Save the prompt answered with', async () => {
+      const sarah = actor('Sarah');
+      assign(sarah);
+      prompts.chooseSave.mockResolvedValue({ stat: 'fear', advantage: 'advantage' });
+
+      await api.promptSave();
+
+      expect(sarah.rollStat).toHaveBeenCalledWith('fear', { advantage: 'advantage' });
+    });
+
+    it('promptWound rolls the table the prompt answered with', async () => {
+      const sarah = actor('Sarah');
+      assign(sarah);
+      prompts.chooseWound.mockResolvedValue({ key: 'gunshot', advantage: 'none' });
+
+      await api.promptWound();
+
+      expect(sarah.rollTable).toHaveBeenCalledWith('gunshot', { advantage: 'none' });
+    });
+
+    it('does nothing at all when the prompt is dismissed', async () => {
+      const sarah = actor('Sarah');
+      assign(sarah);
+      prompts.chooseStress.mockResolvedValue(null);
+      prompts.chooseSave.mockResolvedValue(null);
+      prompts.chooseWound.mockResolvedValue(null);
+
+      await expect(api.promptStress('gain')).resolves.toEqual([]);
+      await expect(api.promptSave()).resolves.toEqual([]);
+      await expect(api.promptWound()).resolves.toEqual([]);
+      expect(sarah.calls).toEqual([]);
+    });
+  });
+
   it('publishes exactly the surface the content and the sheets call', () => {
     expect(Object.keys(api.NEW_API).sort()).toEqual(
       [
@@ -186,6 +237,9 @@ describe('the verbs', () => {
         'forTargetActors',
         'modify',
         'promptCheck',
+        'promptSave',
+        'promptStress',
+        'promptWound',
         'rollItem',
         'rollPanic',
         'rollRestSave',

@@ -56,9 +56,6 @@ export const deleteItem = (actor, itemId) => actor.deleteEmbeddedDocuments('Item
 export const createItem = (actor, type) =>
   actor.createEmbeddedDocuments('Item', [{ name: `New ${type.capitalize()}`, type }]);
 
-/** `rollCheck` mutates the weapon it is handed and writes it back, so it wants source data. */
-export const itemData = (actor, itemId) => actor.items.get(itemId)?.toObject();
-
 const RANK_BONUS = { Trained: 10, Expert: 15, Master: 20 };
 
 /** A skill is created through a dialog because its rank sets its bonus. */

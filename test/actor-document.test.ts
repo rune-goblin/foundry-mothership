@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { CheckActor } from '../module/checks/actor.ts';
 import type { MothershipActor as ActorClass } from '../module/documents/actor.ts';
+import type { MothershipItem as ItemClass } from '../module/documents/item.ts';
 import type { GrantDocument } from '../module/mutation/items.ts';
 import {
   clearFoundryStubs,
@@ -32,6 +33,7 @@ const prompts = vi.hoisted(() => ({
 vi.mock('../module/dialogs/prompts.ts', () => prompts);
 
 const { MothershipActor } = await import('../module/documents/actor.ts');
+const { MothershipItem } = await import('../module/documents/item.ts');
 
 /** The services take the document by its structural surface; the class has to satisfy it. */
 type Assert<T extends true> = T;
@@ -45,6 +47,7 @@ interface FakeItem {
   system: Record<string, unknown>;
   updates: Record<string, unknown>[];
   update(data: Record<string, unknown>): Promise<unknown>;
+  reload(): Promise<unknown>;
   toChat(): object;
 }
 
@@ -59,6 +62,8 @@ function item(overrides: Partial<FakeItem> & { id: string; type: string }): Fake
       fake.updates.push(data);
       return data;
     },
+    // The real method, so the magazine arithmetic under test is the shipped one.
+    reload: () => MothershipItem.prototype.reload.call(fake as unknown as ItemClass),
     toChat: () => ({
       itemId: fake.id,
       name: fake.name,
@@ -292,6 +297,63 @@ describe('applyItem', () => {
     await actor.applyItem(source('skill', 'Rimwise'), 1);
 
     expect(cardData().flavorText).toBe('You learn this skill');
+  });
+});
+
+// The generator's loadout rows are UUIDs and a macro names a Condition by id, so the grant has to
+// resolve as well as apply. It is the same verb: only where the document comes from differs.
+describe('applyItemRef', () => {
+  const ration: GrantDocument = {
+    name: 'Ration',
+    img: 'ration.png',
+    type: 'item',
+    system: { quantity: 1 },
+    toObject: () => ({ name: 'Ration', img: 'ration.png', type: 'item', system: { quantity: 1 } }),
+  };
+
+  it('resolves the reference and grants what it names', async () => {
+    (globalThis as Record<string, unknown>).game = { items: { get: () => ration }, packs: [] };
+    const { actor, created } = actorOf();
+
+    const result = await actor.applyItemRef('abcdefghijklmnop', 2);
+
+    expect(result?.change).toEqual({ created: true, counted: 'quantity', from: 0, to: 2 });
+    expect(created).toHaveLength(1);
+  });
+
+  it('reports a reference that resolves to nothing instead of granting', async () => {
+    (globalThis as Record<string, unknown>).game = { items: { get: () => undefined }, packs: [] };
+    const { actor, created } = actorOf();
+
+    await expect(actor.applyItemRef('abcdefghijklmnop')).resolves.toBeNull();
+    expect(notifications.errors).toHaveLength(1);
+    expect(created).toEqual([]);
+  });
+});
+
+describe('reloadWeapon', () => {
+  it('refills the magazine from the rounds carried and posts the card', async () => {
+    const smg = item({
+      id: 'w1',
+      type: 'weapon',
+      name: 'SMG',
+      system: { useAmmo: true, ammo: 10, shots: 6, curShots: 2, shotsPerFire: 1 },
+    });
+    const { actor } = actorOf([smg]);
+
+    const outcome = await actor.reloadWeapon('w1');
+
+    expect(outcome?.status).toBe('reloaded');
+    expect(smg.updates).toEqual([{ 'system.curShots': 6, 'system.ammo': 6 }]);
+    expect(chat.cards[0].template).toContain('reload');
+  });
+
+  it('reports an id this actor does not hold', async () => {
+    const { actor } = actorOf();
+
+    await expect(actor.reloadWeapon('nope')).resolves.toBeNull();
+    expect(notifications.errors).toHaveLength(1);
+    expect(chat.cards).toEqual([]);
   });
 });
 

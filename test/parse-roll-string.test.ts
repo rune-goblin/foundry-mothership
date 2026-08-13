@@ -1,22 +1,13 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { rollFormula } from '../module/rolls/parse.ts';
 import type { Aim } from '../module/rolls/spec.ts';
 
-// actor.js imports fromIdUuid from the entry module, which registers hooks and Handlebars
-// helpers at module scope. None of that is needed to parse a roll string.
-vi.mock('../module/mosh.js', () => ({ fromIdUuid: () => undefined }));
+// These cases are legacy's `parseRollString` contract, kept verbatim through the swap that deleted
+// it: R0 ran them against both implementations, and they now hold `rolls/parse.ts` to the answers
+// the shipped system has always given.
+const parse = (rollString: string, aimFor: Aim): string => rollFormula(rollString, aimFor);
 
-const { MothershipActor } = await import('../module/actor/actor.js');
-
-type Parse = (rollString: string, aimFor: Aim) => string;
-
-// The legacy parser and its heir answer the same questions until the swap deletes the first.
-const implementations: [string, Parse][] = [
-  ['actor.js', (rollString, aimFor) => MothershipActor.prototype.parseRollString.call({}, rollString, aimFor)],
-  ['rolls/parse.ts', (rollString, aimFor) => rollFormula(rollString, aimFor)],
-];
-
-describe.each(implementations)('parseRollString — %s', (_name, parse) => {
+describe('rollFormula — the roll string a check is built from', () => {
   it('passes a plain roll through untouched', () => {
     expect(parse('1d100', 'low')).toBe('1d100');
     expect(parse('2d10', 'high')).toBe('2d10');

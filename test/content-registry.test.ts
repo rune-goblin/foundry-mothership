@@ -78,7 +78,7 @@ describe('referential integrity of the content as it stands', () => {
   });
 
   it('resolves every rolltable setting default', () => {
-    expect(checkSettingsDefaults(ROOT, registry)).toEqual([]);
+    expect(checkSettingsDefaults(registry)).toEqual([]);
   });
 });
 

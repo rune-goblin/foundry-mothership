@@ -5,16 +5,20 @@
  */
 
 import { asset } from '../chat/cards.ts';
+import type { Amount } from '../documents/actor.ts';
 import { enrich } from '../enrich.ts';
-import { localize } from '../i18n.ts';
+import { format, localize } from '../i18n.ts';
 import type { Advantage, StatKey } from '../rolls/spec.ts';
 import { COVER_KEYS, type Cover } from '../rules.ts';
+import { WOUND_TABLE_KEYS, type TableKey } from '../tables/tables.ts';
+import AmountPromptBody from './Amount.svelte';
 import ChooseAdvantage from './ChooseAdvantage.svelte';
 import ChooseAttribute from './ChooseAttribute.svelte';
 import ChooseSkill from './ChooseSkill.svelte';
 import CoverPrompt from './Cover.svelte';
 import NoCharacter from './NoCharacter.svelte';
 import ReloadPrompt from './Reload.svelte';
+import WoundTable from './WoundTable.svelte';
 import { svelteDialog, type DialogButton } from './svelte-dialog.ts';
 
 const DIALOG_WIDTH = 600;
@@ -62,12 +66,25 @@ function nextButton<V, T>(answer: (value: V) => T): DialogButton<V, T> {
   };
 }
 
+interface StatRow {
+  readonly key: StatKey;
+  readonly label: string;
+  readonly example: string;
+}
+
 /** The four stats a Skill Check can be rolled against, as the dialog lists them. */
-const ATTRIBUTES: readonly { readonly key: StatKey; readonly label: string; readonly example: string }[] = [
+const ATTRIBUTES: readonly StatRow[] = [
   { key: 'strength', label: 'Mosh.Strength', example: 'Mosh.StrengthSkillExample' },
   { key: 'speed', label: 'Mosh.Speed', example: 'Mosh.SpeedSkillExample' },
   { key: 'intellect', label: 'Mosh.Intellect', example: 'Mosh.IntellectSkillExample' },
   { key: 'combat', label: 'Mosh.Combat', example: 'Mosh.CombatSkillExample' },
+];
+
+/** PSG 22's three Saves. The same picker, a different list — the hotbar's Save macro asks with it. */
+const SAVES: readonly StatRow[] = [
+  { key: 'sanity', label: 'Mosh.Sanity', example: 'Mosh.SanitySaveExample' },
+  { key: 'fear', label: 'Mosh.Fear', example: 'Mosh.FearSaveExample' },
+  { key: 'body', label: 'Mosh.Body', example: 'Mosh.BodySaveExample' },
 ];
 
 export interface ChosenAttribute {
@@ -80,24 +97,60 @@ export interface AttributePrompt {
   readonly advantage: boolean;
 }
 
-export async function chooseAttribute(options: AttributePrompt): Promise<ChosenAttribute | null> {
-  const stats = ATTRIBUTES.map((entry) => ({
+interface StatPromptText {
+  readonly title: string;
+  readonly heading: string;
+  readonly intro: string;
+}
+
+async function pickStat(
+  rows: readonly StatRow[],
+  text: StatPromptText,
+  prompt: AttributePrompt,
+): Promise<ChosenAttribute | null> {
+  const stats = rows.map((entry) => ({
     key: entry.key,
     label: localize(entry.label),
     example: localize(entry.example),
     img: asset(`images/icons/ui/attributes/${entry.key}.png`),
   }));
+  const props = { stats, heading: text.heading, intro: text.intro };
 
-  return await svelteDialog<StatKey, ChosenAttribute, { stats: typeof stats }>({
+  return await svelteDialog<StatKey, ChosenAttribute, typeof props>({
     component: ChooseAttribute,
-    props: { stats },
-    title: localize('Mosh.ChooseAStat'),
-    initial: ATTRIBUTES[0].key,
+    props,
+    title: text.title,
+    initial: rows[0].key,
     width: DIALOG_WIDTH,
-    buttons: options.advantage
+    buttons: prompt.advantage
       ? advantageButtons(null, (advantage, stat) => ({ stat, advantage }))
       : [nextButton((stat: StatKey) => ({ stat, advantage: 'none' as Advantage }))],
   });
+}
+
+export async function chooseAttribute(options: AttributePrompt): Promise<ChosenAttribute | null> {
+  return await pickStat(
+    ATTRIBUTES,
+    {
+      title: localize('Mosh.ChooseAStat'),
+      heading: localize('Mosh.SelectAStat'),
+      intro: `${localize('Mosh.ChooseTheStatForSkillCheck')} <em>${localize('Mosh.GivingYouAHigherNumber')}</em>`,
+    },
+    options,
+  );
+}
+
+/** Which Save to roll. Legacy asked with 40 lines of hand-written HTML inside a macro document. */
+export async function chooseSave(): Promise<ChosenAttribute | null> {
+  return await pickStat(
+    SAVES,
+    {
+      title: localize('Mosh.ChooseASave'),
+      heading: localize('Mosh.SelectASave'),
+      intro: localize('Mosh.WhatASaveIs'),
+    },
+    { advantage: true },
+  );
 }
 
 /** A skill as the prompt lists it, and as a check reads it back. */
@@ -214,6 +267,115 @@ export async function chooseCover(current: Cover, armor: CoverPromptArmor): Prom
     buttons: [
       { action: 'ok', label: localize('Mosh.OK'), icon: 'fas fa-check', answer: (cover: Cover) => cover },
     ],
+  });
+}
+
+/** Which way the Stress prompt runs. One procedure, one argument — never two functions. */
+export type StressDirection = 'gain' | 'relieve';
+
+interface StressPromptText {
+  readonly title: string;
+  readonly image: string;
+  readonly body: string;
+  readonly label: string;
+  readonly icons: readonly [one: string, two: string, dice: string];
+  readonly sign: 1 | -1;
+}
+
+const STRESS_PROMPTS: Readonly<Record<StressDirection, StressPromptText>> = {
+  gain: {
+    title: 'Mosh.GainStress',
+    image: 'images/icons/ui/macros/gain_stress.png',
+    body: 'Mosh.WhatGainingStressIs',
+    label: 'Mosh.GainNStress',
+    icons: ['fas fa-angle-up', 'fas fa-angle-double-up', 'fas fa-arrow-circle-up'],
+    sign: 1,
+  },
+  relieve: {
+    title: 'Mosh.RelieveStress',
+    image: 'images/icons/ui/macros/relieve_stress.png',
+    body: 'Mosh.WhatRelievingStressIs',
+    label: 'Mosh.RelieveNStress',
+    icons: ['fas fa-angle-down', 'fas fa-angle-double-down', 'fas fa-arrow-circle-down'],
+    sign: -1,
+  },
+};
+
+/** PSG 20 — Stress moves one at a time, two at a time, or on the die the fiction names. */
+const STRESS_STEPS = ['1', '2', '1d5'] as const;
+
+/**
+ * How much Stress, and whether it is rolled for. The answer is an `Amount` because that is what
+ * `modify` takes: the prompt states the change, and the mutation engine remains the one place a
+ * change is applied.
+ */
+export async function chooseStress(direction: StressDirection): Promise<Amount | null> {
+  const text = STRESS_PROMPTS[direction];
+  const heading = localize(text.title);
+  const props = {
+    image: asset(text.image),
+    heading,
+    body: localize(text.body),
+    prompt: `${localize('Mosh.SelectYourModification')}:`,
+  };
+
+  return await svelteDialog<null, Amount, typeof props>({
+    component: AmountPromptBody,
+    props,
+    title: heading,
+    initial: null,
+    width: DIALOG_WIDTH,
+    buttons: STRESS_STEPS.map((step, index) => ({
+      action: step,
+      label: format(text.label, { amount: step }),
+      icon: text.icons[index],
+      answer: (): Amount =>
+        step === '1d5'
+          ? { kind: 'roll', dice: text.sign < 0 ? `-${step}` : step }
+          : { kind: 'amount', amount: Number(step) * text.sign },
+    })),
+  });
+}
+
+export interface ChosenWound {
+  readonly key: TableKey;
+  readonly advantage: Advantage;
+}
+
+/** The shipped icon filenames keep the `&` the table keys spell as a dash. */
+const WOUND_ICONS: Readonly<Record<string, string>> = {
+  bleeding: 'wounds_bleeding.png',
+  'blunt-force': 'wounds_blunt_force.png',
+  'fire-explosives': 'wounds_fire_&_explosives.png',
+  'gore-massive': 'wounds_gore_&_massive.png',
+  gunshot: 'wounds_gunshot.png',
+};
+
+/**
+ * Which Wound table, and how to roll it. Legacy's version hard-coded the five table ids into a
+ * macro's command string, where no reference check could see them (audit C2) — these are the keys
+ * `tables/` resolves, so a GM's re-pointed table is honoured here too.
+ */
+export async function chooseWound(): Promise<ChosenWound | null> {
+  const tables = WOUND_TABLE_KEYS.map((key) => ({
+    key,
+    label: localize(`Mosh.Table.${key}`),
+    img: asset(`images/icons/ui/rolltables/${WOUND_ICONS[key]}`),
+  }));
+  const props = {
+    image: asset('images/icons/ui/macros/wound_roll.png'),
+    heading: localize('Mosh.WoundRoll'),
+    body: localize('Mosh.WhatAWoundRollIs'),
+    tables,
+  };
+
+  return await svelteDialog<TableKey, ChosenWound, typeof props>({
+    component: WoundTable,
+    props,
+    title: localize('Mosh.WoundRoll'),
+    initial: tables[0].key,
+    width: DIALOG_WIDTH,
+    buttons: advantageButtons(null, (advantage, key) => ({ key, advantage })),
   });
 }
 

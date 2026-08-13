@@ -147,8 +147,8 @@ test.describe('character sheet', () => {
     await expect(sheet.locator('input[name="system.other.stress.value"]')).toHaveValue('5');
     await expect(sheet.locator('input[name="system.other.stress.min"]')).toHaveValue('2');
 
-    // rollTable('panicCheck') with no roll string asks for advantage first, so the panic check
-    // starts with that dialog rather than a chat message.
+    // rollPanic() with no advantage asks for it first, so the panic check starts with that
+    // dialog rather than a chat message — and the dialog names the table it is about to roll.
     await sheet.locator('label[for="system.other.stress.value"]').click();
     await expect(gmPage.locator('dialog[open].macro-popup-dialog')).toContainText('Panic Check');
   });

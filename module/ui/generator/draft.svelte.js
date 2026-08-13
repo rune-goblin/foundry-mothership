@@ -245,13 +245,13 @@ export class CharacterDraft {
       if (ids.length) await actor.deleteEmbeddedDocuments('Item', ids);
     }
 
-    // modifyItem dedupes by name on the actor and takes the quantity, so a loadout row naming the
+    // applyItemRef dedupes by name on the actor and takes the count, so a loadout row naming the
     // same item twice arrives as one item of quantity two.
-    for (const [uuid, quantity] of this.#loadoutTally()) await actor.modifyItem(uuid, quantity);
+    for (const [uuid, quantity] of this.#loadoutTally()) await actor.applyItemRef(uuid, quantity);
     for (const kind of ['patch', 'trinket']) {
-      for (const entry of this[kind]?.entries ?? []) await actor.modifyItem(entry.uuid, 1);
+      for (const entry of this[kind]?.entries ?? []) await actor.applyItemRef(entry.uuid, 1);
     }
-    for (const skill of this.skills) await actor.modifyItem(skill.uuid, 1);
+    for (const skill of this.skills) await actor.applyItemRef(skill.uuid, 1);
 
     await actor.update(update);
   }

@@ -675,7 +675,7 @@ describe('promptSkillCheck — the skill is known, the stat is not', () => {
   });
 });
 
-// The cases test/condition-modifiers.test.ts pins against legacy, against the ported resolver.
+// The S8 condition-modifier cases, inherited whole when the legacy suite died with actor.js (R5).
 describe('conditions reach the roll they name', () => {
   const NIGHTMARES = condition('Nightmares', [{ modifier: 'disadvantage', scope: 'restSave' }]);
   const SPIRALING = condition('Spiraling', [{ modifier: 'disadvantage', scope: 'panicCheck' }]);
