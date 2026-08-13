@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vite
 import type { CheckActor, CheckItem, ItemCollection } from '../module/checks/actor.ts';
 import type { FireOutcome, ReloadOutcome } from '../module/inventory/ammo.ts';
 import { conditionModifier, conditionNote, conditionPreselect } from '../module/checks/conditions.ts';
-import { checkOf, checkScope, promptCheck, runCheck } from '../module/checks/checks.ts';
+import { checkOf, checkScope, promptCheck, promptSkillCheck, runCheck } from '../module/checks/checks.ts';
 import { runTable } from '../module/checks/tables.ts';
 import type { Check } from '../module/rolls/spec.ts';
 import { TABLES } from '../module/tables/tables.ts';
@@ -641,6 +641,37 @@ describe('promptCheck — the check nobody has named yet', () => {
 
     expect(await promptCheck(character())).toBeNull();
     expect(rolls.formulas).toEqual([]);
+  });
+});
+
+describe('promptSkillCheck — the skill is known, the stat is not', () => {
+  it('asks only for the stat, and adds the skill that was clicked', async () => {
+    stubs([{ faces: 100, result: 10 }]);
+    const sarah = character([skill('sk1', 'Hacking', 'Expert', 10)]);
+    prompts.chooseAttribute.mockResolvedValue({ stat: 'intellect', advantage: 'none' });
+
+    const result = await promptSkillCheck(sarah, 'sk1');
+
+    expect(prompts.chooseAttribute).toHaveBeenCalledWith({ advantage: true });
+    expect(prompts.chooseSkill).not.toHaveBeenCalled();
+    expect(result).toMatchObject({ target: 55, skill: { name: 'Hacking', bonus: 15 } });
+  });
+
+  it('rolls nothing when the stat dialog is dismissed', async () => {
+    stubs([{ faces: 100, result: 10 }]);
+    prompts.chooseAttribute.mockResolvedValue(null);
+
+    expect(await promptSkillCheck(character([skill('sk1', 'Hacking')]), 'sk1')).toBeNull();
+    expect(rolls.formulas).toEqual([]);
+  });
+
+  it('reports an id that is not a skill this actor holds', async () => {
+    stubs([{ faces: 100, result: 10 }]);
+    const notifications = installNotifications();
+
+    expect(await promptSkillCheck(character([weapon()]), 'wpn1')).toBeNull();
+    expect(notifications.errors).toHaveLength(1);
+    expect(prompts.chooseAttribute).not.toHaveBeenCalled();
   });
 });
 

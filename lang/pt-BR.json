@@ -951,7 +951,10 @@
       "CheckUnavailable": "{actor} não tem {check} para rolar.",
       "NoCharacterTitle": "Nenhum Personagem Selecionado",
       "NoCharacterSelected": "As macros são direcionadas ao seu personagem atribuído. Atribua um na sua Configuração de Usuário, no menu Jogadores, no canto inferior esquerdo.",
-      "NoTokenSelected": "As macros são direcionadas aos tokens selecionados na cena. Clique em um token, ou arraste uma caixa em volta de vários."
+      "NoTokenSelected": "As macros são direcionadas aos tokens selecionados na cena. Clique em um token, ou arraste uma caixa em volta de vários.",
+      "NoItemNamed": "{actor} não possui um item chamado {name}.",
+      "ItemMacroNotOwned": "Você só pode criar botões de macro para itens que pertencem a um ator.",
+      "UnknownArgument": "Uma macro pediu por {argument}, algo que este sistema não sabe interpretar."
     },
     "Chat": {
       "Success": "SUCESSO!",
@@ -984,6 +987,54 @@
       "fire-explosives": "Ferimento de Fogo & Explosivos",
       "gore-massive": "Ferimento Massivo & Dilacerante",
       "gunshot": "Ferimento de Bala"
+    },
+    "Dice": {
+      "Roll": "Dados de Rolagem",
+      "Damage": "Dados de Dano",
+      "Panic": "Dado de Pânico"
+    },
+    "Settings": {
+      "macroTarget": {
+        "Name": "Alvo das Macros",
+        "Hint": "Sobre quem as macros devem agir?",
+        "Choices": {
+          "character": "O personagem atribuído ao jogador",
+          "token": "O(s) token(s) selecionado(s) na cena"
+        }
+      },
+      "critDamage": {
+        "Name": "Dano de Acerto Crítico",
+        "Hint": "Qual deve ser o dano em um acerto crítico?",
+        "Choices": {
+          "advantage": "Rolar com vantagem",
+          "doubleDamage": "Dobrar o resultado do dano",
+          "doubleDice": "Dobrar os dados de dano",
+          "maxDamage": "Resultado máximo possível de dano",
+          "weaponValue": "Usar o dano crítico de cada arma",
+          "none": "Sem dano crítico"
+        }
+      },
+      "damageDiceTheme": {
+        "Name": "Tema dos Dados de Dano",
+        "Hint": "Se o Dice So Nice estiver instalado, qual tema os dados de dano devem usar?"
+      },
+      "panicDieTheme": {
+        "Name": "Tema do Dado de Pânico",
+        "Hint": "Se o Dice So Nice estiver instalado, qual tema o Dado de Pânico deve usar?"
+      },
+      "hideWeight": {
+        "Name": "Ocultar Peso",
+        "Hint": "Ocultar a coluna de peso na lista de itens?"
+      },
+      "autoStress": {
+        "Name": "Estresse Automático em Falhas",
+        "Hint": "Ganhar um ponto de Estresse automaticamente quando uma rolagem falha."
+      },
+      "rolltableSelector": {
+        "Name": "Configuração das Tabelas",
+        "Label": "Escolher Tabelas",
+        "Hint": "Personalize quais tabelas de rolagem o sistema usa."
+      }
     }
   }
 }

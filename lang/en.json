@@ -955,7 +955,10 @@
       "CheckUnavailable": "{actor} has no {check} to roll.",
       "NoCharacterTitle": "No Character Selected",
       "NoCharacterSelected": "Macros are aimed at your assigned character. Assign one from your User Configuration, in the Players menu at the bottom left.",
-      "NoTokenSelected": "Macros are aimed at the tokens selected in the scene. Click a token, or drag a box around several."
+      "NoTokenSelected": "Macros are aimed at the tokens selected in the scene. Click a token, or drag a box around several.",
+      "NoItemNamed": "{actor} has no item named {name}.",
+      "ItemMacroNotOwned": "You can only create macro buttons for items an actor owns.",
+      "UnknownArgument": "A macro asked for {argument}, which this system has no reading for."
     },
     "Chat": {
       "Success": "SUCCESS!",
@@ -988,6 +991,54 @@
       "fire-explosives": "Fire & Explosives Wound",
       "gore-massive": "Gore & Massive Wound",
       "gunshot": "Gunshot Wound"
+    },
+    "Dice": {
+      "Roll": "Roll Dice",
+      "Damage": "Damage Dice",
+      "Panic": "Panic Die"
+    },
+    "Settings": {
+      "macroTarget": {
+        "Name": "Macro Target",
+        "Hint": "Who should macros act on?",
+        "Choices": {
+          "character": "The character assigned to the player",
+          "token": "The token(s) selected in the scene"
+        }
+      },
+      "critDamage": {
+        "Name": "Critical Hit Damage",
+        "Hint": "What should the damage be on a critical hit?",
+        "Choices": {
+          "advantage": "Roll with advantage",
+          "doubleDamage": "Double the damage result",
+          "doubleDice": "Double the damage dice",
+          "maxDamage": "Maximum possible damage result",
+          "weaponValue": "Defer to each weapon's critical damage",
+          "none": "No critical damage"
+        }
+      },
+      "damageDiceTheme": {
+        "Name": "Damage Dice Theme",
+        "Hint": "If Dice So Nice is installed, which theme should damage dice use?"
+      },
+      "panicDieTheme": {
+        "Name": "Panic Die Theme",
+        "Hint": "If Dice So Nice is installed, which theme should the Panic Die use?"
+      },
+      "hideWeight": {
+        "Name": "Hide Weight",
+        "Hint": "Hide the weight column in the item list?"
+      },
+      "autoStress": {
+        "Name": "Automatic Stress on a Failure",
+        "Hint": "Gain a point of Stress automatically when a roll fails."
+      },
+      "rolltableSelector": {
+        "Name": "Rolltable Configuration",
+        "Label": "Choose Tables",
+        "Hint": "Customize which rolltables the system uses."
+      }
     }
   }
 }

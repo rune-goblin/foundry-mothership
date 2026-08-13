@@ -375,3 +375,29 @@ export async function promptCheck(
     { ...options, advantage: options.advantage ?? chosen.advantage },
   );
 }
+
+/**
+ * The opposite gap: the skill is known — it was clicked — and the stat it applies to is not. PSG
+ * 22 leaves that to the moment, so this asks for the stat and nothing else; the skill list the
+ * plain check offers has already been answered by the click.
+ */
+export async function promptSkillCheck(
+  actor: CheckActor,
+  skillId: string,
+  options: CheckOptions = {},
+): Promise<CheckOutcome | null> {
+  const item = actor.items.get(skillId);
+  if (item === undefined || item.type !== 'skill') {
+    notifyMiss({ ref: skillId, type: 'Item' });
+    return null;
+  }
+
+  const chosen = await chooseAttribute({ advantage: (options.advantage ?? null) === null });
+  if (chosen === null) return null;
+
+  return await runCheck(
+    actor,
+    { kind: 'skill', stat: chosen.stat, skillId, bonus: skillBonus(item.system) },
+    { ...options, advantage: options.advantage ?? chosen.advantage },
+  );
+}

@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 import { CHECK_SCOPES } from '../module/chat/enrichers.ts';
+import { choiceKey, MENU_KEY, settingKey, SETTINGS } from '../module/settings.ts';
 import { TABLE_KEYS } from '../module/tables/tables.ts';
 
 const root = fileURLToPath(new URL('../module', import.meta.url));
@@ -26,11 +27,28 @@ const lang = (file: string): Set<string> =>
 const en = lang('en.json');
 const ptBR = lang('pt-BR.json');
 
-/** What the runtime spells out, plus the two families it builds from a key space. */
+/**
+ * Every setting's name and hint is a key Foundry localizes itself, which is the whole point of
+ * registering them as keys (audit RC14) — and every one is built from the setting's own name, so
+ * none of them appears as a literal for the scan above to find.
+ */
+const settingKeys = [
+  ...SETTINGS.flatMap((setting) => [
+    settingKey(setting.key, 'Name'),
+    settingKey(setting.key, 'Hint'),
+    ...(setting.choices ?? []).map((choice) => choiceKey(setting.key, choice)),
+  ]),
+  settingKey(MENU_KEY, 'Name'),
+  settingKey(MENU_KEY, 'Label'),
+  settingKey(MENU_KEY, 'Hint'),
+];
+
+/** What the runtime spells out, plus the families it builds from a key space. */
 const used = [
   ...new Set(sources(root).flatMap((source) => [...source.matchAll(/'(Mosh\.[A-Za-z][\w.]*)'/g)].map((m) => m[1]))),
   ...CHECK_SCOPES.map((scope) => `Mosh.RollScope.${scope}`),
   ...TABLE_KEYS.map((key) => `Mosh.Table.${key}`),
+  ...settingKeys,
 ].sort();
 
 describe('the strings the new runtime asks for', () => {
