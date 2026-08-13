@@ -177,6 +177,26 @@ describe('the conditions', () => {
     ]);
   });
 
+  // Each of the three states its roll in the book. Scoping is the whole point: a bare
+  // "disadvantage" would reach every roll the character makes, which no PSG line supports.
+  it('scopes each seeded modifier to the roll its text names', () => {
+    const scoped = Object.fromEntries(
+      CONDITIONS.filter((c) => c.modifiers.length).map((c) => [c.id, c.modifiers]),
+    );
+    expect(scoped).toEqual({
+      frightened: [{ modifier: 'disadvantage', scope: 'fear' }],
+      nightmares: [{ modifier: 'disadvantage', scope: 'restSave' }],
+      spiraling: [{ modifier: 'disadvantage', scope: 'panicCheck' }],
+    });
+  });
+
+  it('carries the modifiers through to the emitted document', () => {
+    const emitted = built.emitted.find((d) => d.contentId === 'spiraling')!;
+    expect((emitted.document as { system: { modifiers: unknown } }).system.modifiers).toEqual([
+      { modifier: 'disadvantage', scope: 'panicCheck' },
+    ]);
+  });
+
   // A condition macro cannot hold its condition's id — the build mints it — so the loader writes
   // the call. If that ever came apart, the macro would silently modify nothing.
   it('wires every +1 Condition macro to the condition it names', () => {

@@ -1524,6 +1524,15 @@ Those are compromises with a scheduled end. What the audit should revisit, as it
 - **`ClassSheet.svelte` carries six tabs in one component** (§28). It reads as the template it
   replaced, which is the point during phase 4; the audit should split the tabs into components
   and lift the drop handlers with them.
+- **A condition's roll modifiers are read-only on its sheet** (§34). Foundry's form handling has
+  no shape for an `ArrayField` of `SchemaField`s — `system.modifiers.0.scope` expands to an object
+  with numeric keys, not an array — so the sheet displays the rows and the content build is the
+  only writer. A GM cannot author a homebrew condition that modifies a roll.
+- **Three shipped macros still spell the modifier in their label** — `Rest Save [-]`,
+  `Panic Check [-]`, `Fear Save [-]` (§34). The condition now supplies the same `[-]` automatically,
+  so the labels may be redundant. `parseRollString` tests `includes('[-]')`, so the overlap is
+  idempotent and nothing is doubled; the owner deferred the label question until the automatic path
+  had been seen working.
 - **Anything else a conversion flags.** The rule during phase 4 is: port, verify, ship, and
   **record** the compromise here — do not fix component architecture piecemeal mid-phase.
 
@@ -2593,3 +2602,112 @@ the schema check has to see.
 | the weight footer ignores `hideWeight` | the hidden-weight spec fails |
 | the XP track renders 14 pips | the XP spec fails |
 | the two new CSS rules are reverted | the layout spec fails |
+
+---
+
+## 34. S8 — conditions reach the roll, and only the roll their text names
+
+The requirement `architecture.md` recorded and the one unit allowed to change the roll pipeline.
+Three links, of which two did not exist: `content/books/psg/conditions.ts` seeded `modifiers` on
+Frightened, Nightmares and Spiraling; `MoshCondition` declared no field for it, the emitter never
+read it, and nothing consulted it. All three land here, because a schema field with no reader
+fails `field-usage.test.ts` — the ratchet working.
+
+### The scope is the whole design
+
+The seed was a bare `['disadvantage']`, and applying that at a roll site would have disadvantaged
+**every** roll the character makes. No PSG line supports that: Nightmares is `[-]` *on Rest
+Saves*, Spiraling is *Panic Checks* at `[-]`, Frightened is a *Fear Save* `[-]`. So a modifier
+names the one roll it reaches.
+
+```ts
+// content/books/common.ts
+export type RollScope =
+  | 'strength' | 'speed' | 'intellect' | 'combat'   // the stat checks
+  | 'sanity' | 'fear' | 'body'                      // the saves
+  | 'restSave' | 'panicCheck';                      // rollCheck's two special rolls
+
+export interface ScopedModifier { modifier: Modifier; scope: RollScope }
+```
+
+The tokens are spelled as `actor.js` spells them — `restSave`, not `rest-save` — so nothing
+translates between the catalog and the code that reads it. `ROLL_SCOPES` in `item-models.js` is
+the runtime half of the same list.
+
+**A Rest Save is its own scope, not the save it resolves to.** `rollCheck` rewrites a Rest Save
+into whichever of Sanity/Fear/Body is lowest; the reader keys off `specialRoll || attribute`, so
+Frightened does not reach a Rest Save that happens to land on Fear. The book calls that roll a
+Rest Save, and so does the scope.
+
+The owner's decisions, taken before any of it was written:
+
+| Question | Decision |
+|---|---|
+| How broad is a modifier? | Only the roll the book names — **including the d20 panic check** |
+| Force the roll, or default it? | **Preselect**; the player can still press Normal |
+| The shipped `Rest Save [-]` macros | Untouched; the label question is booked in §23 |
+
+### Preselect, not force
+
+`conditionModifier(scope)` returns `{sign, names}` or null. Opposed modifiers **cancel to a normal
+roll** — the book's rule for `[+]` against `[-]`, and it has to happen before the roll string is
+built because `parseRollString` reads only the `[-]` out of a string holding both.
+
+Two dialogs take an optional modifier. `conditionNote()` prepends a line naming the conditions
+responsible; `conditionPreselect()` is spread onto a button and sets DialogV2's `default`, which
+renders as `autofocus`. Unmarked buttons get **nothing** spread onto them — `default: false` on
+every button would still leave Foundry autofocusing the first one, so the empty object is load-
+bearing.
+
+| Site | Scope | Reaches |
+|---|---|---|
+| `chooseSkill` (`actor.js:890`) | `specialRoll \|\| attribute` | every stat check and save on a character |
+| `chooseAdvantage` (`:1045`) via `rollCheck` | `specialRoll \|\| attribute` | the same rolls on a creature |
+| `chooseAdvantage` via `rollTable` | `specialRoll` | the panic check |
+
+**`chooseAttribute` is deliberately untouched.** It asks which stat to roll *before* the roll type,
+so no scope is known when its buttons are built — and its template offers only the four stats,
+none of which any PSG condition names. A future book that scopes a stat still works through
+`chooseSkill`, which the sheet's stat captions route to.
+
+### The guard could not see inside a list
+
+`modifiers` is the first `ArrayField` of `SchemaField`s in the Item half, and
+`scripts/model-schema.ts` walked neither: `invalidChoices` stopped at the array, so a mistyped
+`scope` would have been emitted, cleaned off by Foundry on load, and the condition would silently
+modify nothing — the repo's signature bug (§10) in a new shape. It descends arrays now, the same
+way `undeclaredKeys` already did.
+
+`template.json` gained `"modifiers": []` in lockstep. Because the array is the one Item shape the
+defaults comparison cannot see into — `[]` says nothing about a row — the round-trip is proved in
+the live world instead: `data-models.spec.ts` writes a scoped modifier and reads it back off
+`toObject()`, and asserts that a scope no schema declares fails the create outright.
+
+The condition sheet shows its modifiers **read-only** (`Rest Save [-]`). Foundry's form handling
+has no shape for editing an array of objects; making them editable is booked in §23.
+
+### Verified
+
+`npm run check` 0 errors / 0 warnings (242 files) · **273 vitest** · **116 Playwright** ·
+`npm run content` clean · `npm run build`. The content diff is 9 condition documents, ids
+preserved.
+
+`test/e2e/condition-modifiers.spec.ts` drives the whole chain in a live world: the compendium
+still carries the emitted modifiers, Nightmares defaults a Rest Save and says why, Nightmares
+leaves a Fear Save alone, Spiraling defaults the d20 panic check, and a character holding no
+condition sees exactly the dialog it always saw. Three specs spy on `parseRollString` to prove
+each of the three buttons still rolls what it says over the top of the preselect.
+
+| Mutation | Result |
+|---|---|
+| `conditionModifier` ignores the scope | `condition-modifiers` fails 3 specs |
+| opposed modifiers no longer cancel | `condition-modifiers` fails |
+| `invalidChoices` stops descending arrays | `content-pipeline` fails |
+| the emitter drops `modifiers` | `content-psg` fails |
+| `conditionPreselect` always returns `{}` | the two e2e preselect specs fail |
+
+### Noticed, not fixed
+
+A Rest Save dialog is **titled with the save it resolved to** — "Sanity Save" — because
+`chooseSkill` is handed `stats[attribute].rollLabel` after the rewrite. Pre-existing, and the
+condition note reads correctly beside it. Booked for the `actor.js` split (S9).

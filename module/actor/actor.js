@@ -633,7 +633,7 @@ export class MothershipActor extends Actor {
         //set rollDie
         rollDie = '1d20';
         //run the choose attribute function
-      let chosenRollType = await this.chooseAdvantage( game.i18n.localize("Mosh.PanicCheck"), rollDie);
+      let chosenRollType = await this.chooseAdvantage( game.i18n.localize("Mosh.PanicCheck"), rollDie, this.conditionModifier(specialRoll));
         //set variables
         rollString = chosenRollType[0];
       }
@@ -763,6 +763,45 @@ export class MothershipActor extends Actor {
       //return [messageData];
   }
 
+  /**
+   * What this actor's conditions contribute to one named roll — `'fear'`, `'restSave'`,
+   * `'panicCheck'` and the rest of ROLL_SCOPES. Only the roll a condition names counts: Nightmares
+   * reaches a Rest Save and nothing else, which is how the book states it.
+   *
+   * Opposed modifiers cancel to a normal roll, the book's rule for [+] against [-]. The result
+   * preselects a button rather than forcing it, so the GM's call always wins.
+   *
+   * @returns {{sign: string, names: string[]}|null} null when nothing applies.
+   */
+  conditionModifier(scope) {
+    if (!scope) return null;
+    const named = { advantage: [], disadvantage: [] };
+    for (const condition of this.items.filter(i => i.type === 'condition')) {
+      for (const entry of condition.system.modifiers ?? []) {
+        if (entry.scope === scope) named[entry.modifier]?.push(condition.name);
+      }
+    }
+    if (named.advantage.length && named.disadvantage.length) return null;
+    if (named.disadvantage.length) return { sign: '[-]', names: named.disadvantage };
+    if (named.advantage.length) return { sign: '[+]', names: named.advantage };
+    return null;
+  }
+
+  /** The line a roll dialog shows to name what is modifying it, or '' when nothing is. */
+  conditionNote(modifier) {
+    if (!modifier) return ``;
+    return `<div class="macro_prompt condition-modifier">` +
+      game.i18n.format("Mosh.ConditionModifier", {
+        conditions: modifier.names.join(', '),
+        sign: modifier.sign,
+      }) + `</div>`;
+  }
+
+  /** Spread onto a roll-type button: DialogV2 autofocuses the one carrying `default`. */
+  conditionPreselect(modifier, sign) {
+    return modifier?.sign === sign ? { default: true, class: `condition-preselect` } : {};
+  }
+
   //central adding addribute function | TAKES '1d10','low' | RETURNS player selected attribute. If parameters are null, it asks the player.
   async chooseAttribute(rollString, aimFor) {
     //wrap the whole thing in a promise, so that it waits for the form to be interacted with
@@ -853,7 +892,7 @@ export class MothershipActor extends Actor {
   }
 
   //central adding skill function | TAKES '1d10','low' | RETURNS player selected skill + value. If parameters are null, it asks the player.
-  async chooseSkill(dlgTitle, rollString) {
+  async chooseSkill(dlgTitle, rollString, modifier = null) {
     //wrap the whole thing in a promise, so that it waits for the form to be interacted with
     return new Promise(async (resolve) => {
       //init vars
@@ -935,7 +974,7 @@ export class MothershipActor extends Actor {
         window: {title: dlgTitle},
         classes: ["macro-popup-dialog"],
         position: {width: 600},
-        content: skillHeader + skillList + buttonDesc,
+        content: skillHeader + skillList + this.conditionNote(modifier) + buttonDesc,
         buttons: []
       };
       //add adv/normal/dis buttons if we need a rollString
@@ -952,7 +991,8 @@ export class MothershipActor extends Actor {
               resolve([rollString, skill, skillValue]);
               console.log(`User left the chooseSkill dialog with: rollString:${rollString}, skill:${skill}, skillValue:${skillValue}`);
             },
-            icon: `fas fa-angle-double-up`
+            icon: `fas fa-angle-double-up`,
+            ...this.conditionPreselect(modifier, '[+]')
           },
           {
             label: game.i18n.localize("Mosh.Normal"),
@@ -976,7 +1016,8 @@ export class MothershipActor extends Actor {
               resolve([rollString, skill, skillValue]);
               console.log(`User left the chooseSkill dialog with: rollString:${rollString}, skill:${skill}, skillValue:${skillValue}`);
             },
-            icon: `fas fa-angle-double-down`
+            icon: `fas fa-angle-double-down`,
+            ...this.conditionPreselect(modifier, '[-]')
           }
         ]
       //add a next button if we dont need a rollString
@@ -1001,7 +1042,7 @@ export class MothershipActor extends Actor {
   }
 
   //central adding skill function | TAKES 'Body Save','1d10' | RETURNS player selected rollString.
-  async chooseAdvantage(dlgTitle, die) {
+  async chooseAdvantage(dlgTitle, die, modifier = null) {
     //wrap the whole thing in a promise, so that it waits for the form to be interacted with
     return new Promise(async (resolve) => {
       //init vars
@@ -1014,7 +1055,7 @@ export class MothershipActor extends Actor {
         window: {title: dlgTitle},
         classes: ["macro-popup-dialog"],
         position: {width: 600},
-        content: `<div class="macro_prompt">` + game.i18n.localize("Mosh.SelectYourRollType") + `:</div>`,
+        content: this.conditionNote(modifier) + `<div class="macro_prompt">` + game.i18n.localize("Mosh.SelectYourRollType") + `:</div>`,
         buttons: [
           {
             label: game.i18n.localize("Mosh.Advantage"),
@@ -1024,7 +1065,8 @@ export class MothershipActor extends Actor {
               resolve([rollString]);
               console.log(`User left the chooseAdvantage dialog with: rollString:${rollString}`);
             },
-            icon: `fas fa-angle-double-up`
+            icon: `fas fa-angle-double-up`,
+            ...this.conditionPreselect(modifier, '[+]')
           },
           {
             label: game.i18n.localize("Mosh.Normal"),
@@ -1044,7 +1086,8 @@ export class MothershipActor extends Actor {
               resolve([rollString]);
               console.log(`User left the chooseAdvantage dialog with: rollString:${rollString}`);
             },
-            icon: `fas fa-angle-double-down`
+            icon: `fas fa-angle-double-down`,
+            ...this.conditionPreselect(modifier, '[-]')
           }
         ]
       };
@@ -1136,7 +1179,7 @@ export class MothershipActor extends Actor {
       //if skill is blank and actor is a character, redirect player to choose a skill
       if (!skill && this.type === 'character') {
       //run the choose attribute function
-      let chosenSkills = await this.chooseSkill(this.system.stats[attribute].rollLabel, rollString);
+      let chosenSkills = await this.chooseSkill(this.system.stats[attribute].rollLabel, rollString, this.conditionModifier(specialRoll || attribute));
         //set variables
         rollString = chosenSkills[0];
         skill = chosenSkills[1];
@@ -1145,7 +1188,7 @@ export class MothershipActor extends Actor {
       //if rollString is STILL blank, redirect player to choose the roll
       if (!rollString) {
         //run the choose attribute function
-      let chosenRollType = await this.chooseAdvantage(this.system.stats[attribute].rollLabel, '1d100');
+      let chosenRollType = await this.chooseAdvantage(this.system.stats[attribute].rollLabel, '1d100', this.conditionModifier(specialRoll || attribute));
         //set variables
         rollString = chosenRollType[0];
       }

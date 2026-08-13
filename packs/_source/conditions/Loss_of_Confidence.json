@@ -12,6 +12,7 @@
   },
   "system": {
     "description": "<p>Choose one Skill and lose that Skill’s bonus.</p>",
+    "modifiers": [],
     "severity": 1,
     "treatment": {
       "value": 0

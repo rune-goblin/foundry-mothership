@@ -12,6 +12,7 @@
   },
   "system": {
     "description": "<p>Something starts visiting you at night. In your dreams. Out of the corner of your eye. And soon it will start making demands.</p>",
+    "modifiers": [],
     "severity": 1,
     "treatment": {
       "value": 0

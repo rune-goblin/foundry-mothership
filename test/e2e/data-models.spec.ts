@@ -131,6 +131,29 @@ test.describe('created documents get the DataModel defaults', () => {
     expect(leftBehind).toBe(0);
   });
 
+  // A condition's modifiers are an array of SchemaFields, the one shape in the Item half that
+  // the defaults comparison above cannot see into -- template.json says "[]" and nothing more.
+  test('Item condition stores a scoped roll modifier', async ({ gmPage }) => {
+    const stored = await gmPage.evaluate(async () => {
+      const doc = await (window as any).Item.create({ name: '__e2e_condition_modifiers', type: 'condition' });
+      await doc.update({ 'system.modifiers': [{ modifier: 'disadvantage', scope: 'restSave' }] });
+      return doc.toObject().system.modifiers;
+    });
+    expect(stored).toEqual([{ modifier: 'disadvantage', scope: 'restSave' }]);
+  });
+
+  test('a modifier naming a roll that does not exist fails the create', async ({ gmPage }) => {
+    const created = await gmPage.evaluate(async () => {
+      const doc = await (window as any).Item.create({
+        name: '__e2e_condition_bad_scope',
+        type: 'condition',
+        system: { modifiers: [{ modifier: 'disadvantage', scope: 'chariotRace' }] },
+      });
+      return doc !== undefined;
+    });
+    expect(created).toBe(false);
+  });
+
   test('a numeric string is still coerced, not rejected', async ({ gmPage }) => {
     const stored = await gmPage.evaluate(async () => {
       const doc = await (window as any).Actor.create({

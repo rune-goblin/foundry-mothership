@@ -281,12 +281,12 @@ describe('the DataModel guard', () => {
       run(
         systemOf('flux-capacitor', {
           description: '<p>Bends time.</p>',
-          modifiers: ['disadvantage'],
+          duration: '1d10 rounds',
         }),
       ),
     ).toThrow(
       'emitted content does not fit its DataModel:\n' +
-        '  fixture_gadgets_1e/flux-capacitor: condition declares no system.modifiers — Foundry would discard it on load',
+        '  fixture_gadgets_1e/flux-capacitor: condition declares no system.duration — Foundry would discard it on load',
     );
   });
 
@@ -299,6 +299,22 @@ describe('the DataModel guard', () => {
         }),
       ),
     ).toThrow(/condition declares no system\.treatment\.salve/);
+  });
+
+  // A condition's modifiers are an array of SchemaFields, so both checks have to descend into the
+  // list. Until they did, a mistyped scope was emitted, cleaned off on load, and the condition
+  // silently modified nothing.
+  it('reaches inside an array of SchemaFields', () => {
+    const modifiers = (entry: Record<string, unknown>) =>
+      systemOf('flux-capacitor', { description: '<p>Bends time.</p>', modifiers: [entry] });
+
+    expect(() => run(modifiers({ modifier: 'disadvantage', scope: 'restSave' }))).not.toThrow();
+    expect(() => run(modifiers({ modifier: 'disadvantage', scope: 'restSave', unless: 'sedated' }))).toThrow(
+      /condition declares no system\.modifiers\[0\]\.unless/,
+    );
+    expect(() => run(modifiers({ modifier: 'disadvantage', scope: 'chariotRace' }))).toThrow(
+      /system\.modifiers\[0\]\.scope = "chariotRace" is not one of the choices condition declares/,
+    );
   });
 
   it('accepts a record that sets only some of the declared fields', () => {

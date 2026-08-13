@@ -35,6 +35,7 @@ const CONDITIONS_PACK: PackDefinition = {
           ),
           severity: 1,
           treatment: { value: 0 },
+          modifiers: condition.modifiers.map(({ modifier, scope }) => ({ modifier, scope })),
         },
       },
       // The panic result that grants it, not a page: the book states the condition inside the

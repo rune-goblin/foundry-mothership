@@ -6,10 +6,10 @@
 // macros the description links to, by contentId, so the build writes the @UUID once the ids exist.
 //
 // `modifiers` is seeded on the three the book vouches for and left empty on the rest — the owner's
-// decision, recorded in docs/plans/psg-core.md. Nothing reads it yet; S8 is where conditions start
-// contributing advantage and disadvantage to rolls.
+// decision, recorded in docs/plans/psg-core.md. Each names the one roll it reaches, because that is
+// how the book states them: Nightmares is [-] on Rest Saves, not on everything.
 import type { TriggeredMacroId } from './macros.ts';
-import type { Modifier } from '../common.ts';
+import type { ScopedModifier } from '../common.ts';
 
 export interface Condition {
   id: string;
@@ -18,7 +18,7 @@ export interface Condition {
   icon: string;
   text: string;
   macros: readonly TriggeredMacroId[];
-  modifiers: readonly Modifier[];
+  modifiers: readonly ScopedModifier[];
   /** The panic roll that grants it, or the rule that does. */
   from: string;
 }
@@ -67,7 +67,9 @@ export const CONDITIONS = [
     icon: 'frightened.png',
     text: 'When encountering what frightened you make a Fear Save [-] or gain 1d5 Stress.',
     macros: ['fear-save-minus', 'plus-1d5-stress'],
-    modifiers: ['disadvantage'],
+    // The book qualifies this with "when encountering what frightened you". Nothing models that
+    // trigger, so the Fear Save carries it and the player can still take the roll at normal.
+    modifiers: [{ modifier: 'disadvantage', scope: 'fear' }],
     from: 'Panic 6',
   },
   {
@@ -95,7 +97,7 @@ export const CONDITIONS = [
     icon: 'nightmares.png',
     text: 'Sleep is difficult, gain [-] on Rest Saves.',
     macros: ['rest-save-minus'],
-    modifiers: ['disadvantage'],
+    modifiers: [{ modifier: 'disadvantage', scope: 'restSave' }],
     from: 'Panic 7',
   },
   {
@@ -104,7 +106,7 @@ export const CONDITIONS = [
     icon: 'spiraling.png',
     text: 'Panic Checks are at [-].',
     macros: ['panic-check-minus'],
-    modifiers: ['disadvantage'],
+    modifiers: [{ modifier: 'disadvantage', scope: 'panicCheck' }],
     from: 'Panic 17',
   },
 ] as const satisfies readonly Condition[];

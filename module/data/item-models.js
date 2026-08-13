@@ -26,6 +26,27 @@ const uuidList = () => new fields.ArrayField(new fields.StringField());
  */
 export const WEAPON_RANGES = ['none', 'adjacent', 'close', 'long', 'extreme'];
 
+/**
+ * The rolls a condition's modifier can name. The stats and saves are the flat key space
+ * `rollCheck` dispatches on; `restSave` and `panicCheck` are its two special rolls, and a Rest
+ * Save is its own scope rather than the save it happens to resolve to.
+ *
+ * `content/books/common.ts` declares the same list as a TypeScript union for the catalogs.
+ */
+export const ROLL_SCOPES = [
+  'strength',
+  'speed',
+  'intellect',
+  'combat',
+  'sanity',
+  'fear',
+  'body',
+  'restSave',
+  'panicCheck',
+];
+
+export const ROLL_MODIFIERS = ['advantage', 'disadvantage'];
+
 // How many skills of each rank a class adjustment lets the player pick. A *_full_set is one skill
 // plus the prerequisite chain beneath it, which is a different dialog, hence a different key.
 const picks = () => ({
@@ -111,6 +132,14 @@ export class MoshCondition extends foundry.abstract.TypeDataModel {
       ...base(),
       severity: num(1),
       treatment: new fields.SchemaField({ value: num(0) }),
+      // Neither key takes an initial: a row that names only half of itself is not a modifier, and
+      // there is no roll a condition defaults to modifying.
+      modifiers: new fields.ArrayField(
+        new fields.SchemaField({
+          modifier: new fields.StringField({ required: true, choices: ROLL_MODIFIERS }),
+          scope: new fields.StringField({ required: true, choices: ROLL_SCOPES }),
+        }),
+      ),
     };
   }
 }

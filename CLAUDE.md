@@ -26,7 +26,7 @@ component layer, §22 the windows, §24 phase 0, §25 the PSG cut, §26 the cont
 TypeScript catalogs and the generated content, §28 the class-adjustment schema and the last AppV1
 item sheet, §29 the character generator on a draft store, §30 the creature sheet and the section
 tier, §31 the weapon range enum, §32 the e2e harness's self-diagnosis, §33 the character sheet and
-the end of AppV1. Update it as work lands.
+the end of AppV1, §34 conditions reaching the roll they name. Update it as work lands.
 
 **Ships, the Calm/android panic variants and all unsourced content were cut** (§25) and live on
 the pushed **`archive/pre-psg-cut`** branch and tag. Nothing was destroyed; ships return as an
@@ -38,8 +38,8 @@ Don't fix component architecture piecemeal mid-phase — note it in §23 instead
 
 | Done | Not done |
 |---|---|
-| Vite build, TS tooling, CI | conditions do not affect any roll — S8 |
-| DataModels for the 9 surviving types | the Svelte best-practices audit — S9 |
+| Vite build, TS tooling, CI | the Svelte best-practices audit — S9 |
+| DataModels for the 9 surviving types | |
 | Packs generated from the book, 0e removed | |
 | Svelte 5 wired into build, check, vitest | |
 | **Every item sheet on ApplicationV2 + Svelte** (§28) | |
@@ -52,6 +52,7 @@ Don't fix component architecture piecemeal mid-phase — note it in §23 instead
 | **274 documents generated from the PSG** (§27) | |
 | Both class adjustments are real `SchemaField`s (§28, §29) | |
 | **The character generator, on a draft store** (§29) — no `FormApplication` left | |
+| **Conditions preselect the roll they name** (§34) | |
 
 ## Hard rules (override defaults)
 
@@ -74,9 +75,9 @@ npm run setup            # dev install: symlink scaffold (packs are COPIED — r
 npm run deploy           # release rehearsal: link-free copy, same shape as the zip
 ./scripts/packs.sh pack  # packs/_source/*.json → LevelDB (close Foundry first)
 npm run content -- --allocate  # content/books/** -> packs/_source/** (--allocate mints new ids)
-npm test                 # 259 vitest specs — the CI tier
+npm test                 # 273 vitest specs — the CI tier
 npm run check            # tsc over the .ts surface, then svelte-check over module/ui
-npm run test:e2e         # 106 Playwright specs vs a real headless Foundry
+npm run test:e2e         # 116 Playwright specs vs a real headless Foundry
 ```
 
 A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — both `dist/` and

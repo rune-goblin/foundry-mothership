@@ -10,9 +10,9 @@ the book instead. What survives from it is noted at the end.
 
 | | |
 |---|---|
-| **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26), **S2b** the TypeScript catalogs and **S3** the content (§27), **S4** the class sheet and `base_adjustment` (§28), **S5** the generator on a draft store and `selected_adjustment` (§29), **S6** the creature sheet and the section tier (§30), **S7** the character sheet (§33) — **phase 4 is complete** |
-| **Next** | **S8 — conditions contribute advantage/disadvantage to rolls.** Three links, two of which do not exist yet, and one decision reserved for the owner. |
-| **Green at** | `check` 0/0 (242 files) · **259 vitest** · **106 Playwright** · `build` |
+| **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26), **S2b** the TypeScript catalogs and **S3** the content (§27), **S4** the class sheet and `base_adjustment` (§28), **S5** the generator on a draft store and `selected_adjustment` (§29), **S6** the creature sheet and the section tier (§30), **S7** the character sheet (§33) — **phase 4 is complete** — **S8** conditions reach the roll they name (§34) |
+| **Next** | **S9 — the trailing list**: the Svelte architecture audit, the CSS dissolution, `checkJs`, the `actor.js` split, `template.json`'s retirement. |
+| **Green at** | `check` 0/0 (242 files) · **273 vitest** · **116 Playwright** · `build` |
 | **Preserved** | Everything cut is on the pushed `archive/pre-psg-cut` branch **and** tag |
 
 What the system ships today: 2 actor types (character, creature), 7 item types, and **274
@@ -329,8 +329,8 @@ one less actor type in every schema test.
 | S5 | actor-generator on a draft store | ✅ §29 |
 | S6 | creature-sheet | ✅ §30 |
 | S7 | actor-sheet — last, most player-visible | ✅ §33 |
-| S8 | conditions contribute advantage/disadvantage to rolls | **next** |
-| S9 | trailing, ungated | |
+| S8 | conditions contribute advantage/disadvantage to rolls | ✅ §34 |
+| S9 | trailing, ungated | **next** |
 
 **Each remaining unit is briefed in full below, so a prompt does not have to be.** The prompt names
 the unit and points here; the gate commands and their order are in `CLAUDE.md`, the ten standing
@@ -502,11 +502,26 @@ beyond keeping the localized band in its converted markup.
 
 ---
 
-### S8 — conditions contribute advantage/disadvantage to rolls
+### S8 — conditions contribute advantage/disadvantage to rolls ✅ §34
 
-The requirement `architecture.md` records, and the one unit that is **allowed to change the roll
-pipeline** — so it changes the specs first, on purpose, exactly as Decision 2 provides for. Not a
-conversion wave; its own proposal.
+**Landed.** The three links are joined and one thing came out other than as written: the seeded
+`modifiers: ['disadvantage']` had **no scope**, and every one of the three conditions is scoped in
+the book — Nightmares to Rest Saves, Spiraling to Panic Checks, Frightened to a Fear Save. A bare
+list applied at a roll site would have disadvantaged every roll a character makes. So the catalog
+value became `{ modifier, scope }`, `RollScope` names the four stats, three saves and the two
+special rolls, and the schema stores the pair.
+
+The owner's decisions: **only the roll the book names**, including the d20 panic check;
+**preselect** the button rather than force the roll string; leave the shipped `Rest Save [-]`
+macros alone. Opposed modifiers cancel to a normal roll.
+
+Two things the brief did not anticipate. `scripts/model-schema.ts` could not see inside an
+`ArrayField` of `SchemaField`s, so the enum guard would have passed a mistyped scope straight into
+a pack — it descends arrays now. And `chooseAttribute` is untouched on purpose: it asks for the
+stat *before* the roll type, so no scope exists when its buttons are built, and its template offers
+only the four stats, which no PSG condition names.
+
+The brief as it stood follows.
 
 The chain is three links, and two of them do not exist yet:
 

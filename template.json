@@ -281,7 +281,8 @@
       "severity": 1,
       "treatment": {
         "value": 0
-      }
+      },
+      "modifiers": []
     },
     "ability": {
       "templates": [

@@ -12,6 +12,7 @@
   },
   "system": {
     "description": "<p>You feel cursed and unlucky. All Critical Successes are instead Critical Failures.</p>",
+    "modifiers": [],
     "severity": 1,
     "treatment": {
       "value": 0

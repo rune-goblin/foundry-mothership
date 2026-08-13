@@ -1952,3 +1952,20 @@ p {
   background: inherit !important;
   box-shadow: none !important;
 }
+/* A condition is preselecting this roll type: the button DialogV2 autofocused, and the line
+   naming the conditions responsible. */
+.macro-popup-dialog .form-footer button.condition-preselect {
+  border-color: darkred;
+  box-shadow: 0 0 0 2px rgba(139, 0, 0, 0.35);
+}
+
+.macro-popup-dialog .condition-modifier {
+  color: darkred;
+  font-style: italic;
+  margin-bottom: 6px;
+}
+
+.condition-modifiers {
+  margin: 2px 0 0;
+  padding-left: 18px;
+}

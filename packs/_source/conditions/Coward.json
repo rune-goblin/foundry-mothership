@@ -12,6 +12,7 @@
   },
   "system": {
     "description": "<p>You must make a Fear Save to engage in violence, otherwise you flee.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.R2KizR1soAhFYDZm]{Fear Save}</p>",
+    "modifiers": [],
     "severity": 1,
     "treatment": {
       "value": 0

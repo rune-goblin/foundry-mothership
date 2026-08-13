@@ -115,6 +115,12 @@ export function invalidChoices(
     if (!field) continue;
     if (field.schema && isPlainObject(child)) {
       out.push(...invalidChoices(child, field.schema, `${prefix}${key}.`));
+    } else if (field.element && Array.isArray(child)) {
+      child.forEach((entry, index) => {
+        if (field.element!.schema && isPlainObject(entry)) {
+          out.push(...invalidChoices(entry, field.element!.schema, `${prefix}${key}[${index}].`));
+        }
+      });
     } else if (
       field.choices &&
       !(child === '' && field.blank) &&
