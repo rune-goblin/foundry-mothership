@@ -14,14 +14,15 @@
     "types": ["node", "svelte"],
     "allowImportingTsExtensions": true,
     "noEmit": true,
-    // The system's 9,274 lines of legacy JS are importable but not yet type-checked.
-    // Flip checkJs on per-file with // @ts-check, or globally once the conversion starts.
+    // The legacy runtime JS is importable but never type-checked: it is deleted at the swap
+    // (docs/plans/legacy-remake.md R5), not converted.
     "allowJs": true,
     "checkJs": false
   },
   // content/** is the books themselves: typed catalogs whose ids are literal union types, so the
   // cross-references between datasets are compiler-enforced rather than validated at build time.
-  "include": ["test/**/*.ts", "scripts/**/*.ts", "content/**/*.ts", "*.config.ts"],
+  // module/**/*.ts is the remade runtime — new runtime modules are TypeScript and checked here.
+  "include": ["module/**/*.ts", "test/**/*.ts", "scripts/**/*.ts", "content/**/*.ts", "*.config.ts"],
   // test/e2e has its own tsconfig: Playwright globals, and it must not be type-checked
   // with the vitest surface.
   "exclude": ["node_modules", "dist", "test/e2e", "test/foundry-data"]

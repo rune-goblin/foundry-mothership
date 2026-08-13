@@ -1,4 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
+import { rollFormula } from '../module/rolls/parse.ts';
+import type { Aim } from '../module/rolls/spec.ts';
 
 // actor.js imports fromIdUuid from the entry module, which registers hooks and Handlebars
 // helpers at module scope. None of that is needed to parse a roll string.
@@ -6,10 +8,15 @@ vi.mock('../module/mosh.js', () => ({ fromIdUuid: () => undefined }));
 
 const { MothershipActor } = await import('../module/actor/actor.js');
 
-const parse = (rollString: string, aimFor: string): string =>
-  MothershipActor.prototype.parseRollString.call({}, rollString, aimFor);
+type Parse = (rollString: string, aimFor: Aim) => string;
 
-describe('parseRollString', () => {
+// The legacy parser and its heir answer the same questions until the swap deletes the first.
+const implementations: [string, Parse][] = [
+  ['actor.js', (rollString, aimFor) => MothershipActor.prototype.parseRollString.call({}, rollString, aimFor)],
+  ['rolls/parse.ts', (rollString, aimFor) => rollFormula(rollString, aimFor)],
+];
+
+describe.each(implementations)('parseRollString — %s', (_name, parse) => {
   it('passes a plain roll through untouched', () => {
     expect(parse('1d100', 'low')).toBe('1d100');
     expect(parse('2d10', 'high')).toBe('2d10');
@@ -51,5 +58,9 @@ describe('parseRollString', () => {
 
   it('tolerates whitespace before the modifier', () => {
     expect(parse('1d100 [+]', 'high')).toBe('{1d100,1d100}kh');
+  });
+
+  it('duplicates a negative die whole', () => {
+    expect(parse('-1d10[-]', 'low')).toBe('{-1d10,-1d10}kh');
   });
 });

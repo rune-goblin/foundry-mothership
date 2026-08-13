@@ -39,11 +39,17 @@ structured data `foundry.abstract.TypeDataModel` + `defineSchema()`.
 **Phase 4 is complete** (`MODERNIZATION.md` §33) — no `foundry.appv1.*` class remains. New code
 has no v1 precedent to copy, so don't introduce one.
 
-**2. TypeScript for tooling; the runtime is still JS.** `vite.config.ts`,
-`vitest.config.ts`, `playwright.config.ts`, `scripts/*.ts` and `test/**/*.ts` are
-TypeScript, checked by `npm run check`. `module/**/*.js` is plain JS and **not**
-type-checked (`checkJs: false`). Converting it is phase 5 — flip `// @ts-check` per file as
-you go. Node ≥22.18 strips types, so scripts run under plain `node` with no `tsx`.
+**2. TypeScript for tooling — and for every new runtime module.** `vite.config.ts`,
+`vitest.config.ts`, `playwright.config.ts`, `scripts/*.ts`, `test/**/*.ts` **and
+`module/**/*.ts`** are TypeScript, checked by `npm run check`. Node ≥22.18 strips types, so
+scripts run under plain `node` with no `tsx`.
+
+**Amended by `docs/plans/legacy-remake.md` decision 2 (landed in R0).** New runtime code is
+written in TypeScript — Vite compiles `.ts` into the same bundle, proven by `module/rules.ts`
+and `module/rolls/`. The remaining legacy JS (`module/actor/actor.js`, `mosh.js`,
+`item/item.js`, `settings.js`) is **not** type-checked and **is not converted**: it is replaced
+module by module and deleted at the R5 swap. There is no per-file `// @ts-check` migration any
+more. `module/ui/**` stays `.js`/`.svelte` until R7.
 
 ## Reference files — read the one that fits
 

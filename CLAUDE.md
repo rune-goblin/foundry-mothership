@@ -61,9 +61,14 @@ Don't fix component architecture piecemeal mid-phase — note it in §23 instead
   **v16** removal. New windows are ApplicationV2, dialogs DialogV2, data
   `foundry.abstract.TypeDataModel`. Existing v1 code is mid-migration: don't add to it;
   when you touch a v1 class, prefer converting it whole.
-- **TypeScript for tooling, JS for runtime.** `*.config.ts`, `scripts/*.ts`, `test/**/*.ts`
-  are checked by `npm run check`. `module/**/*.js` is unchecked (`checkJs: false`) until
-  phase 5. Node ≥22.18 runs `.ts` scripts directly — no `tsx`/`ts-node`.
+- **TypeScript for tooling — and now for new runtime code.** `*.config.ts`, `scripts/*.ts`,
+  `test/**/*.ts` **and `module/**/*.ts`** are checked by `npm run check`. Node ≥22.18 runs `.ts`
+  scripts directly — no `tsx`/`ts-node`.
+  **Amended by `docs/plans/legacy-remake.md` decision 2 (R0):** every new runtime module is
+  written in TypeScript; Vite compiles it with the rest of the entry. The legacy `.js`
+  (`actor/actor.js`, `mosh.js`, `item/item.js`, `settings.js`) is **never converted** — it stays
+  unchecked (`checkJs: false`) and is deleted at the R5 swap. Don't `// @ts-check` it; don't
+  translate it; write the replacement instead.
 - **Verify, don't eyeball.** Every change runs the tier that covers it (below). Don't report
   work as done on an untested edit. If a green run surprises you, suspect the harness.
 

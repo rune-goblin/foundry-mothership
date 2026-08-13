@@ -303,11 +303,11 @@ resumes it by diffing the working tree against the unit's description before con
 
 | Unit | Model | Status | Commit | Notes |
 |---|---|---|---|---|
-| R0 — TS wiring, rules, rolls | Opus | pending | — | — |
-| R0-review — foundation interfaces | Fable | pending | — | RollSpec/Outcome/CheckKind review before R1 builds on them |
-| R1 — mutation, inventory | Opus | pending | — | — |
+| R0 — TS wiring, rules, rolls | Opus | done | `R0: rules and the roll domain…` | 344 vitest (baseline 273), dual-run proves legacy equivalence per assertion; Vite bundles runtime .ts (proven out-of-tree; R5 wires `init.ts` into `index.js`, no config change needed). `Outcome.total` is the KEPT DIE, not formula arithmetic — damage totals read `roll.total`. |
+| R0-review — foundation interfaces | Fable | done | (same commit) | Approved: RollSpec/Outcome/CheckKind/CHECK_SEMANTICS sound; panic crit-exception now pinned by discriminating tests both implementations pass. Advisories parked: AUTOFAIL scope → R3, rank normalization → R1. |
+| R1 — mutation, inventory | Opus | pending | — | Owes: one normalization point for skill-rank case (`rules.ts` RANK_BONUS is lowercase; items store `rank: 'Trained'`). |
 | R2 — tables, lookup, chat | Opus | pending | — | — |
-| R3 — checks, dialogs | Opus | pending | — | — |
+| R3 — checks, dialogs | Opus | pending | — | Owes: decide `AUTOFAIL_AT` scope — legacy applies ≥90 to every comparison/die; the book scopes it to d100 stat/save checks. No reachable roll differs today. |
 | R4 — API, content regen | Opus (API) / Sonnet (catalog regen) | pending | — | — |
 | R5 — the swap | Opus | pending | — | Fable on call if the gate fails twice |
 | R6 — record and close | Sonnet | pending | — | — |
