@@ -34,5 +34,21 @@ export const RANK_BONUS: Readonly<Record<SkillRank, number>> = {
   master: 20,
 };
 
+/**
+ * The one place a stored rank becomes a rank. `item-models.js` initializes `rank` to `'Trained'`
+ * and the new-skill dialog writes the same capitalized words, so every reader would otherwise
+ * carry its own case convention — which is how `ui/actor/items.js` came to hold a second bonus
+ * table. An unrecognized rank is an error, never a silent zero.
+ */
+export function skillRank(stored: string): SkillRank {
+  const key = String(stored ?? '').trim().toLowerCase();
+  if (!Object.hasOwn(RANK_BONUS, key)) throw new Error(`Unknown skill rank: ${JSON.stringify(stored)}`);
+  return key as SkillRank;
+}
+
+export function rankBonus(stored: string): number {
+  return RANK_BONUS[skillRank(stored)];
+}
+
 /** Carry capacity is Strength over this, rounded up; unarmed damage is the same quotient rounded down. */
 export const STR_CAPACITY_DIVISOR = 10;

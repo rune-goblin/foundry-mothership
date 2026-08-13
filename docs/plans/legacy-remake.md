@@ -188,6 +188,20 @@ Each is a test first, then the implementation that passes it:
 | C2 | Wound Roll hard-codes five bare ids | The wound chooser is a `dialogs/` component resolving tables through `tables/` — no ids in macro strings anywhere (decision 4) |
 | U14 | XP stores 16 on a 15-pip track | `rules.ts` XP_PIPS drives both clamp and track |
 
+### Divergences found in execution
+
+Behavioural differences from legacy discovered while building, beyond the audit's ten — each
+implemented book-side (decision 3) and pinned by a test:
+
+| Id | Legacy behaviour | Book behaviour shipped | Pinned by |
+|---|---|---|---|
+| R1-1 | `min`/`max` addresses clamp against themselves — raising `stress.max` was a no-op | A bound resolves unbounded; the three shipped max/min macros now work | `test/mutation-address.test.ts` |
+| R1-2 | The health rollover narrates "take a wound" but never writes `hits` | One multi-field update moves health and wounds together | `test/mutate.test.ts` |
+| R1-3 | Surplus damage carries over one bar only; a big hit leaves negative health and death is unreachable | Each emptied bar spends a Wound; the one past the last sets `dead` with the unabsorbed overflow | `test/mutate.test.ts` |
+| R1-4 | Mutations read the derived `system` — a swarm creature's multiplied Combat would persist | Mutations read `toObject().system` | `test/mutate.test.ts` |
+| R1-5 | Rolled amounts use the kept-die total, zero-basing a rolled 10 to 0 | Rolled amounts use `roll.total` | `test/mutate.test.ts` |
+| R1-6 | Taking the **last** Wound leaves health at 0 (`hits.value + 1 < hits.max` guard) | The last Wound is survivable: the bar refills (PSG 28) | `test/mutate.test.ts` |
+
 ## Units
 
 Each unit lands on master, green through `npm run check` + `npm test` (+ e2e where it touches
@@ -305,9 +319,9 @@ resumes it by diffing the working tree against the unit's description before con
 |---|---|---|---|---|
 | R0 — TS wiring, rules, rolls | Opus | done | `R0: rules and the roll domain…` | 344 vitest (baseline 273), dual-run proves legacy equivalence per assertion; Vite bundles runtime .ts (proven out-of-tree; R5 wires `init.ts` into `index.js`, no config change needed). `Outcome.total` is the KEPT DIE, not formula arithmetic — damage totals read `roll.total`. |
 | R0-review — foundation interfaces | Fable | done | (same commit) | Approved: RollSpec/Outcome/CheckKind/CHECK_SEMANTICS sound; panic crit-exception now pinned by discriminating tests both implementations pass. Advisories parked: AUTOFAIL scope → R3, rank normalization → R1. |
-| R1 — mutation, inventory | Opus | pending | — | Owes: one normalization point for skill-rank case (`rules.ts` RANK_BONUS is lowercase; items store `rank: 'Trained'`). |
-| R2 — tables, lookup, chat | Opus | pending | — | — |
-| R3 — checks, dialogs | Opus | pending | — | Owes: decide `AUTOFAIL_AT` scope — legacy applies ≥90 to every comparison/die; the book scopes it to d100 stat/save checks. No reachable roll differs today. |
+| R1 — mutation, inventory | Opus | done | `R1: the mutation engine…` | 416 vitest; 25 mutants, 0 survivors; divergences R1-1…R1-6 recorded above. Pod contract documented in `mutation/address.ts` header — R2/R3 read it before touching fields. Rank normalizer landed in `rules.ts` (`skillRank`/`rankBonus`). XP stays unbounded here — the U14 clamp is R7's, via a rules-side bound. |
+| R2 — tables, lookup, chat | Opus | pending | — | Owes: `Mosh.HealthZeroMessage2` is the correct key (F7's string half); decide whether legacy `chatDesc`'s trinket/patch name↔description swap survives in the card renderer. |
+| R3 — checks, dialogs | Opus | pending | — | Owes: decide `AUTOFAIL_AT` scope — legacy applies ≥90 to every comparison/die; the book scopes it to d100 stat/save checks. No reachable roll differs today. Also owes the literal F5 end-to-end spec: the damage flow calls nothing that touches shots (structural pin landed in R1; the flow-level spec needs `checks/damage.ts` to exist). |
 | R4 — API, content regen | Opus (API) / Sonnet (catalog regen) | pending | — | — |
 | R5 — the swap | Opus | pending | — | Fable on call if the gate fails twice |
 | R6 — record and close | Sonnet | pending | — | — |
