@@ -12,7 +12,7 @@
   import ItemControls from '../parts/ItemControls.svelte';
   import ItemControl from '../parts/ItemControl.svelte';
   import { dropTarget } from '../parts/drop-target.js';
-  import { localize } from '../i18n.js';
+  import { localize } from '../../i18n.ts';
 
   let { store } = $props();
 

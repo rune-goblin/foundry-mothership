@@ -204,9 +204,29 @@ describe('isRobotic', () => {
     expect(isRobotic(marine)).toBe(false);
   });
 
+  // The generator embeds the class item as of R7, so this is the pre-R7 character and the one
+  // filled in by hand. It is why the fallback is still here: deleting it would turn every Android
+  // already in a world back into a human on Panic 19, with no migration to grant them the item.
   it('falls back to the stored class name when no class item is embedded', () => {
     expect(isRobotic(character({ class: { value: 'Android' } }))).toBe(true);
     expect(isRobotic(character({ class: { value: 'Teamster' } }))).toBe(false);
+  });
+
+  // A generated character carries one class item; a hand-built one may have collected two, and
+  // the flag is what decides — not whichever document the collection happens to iterate first.
+  it('reads the flag off any class item the actor holds', () => {
+    const both = character({ class: { value: '' } }, [
+      { type: 'class', system: { robotic: false } },
+      { type: 'class', system: { robotic: true } },
+    ]);
+
+    expect(isRobotic(both)).toBe(true);
+  });
+
+  it('ignores the stored name once a class item says otherwise', () => {
+    expect(isRobotic(character({ class: { value: 'Android' } }, [{ type: 'class', system: {} }]))).toBe(
+      false,
+    );
   });
 
   it('prefers the item over the name, because the flag is the machine-readable half', () => {

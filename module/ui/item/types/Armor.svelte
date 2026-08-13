@@ -1,7 +1,7 @@
 <script>
   import Field from '../../parts/Field.svelte';
   import CheckField from '../../parts/CheckField.svelte';
-  import { localize } from '../../i18n.js';
+  import { localize } from '../../../i18n.ts';
 
   let { system } = $props();
 </script>

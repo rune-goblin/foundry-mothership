@@ -111,6 +111,12 @@ export function planHealthChange(health: Tracked, wounds: Tracked, amount: numbe
   };
 }
 
+/** What a mutation changes by, as a caller states it: a flat number, or dice to roll for it. */
+export type Amount =
+  | { readonly kind: 'amount'; readonly amount: number }
+  | { readonly kind: 'roll'; readonly dice: string };
+
+/** The same change once the dice have been rolled — what this module applies. */
 export type Change =
   | { readonly kind: 'amount'; readonly amount: number }
   | { readonly kind: 'roll'; readonly roll: EvaluatedRoll };

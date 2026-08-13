@@ -26,82 +26,17 @@ import {
   outOfAmmo,
 } from '../module/dialogs/prompts.ts';
 import { svelteDialog } from '../module/dialogs/svelte-dialog.ts';
-import { clearFoundryStubs, installChat, installI18n } from './foundry-stubs.ts';
-
-type Globals = Record<string, unknown>;
-
-interface DialogButton {
-  action: string;
-  label: string;
-  icon?: string;
-  class?: string;
-  default?: boolean;
-  callback: () => unknown;
-}
-
-interface OpenDialog {
-  readonly title: string;
-  readonly buttons: DialogButton[];
-  readonly element: HTMLElement;
-  press(action: string): Promise<void>;
-  dismiss(): void;
-}
+import {
+  clearFoundryStubs,
+  installChat,
+  installDialogV2,
+  installI18n,
+  type OpenDialog,
+} from './foundry-stubs.ts';
 
 let opened: OpenDialog[] = [];
 
-/**
- * DialogV2's own semantics, as `wait` implements them: a button's callback result is the answer,
- * a dismissal answers whatever `close` returned — `null` when it returned nothing.
- */
-function installDialogV2(): void {
-  const globals = globalThis as Globals;
-  const foundry = (globals.foundry ?? {}) as Record<string, Record<string, unknown>>;
-  foundry.applications = {
-    ...(foundry.applications ?? {}),
-    api: {
-      DialogV2: {
-        wait: (config: {
-          window: { title: string };
-          content: string;
-          buttons: DialogButton[];
-          render?: (event: unknown, dialog: { element: HTMLElement }) => void;
-          close?: (event: unknown, dialog: { element: HTMLElement }) => unknown;
-        }) =>
-          new Promise((resolve) => {
-            const element = document.createElement('div');
-            element.innerHTML = config.content;
-            document.body.append(element);
-            const dialog = { element };
-
-            const finish = (result: unknown): void => {
-              const closed = config.close?.({}, dialog);
-              resolve(result === undefined ? (closed ?? null) : result);
-            };
-
-            opened.push({
-              title: config.window.title,
-              buttons: config.buttons,
-              element,
-              press: async (action: string) => {
-                const button = config.buttons.find((entry) => entry.action === action);
-                if (button === undefined) throw new Error(`no button ${action}`);
-                finish(await button.callback());
-              },
-              dismiss: () => finish(undefined),
-            });
-
-            config.render?.({}, dialog);
-            // ApplicationV2 renders more than once over a dialog's life.
-            config.render?.({}, dialog);
-          }),
-      },
-    },
-  };
-  globals.foundry = foundry;
-}
-
 beforeEach(() => {
-  opened = [];
   installI18n({
     'Mosh.Advantage': 'Advantage',
     'Mosh.Normal': 'Normal',
@@ -124,7 +59,7 @@ beforeEach(() => {
     'Mosh.Errors.NoTokenSelected': 'Select a token.',
   });
   installChat();
-  installDialogV2();
+  opened = installDialogV2();
 });
 
 afterEach(() => {
@@ -227,6 +162,33 @@ describe('svelteDialog', () => {
     opened[1].dismiss();
     await second;
     expect(dismissedElement.querySelector('.macro_prompt')).toBeNull();
+  });
+
+  // ApplicationV2 may re-render a dialog into a fresh content node. Mounting once and never
+  // again would leave the component on the detached one and the window empty.
+  it('re-mounts when a render replaces the node it is mounted in', async () => {
+    const answer = svelteDialog<null, string, typeof props>({
+      component: ChooseAdvantage,
+      props,
+      title: 'Body Save',
+      initial: null,
+      buttons: [{ action: 'ok', label: 'OK', answer: () => 'ok' }],
+    });
+
+    const { element } = only();
+    const first = element.querySelector('.mosh-dialog-root')!;
+    element.replaceChildren();
+    const second = document.createElement('div');
+    second.className = 'mosh-dialog-root';
+    element.append(second);
+    only().render();
+
+    expect(first.querySelector('.macro_prompt')).toBeNull();
+    expect(second.querySelector('.macro_prompt')).not.toBeNull();
+
+    await only().press('ok');
+    await answer;
+    expect(second.querySelector('.macro_prompt')).toBeNull();
   });
 
   it('carries what the user picked into the answer', async () => {
@@ -348,12 +310,12 @@ describe('the prompts', () => {
     await only().press('2');
     await expect(flatAnswer).resolves.toEqual(flat);
 
-    opened = [];
+    opened.length = 0;
     const rolled = chooseStress(direction);
     await only().press('1d5');
     await expect(rolled).resolves.toEqual(dice);
 
-    opened = [];
+    opened.length = 0;
     const dismissed = chooseStress(direction);
     only().dismiss();
     await expect(dismissed).resolves.toBeNull();
@@ -374,6 +336,9 @@ describe('the prompts', () => {
       expect(img.getAttribute('src')).not.toContain('undefined');
     }
 
+    // Legacy's Wound Roll dialog opened on Blunt Force; nothing about the key order says so.
+    expect(only().element.querySelector<HTMLInputElement>('#wound-blunt-force')!.checked).toBe(true);
+
     only().element.querySelector<HTMLInputElement>('#wound-gunshot')!.click();
     flushSync();
     await only().press('advantage');
@@ -386,12 +351,12 @@ describe('the prompts', () => {
     await only().press('reload');
     await expect(reload).resolves.toBe(true);
 
-    opened = [];
+    opened.length = 0;
     const cancel = askReload();
     await only().press('cancel');
     await expect(cancel).resolves.toBe(false);
 
-    opened = [];
+    opened.length = 0;
     const dismissed = askReload();
     only().dismiss();
     await expect(dismissed).resolves.toBe(false);
@@ -403,7 +368,7 @@ describe('the prompts', () => {
     await only().press('ok');
     await expect(acknowledged).resolves.toBeUndefined();
 
-    opened = [];
+    opened.length = 0;
     const dismissed = outOfAmmo();
     only().dismiss();
     await expect(dismissed).resolves.toBeUndefined();
@@ -418,7 +383,7 @@ describe('the prompts', () => {
     await only().press('ok');
     await expect(answer).resolves.toBe('heavy');
 
-    opened = [];
+    opened.length = 0;
     const dismissed = chooseCover('none', { armorPoints: 0, damageReduction: 0 });
     only().dismiss();
     await expect(dismissed).resolves.toBeNull();
@@ -430,7 +395,7 @@ describe('the prompts', () => {
     await only().press('ok');
     await expect(acknowledged).resolves.toBeUndefined();
 
-    opened = [];
+    opened.length = 0;
     const dismissed = noCharacter('character');
     expect(only().element.textContent).toContain('Assign a character.');
     only().dismiss();

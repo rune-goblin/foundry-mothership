@@ -4,6 +4,7 @@ import type { CheckActor } from '../module/checks/actor.ts';
 import type { MothershipActor as ActorClass } from '../module/documents/actor.ts';
 import type { MothershipItem as ItemClass } from '../module/documents/item.ts';
 import type { GrantDocument } from '../module/mutation/items.ts';
+import { XP_PIPS } from '../module/rules.ts';
 import {
   clearFoundryStubs,
   installChat,
@@ -171,6 +172,118 @@ afterEach(clearFoundryStubs);
 
 const cardData = (index = 0) => chat.cards[index].data as Record<string, unknown>;
 
+// The rules the sheets used to hold themselves (audit U5): a swarm's dice, the swarm toggle's
+// rewrite, and the XP track's bounds. None of them were reachable from a test while they lived in
+// a component, and the XP clamp was wrong by one the whole time (U14).
+describe('the creature rules', () => {
+  const swarming = (enabled: boolean, damage = '1d10') =>
+    actorOf([item({ id: 'w1', type: 'weapon', name: 'Mandibles', system: { damage } })], {
+      hits: { value: 1, min: 0, max: 4, label: 'Wounds' },
+      stats: { combat: { value: 30, label: 'Combat' } },
+      swarm: { enabled, combat: { value: 10 } },
+    });
+
+  describe('swarmDamage', () => {
+    it('rolls one weapon’s dice per Wound the swarm has left', () => {
+      expect(swarming(true).actor.swarmDamage('w1')).toBe('3d10');
+    });
+
+    it('keeps whatever the damage says after the dice', () => {
+      expect(swarming(true, '2d10+3').actor.swarmDamage('w1')).toBe('6d10+3');
+    });
+
+    it('leaves a weapon whose damage names no dice alone', () => {
+      // AppV1 indexed the failed match and threw.
+      expect(swarming(true, 'as the scalpel').actor.swarmDamage('w1')).toBeNull();
+    });
+
+    it('answers nothing at all for a creature that is not a swarm', () => {
+      expect(swarming(false).actor.swarmDamage('w1')).toBeNull();
+    });
+
+    it('answers nothing for a weapon this creature does not hold', () => {
+      expect(swarming(true).actor.swarmDamage('nope')).toBeNull();
+    });
+  });
+
+  describe('setSwarm', () => {
+    it('stashes the creature’s own Combat and stores the multiplied one', async () => {
+      const { actor, updates } = swarming(false);
+
+      await actor.setSwarm(true);
+
+      expect(updates).toEqual([
+        {
+          'system.swarm.enabled': true,
+          'system.stats.combat.value': 90,
+          'system.swarm.combat.value': 30,
+        },
+      ]);
+    });
+
+    it('puts the stash back and clears it', async () => {
+      const { actor, updates } = swarming(true);
+
+      await actor.setSwarm(false);
+
+      expect(updates).toEqual([
+        {
+          'system.swarm.enabled': false,
+          'system.stats.combat.value': 10,
+          'system.swarm.combat.value': 0,
+        },
+      ]);
+    });
+
+    // Derivation multiplies Combat in `system` itself, so stashing what is there would stash the
+    // product — the mutation engine reads `toObject()` for the same reason (divergence R1-4).
+    it('stashes the stored Combat, not the derived one', async () => {
+      const { actor, updates } = swarming(false);
+      Object.assign(actor, {
+        toObject: () => ({
+          system: { hits: { value: 1, max: 4 }, stats: { combat: { value: 7 } }, swarm: {} },
+        }),
+      });
+
+      await actor.setSwarm(true);
+
+      expect(updates[0]['system.swarm.combat.value']).toBe(7);
+      expect(updates[0]['system.stats.combat.value']).toBe(21);
+    });
+  });
+
+  describe('stepXp', () => {
+    const trained = (value: number) => actorOf([], { xp: { value, selectedSkill: '' } });
+
+    it('steps up and down one pip at a time', async () => {
+      const { actor, updates } = trained(3);
+
+      await actor.stepXp(1);
+      await actor.stepXp(-1);
+
+      expect(updates).toEqual([{ 'system.xp.value': 4 }, { 'system.xp.value': 3 }]);
+    });
+
+    // U14: both sheets clamped at 16 over a 15-pip track, so the sixteenth click stored a state
+    // nothing could draw and the next right-click appeared to do nothing.
+    it('stops at the end of the track the sheets draw', async () => {
+      const { actor, updates } = trained(XP_PIPS);
+
+      await actor.stepXp(1);
+
+      expect(updates).toEqual([{ 'system.xp.value': XP_PIPS }]);
+    });
+
+    it('never goes below zero', async () => {
+      const { actor, updates } = trained(0);
+
+      await actor.stepXp(-1);
+
+      expect(updates).toEqual([{ 'system.xp.value': 0 }]);
+    });
+  });
+});
+
 describe('modify', () => {
   it('writes the change and posts one card', async () => {
     const { actor, updates } = actorOf();
@@ -298,6 +411,17 @@ describe('applyItem', () => {
 
     expect(cardData().flavorText).toBe('You learn this skill');
   });
+
+  // The generator hands out a class, a loadout, two table results and a skill list in one pass;
+  // a card apiece would bury the rolls that produced them (R7).
+  it('grants without a card when the caller asks for none', async () => {
+    const { actor, created } = actorOf();
+
+    await actor.applyItem(source('item', 'Ration'), 1, { message: false });
+
+    expect(created).toHaveLength(1);
+    expect(chat.cards).toEqual([]);
+  });
 });
 
 // The generator's loadout rows are UUIDs and a macro names a Condition by id, so the grant has to
@@ -319,6 +443,16 @@ describe('applyItemRef', () => {
 
     expect(result?.change).toEqual({ created: true, counted: 'quantity', from: 0, to: 2 });
     expect(created).toHaveLength(1);
+  });
+
+  it('carries the silence through to the grant it resolves', async () => {
+    (globalThis as Record<string, unknown>).game = { items: { get: () => ration }, packs: [] };
+    const { actor, created } = actorOf();
+
+    await actor.applyItemRef('abcdefghijklmnop', 1, { message: false });
+
+    expect(created).toHaveLength(1);
+    expect(chat.cards).toEqual([]);
   });
 
   it('reports a reference that resolves to nothing instead of granting', async () => {

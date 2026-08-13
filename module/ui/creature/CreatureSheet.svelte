@@ -12,7 +12,8 @@
   import HealthBlock from '../parts/sections/HealthBlock.svelte';
   import ItemPanel from '../parts/sections/ItemPanel.svelte';
   import { onActivate } from '../parts/activate.js';
-  import { localize } from '../i18n.js';
+  import { localize } from '../../i18n.ts';
+  import { XP_PIPS } from '../../rules.ts';
   import {
     adjust,
     createItem,
@@ -78,30 +79,14 @@
 
   const describe = (id) => () => actor.printDescription(id);
 
-  const stepXp = (event) => {
-    const value = Math.min(16, Math.max(0, Number(system.xp.value) + stepBy(event)));
-    actor.update({ 'system.xp.value': value });
-  };
+  const stepXp = (event) => actor.stepXp(stepBy(event));
 
   const skillRoll = (id) => () => actor.rollSkill(id);
 
-  /**
-   * A swarm attacks once per remaining wound, so its damage scales with the dice count. A weapon
-   * whose damage names no dice is left alone -- AppV1 indexed the failed match and threw.
-   */
-  const swarmDamage = (weapon) => {
-    if (!system.swarm.enabled) return null;
-    const dice = weapon.system.damage?.match(/([0-9]+)d[0-9]+/i);
-    if (!dice) return null;
-    const count = dice[1] * (system.hits.max - system.hits.value);
-    return weapon.system.damage.replace(/([0-9]+)(d[0-9]+)/i, `${count}$2`);
-  };
-
-  const weaponRoll = (id) => () =>
-    actor.rollWeapon(id, { damage: swarmDamage(actor.items.get(id)) });
+  const weaponRoll = (id) => () => actor.rollWeapon(id, { damage: actor.swarmDamage(id) });
 
   const damageRoll = (id) => () =>
-    actor.rollWeapon(id, { roll: 'damage', damage: swarmDamage(actor.items.get(id)) });
+    actor.rollWeapon(id, { roll: 'damage', damage: actor.swarmDamage(id) });
 
   const step = (id, path, bounds) => (event) => adjust(actor, id, path, stepBy(event), bounds);
 
@@ -305,7 +290,7 @@
           oncontextmenu={stepXp}
           onkeydown={onActivate(stepXp)}
         >
-          <PipTrack count={15} value={system.xp.value} milestones={XP_MILESTONES} />
+          <PipTrack count={XP_PIPS} value={system.xp.value} milestones={XP_MILESTONES} />
         </div>
       </div>
     </div>

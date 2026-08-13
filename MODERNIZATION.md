@@ -706,7 +706,6 @@ Svelte is wired up (§Phase 4 step 0) and the **eight simple item types** — `i
 
 ```
 module/ui/document-store.svelte.js   the render-time snapshot every converted sheet reads
-module/ui/i18n.js                    localize()
 module/ui/item/ItemSheetApp.js       the DocumentSheetV2 shell (mount once, refresh per render)
 module/ui/item/ItemSheet.svelte      header, tabs, description editor
 module/ui/item/parts/                Field, CheckField, Editor, SheetHeader
@@ -2752,7 +2751,7 @@ problem.
    (C2, C10) and `MACRO_LABEL` are structurally impossible.
 5. **Interfaces were free to change; the sheets' were touched twice on purpose.** R5 swapped the
    sheets' call sites onto the new named verbs mechanically — enough to compile against the new
-   API, nothing structural. R7, still pending, is the secondary task where the sheets are
+   API, nothing structural. R7, since landed, is the secondary task where the sheets are
    redesigned around the new interfaces rather than just compiled against them.
 
 ### What landed, unit by unit
@@ -2767,7 +2766,7 @@ problem.
 | R4b | the content regeneration: macros become typed generated records, conditions and the Panic table switch from `@UUID[…Macro…]` links to enricher actions, three emit-time guards added |
 | R5 | **the swap** — `module/index.js` imports `init.ts`, legacy is deleted, the sheets' call sites move onto the new named verbs |
 | R6 | this unit — recorded here, and closing the pipeline gaps below |
-| R7 | pending — the sheets adopt the services as designed interfaces, not merely compiled-against ones (U4, U5, U10's service-facing halves) |
+| R7 | landed — rules left the components for the documents (swarm, XP via `XP_PIPS`, rank bonuses), the last five string-built dialogs became Svelte, one i18n seam survives (`module/i18n.ts`), generated characters carry their class item, and generation grants silently |
 
 The full per-unit detail — what each landed, the owed items handed to the next, the divergences
 each pinned — lives in `docs/plans/legacy-remake.md`'s progress ledger; this section is the

@@ -1,6 +1,6 @@
 <script>
   import Field from '../../parts/Field.svelte';
-  import { localize } from '../../i18n.js';
+  import { localize } from '../../../i18n.ts';
 
   const SIGN = { advantage: '[+]', disadvantage: '[-]' };
 

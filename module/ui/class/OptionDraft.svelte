@@ -3,7 +3,7 @@
   import ItemCell from '../parts/ItemCell.svelte';
   import ItemControls from '../parts/ItemControls.svelte';
   import ItemControl from '../parts/ItemControl.svelte';
-  import { localize } from '../i18n.js';
+  import { localize } from '../../i18n.ts';
 
   // The half-entered option lives here, in local state, rather than in inputs the sheet reads back
   // out of the DOM -- which is where the old sheet's indexing bug came from. The inputs carry no

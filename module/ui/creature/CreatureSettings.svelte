@@ -1,6 +1,6 @@
 <script>
   import CheckField from '../parts/CheckField.svelte';
-  import { localize } from '../i18n.js';
+  import { localize } from '../../i18n.ts';
 
   let { store } = $props();
 
@@ -13,22 +13,9 @@
     { key: 'sanity', label: 'Mosh.Sanity' },
   ];
 
-  // Not a form field: it carries side effects (the combat multiply/restore below) that plain
-  // form persistence can't express, so it stays out of `formData` and updates itself.
-  async function onSwarmChange(event) {
-    const enabled = event.currentTarget.checked;
-    const { document } = store;
-    const { stats, hits, swarm } = document.system;
-
-    const swarmCombat = enabled ? stats.combat.value : 0;
-    const combat = enabled ? stats.combat.value * (hits.max - hits.value) : swarm.combat.value;
-
-    await document.update({
-      'system.swarm.enabled': enabled,
-      'system.stats.combat.value': combat,
-      'system.swarm.combat.value': swarmCombat,
-    });
-  }
+  // Not a form field: the toggle rewrites Combat as well as itself (the rule is the document's,
+  // `setSwarm`), which plain form persistence cannot express — so it stays out of `formData`.
+  const onSwarmChange = (event) => store.document.setSwarm(event.currentTarget.checked);
 </script>
 
 <header class="sheet-header">

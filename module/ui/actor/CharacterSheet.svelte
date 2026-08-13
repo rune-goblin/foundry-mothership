@@ -14,7 +14,8 @@
   import HealthBlock from '../parts/sections/HealthBlock.svelte';
   import ItemPanel from '../parts/sections/ItemPanel.svelte';
   import { onActivate } from '../parts/activate.js';
-  import { localize } from '../i18n.js';
+  import { localize } from '../../i18n.ts';
+  import { XP_PIPS } from '../../rules.ts';
   import {
     adjust,
     createItem,
@@ -86,10 +87,7 @@
 
   const describe = (id) => () => actor.printDescription(id);
 
-  const stepXp = (event) => {
-    const value = Math.min(16, Math.max(0, Number(system.xp.value) + stepBy(event)));
-    actor.update({ 'system.xp.value': value });
-  };
+  const stepXp = (event) => actor.stepXp(stepBy(event));
 
   const skillRoll = (id) => () => actor.rollSkill(id);
 
@@ -331,7 +329,7 @@
           oncontextmenu={stepXp}
           onkeydown={onActivate(stepXp)}
         >
-          <PipTrack count={15} value={system.xp.value} milestones={XP_MILESTONES} />
+          <PipTrack count={XP_PIPS} value={system.xp.value} milestones={XP_MILESTONES} />
         </div>
       </div>
     </div>

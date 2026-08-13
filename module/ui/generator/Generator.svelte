@@ -3,7 +3,7 @@
   import RollBox from './RollBox.svelte';
   import { dropTarget } from '../parts/drop-target.js';
   import { onActivate } from '../parts/activate.js';
-  import { localize } from '../i18n.js';
+  import { localize } from '../../i18n.ts';
 
   let { draft, close } = $props();
 

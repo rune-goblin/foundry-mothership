@@ -243,18 +243,25 @@ interface ActorLike {
 /**
  * Whether this actor reads its Panic result as a machine. Creatures have no class at all, which
  * is what made a creature rolling a 19 throw (audit F22): the answer for them is no, not a
- * missing field. A character answers with its class item's `robotic` flag; a character whose
- * class was applied as data rather than as an item falls back to the stored class name, which is
- * the only thing such a sheet knows. R4 should embed the class item so that fallback can go.
+ * missing field. A character answers with its class item's `robotic` flag — the generator embeds
+ * that item as of R7, so every character made from here on has one.
+ *
+ * A character carrying no class item at all still falls back to the stored class name, because
+ * that is the only thing a sheet filled in by hand — or generated before R7 — knows. The fallback
+ * is English-only and retires the day a migration grants those characters their class item; until
+ * then, deleting it would silently turn every existing Android back into a human on Panic 19.
  */
 export function isRobotic(actor: unknown): boolean {
   const doc = (typeof actor === 'object' && actor !== null ? actor : {}) as ActorLike;
   if (doc.type !== 'character') return false;
 
+  let classed = false;
   for (const item of doc.items ?? []) {
     if (item.type !== 'class') continue;
-    return (item.system as { robotic?: unknown } | undefined)?.robotic === true;
+    if ((item.system as { robotic?: unknown } | undefined)?.robotic === true) return true;
+    classed = true;
   }
+  if (classed) return false;
 
   const stored = (doc.system as { class?: { value?: unknown } } | undefined)?.class?.value;
   return typeof stored === 'string' && stored.trim().toLowerCase() === ANDROID_CLASS;

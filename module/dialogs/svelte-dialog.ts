@@ -79,6 +79,7 @@ export async function svelteDialog<V, T, P extends object>(
 
   let value = options.initial;
   let component: Record<string, unknown> | null = null;
+  let mounted: Element | null = null;
 
   const answered = await foundry.applications.api.DialogV2.wait({
     window: { title: options.title },
@@ -96,20 +97,26 @@ export async function svelteDialog<V, T, P extends object>(
     rejectClose: false,
     render: (_event, dialog) => {
       const target = dialog.element.querySelector(`.${MOUNT_CLASS}`);
-      // ApplicationV2 renders more than once; the component is mounted on the first pass only.
-      if (target === null || component !== null) return;
+      // ApplicationV2 renders more than once, usually into the node the component already holds.
+      // A re-render that replaces that node would otherwise leave the component mounted on a
+      // detached element and the dialog empty, so a new node is a remount, not a second mount.
+      if (target === null || target === mounted) return;
+      if (component !== null) void unmount(component);
+
       const props = Object.assign({}, options.props, {
-        value: options.initial,
+        value,
         onchange: (next: V) => {
           value = next;
         },
       });
+      mounted = target;
       component = mount(options.component, { target, props }) as Record<string, unknown>;
     },
     close: () => {
       // Returning anything here would become the dialog's answer, so the unmount is discarded.
       if (component !== null) void unmount(component);
       component = null;
+      mounted = null;
     },
   });
 

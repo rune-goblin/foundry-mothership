@@ -14,7 +14,7 @@
   import OptionDraft from './OptionDraft.svelte';
   import { dropTarget } from '../parts/drop-target.js';
   import { promptStatOption } from './stat-option.js';
-  import { localize } from '../i18n.js';
+  import { localize } from '../../i18n.ts';
 
   let { store } = $props();
 

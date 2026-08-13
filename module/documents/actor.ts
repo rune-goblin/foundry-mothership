@@ -34,11 +34,11 @@ import { format, localize } from '../i18n.ts';
 import type { ReloadOutcome } from '../inventory/ammo.ts';
 import { lookup, notifyMiss } from '../lookup.ts';
 import { grantItem, type GrantDocument, type GrantResult } from '../mutation/items.ts';
-import { mutate, type Change, type MutationResult } from '../mutation/mutate.ts';
+import { mutate, type Amount, type Change, type MutationResult } from '../mutation/mutate.ts';
 import type { Outcome } from '../rolls/resolve.ts';
 import { parseRollSpec } from '../rolls/parse.ts';
 import { CHECK_SEMANTICS, type RollSpec, type StatKey } from '../rolls/spec.ts';
-import { COVER_BONUS, STR_CAPACITY_DIVISOR, type Cover } from '../rules.ts';
+import { COVER_BONUS, STR_CAPACITY_DIVISOR, XP_PIPS, type Cover } from '../rules.ts';
 import type { TableKey } from '../tables/tables.ts';
 import type { MothershipItem } from './item.ts';
 
@@ -74,6 +74,9 @@ const CONDITION = 'condition';
 
 /** PSG 28 — the condition the sheet totals. Matched by name, exactly as legacy matched it. */
 const BLEEDING = 'Bleeding';
+
+/** The dice a damage string leads with — `2d10`, and the `2` a swarm multiplies. */
+const DAMAGE_DICE = /(\d+)(d\d+)/i;
 
 /**
  * The system as derivation writes it. The schema declares every pod read here; `total` and
@@ -143,10 +146,10 @@ function deriveBleeding(items: Iterable<CheckItem>, system: DerivedSystem): void
   system.bleeding.value = severity;
 }
 
-/** What a mutation changes by, as a caller states it: a flat number, or dice to roll for it. */
-export type Amount =
-  | { readonly kind: 'amount'; readonly amount: number }
-  | { readonly kind: 'roll'; readonly dice: string };
+/** How many attacks a swarm still has in it: one per Wound it has not taken. */
+function swarmSize(system: DerivedSystem): number {
+  return number(system.hits.max) - number(system.hits.value);
+}
 
 /** A rolled amount is read the way damage is: what it says on the dice, top face and all. */
 const AMOUNT_KIND = 'weapon-damage';
@@ -161,8 +164,11 @@ export function legacyAmount(value: number | null, dice: string | null): Amount 
   return dice ? { kind: 'roll', dice: String(dice) } : { kind: 'amount', amount: 0 };
 }
 
-export interface ModifyOptions {
-  /** Whether the change posts a card. A check that narrates the Stress itself does not. */
+export interface CardOptions {
+  /**
+   * Whether this posts a card. A check that narrates its own Stress does not, and neither does
+   * the generator, which hands out a class, a loadout and a skill list in one pass.
+   */
   readonly message?: boolean;
 }
 
@@ -205,9 +211,41 @@ export class MothershipActor extends Actor {
     // A swarm fights as hard as it is numerous: the Wounds it has left multiply its Combat.
     const swarm = system.swarm;
     if (swarm?.enabled === true && system.stats.combat !== undefined) {
-      system.stats.combat.value =
-        number(swarm.combat?.value) * (number(system.hits.max) - number(system.hits.value));
+      system.stats.combat.value = number(swarm.combat?.value) * swarmSize(system);
     }
+  }
+
+  /**
+   * A swarm attacks once per remaining Wound, so its weapon rolls that many damage dice. A weapon
+   * whose damage names no dice is left alone, and so is a creature that is not a swarm — both
+   * answer `null`, which is what "roll the weapon's own damage" means to `rollWeapon`.
+   */
+  swarmDamage(itemId: string): string | null {
+    const system = this.system as DerivedSystem;
+    if (system.swarm?.enabled !== true) return null;
+
+    const damage = String(fields(this.items.get(itemId)?.system).damage ?? '');
+    const dice = DAMAGE_DICE.exec(damage);
+    if (dice === null) return null;
+    return damage.replace(DAMAGE_DICE, `${number(dice[1]) * swarmSize(system)}$2`);
+  }
+
+  /**
+   * The swarm toggle. Turning it on stashes the creature's own Combat and stores the multiplied
+   * number derivation will keep recomputing; turning it off puts the stashed one back. The read is
+   * `toObject()` because `system.stats.combat.value` is where derivation writes that product.
+   */
+  async setSwarm(enabled: boolean): Promise<unknown> {
+    const system = this.toObject().system as DerivedSystem;
+    const combat = number(system.stats.combat?.value);
+
+    return await this.update({
+      'system.swarm.enabled': enabled,
+      'system.stats.combat.value': enabled
+        ? combat * swarmSize(system)
+        : number(system.swarm?.combat?.value),
+      'system.swarm.combat.value': enabled ? combat : 0,
+    });
   }
 
   /* -------------------------------------------- */
@@ -254,7 +292,7 @@ export class MothershipActor extends Actor {
    * Change one tracked number. The address stays a dotted string because that is what macros
    * carry; everything past `mutation/` is typed (audit F12).
    */
-  async modify(address: string, amount: Amount, options: ModifyOptions = {}): Promise<MutationResult> {
+  async modify(address: string, amount: Amount, options: CardOptions = {}): Promise<MutationResult> {
     let spec: RollSpec | null = null;
     let rollOutcome: Outcome | null = null;
     let change: Change;
@@ -286,8 +324,14 @@ export class MothershipActor extends Actor {
    * Give this actor an item — a Condition, mostly, which is what every `+N` macro is for. The
    * write is `mutation/items.ts`; the card is here, because a card is not a mutation.
    */
-  async applyItem(document: GrantDocument, count = 1): Promise<GrantResult> {
+  async applyItem(
+    document: GrantDocument,
+    count = 1,
+    options: CardOptions = {},
+  ): Promise<GrantResult> {
     const result = await grantItem(this, document, count);
+    if (options.message === false) return result;
+
     const card = itemCard({
       source: cardSource(this),
       header: result.name,
@@ -322,13 +366,29 @@ export class MothershipActor extends Actor {
    * and a macro names a Condition by id. Resolution is `lookup`'s, so a stale reference is a
    * notification rather than a crash.
    */
-  async applyItemRef(ref: string, count = 1): Promise<GrantResult | null> {
+  async applyItemRef(
+    ref: string,
+    count = 1,
+    options: CardOptions = {},
+  ): Promise<GrantResult | null> {
     const found = await lookup<GrantDocument>(ref, 'Item');
     if (!found.found) {
       notifyMiss(found.request);
       return null;
     }
-    return await this.applyItem(found.document, count);
+    return await this.applyItem(found.document, count, options);
+  }
+
+  /**
+   * Move along the XP track. `rules.ts` states its length once, so the clamp and the pips a sheet
+   * draws are the same number — the sheets clamped at 16 over a 15-pip track, which stored a
+   * sixteenth state nothing could draw (audit U14).
+   */
+  async stepXp(delta: number): Promise<unknown> {
+    const current = number(fields(fields(this.system).xp).value);
+    return await this.update({
+      'system.xp.value': Math.min(XP_PIPS, Math.max(0, current + delta)),
+    });
   }
 
   /** Refill a weapon's magazine from the rounds carried, and say so in chat. */

@@ -1,6 +1,6 @@
 <script>
   import { onActivate } from '../activate.js';
-  import { localize } from '../../i18n.js';
+  import { localize } from '../../../i18n.ts';
 
   // The armour readout: derived armour points and damage reduction, each showing the bonus the
   // chosen cover adds beside it. Both are read-only -- `prepareDerivedData` owns the arithmetic.

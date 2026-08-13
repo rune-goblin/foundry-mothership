@@ -1,7 +1,7 @@
 import { mount, unmount } from 'svelte';
 import Generator from './Generator.svelte';
 import { CharacterDraft } from './draft.svelte.js';
-import { localize } from '../i18n.js';
+import { localize } from '../../i18n.ts';
 
 const { ApplicationV2 } = foundry.applications.api;
 

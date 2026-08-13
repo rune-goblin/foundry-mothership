@@ -4,7 +4,7 @@
   import Tabs from '../parts/Tabs.svelte';
   import TabPanel from '../parts/TabPanel.svelte';
   import { ITEM_BODIES, ITEM_EXTRA_TABS } from './types.js';
-  import { localize } from '../i18n.js';
+  import { localize } from '../../i18n.ts';
 
   let { store } = $props();
 

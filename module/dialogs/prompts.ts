@@ -5,9 +5,9 @@
  */
 
 import { asset } from '../chat/cards.ts';
-import type { Amount } from '../documents/actor.ts';
 import { enrich } from '../enrich.ts';
 import { format, localize } from '../i18n.ts';
+import type { Amount } from '../mutation/mutate.ts';
 import type { Advantage, StatKey } from '../rolls/spec.ts';
 import { COVER_KEYS, type Cover } from '../rules.ts';
 import { WOUND_TABLE_KEYS, type TableKey } from '../tables/tables.ts';
@@ -351,6 +351,9 @@ const WOUND_ICONS: Readonly<Record<string, string>> = {
   gunshot: 'wounds_gunshot.png',
 };
 
+/** The table the prompt opens on, the way the legacy Wound Roll dialog opened on it. */
+const DEFAULT_WOUND: TableKey = 'blunt-force';
+
 /**
  * Which Wound table, and how to roll it. Legacy's version hard-coded the five table ids into a
  * macro's command string, where no reference check could see them (audit C2) — these are the keys
@@ -373,7 +376,7 @@ export async function chooseWound(): Promise<ChosenWound | null> {
     component: WoundTable,
     props,
     title: localize('Mosh.WoundRoll'),
-    initial: tables[0].key,
+    initial: DEFAULT_WOUND,
     width: DIALOG_WIDTH,
     buttons: advantageButtons(null, (advantage, key) => ({ key, advantage })),
   });

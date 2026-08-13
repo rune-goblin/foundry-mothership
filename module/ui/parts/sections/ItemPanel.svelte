@@ -5,7 +5,7 @@
   import ItemCell from '../ItemCell.svelte';
   import ItemControls from '../ItemControls.svelte';
   import ItemControl from '../ItemControl.svelte';
-  import { localize } from '../../i18n.js';
+  import { localize } from '../../../i18n.ts';
 
   // One item-list block. What both actor sheets share byte for byte is the frame -- the list,
   // the header row, the create control and the row wrapper carrying the item id. What differs

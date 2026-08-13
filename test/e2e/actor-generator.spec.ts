@@ -153,9 +153,16 @@ test.describe('character generator', () => {
     const carried = await items(gmPage, uuid);
     expect(carried.filter((i) => i.type === 'skill')).toHaveLength(4);
 
+    // The class arrives as a document, not just as `system.class.value`: its `robotic` flag is
+    // what tells the Panic table an android from a human (R7).
+    expect(carried.filter((i) => i.type === 'class').map((i) => i.name)).toEqual(['Marine']);
+
     // The row links armour, a weapon and a piece of equipment, under the names the book prints
     // for them; all three must arrive, as the documents they resolve to.
-    const gear = carried.filter((i) => i.type !== 'skill').map((i) => i.name).sort();
+    const gear = carried
+      .filter((i) => i.type !== 'skill' && i.type !== 'class')
+      .map((i) => i.name)
+      .sort();
     expect(gear).toEqual(['Scalpel', 'Stimpak', 'Tank Top and Camo Pants']);
   });
 
@@ -198,6 +205,9 @@ test.describe('character generator', () => {
 
     expect(await stored(gmPage, uuid, 'system.stats.strength.value')).toBe(27);
     expect(await stored(gmPage, uuid, 'system.class.value')).toBe('Android');
+    // The class item follows the class: one of them, and it is the one that was saved.
+    const carried = await items(gmPage, uuid);
+    expect(carried.filter((i) => i.type === 'class').map((i) => i.name)).toEqual(['Android']);
     // Nothing else was rolled, so nothing else was written.
     expect(await stored(gmPage, uuid, 'system.stats.combat.value')).toBe(10);
   });

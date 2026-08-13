@@ -543,7 +543,12 @@ ratchet working.
 
 ### S9 — trailing, ungated
 
-Not a wave; a list that only makes sense once the conversions are done.
+Not a wave; a list that only makes sense once the conversions are done. The legacy remake
+(`docs/plans/legacy-remake.md`) resolved the service-facing items (U4, U5, U10, U14) and left
+S9 the audit's remaining U-series: the shared rows (U1), the shell mixin (U2/U3), the a11y
+quartet (U7–U9, U11), the leftover English literals (U6, `[partial]`), and one R7 inheritance —
+answer components render their state from `value` (`SkillPicker`/`StatOption` ignore it today;
+`NewSkill.svelte` is the model).
 
 - **The Svelte architecture audit** (§23) — the hybrid CSS decision itself, and `ClassSheet.svelte`'s
   six tabs in one component.

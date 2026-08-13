@@ -2,7 +2,7 @@ import { CHARACTER_CREATION } from '../../../content/books/psg/character-creatio
 import { parseResults, drawnRow } from './table-result.js';
 import { loadSkills, loadClasses } from './skills.js';
 import { pickSkills, pickBonusOption, pickStat, PICK_KINDS } from './dialogs.js';
-import { localize, format } from '../i18n.js';
+import { localize, format } from '../../i18n.ts';
 
 /**
  * The draft store (architecture.md Decision 3). The generator is a wizard, not a sheet: the actor
@@ -49,6 +49,9 @@ const ROLLS = {
 export const ROLL_KEYS = Object.keys(ROLLS);
 
 const TABLES = ['patch', 'trinket', 'loadout'];
+
+/** What "remove previous items" removes. The class is replaced whether it is ticked or not. */
+const SHED = ['item', 'armor', 'weapon', 'skill', 'condition'];
 
 const zeroed = (keys) => Object.fromEntries(keys.map((key) => [key, 0]));
 const nulled = (keys) => Object.fromEntries(keys.map((key) => [key, null]));
@@ -240,20 +243,37 @@ export class CharacterDraft {
     }
 
     if (this.removePreviousItems) {
-      const shed = ['item', 'armor', 'weapon', 'skill', 'condition'];
-      const ids = actor.items.filter((item) => shed.includes(item.type)).map((item) => item.id);
+      const ids = actor.items.filter((item) => SHED.includes(item.type)).map((item) => item.id);
       if (ids.length) await actor.deleteEmbeddedDocuments('Item', ids);
     }
 
-    // applyItemRef dedupes by name on the actor and takes the count, so a loadout row naming the
-    // same item twice arrives as one item of quantity two.
-    for (const [uuid, quantity] of this.#loadoutTally()) await actor.applyItemRef(uuid, quantity);
+    // The grants are silent: creation hands out a class, a loadout, two table results and a skill
+    // list at once, and a card apiece would bury the rolls that produced them. `applyItemRef`
+    // dedupes by name and takes the count, so a loadout row naming the same item twice arrives as
+    // one item of quantity two.
+    if (this.classUuid) await this.#grantClass();
+    for (const [uuid, quantity] of this.#loadoutTally()) await this.#give(uuid, quantity);
     for (const kind of ['patch', 'trinket']) {
-      for (const entry of this[kind]?.entries ?? []) await actor.applyItemRef(entry.uuid, 1);
+      for (const entry of this[kind]?.entries ?? []) await this.#give(entry.uuid, 1);
     }
-    for (const skill of this.skills) await actor.applyItemRef(skill.uuid, 1);
+    for (const skill of this.skills) await this.#give(skill.uuid, 1);
 
     await actor.update(update);
+  }
+
+  #give(uuid, quantity) {
+    return this.#actor.applyItemRef(uuid, quantity, { message: false });
+  }
+
+  /**
+   * The class as an item, not just as `system.class.value`: the `robotic` flag on that document is
+   * what tells the Panic table an android from a human (`tables/tables.ts`), and a name cannot.
+   * A class the actor already carries goes first — it is being replaced, not added to.
+   */
+  async #grantClass() {
+    const held = this.#actor.items.filter((item) => item.type === 'class').map((item) => item.id);
+    if (held.length) await this.#actor.deleteEmbeddedDocuments('Item', held);
+    await this.#give(this.classUuid, 1);
   }
 
   #loadoutTally() {

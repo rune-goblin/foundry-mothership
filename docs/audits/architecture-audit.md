@@ -317,7 +317,7 @@ Every entry above also appears as a full finding below, in its subsystem.
 - **What:** Behaviour keys off human-readable names — table titles, wound-effect labels, class names — normalized by chained `replace` into lang-key fragments.
 - **Why it matters:** Renaming a table or class (or translating one — `pt-BR` exists) silently changes game behaviour: wounds stop auto-applying, androids stop short-circuiting.
 - **Direction:** Carry machine identity as data — a flag on the table document, a passed roll-kind enum, and the class item's `robotic` boolean (the schema already has it; the TODO at line 123 says as much).
-- **Resolution (2026-08-13):** table and flavor identity is a `TableKey` record now (setting, id, die, `wound`), not a munged name (R2). `isRobotic` in `tables/tables.ts` reads the class item's `robotic` flag first, but a character whose class was never embedded as an item still falls back to matching the stored class name — the same shape of bug, narrowed to one path. R7 embeds the class item so the fallback can go (named in R5's ledger).
+- **Resolution (2026-08-13):** table and flavor identity is a `TableKey` record now (setting, id, die, `wound`), not a munged name (R2). `isRobotic` in `tables/tables.ts` reads the class item's `robotic` flag first, and R7 has the generator embed that item, so every character made from here on answers by flag. The name fallback **stays**, deliberately: it is the only thing a character generated before R7 — or filled in by hand — knows, and deleting it would turn every Android already in a world back into a human on Panic 19. It retires with a migration that grants those characters their class item, and `isRobotic`'s comment names that condition.
 
 #### F14. Sentinel values smuggled through unrelated parameters — Control Coupling — Major `[cross-cutting] [done]`
 - **Where:** `module/actor/actor.js:613` (`tableId === 'panicCheck'`), `:1126` (`attribute === 'damage'`), `:1144` (`attribute === 'restSave'`); callers in both sheets
@@ -422,14 +422,15 @@ Every entry above also appears as a full finding below, in its subsystem.
 - **Direction:** Give the actor intention-revealing wrappers — `rollStat(key)`, `rollSkill(id)`, `rollWeapon(id, {damageOverride})` — with `rollCheck` as the compatibility layer beneath (pairs with F14).
 - **Resolution (2026-08-13):** `documents/actor.ts`/`api.ts` grew the named verbs (R4), and both actor sheets call them — `actor.rollStat(key)`, `actor.rollSkill(id)`, `actor.rollWeapon(id, {roll, damage})`, `actor.rollPanic()` — with no `rollCheck(null, …)` call left anywhere in `module/ui/` (R5's call-site swap). `rollCheck`'s legacy shape survives only in `api/legacy.ts`, for macros already imported into worlds.
 
-#### U5. Game rules live inside components — Business Logic in the Presentation Layer — Major `[cross-cutting] [deferred]`
+#### U5. Game rules live inside components — Business Logic in the Presentation Layer — Major `[cross-cutting] [done]`
 - **Where:** `CreatureSheet.svelte:96-102` (swarm dice scaling), `CreatureSettings.svelte:18-31` (swarm-toggle stat rewrite), `CharacterSheet.svelte:90-93` + `CreatureSheet.svelte:82-85` (XP clamp), `actor/items.js:62` (`RANK_BONUS`, shadowing the schema default at `item-models.js:71`)
 - **What:** Swarm damage scaling, the swarm stat rewrite, XP bounds, and the skill-rank bonus table are Mothership rules encoded in the view.
 - **Why it matters:** Rules in components are invisible to the vitest tier, unreachable from macros and the API, and (per U1) get copied per sheet.
 - **Direction:** Move each onto the owning document; let components call them.
-- **Resolution (2026-08-13):** not landed here — the plan names U5 as R7's (decision 5). None of the four sites moved: `CreatureSheet.svelte`'s `swarmDamage`, `CreatureSettings.svelte`'s swarm-toggle rewrite, the `Math.min(16, …)` XP clamp in both actor sheets (ignoring `rules.ts`'s new `XP_PIPS`), and `ui/actor/items.js`'s `RANK_BONUS` (shadowing `rules.ts`'s).
+- **Resolution (2026-08-13):** all four sites moved at R7. `swarmDamage(itemId)`, `setSwarm(enabled)` and `stepXp(delta)` are methods on `documents/actor.ts`, unit-tested in `test/actor-document.test.ts`; the sheets call them and hold no arithmetic. `ui/actor/items.js` reads `rankBonus()` from `rules.ts` — its own `RANK_BONUS` table is gone.
 
-#### U6. Hard-coded English throughout the newer windows — i18n leak — Major `[cross-cutting]`
+#### U6. Hard-coded English throughout the newer windows — i18n leak — Major `[cross-cutting]` [partial]
+**Resolution (2026-08-13):** R7's dialog conversions keyed every string inside the five converted dialogs and retired the `generator/dialogs.js` and `actor/items.js` sites this finding cited. Remaining for S9: `Generator.svelte`'s button literals, `CreatureSettings.svelte`'s "Swarm", `createItem`'s `New ${type}`, the XP milestone captions, and the RolltableConfig strings.
 - **Where:** `Generator.svelte:188,221,240,253`; `RolltableConfigApp.js:17-35,58`; `RolltableConfig.svelte:43`; `CreatureSettings.svelte:45`; `CreatureSettingsApp.js:25`; `actor/items.js:57,66-104`; `generator/dialogs.js:98`; `generator/draft.svelte.js:108,194`; the XP milestone captions in both sheets
 - **What:** Roughly a dozen sites bake English into markup and dialogs while a `pt-BR` translation ships. (Same theme as RC14 on the settings side.)
 - **Why it matters:** Portuguese users get a half-translated system; each leak is invisible until someone plays in the other locale.
@@ -452,12 +453,12 @@ Every entry above also appears as a full finding below, in its subsystem.
 - **What:** The +/- cells increment on click/Enter/Space but decrement only on `contextmenu`, which no keyboard path produces.
 - **Direction:** Map Shift+Enter or arrow keys to the decrement in the interactive cell primitive.
 
-#### U10. Three modules build dialog UI as concatenated HTML strings — Stringly Typed UI — Major `[cross-cutting] [partial]`
+#### U10. Three modules build dialog UI as concatenated HTML strings — Stringly Typed UI — Major `[cross-cutting] [done]`
 - **Where:** `generator/dialogs.js:49-142`, `class/stat-option.js:15-22`, `actor/items.js:69-86`
 - **What:** DialogV2 content is assembled by template literals, with escaping hand-rolled in one file (`esc`) and absent in the other two, in a codebase whose UI is otherwise Svelte.
 - **Why it matters:** String-built markup gets no compile checking and re-solves escaping per file — the failure mode the Svelte migration exists to end. (`actor.js:907` is the worst offender; see F23.)
 - **Direction:** One helper that mounts a small Svelte component as DialogV2 content; delete `esc`.
-- **Resolution (2026-08-13):** the roll dialogs this finding named worst (`actor.js:907`, merged as F23) are gone — `dialogs/svelte-dialog.ts` plus six Svelte components (R3). `generator/dialogs.js`, `ui/actor/items.js`'s `promptNewSkill`, and `ui/class/stat-option.js` still build `DialogV2` content as concatenated HTML strings; the plan leaves them to R7/S9.
+- **Resolution (2026-08-13):** the roll dialogs this finding named worst (`actor.js:907`, merged as F23) went at R3 — `dialogs/svelte-dialog.ts` plus six Svelte components. R7 took the last three: `generator/dialogs.js` (`SkillPicker`/`BonusOption`/`StatChoice`), `ui/actor/items.js`'s `promptNewSkill` (`NewSkill.svelte`), and `ui/class/stat-option.js` (`StatOption.svelte`), all mounted through the same helper. `esc` died with the last template literal, and `test/ui-dialogs.test.ts` asserts what each one answers — none of it was reachable from a test before.
 
 #### U11. Tab markup claims ARIA roles it does not complete — a11y — Minor `[local]`
 - **Where:** `parts/Tabs.svelte:15-31`, `parts/TabPanel.svelte`
@@ -474,11 +475,11 @@ Every entry above also appears as a full finding below, in its subsystem.
 - **What:** The App imports the component while the component imports `ROLLTABLE_GROUPS` back from the App.
 - **Direction:** Move `ROLLTABLE_GROUPS`/`ROLLTABLE_KEYS` into a `settings/rolltable-groups.js` both import.
 
-#### U14. XP clamps to 16 on a 15-pip track — Off-By-One — Minor `[local] [deferred]`
+#### U14. XP clamps to 16 on a 15-pip track — Off-By-One — Minor `[local] [done]`
 - **Where:** `CharacterSheet.svelte:91` and `CreatureSheet.svelte:83` (clamp `Math.min(16, …)`) vs `count={15}` at `CharacterSheet.svelte:340`
 - **What:** The stepper allows a stored 16 that renders identically to 15 — an invisible extra state where right-click appears to do nothing on the first press.
 - **Direction:** Make the clamp and pip count one named constant on the document side (with U5).
-- **Resolution (2026-08-13):** not landed here — the plan names U14 as R7's (decision 5, R1's ledger note). `rules.ts`'s `XP_PIPS = 15` exists, but both sheets still clamp `Math.min(16, …)` locally instead of reading it.
+- **Resolution (2026-08-13):** `actor.stepXp(delta)` clamps to `rules.ts`'s `XP_PIPS`, and both sheets draw `count={XP_PIPS}` — the clamp and the track are the same number, so the sixteenth state cannot exist (R7).
 
 #### U15. Ability descriptions render raw, unenriched HTML — Inconsistent Handling — Minor `[local]`
 - **Where:** `CreatureSheet.svelte:204` (`{@html ability.system.description}`)

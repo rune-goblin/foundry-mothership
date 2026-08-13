@@ -32,8 +32,8 @@ import ItemPanel from '../module/ui/parts/sections/ItemPanel.svelte';
 import { onActivate } from '../module/ui/parts/activate.js';
 import { dropTarget } from '../module/ui/parts/drop-target.js';
 
-// The sections caption themselves; the primitives take their labels as props. `localize` is a
-// one-line wrapper on game.i18n, which jsdom has no reason to provide -- echo the key back.
+// The sections caption themselves; the primitives take their labels as props. `i18n.ts` reads
+// game.i18n, which jsdom has no reason to provide -- echo the key back.
 (globalThis as any).game = { i18n: { localize: (key: string) => key } };
 
 const mounted: Array<Record<string, unknown>> = [];

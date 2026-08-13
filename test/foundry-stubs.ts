@@ -130,6 +130,78 @@ export function installChat(): ChatLog {
   return log;
 }
 
+export interface DialogButtonStub {
+  action: string;
+  label: string;
+  icon?: string;
+  class?: string;
+  default?: boolean;
+  callback: () => unknown;
+}
+
+/** A dialog that is open right now, and the three things a user can do to it. */
+export interface OpenDialog {
+  readonly title: string;
+  readonly buttons: DialogButtonStub[];
+  readonly element: HTMLElement;
+  press(action: string): Promise<void>;
+  dismiss(): void;
+  /** Render again, as ApplicationV2 does over a window's life. */
+  render(): void;
+}
+
+interface DialogConfig {
+  window: { title: string };
+  content: string;
+  buttons: DialogButtonStub[];
+  render?: (event: unknown, dialog: { element: HTMLElement }) => void;
+  close?: (event: unknown, dialog: { element: HTMLElement }) => unknown;
+}
+
+/**
+ * `DialogV2.wait`'s own semantics: a button's callback result is the answer, and a dismissal
+ * answers whatever `close` returned — `null` when it returned nothing. Needs jsdom.
+ */
+export function installDialogV2(): OpenDialog[] {
+  const opened: OpenDialog[] = [];
+
+  branch(foundryStub(), 'applications').api = {
+    DialogV2: {
+      wait: (config: DialogConfig) =>
+        new Promise((resolve) => {
+          const element = document.createElement('div');
+          element.innerHTML = config.content;
+          document.body.append(element);
+          const dialog = { element };
+
+          const finish = (result: unknown): void => {
+            const closed = config.close?.({}, dialog);
+            resolve(result === undefined ? (closed ?? null) : result);
+          };
+
+          opened.push({
+            title: config.window.title,
+            buttons: config.buttons,
+            element,
+            press: async (action: string) => {
+              const button = config.buttons.find((entry) => entry.action === action);
+              if (button === undefined) throw new Error(`no button ${action}`);
+              finish(await button.callback());
+            },
+            dismiss: () => finish(undefined),
+            render: () => config.render?.({}, dialog),
+          });
+
+          config.render?.({}, dialog);
+          // ApplicationV2 renders more than once over a dialog's life.
+          config.render?.({}, dialog);
+        }),
+    },
+  };
+
+  return opened;
+}
+
 export interface Notifications {
   readonly errors: string[];
   readonly warnings: string[];

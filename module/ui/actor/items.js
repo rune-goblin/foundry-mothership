@@ -2,6 +2,11 @@
 // selector in `activateListeners` and reached the item through `duplicate(getEmbeddedDocument(...))`;
 // they are plain functions now, called from the component with the id the row already carries.
 
+import { svelteDialog } from '../../dialogs/svelte-dialog.ts';
+import { localize } from '../../i18n.ts';
+import { rankBonus, SKILL_RANKS } from '../../rules.ts';
+import NewSkill from './NewSkill.svelte';
+
 /**
  * The +/- cells: left click adds one, right click removes one. AppV1 read `event.button` off the
  * *global* `event` inside a `mousedown` handler -- a click/contextmenu pair says the same thing
@@ -56,49 +61,40 @@ export const deleteItem = (actor, itemId) => actor.deleteEmbeddedDocuments('Item
 export const createItem = (actor, type) =>
   actor.createEmbeddedDocuments('Item', [{ name: `New ${type.capitalize()}`, type }]);
 
-const RANK_BONUS = { Trained: 10, Expert: 15, Master: 20 };
+/** Skill items store the rank capitalized, and `Mosh.SkillRank<Rank>` names it the same way. */
+const stored = (rank) => `${rank[0].toUpperCase()}${rank.slice(1)}`;
 
-/** A skill is created through a dialog because its rank sets its bonus. */
-export function promptNewSkill(actor) {
-  return new foundry.applications.api.DialogV2({
-    window: { title: 'New Skill' },
-    classes: ['macro-popup-dialog'],
-    content: `
-      <div class="macro_window">
-        <div class="macro_desc" style="padding-left: 8px; padding-bottom: 0px;">
-          <h4> Name </h4>
-        </div>
-        <input type="text" id="name" name="name" value="New Skill">
-      </div>
-      <div class="macro_window">
-        <div class="macro_desc" style="padding-left: 8px; padding-bottom: 0px;">
-          <h4> Rank </h4>
-        </div>
-        <select name="rank" id="rank">
-          <option value="Trained">Trained</option>
-          <option value="Expert">Expert</option>
-          <option value="Master">Master</option>
-        </select>
-      </div>
-    `,
+/**
+ * A skill is created through a dialog because its rank sets its bonus — and the bonus is
+ * `rules.ts`'s, not a second table kept here (audit U5).
+ */
+export async function promptNewSkill(actor) {
+  const skill = await svelteDialog({
+    component: NewSkill,
+    props: {
+      nameLabel: localize('Mosh.Name'),
+      rankLabel: localize('Mosh.SkillRank'),
+      ranks: SKILL_RANKS.map((rank) => ({
+        value: stored(rank),
+        label: localize(`Mosh.SkillRank${stored(rank)}`),
+      })),
+    },
+    title: localize('Mosh.CreateSkill'),
+    initial: { name: localize('Mosh.NewSkill'), rank: stored(SKILL_RANKS[0]) },
     buttons: [
       {
-        icon: 'fas fa-check',
         action: 'create',
-        label: 'Create',
-        callback: (event, button) => {
-          const rank = button.form.querySelector('#rank')?.value;
-          return actor.createEmbeddedDocuments('Item', [
-            {
-              name: button.form.querySelector('#name')?.value,
-              type: 'skill',
-              system: { rank, bonus: RANK_BONUS[rank] },
-            },
-          ]);
-        },
+        label: localize('Mosh.Create'),
+        icon: 'fas fa-check',
+        default: true,
+        answer: (draft) => draft,
       },
-      { icon: 'fas fa-times', action: 'cancel', label: 'Cancel' },
+      { action: 'cancel', label: localize('Mosh.Cancel'), icon: 'fas fa-times', answer: () => null },
     ],
-    default: 'create',
-  }).render({ force: true });
+  });
+  if (skill === null) return null;
+
+  return await actor.createEmbeddedDocuments('Item', [
+    { name: skill.name, type: 'skill', system: { rank: skill.rank, bonus: rankBonus(skill.rank) } },
+  ]);
 }

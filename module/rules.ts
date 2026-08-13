@@ -43,6 +43,9 @@ export const RANK_BONUS: Readonly<Record<SkillRank, number>> = {
   master: 20,
 };
 
+/** The three ranks, weakest first — the order a picker offers them in. */
+export const SKILL_RANKS: readonly SkillRank[] = Object.keys(RANK_BONUS) as SkillRank[];
+
 /**
  * The one place a stored rank becomes a rank. `item-models.js` initializes `rank` to `'Trained'`
  * and the new-skill dialog writes the same capitalized words, so every reader would otherwise

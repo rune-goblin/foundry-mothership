@@ -29,10 +29,10 @@ import { format } from '../i18n.ts';
 import { lookup, notifyMiss } from '../lookup.ts';
 import { addressOf } from '../mutation/fields.ts';
 import type { GrantDocument, GrantResult } from '../mutation/items.ts';
-import type { MutationResult } from '../mutation/mutate.ts';
+import type { Amount, MutationResult } from '../mutation/mutate.ts';
 import type { StatKey } from '../rolls/spec.ts';
 import type { TableKey } from '../tables/tables.ts';
-import { MothershipActor, type Amount, type WeaponOptions } from '../documents/actor.ts';
+import { MothershipActor, type WeaponOptions } from '../documents/actor.ts';
 import { MothershipItem } from '../documents/item.ts';
 
 declare const game:
