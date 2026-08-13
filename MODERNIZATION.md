@@ -2774,10 +2774,11 @@ summary, not a second copy of it.
 
 ### The archive
 
-Legacy is not destroyed. `archive/legacy-core` (the tree as of just before R5's deletion) and
-`archive/legacy-core-pre-swap` (a tag on the commit before the swap) hold it — the same precedent
-§25 set for the PSG cut. Both exist locally as of this writing; pushing them is a separate, still
-pending step.
+Legacy is not destroyed — it is master's own history. The pre-deletion tree is the plain
+ancestor commit `78841ed` (R4b), so `git show 78841ed:module/actor/actor.js` recovers any legacy
+file with no ref needed. The temporary `archive/legacy-core` branch and tag were trimmed by the
+owner after the swap proved out: unlike §25's cut (content removed from the shipping tree), a
+label on an ancestor preserves nothing history does not already hold.
 
 ### The numbers
 
