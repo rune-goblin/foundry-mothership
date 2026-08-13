@@ -10,9 +10,9 @@ the book instead. What survives from it is noted at the end.
 
 | | |
 |---|---|
-| **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26), **S2b** the TypeScript catalogs and **S3** the content (§27), **S4** the class sheet and `base_adjustment` (§28), **S5** the generator on a draft store and `selected_adjustment` (§29), **S6** the creature sheet and the section tier (§30) |
-| **Next** | **S7 — actor-sheet.** The last AppV1 class in the system, and the last sheet template. It composes S6's sections. |
-| **Green at** | `check` 0/0 (241 files) · **253 vitest** · **88 Playwright** · `build` |
+| **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26), **S2b** the TypeScript catalogs and **S3** the content (§27), **S4** the class sheet and `base_adjustment` (§28), **S5** the generator on a draft store and `selected_adjustment` (§29), **S6** the creature sheet and the section tier (§30), **S7** the character sheet (§33) — **phase 4 is complete** |
+| **Next** | **S8 — conditions contribute advantage/disadvantage to rolls.** Three links, two of which do not exist yet, and one decision reserved for the owner. |
+| **Green at** | `check` 0/0 (242 files) · **259 vitest** · **106 Playwright** · `build` |
 | **Preserved** | Everything cut is on the pushed `archive/pre-psg-cut` branch **and** tag |
 
 What the system ships today: 2 actor types (character, creature), 7 item types, and **274
@@ -328,8 +328,8 @@ one less actor type in every schema test.
 | S4 | class-sheet + `base_adjustment` | ✅ §28 |
 | S5 | actor-generator on a draft store | ✅ §29 |
 | S6 | creature-sheet | ✅ §30 |
-| S7 | actor-sheet — last, most player-visible | **next** |
-| S8 | conditions contribute advantage/disadvantage to rolls | |
+| S7 | actor-sheet — last, most player-visible | ✅ §33 |
+| S8 | conditions contribute advantage/disadvantage to rolls | **next** |
 | S9 | trailing, ungated | |
 
 **Each remaining unit is briefed in full below, so a prompt does not have to be.** The prompt names
@@ -464,7 +464,20 @@ a section needing more than ~3 divergence props splits.
 
 ---
 
-### S7 — actor-sheet
+### S7 — actor-sheet ✅ §33
+
+**Landed.** Three things came out other than as written:
+
+- **All three deletions went through, plus a fourth.** `other.resolve` was a pool whose only
+  mention was a commented-out block in the template, so deleting the template orphaned it and the
+  usage ratchet said so. Pruned rather than allowlisted, with its two lang keys.
+- **Two Foundry core rules were being inherited from `.window-app`** and an `.application` window
+  matches neither: a textarea's width and an input's padding. Both are fixed in `css/mosh.css`,
+  and the first also repairs the class sheet, narrow since §28.
+- **§30's "the sheet opened blank" was wrong.** `Tabs.activate` falls back to the first nav entry,
+  so both sheets always opened on Skills. Verified against the real AppV1 sheet before converting.
+
+The brief as it stood follows.
 
 `module/actor/actor-sheet.js` (653 lines) + `templates/actor/actor-sheet.html` (522). Last, because
 it is the most player-visible thing in the system. It composes S6's sections and keeps its

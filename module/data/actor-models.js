@@ -50,13 +50,11 @@ export class MoshCharacter extends foundry.abstract.TypeDataModel {
       ...baseSchema(),
       biography: html(''),
       notes: html(''),
-      weight: new fields.SchemaField({ current: num(0), capacity: num(0) }),
       class: new fields.SchemaField({ value: str('') }),
       rank: new fields.SchemaField({ value: str('') }),
       pronouns: new fields.SchemaField({ value: str('') }),
       credits: new fields.SchemaField({ value: str('') }),
-      // `html` is a number here, not a string -- the sheet builds the XP pips from it.
-      xp: new fields.SchemaField({ value: num(0), html: num(0), selectedSkill: str('') }),
+      xp: new fields.SchemaField({ value: num(0), selectedSkill: str('') }),
       attributes: new fields.SchemaField({ level: new fields.SchemaField({ value: num(0) }) }),
       stats: new fields.SchemaField({
         strength: stat(10, 'Strength', 'Strength Check', { mod: true }),
@@ -70,7 +68,6 @@ export class MoshCharacter extends foundry.abstract.TypeDataModel {
       }),
       other: new fields.SchemaField({
         stress: pool(2, 20, 'Stress', { min: 2 }),
-        resolve: pool(0, 15, 'Resolve'),
         stressdesc: new fields.SchemaField({ value: str('') }),
       }),
     };

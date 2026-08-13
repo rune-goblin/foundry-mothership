@@ -48,10 +48,13 @@ const DYNAMIC: Entry[] = [
     reason: 'CreatureSheet and CreatureSettings bind system.stats.<stat>.enabled by computed key',
   },
   {
-    // The other four creature stats are still named literally by the Handlebars character sheet,
-    // which shares them. When S7 converts it this entry widens to every stat.
     pattern: /^stats\.(instinct|loyalty)\.value$/,
     reason: 'CreatureSheet binds system.stats.<stat>.value by computed key',
+  },
+  {
+    // The saves' mods are read by name in rollCheck, so only the four stats land here.
+    pattern: /^stats\.(strength|speed|intellect|combat)\.mod$/,
+    reason: 'CharacterSheet binds system.stats.<stat>.mod by computed key',
   },
 ];
 
@@ -67,8 +70,8 @@ const GRANDFATHERED: Entry[] = [
     reason: 'resource-pool floors; nothing reads them, not even by computed key',
   },
   {
-    pattern: /^(other\.resolve|stats\.[a-z]+)\.(min|max)$/,
-    reason: 'stat and resolve bounds; nothing reads them, not even by computed key',
+    pattern: /^stats\.[a-z]+\.(min|max)$/,
+    reason: 'stat bounds; nothing reads them, not even by computed key',
   },
   {
     // The PSG tracks Minimum Stress, not a maximum, so only .value and .min are read. Both come

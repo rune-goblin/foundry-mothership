@@ -229,7 +229,7 @@ const armor: PackDefinition = {
             armorPoints: a.armorPoints,
             damageReduction: a.damageReduction,
             speed: a.speed.raw,
-            // actor-sheet.js steps oxygen by one per click, so the sheet's unit is the hour.
+            // The actor sheets step oxygen by one per click, so the sheet's unit is the hour.
             oxygenMax: a.oxygen ? (a.oxygen.minutes ?? 0) / 60 : 0,
             oxygenCurrent: a.oxygen ? (a.oxygen.minutes ?? 0) / 60 : 0,
             weight: 0,

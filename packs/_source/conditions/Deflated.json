@@ -14,7 +14,6 @@
     "description": "<p>Whenever a Close crewmember fails a Save, gain 1 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.dvJR9DYXI2kV0BbR]{+1 Stress}</p>",
     "severity": 1,
     "treatment": {
-      "html": "",
       "value": 0
     }
   },

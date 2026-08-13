@@ -110,7 +110,7 @@ export class MoshCondition extends foundry.abstract.TypeDataModel {
     return {
       ...base(),
       severity: num(1),
-      treatment: new fields.SchemaField({ value: num(0), html: str('') }),
+      treatment: new fields.SchemaField({ value: num(0) }),
     };
   }
 }

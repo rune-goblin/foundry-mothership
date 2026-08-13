@@ -34,7 +34,7 @@ const CONDITIONS_PACK: PackDefinition = {
             ...condition.macros.map((id) => link(ids, 'triggered', id, MACRO_LABEL[id] ?? id)),
           ),
           severity: 1,
-          treatment: { value: 0, html: '' },
+          treatment: { value: 0 },
         },
       },
       // The panic result that grants it, not a page: the book states the condition inside the

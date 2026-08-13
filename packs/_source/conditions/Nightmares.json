@@ -14,7 +14,6 @@
     "description": "<p>Sleep is difficult, gain [-] on Rest Saves.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.AM9nIK5l7mC5Ho8C]{Rest Save [-]}</p>",
     "severity": 1,
     "treatment": {
-      "html": "",
       "value": 0
     }
   },

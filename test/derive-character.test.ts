@@ -12,24 +12,29 @@ const armour = (armorPoints: number, damageReduction = 0, equipped = true): Item
 const condition = (name: string, severity: number): Item =>
   ({ type: 'condition', name, system: { severity } });
 
-// What _deriveCharacter leaves behind: mod/total/damageReduction and the whole netHP
-// block are added by the method, not present on the actor it is handed.
+// What _deriveCharacter leaves behind: mod/total/damageReduction, the whole netHP block and
+// the whole weight block are added by the method, not present on the actor it is handed.
 type DerivedSystem = {
   stats: { armor: { value: number; mod: number; total: number; damageReduction: number } };
   health: { value: number; max: number };
   hits: { value: number; max: number };
   bleeding: { value: number };
   netHP: { value: number; min: number; max: number; label: string };
+  weight: { current: number; capacity: number };
 };
 
 function derive(opts: {
   items?: Item[];
   armorValue?: number;
+  strength?: number;
   health?: { value: number; max: number };
   hits?: { value: number; max: number };
 }): DerivedSystem {
   const system = {
-    stats: { armor: { value: opts.armorValue ?? 0 } },
+    stats: {
+      armor: { value: opts.armorValue ?? 0 },
+      ...(opts.strength === undefined ? {} : { strength: { value: opts.strength } }),
+    },
     health: opts.health ?? { value: 10, max: 10 },
     hits: opts.hits ?? { value: 0, max: 2 },
     bleeding: { value: 0 },
@@ -112,5 +117,41 @@ describe('_deriveCharacter — bleeding', () => {
 
   it('matches the condition by exact name', () => {
     expect(derive({ items: [condition('bleeding', 4)] }).bleeding.value).toBe(0);
+  });
+});
+
+// The sheet used to compute these during render and write them onto the document. They are
+// derived now, so the numbers are the same whether or not anyone has the sheet open.
+describe('_deriveCharacter — carried weight', () => {
+  const gear = (weight: number, quantity: number): Item =>
+    ({ type: 'item', system: { weight, quantity } });
+
+  it('multiplies gear weight by its quantity', () => {
+    expect(derive({ items: [gear(2, 3)] }).weight.current).toBe(6);
+  });
+
+  it('counts armour and weapons once, whatever their quantity field says', () => {
+    const items: Item[] = [
+      { type: 'armor', system: { weight: 4, quantity: 9 } },
+      { type: 'weapon', system: { weight: 3, quantity: 9 } },
+    ];
+    expect(derive({ items }).weight.current).toBe(7);
+  });
+
+  it('ignores skills and conditions', () => {
+    const items: Item[] = [
+      { type: 'skill', system: { weight: 5 } },
+      { type: 'condition', name: 'Frightened', system: { severity: 1, weight: 5 } },
+    ];
+    expect(derive({ items }).weight.current).toBe(0);
+  });
+
+  it('is zero with nothing carried', () => {
+    expect(derive({}).weight.current).toBe(0);
+  });
+
+  it('rounds capacity up from a tenth of strength', () => {
+    expect(derive({ strength: 45 }).weight.capacity).toBe(5);
+    expect(derive({ strength: 40 }).weight.capacity).toBe(4);
   });
 });

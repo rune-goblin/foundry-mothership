@@ -1,8 +1,8 @@
 import { test, expect } from './fixtures/foundry-clients.ts';
 
-// Sheets are still AppV1 Handlebars renders. These specs are the safety net for phase 4: they
-// assert each sheet opens and shows its data, so converting one to ApplicationV2 + Svelte has
-// something to fail against.
+// Phase 4's safety net, and now its receipt: both actor sheets are ApplicationV2 + Svelte, and
+// these specs still assert only that a sheet opens and shows its actor. The per-sheet suites
+// (character-sheet, creature-sheet) carry the detail.
 test.describe('sheets render', () => {
   test.afterEach(async ({ gmPage }) => {
     await gmPage.evaluate(async () => {

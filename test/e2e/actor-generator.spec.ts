@@ -42,18 +42,14 @@ const openGenerator = async (page: Page, system: Record<string, unknown> = {}) =
     await actor.sheet.render(true);
     return actor.uuid as string;
   }, system);
-  // The real header button, clicked in the page — Playwright's own click never reaches it, because
-  // the AppV1 header is draggable and swallows a synthesized mousedown/mouseup pair. The retry is
-  // for the other half: that sheet finishes wiring its header a beat after `render` resolves, so a
-  // click landing too early does nothing at all.
-  await expect(async () => {
-    if (!(await page.locator('form.actor-generator').count())) {
-      await page.evaluate(() =>
-        (document.querySelector('a.configure-actor') as HTMLElement | null)?.click(),
-      );
-    }
-    expect(await page.locator('form.actor-generator').count()).toBe(1);
-  }).toPass({ timeout: 20_000, intervals: [500] });
+  // The sheet is ApplicationV2 now, so the entry is a header control under the ellipsis rather
+  // than a title-bar button. Calling the sheet's own method skips the two-step menu, and the
+  // control itself is covered by character-sheet.spec.ts.
+  await page.evaluate(async (u: string) => {
+    const actor = await (window as any).fromUuid(u);
+    actor.sheet.generateCharacter();
+  }, uuid);
+  await expect(page.locator('form.actor-generator')).toHaveCount(1);
   return uuid;
 };
 

@@ -169,6 +169,29 @@ describe('MainStat', () => {
     expect(wrapper.lastElementChild!.textContent).toBe('bonus');
   });
 
+  // The character sheet's four stats are clicked to roll them, so the caption becomes the
+  // RollableStat the creature sheet builds by hand -- same classes, same data attributes.
+  it('makes the caption rollable when given a handler', () => {
+    const rolled: string[] = [];
+    const span = render(MainStat, {
+      label: 'Strength',
+      key: 'strength',
+      onroll: () => rolled.push('strength'),
+    }).querySelector('.mainstatlabel span')!;
+
+    expect([...span.classList]).toEqual([
+      'ability-mod',
+      'stat-roll',
+      'rollable',
+      'mainstattext',
+    ]);
+    expect((span as HTMLElement).dataset).toMatchObject({ key: 'strength', label: 'Strength' });
+
+    (span as HTMLElement).click();
+    press(span, 'Enter');
+    expect(rolled).toEqual(['strength', 'strength']);
+  });
+
   // The generator's patch, trinket and loadout rows sit straight in a grid column; wrapping them
   // in .mainstatwrapper would flex them to 95% width.
   it('drops the wrapper on request, and takes an extra label class', () => {

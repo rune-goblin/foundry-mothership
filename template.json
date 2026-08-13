@@ -37,10 +37,6 @@
       ],
       "biography": "",
       "notes": "",
-      "weight": {
-        "current": 0,
-        "capacity": 0
-      },
       "class": {
         "value": ""
       },
@@ -55,7 +51,6 @@
       },
       "xp": {
         "value": 0,
-        "html": 0,
         "selectedSkill": ""
       },
       "attributes": {
@@ -137,12 +132,6 @@
           "min": 2,
           "max": 20,
           "label": "Stress"
-        },
-        "resolve": {
-          "value": 0,
-          "min": 0,
-          "max": 15,
-          "label": "Resolve"
         },
         "stressdesc": {
           "value": ""
@@ -291,8 +280,7 @@
       ],
       "severity": 1,
       "treatment": {
-        "value": 0,
-        "html": ""
+        "value": 0
       }
     },
     "ability": {

@@ -55,6 +55,19 @@ export class MothershipActor extends Actor {
       }
       //set values
       system.bleeding.value = Number(bleedingValue ?? 0);
+    //carried weight
+      //init vars
+      let carried = 0;
+      //count values
+      for (const item of this.items) {
+        if (item.type === "item") carried += Number(item.system.weight ?? 0) * Number(item.system.quantity ?? 0);
+        else if (item.type === "armor" || item.type === "weapon") carried += Number(item.system.weight ?? 0);
+      }
+      //set values
+      system.weight = {
+        current: carried,
+        capacity: Math.ceil(Number(system.stats.strength?.value ?? 0) / 10)
+      };
   }
 
   // Prepare Creature type specific data

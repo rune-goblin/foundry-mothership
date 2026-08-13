@@ -14,7 +14,6 @@
     "description": "<p>Panic Checks are at [-].<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.EwZbGIwHB3JuRvx5]{Panic Check [-]}</p>",
     "severity": 1,
     "treatment": {
-      "html": "",
       "value": 0
     }
   },

@@ -807,10 +807,12 @@ p {
   text-align: center;
 }
 
+/* A two-digit bonus overflows the 28px pill under an ApplicationV2 window's input padding,
+   which is wider than AppV1's. Every other input in this file already zeroes it. */
 .mosh .mainstatmod-input {
   height: 26px;
   width: 28px;
-  /* padding: 0; */
+  padding: 0;
   border: 0;
   border-radius: 7.7em;
   color: rgb(151, 100, 100);
@@ -829,7 +831,7 @@ p {
 .mosh .mainsavemod-input {
   height: 26px;
   width: 28px;
-  /* padding: 0; */
+  padding: 0;
   border: 0;
   border-radius: 0.5em;
   color: rgb(151, 100, 100);
@@ -1177,7 +1179,11 @@ p {
   display: none;
 }
 
+/* Foundry stretches a textarea to its container only inside an AppV1 window, so a converted
+   sheet's trauma-response box collapsed to the 20-column intrinsic default. Same class of bug as
+   the item thumbnails' border: the rule was never ours, and an .application window never saw it. */
 .mosh .textarea-input {
+  width: 100%;
   font-family: "Roboto", sans-serif;
   margin: -0.15em;
   /* padding: 9px; */

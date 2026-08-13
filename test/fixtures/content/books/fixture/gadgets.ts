@@ -5,7 +5,7 @@ export interface Gadget {
   description: string;
   severity: number;
   modifiers: readonly ('advantage' | 'disadvantage')[];
-  treatment: { value: number; html: string };
+  treatment: { value: number };
 }
 
 export const GADGETS = [
@@ -17,7 +17,7 @@ export const GADGETS = [
       '<p>Bends the local timeline. On a failure, roll @UUID[Compendium.mothershiprpg.fixture_macros_1e.Macro.FiXbbbbbbbbbbb01]{+1 Stress}.</p>',
     severity: 2,
     modifiers: ['disadvantage'],
-    treatment: { value: 2, html: '<p>Rest.</p>' },
+    treatment: { value: 2 },
   },
   {
     id: 'reactor-shim',
@@ -27,6 +27,6 @@ export const GADGETS = [
       '<p>Steadies a failing core. @UUID[Compendium.mothershiprpg.fixture_macros_1e.Macro.FiXbbbbbbbbbbb02]{-1 Stress}</p>',
     severity: 1,
     modifiers: ['advantage'],
-    treatment: { value: 1, html: '<p>Recalibrate.</p>' },
+    treatment: { value: 1 },
   },
 ] as const satisfies readonly Gadget[];

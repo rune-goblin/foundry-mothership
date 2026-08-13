@@ -33,11 +33,11 @@ structured data `foundry.abstract.TypeDataModel` + `defineSchema()`.
 | Shared components | ✅ `module/ui/parts/` — build conversions out of these, see `MODERNIZATION.md` §20 |
 | Item sheets | ✅ every type — the 8 simple ones (`module/ui/item/`), `skill`, `class` |
 | Windows | ✅ ApplicationV2 throughout — no `FormApplication` subclass left |
-| **Sheets** | ❌ 2 classes still `foundry.appv1.sheets.*` with `getData`/`activateListeners` — actor, creature |
-| **Templates** | ❌ 11 Handlebars `.html` files, none of them an item sheet |
+| Actor sheets | ✅ both — `module/ui/actor/` and `module/ui/creature/`, on the shared sections |
+| Templates | ✅ no sheet left; `templates/` holds 5 chat and 3 dialog partials |
 
-Converting those is phase 4 (see `MODERNIZATION.md`). Don't add new v1 code; when you
-*touch* a v1 class, prefer converting it whole over extending it.
+**Phase 4 is complete** (`MODERNIZATION.md` §33) — no `foundry.appv1.*` class remains. New code
+has no v1 precedent to copy, so don't introduce one.
 
 **2. TypeScript for tooling; the runtime is still JS.** `vite.config.ts`,
 `vitest.config.ts`, `playwright.config.ts`, `scripts/*.ts` and `test/**/*.ts` are
@@ -49,9 +49,9 @@ you go. Node ≥22.18 strips types, so scripts run under plain `node` with no `t
 
 - **`references/foundry-api.md`** — the `foundry.*` surface, `game.*`, hooks, documents,
   flags, settings, the packs runtime API.
-- **`references/svelte-in-applicationv2.md`** — the phase 4 workhorse: the ApplicationV2
-  shell that mounts a Svelte 5 component, and how to convert one of this system's AppV1
-  sheets into it without losing behaviour.
+- **`references/svelte-in-applicationv2.md`** — the pattern every window in this system now
+  uses: the ApplicationV2 shell that mounts a Svelte 5 component, the document store, and what
+  a conversion has to preserve.
 - **`references/testing.md`** — the two tiers (vitest / Playwright), what each proves,
   commands, and how to check the harness is healthy before believing a green run.
 - **`references/packs.md`** — compendium content: `scripts/packs.sh`, the JSON sources, the
@@ -98,8 +98,9 @@ is the ground truth — grep it rather than guessing about an API.
 - **`packs/` is build output** — never commit it. Sources are `packs/_source/**/*.json`.
 - **`template.json` is inert but kept deliberately** — it is the oracle the DataModel
   equivalence tests compare against. Changing a schema means changing both, on purpose.
-- **A killed e2e run leaves the GM session occupied** and the next run hangs 30s then fails
-  in `globalSetup`. Fix: `lsof -ti:30005 | xargs kill -9`, then wait for the port to actually
-  free — a fixed `sleep` is not enough.
+- **A killed e2e run leaves a data-dir lock, not an occupied session** (`MODERNIZATION.md` §32 —
+  this entry used to say the opposite). `Config/options.json.lock` is a directory Foundry frees
+  only on a clean exit, and freeing the port does not clear it. `start-test-env.sh` clears a stale
+  one itself, so prefer `npm run test:e2e` over a hand-started server and kill with **`kill`**.
 - **Foundry holds an exclusive LevelDB lock** on every pack it can see. `scripts/packs.sh`
   refuses to run while Foundry is open; that guard is deliberate.

@@ -7,8 +7,9 @@
 // address an *embedded item*, not the actor, and are handled by click handlers rather than the
 // form -- checking them against the actor schema would be wrong.
 //
-// A Svelte sheet passes the name down as a prop (`rightName="system.health.max"`) and builds
-// some of them from a key (`name="system.stats.{stat.key}.value"`), so any attribute whose
+// A Svelte sheet passes the name down as a prop (`rightName="system.health.max"`), builds some
+// of them from a key (`name="system.stats.{stat.key}.value"`), and drives repeated fields off a
+// table of paths (`{ name: 'system.credits.value', … }`). So any attribute *or property* whose
 // literal value is a `system.` path counts, and an interpolated segment stands for any key at
 // that level.
 import { describe, it, expect } from 'vitest';
@@ -37,9 +38,9 @@ const OWN_COMPONENTS: Record<string, string[]> = {
   class: ['module/ui/class/ClassSheet.svelte'],
 };
 
-// templates/item/ is gone -- the class sheet was its last file -- but the path stays listed for
-// the Actor half, where the character sheet is still Handlebars. A missing file is skipped, an
-// empty list fails.
+// templates/ holds no sheet at all now -- the character sheet was the last one -- but the item
+// path stays listed so a type that regrows a Handlebars sheet is covered. A missing file is
+// skipped, an empty list fails.
 const SOURCES: Record<string, Record<string, string[]>> = {
   Item: Object.fromEntries(
     Object.keys(ITEM_MODELS).map((type) => [
@@ -52,7 +53,10 @@ const SOURCES: Record<string, Record<string, string[]>> = {
     ]),
   ),
   Actor: {
-    character: ['templates/actor/actor-sheet.html'],
+    character: [
+      'module/ui/actor/CharacterSheet.svelte',
+      'module/ui/parts/sections/HealthBlock.svelte',
+    ],
     creature: [
       'module/ui/creature/CreatureSheet.svelte',
       'module/ui/creature/CreatureSettings.svelte',
@@ -61,12 +65,13 @@ const SOURCES: Record<string, Record<string, string[]>> = {
   },
 };
 
-const BOUND = /(^|\s)[A-Za-z][A-Za-z0-9_-]*=(?:"(system\.[^"]*)"|\{`(system\.[^`]*)`\})/g;
+const BOUND =
+  /(^|[\s{])[A-Za-z][A-Za-z0-9_-]*\s*[:=]\s*(?:"(system\.[^"]*)"|'(system\.[^']*)'|\{`(system\.[^`]*)`\})/g;
 
 const boundPaths = (source: string): string[] => {
   const live = source.replace(/<!--[\s\S]*?-->/g, '');
   return [...live.matchAll(BOUND)]
-    .map((match) => (match[2] ?? match[3]).slice('system.'.length))
+    .map((match) => (match[2] ?? match[3] ?? match[4]).slice('system.'.length))
     .map((path) => path.replace(/\$?\{[^}]*\}/g, '*'));
 };
 

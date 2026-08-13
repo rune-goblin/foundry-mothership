@@ -2278,9 +2278,10 @@ a live world and preserve it: the drop path and `modifyItem`, which the generato
 
 ### Five bugs the port fixed
 
-1. **The sheet opened on no tab at all.** `tabs: [{initial: "character"}]` names a tab no panel
-   declares, so nothing got `.active` and the body was blank until the user clicked. It opens on
-   Skills.
+1. **The sheet opened on a tab no panel declares.** `tabs: [{initial: "character"}]` names one
+   that does not exist. **This entry used to claim the body was therefore blank; it was not** —
+   `Tabs.activate` falls back to the first nav entry, which is Skills, and §33 verified that
+   against the real AppV1 sheet. The dead `initial` went; the bug did not exist.
 2. **The notes tab never showed the notes.** `getData()` enriched `description` and `biography`;
    the template asked for `enriched.notes`, which was never computed. Stored notes were invisible.
    Verified by screenshot: blank before, present after.
@@ -2491,3 +2492,104 @@ found unfalsifiable, deleted. **Only packs go stale**, which is what the count c
 
 `npm run check` 0/0 (241 files) · **253 vitest** · **88 Playwright** · four consecutive runs
 started immediately after a `kill -9`, where the same sequence previously failed one time in three.
+
+---
+
+## 33. S7 — the character sheet, and the end of AppV1
+
+The last AppV1 class in the system and the last sheet template. `module/actor/actor-sheet.js`
+(653) and `templates/actor/actor-sheet.html` (522) are gone; **`templates/` now holds only chat
+and dialog partials**, and phase 4 is complete.
+
+```
+module/ui/actor/CharacterSheet.svelte   the window body
+module/ui/actor/CharacterSheetApp.js    ActorSheetV2 — the same shell as the creature's
+module/ui/actor/items.js                unchanged; both sheets already shared it
+```
+
+The conversion itself was small, which is the point: S6 built the sections against *this* sheet's
+blocks, so `ItemPanel`, `HealthBlock` and `ArmorBlock` took the five item panels, the health and
+wounds pair and the armour readout with no new props. What stayed local is what S6's brief said
+would: the identity header, the four stats with their bonus pills, the three saves, and the stress
+block — a third `MinMaxField` whose right side is a *minimum*, which is why that side is a named
+prop rather than "the max".
+
+**`MainStat` grew one prop.** The character's stat captions are clicked to roll them, so `onroll`
+swaps the plain `<span class="mainstattext">` for `RollableStat` — which emits exactly the classes
+and data attributes AppV1 hung its `.stat-roll` selector on.
+
+### Four fields deleted, and where the weight went
+
+Each in the DataModel **and** `template.json`, per Decision 2a and rule 12 — this sheet held the
+last reader of all four.
+
+| Field | Now |
+|---|---|
+| `character.xp.html` (a *number*) | `PipTrack` renders 15 circles from `xp.value` |
+| `condition.treatment.html` | `PipTrack` renders 3 glyphs from `treatment.value` |
+| `character.weight.current` / `.capacity` | computed in `_deriveCharacter`, not stored |
+| `character.other.resolve` | **pruned** — see below |
+
+`treatment.html` was also being written onto **embedded item objects during render**, the defect
+class §30 removed from the creature sheet; the content emitter wrote it too, so
+`scripts/content/books/psg/documents.ts` stopped and the nine condition sources lost a line each.
+
+**Weight is derived now.** `_deriveCharacter` sums gear weight × quantity plus one unit each for
+armour and weapons, and ceils a tenth of Strength for capacity — the arithmetic the sheet used to
+run inside `getData()` and write back onto the document. It is right whether or not anyone has the
+sheet open, and `test/derive-character.test.ts` pins it in five specs.
+
+**`other.resolve` was a pool nobody read.** Its only mention was a commented-out block in the
+template, so deleting the template orphaned it and `field-usage.test.ts` said so. The allowlist's
+own rule is *prune the field rather than add an entry*, so the pool went, with `Mosh.Resolve` from
+both `lang/` files. That is the ratchet working exactly as intended.
+
+### Two more rules AppV1 was getting for free
+
+The visual gate found both, and both are the same shape as §30's missing image border: a Foundry
+core rule scoped to `.window-app` that an `.application` window never matches.
+
+1. **A textarea collapsed to its 20-column intrinsic width.** The trauma-response box shrank to a
+   third of its column. `css/mosh.css` sets `width: 100%` on `.textarea-input` itself now — which
+   also fixes the **class sheet**, where the same box has been narrow since §28 unnoticed.
+2. **A two-digit stat bonus overflowed its pill.** `.mainstatmod-input` is 28px wide and its
+   `padding: 0` was sitting there commented out; V2's input padding is wider than V1's, so `+10`
+   rendered as `+1`. Every other input in the file already zeroes it. Both mod pills now do.
+
+### §30's first bug was misdiagnosed
+
+§30 recorded that the creature sheet "opened on no tab at all… so the body was blank". **It did
+not.** `Tabs.activate` validates the requested name against the nav and falls back to
+`items[0].dataset.tab` when it does not match, so `initial: "character"` has always resolved to
+Skills on both sheets. Verified against the real AppV1 character sheet before converting it: the
+before-screenshot opens on Skills with its panel rendered. The dead `initial` was still worth
+removing; the blank body was not real.
+
+### The generator's entry moved
+
+`_getHeaderButtons` is an AppV1 hook, so the **Character Generator** now lives under the V2
+ellipsis menu beside the creature's settings entry. `test/e2e/actor-generator.spec.ts` used to
+click the title-bar button through a 20-second retry loop written around AppV1's draggable header;
+it calls `sheet.generateCharacter()` directly now, and the menu route is covered once, in
+`character-sheet.spec.ts`.
+
+### Verified
+
+`npm run check` 0 errors / 0 warnings (242 files) · **259 vitest** · **106 Playwright** ·
+`npm run content` clean and byte-identical on a second build · `npm run build`.
+
+`test/e2e/character-sheet.spec.ts` is 18 specs against real headless Foundry.
+`test/sheet-bindings.test.ts` now reads a *property* whose literal value is a `system.` path, not
+only an attribute — the header's five identity fields are a table of paths, and the table is what
+the schema check has to see.
+
+| Mutation | Result |
+|---|---|
+| gear weight ignores its quantity | `derive-character` fails |
+| capacity floors instead of ceiling | `derive-character` fails |
+| `MainStat` ignores `onroll` | `ui-parts` fails |
+| an identity row names a field no schema declares | `sheet-bindings` fails, naming `system.pronoun.value` |
+| the new stat-mod `DYNAMIC` entry is removed | `field-usage` fails twice |
+| the weight footer ignores `hideWeight` | the hidden-weight spec fails |
+| the XP track renders 14 pips | the XP spec fails |
+| the two new CSS rules are reverted | the layout spec fails |
