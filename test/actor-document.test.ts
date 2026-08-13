@@ -119,9 +119,21 @@ function actorOf(items: FakeItem[] = [], overrides: Record<string, unknown> = {}
       }
       return data;
     },
-    createEmbeddedDocuments: async (_type: string, data: readonly object[]) => {
-      created.push([...data]);
-      return data;
+    // Mimics Foundry's own `createEmbeddedDocuments`: a supplied `_id` is discarded unless the
+    // caller passes `{keepId: true}` — the option `grantItem` relies on to keep a Condition's
+    // compendium id alive onto the actor.
+    createEmbeddedDocuments: async (
+      _type: string,
+      data: readonly object[],
+      options: { keepId?: boolean } = {},
+    ) => {
+      const written = data.map((entry) => {
+        const record = { ...(entry as Record<string, unknown>) };
+        if (!options.keepId) delete record._id;
+        return record;
+      });
+      created.push(written);
+      return written;
     },
   });
 
@@ -218,6 +230,33 @@ describe('applyItem', () => {
     expect(created).toEqual([[{ name: 'Bleeding', img: 'condition.png', type: 'condition', system: { severity: 2 } }]]);
   });
 
+  // The compendium id is what lets a later reader (`checks/actions.ts`'s `severityOf`) match this
+  // item by identity rather than by name alone — `grantItem` has to ask `createEmbeddedDocuments`
+  // to keep it, or Foundry mints a fresh one and the id half of `isCondition` never matches again.
+  it('keeps the compendium id a granted condition arrives with', async () => {
+    const withId: GrantDocument = {
+      id: 'pxtF1NfletmoFFGV',
+      name: 'Bleeding',
+      img: 'condition.png',
+      type: 'condition',
+      system: { severity: 1 },
+      toObject: () => ({
+        _id: 'pxtF1NfletmoFFGV',
+        name: 'Bleeding',
+        img: 'condition.png',
+        type: 'condition',
+        system: { severity: 1 },
+      }),
+    };
+    const { actor, created } = actorOf();
+
+    await actor.applyItem(withId, 2);
+
+    expect(created).toEqual([
+      [{ _id: 'pxtF1NfletmoFFGV', name: 'Bleeding', img: 'condition.png', type: 'condition', system: { severity: 2 } }],
+    ]);
+  });
+
   it('raises the quantity of gear the actor already carries', async () => {
     const held = item({ id: 'g1', type: 'item', name: 'Ration', system: { quantity: 4 } });
     const { actor } = actorOf([held]);
@@ -232,12 +271,18 @@ describe('applyItem', () => {
   it('adds another copy of a weapon rather than counting it', async () => {
     const held = item({ id: 'w1', type: 'weapon', name: 'Revolver' });
     const { actor, created } = actorOf([held]);
+    const revolver: GrantDocument = {
+      ...source('weapon', 'Revolver'),
+      toObject: () => ({ _id: 'w1', name: 'Revolver', img: 'condition.png', type: 'weapon', system: {} }),
+    };
 
-    const result = await actor.applyItem(source('weapon', 'Revolver'), 1);
+    const result = await actor.applyItem(revolver, 1);
 
     expect(result.change).toEqual({ created: false, counted: null, from: 0, to: 0 });
     expect(held.updates).toEqual([]);
     expect(created).toHaveLength(1);
+    // The second copy must mint its own id — keeping 'w1' would collide with the held copy.
+    expect((created[0][0] as { _id?: string })._id).toBeUndefined();
     expect(cardData().flavorText).toBe('You add another one of these to your inventory.');
   });
 
@@ -291,13 +336,30 @@ describe('chooseCover', () => {
   });
 });
 
+// The Bleeding document's real id (content/ids.json) — the id `grantItem`'s `{keepId: true}`
+// carries onto an embedded item when this system grants one. `isCondition` (module/conditions.ts)
+// also matches by the exact canonical name alone, which is the only identity a condition dragged
+// straight from the compendium onto a sheet keeps — that path never touches `grantItem` at all,
+// so it never receives this id and mints a fresh one instead.
+const BLEEDING_ID = 'pxtF1NfletmoFFGV';
+
 describe('takeBleedingDamage', () => {
-  it('costs the total severity of every Bleeding condition, in one write', async () => {
+  it('costs the severity of the Bleeding condition, and nothing another condition carries', async () => {
     const items = [
-      item({ id: 'c1', type: 'condition', name: 'Bleeding', system: { severity: 2 } }),
-      item({ id: 'c2', type: 'condition', name: 'Bleeding', system: { severity: 1 } }),
+      item({ id: BLEEDING_ID, type: 'condition', name: 'Bleeding', system: { severity: 3 } }),
       item({ id: 'c3', type: 'condition', name: 'Frightened', system: { severity: 5 } }),
     ];
+    const { actor, updates } = actorOf(items);
+
+    await actor.takeBleedingDamage();
+
+    expect(updates).toEqual([{ 'system.health.value': 6 }]);
+  });
+
+  // The sheet-drop path: a fresh, unrelated id — nothing this system ever minted — carried on an
+  // item whose name is still the exact one the compendium gave it.
+  it('costs the severity of a Bleeding condition dragged onto the sheet, with a fresh id', async () => {
+    const items = [item({ id: 'aFreshDragAndDropId01', type: 'condition', name: 'Bleeding', system: { severity: 3 } })];
     const { actor, updates } = actorOf(items);
 
     await actor.takeBleedingDamage();
@@ -308,7 +370,7 @@ describe('takeBleedingDamage', () => {
   // The card's image used to be hand-written HTML pointing at systems/foundry-mothership/… , a
   // path that stopped existing at the rename (audit F4).
   it('posts a card whose art is under the system’s real id', async () => {
-    const { actor } = actorOf([item({ id: 'c1', type: 'condition', name: 'Bleeding', system: { severity: 1 } })]);
+    const { actor } = actorOf([item({ id: BLEEDING_ID, type: 'condition', name: 'Bleeding', system: { severity: 1 } })]);
 
     await actor.takeBleedingDamage();
 

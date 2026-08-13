@@ -3,12 +3,13 @@
 //
 // Every table's die is zero-based except panic, because the book prints its d10 and d100 tables
 // starting at 0 — hence the `-1` on the formula, matching the ranges the catalogs carry.
+import { formatAction } from '../../../../module/chat/enrichers.ts';
 import { CLASSES } from '../../../../content/books/psg/classes.ts';
 import { CONDITIONS } from '../../../../content/books/psg/conditions.ts';
 import { DEATH } from '../../../../content/books/psg/death.ts';
 import { LOADOUT_ITEMS, type GearRef, type LoadoutItemText } from '../../../../content/books/psg/gear.ts';
 import { LOADOUTS } from '../../../../content/books/psg/loadouts.ts';
-import { PANIC } from '../../../../content/books/psg/panic.ts';
+import { PANIC, type PanicResult } from '../../../../content/books/psg/panic.ts';
 import { PATCHES } from '../../../../content/books/psg/patches.ts';
 import { TRINKETS } from '../../../../content/books/psg/trinkets.ts';
 import { WOUNDS } from '../../../../content/books/psg/wounds.ts';
@@ -78,22 +79,34 @@ const wounds = (): ContentRecord[] =>
 
 const CONDITION_BY_PANIC = new Map(CONDITIONS.map((c) => [c.name.toLowerCase(), c] as const));
 
+/** A result whose text differs by whether the roller is a machine — only Panic 19 (PSG 21.1). */
+function voiceSpan(voice: 'human' | 'android', text: string): string {
+  return `<span data-mosh-voice="${voice}">${text}</span>`;
+}
+
+function panicHeading(result: PanicResult): string {
+  return result.androidName === undefined
+    ? result.name.toUpperCase()
+    : voiceSpan('human', result.name.toUpperCase()) + voiceSpan('android', result.androidName.toUpperCase());
+}
+
 /**
- * A panic result that grants a Condition links the macro that raises it, so the Warden clicks
- * once. The other results link nothing — S8 is where the rest of the table starts doing work.
+ * A panic result that grants a Condition names the action that raises it, so the Warden clicks
+ * once — `@Apply[coward]`, not a macro id (audit C2, C10). The other results name nothing — S8 is
+ * where the rest of the table starts doing work.
  */
-function panicDescription(result: (typeof PANIC.results)[number], ids: IdLookup): string {
-  const body = `<strong>${result.name.toUpperCase()}.</strong> ${result.effect}`;
+function panicDescription(result: PanicResult): string {
+  const body = `<strong>${panicHeading(result)}.</strong> ${result.effect}`;
   if (!result.grantsCondition) return body;
   const condition = CONDITION_BY_PANIC.get(result.name.toLowerCase());
   if (!condition) throw new Error(`panic ${result.range[0]}: no condition named "${result.name}"`);
-  return `${body}<br><br>${link(ids, 'triggered', `plus-1-${condition.id}`, `+1 ${condition.name}`)}`;
+  return `${body}<br><br>${formatAction({ verb: 'apply', condition: condition.id, count: 1 })}`;
 }
 
 // "Panic Check", not the old "Panic Check (Stress, Normal)": the Calm and android variants went
 // with §25, and actor.js derives its flavour-text key from the table's name — `Mosh.table.panic_check`
 // is the key that has always been there.
-const panic = (ids: IdLookup): ContentRecord => ({
+const panic = (): ContentRecord => ({
   contentId: 'panic-check-stress-normal',
   name: 'Panic Check',
   img: `${IMG}/panic_check.png`,
@@ -101,7 +114,7 @@ const panic = (ids: IdLookup): ContentRecord => ({
     kind: 'RollTable',
     formula: PANIC.die,
     description: `<p>${PANIC.rule} Some results are severe enough to leave a lasting impression, called <strong>Conditions</strong>, which affect you until they are treated.</p>`,
-    results: rows(PANIC.results, (i) => panicDescription(PANIC.results[i]!, ids)),
+    results: rows(PANIC.results, (i) => panicDescription(PANIC.results[i]!)),
   },
   provenance: { source: `${SOURCE}/panic.ts`, sourceId: PANIC.id, page: PANIC.source.page },
 });
@@ -185,7 +198,7 @@ export const ROLLTABLES: PackDefinition = {
   documentType: 'RollTable',
   load: (ids: IdLookup): ContentRecord[] => [
     ...wounds(),
-    panic(ids),
+    panic(),
     death(),
     flavour('trinkets', 'Trinkets', 'icons/svg/coins.svg', '<p>What you carry that you cannot explain.</p>', TRINKETS, 'trinkets.ts'),
     flavour('patches', 'Patches', 'icons/svg/tower-flag.svg', '<p>What you wear on your shoulder.</p>', PATCHES, 'patches.ts'),

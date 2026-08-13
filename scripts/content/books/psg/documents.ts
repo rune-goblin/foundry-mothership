@@ -1,26 +1,16 @@
+import { formatAction } from '../../../../module/chat/enrichers.ts';
 import { CONDITIONS } from '../../../../content/books/psg/conditions.ts';
 import { HOTBAR_MACROS, isConditionMacro, TRIGGERED_MACROS } from '../../../../content/books/psg/macros.ts';
-import type { ContentRecord, IdLookup, PackDefinition } from '../../record.ts';
-import { html, link, PACKS, uuid } from './uuid.ts';
+import type { ContentRecord, PackDefinition } from '../../record.ts';
+import { html, PACKS } from './uuid.ts';
 
 const SOURCE = 'content/books/psg';
 const CONDITION_ICON = 'systems/mothershiprpg/images/icons/ui/conditions';
 
-/** The macro label the shipped conditions used: "Fear Save -" reads as "Fear Save [-]" in prose. */
-const MACRO_LABEL: Record<string, string> = {
-  'fear-save': 'Fear Save',
-  'fear-save-minus': 'Fear Save [-]',
-  'rest-save-minus': 'Rest Save [-]',
-  'panic-check-minus': 'Panic Check [-]',
-  'plus-1-stress': '+1 Stress',
-  'plus-1d5-stress': '+1d5 Stress',
-  'take-bleeding-damage': 'Take Bleeding Damage',
-};
-
 const CONDITIONS_PACK: PackDefinition = {
   ...PACKS.conditions,
   documentType: 'Item',
-  load: (ids: IdLookup): ContentRecord[] =>
+  load: (): ContentRecord[] =>
     CONDITIONS.map((condition) => ({
       contentId: condition.id,
       name: condition.name,
@@ -29,10 +19,9 @@ const CONDITIONS_PACK: PackDefinition = {
         kind: 'Item',
         type: 'condition',
         system: {
-          description: html(
-            condition.text,
-            ...condition.macros.map((id) => link(ids, 'triggered', id, MACRO_LABEL[id] ?? id)),
-          ),
+          // The action renders as a button by itself (chat/enrichers.ts) — its label comes from
+          // `actionLabel` at render time, so the book's macro-name restatement (audit C10) is gone.
+          description: html(condition.text, ...condition.actions.map(formatAction)),
           severity: 1,
           treatment: { value: 0 },
           modifiers: condition.modifiers.map(({ modifier, scope }) => ({ modifier, scope })),
@@ -47,7 +36,7 @@ const CONDITIONS_PACK: PackDefinition = {
 const TRIGGERED: PackDefinition = {
   ...PACKS.triggered,
   documentType: 'Macro',
-  load: (ids: IdLookup): ContentRecord[] =>
+  load: (): ContentRecord[] =>
     TRIGGERED_MACROS.map((macro) => ({
       contentId: macro.contentId,
       name: macro.name,
@@ -56,18 +45,15 @@ const TRIGGERED: PackDefinition = {
         kind: 'Macro',
         type: 'script',
         scope: 'global',
+        // The slug is the whole address: `applyCondition` resolves it through `CONDITION_IDS`, so
+        // no macro command carries a bare document id any more (audit C2).
         command: isConditionMacro(macro)
-          ? `game.mothershiprpg.initModifyItem('${idOf(ids, macro.condition)}',${macro.severity});`
+          ? `game.mothershiprpg.applyCondition('${macro.condition}', ${macro.severity});`
           : macro.command,
       },
       provenance: { source: `${SOURCE}/macros.ts`, sourceId: macro.contentId },
     })),
 };
-
-/** `initModifyItem` takes a bare `_id` and resolves it across compendia — see mosh.js fromIdUuid. */
-function idOf(ids: IdLookup, condition: string): string {
-  return uuid(ids, 'conditions', condition).split('.').pop()!;
-}
 
 const HOTBAR: PackDefinition = {
   ...PACKS.hotbar,

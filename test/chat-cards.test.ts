@@ -4,7 +4,6 @@ import {
   asset,
   checkCard,
   descriptionCard,
-  fireCard,
   flavor,
   mutationCard,
   outcomeHtml,
@@ -384,15 +383,6 @@ describe('the ammunition cards', () => {
     });
     expect(reloadCard(weapon, { status: 'already-full', curShots: 6, ammo: 6, loaded: 0 }, SOURCE)).toBeNull();
     expect(reloadCard(weapon, { status: 'untracked', curShots: 0, ammo: 0, loaded: 0 }, SOURCE)).toBeNull();
-  });
-
-  it('posts nothing for a shot that happened', () => {
-    installI18n({ 'Mosh.OutOfAmmoNeedReload': 'Out of ammo, you need to reload' });
-
-    expect(fireCard(weapon, { status: 'fired', spent: 1, curShots: 5 }, SOURCE)).toBeNull();
-    expect(fireCard(weapon, { status: 'needs-reload', spent: 0, curShots: 0 }, SOURCE)?.data.msgBody).toBe(
-      'Out of ammo, you need to reload',
-    );
   });
 });
 

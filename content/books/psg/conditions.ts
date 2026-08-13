@@ -2,13 +2,17 @@
 // Condition:" — eight of them — plus Bleeding, which the wound tables inflict. Those nine are the
 // pack; the ~40 the system used to ship had no book behind them and went with §25.
 //
-// `text` is the condition as the book states it, second person. `macros` names the triggered
-// macros the description links to, by contentId, so the build writes the @UUID once the ids exist.
+// `text` is the condition as the book states it, second person. `actions` names the enricher
+// actions the description renders as buttons — the same grammar a table result or a chat card
+// uses — built with `formatAction` by the loader (`scripts/content/books/psg/documents.ts`), which
+// is the one place this book imports the runtime. Content that used to link a macro *document* by
+// id now names the *meaning* instead, so a re-minted or missing macro can no longer dangle here
+// (audit C2, C10).
 //
 // `modifiers` is seeded on the three the book vouches for and left empty on the rest — the owner's
 // decision, recorded in docs/plans/psg-core.md. Each names the one roll it reaches, because that is
 // how the book states them: Nightmares is [-] on Rest Saves, not on everything.
-import type { TriggeredMacroId } from './macros.ts';
+import type { ChatAction } from '../../../module/chat/enrichers.ts';
 import type { ScopedModifier } from '../common.ts';
 
 export interface Condition {
@@ -17,7 +21,7 @@ export interface Condition {
   /** Filename under `images/icons/ui/conditions/`. */
   icon: string;
   text: string;
-  macros: readonly TriggeredMacroId[];
+  actions: readonly ChatAction[];
   modifiers: readonly ScopedModifier[];
   /** The panic roll that grants it, or the rule that does. */
   from: string;
@@ -30,7 +34,10 @@ export const CONDITIONS = [
     icon: 'bleeding.png',
     text:
       'Some weapons or Wounds cause you to <strong>Bleed</strong>. This means you take <strong>1 Damage every round until the bleeding is stopped.</strong> This is cumulative. If a character is bleeding 1 Damage per round and gains <strong>Bleeding +1,</strong> they now take 2 Damage per round. Bleeding damage ignores armor and damage reduction.',
-    macros: ['take-bleeding-damage'],
+    // Divergence R4a-1: taking Bleeding damage is the same mutation `@Gain[health -bleeding]` is.
+    actions: [
+      { verb: 'gain', field: 'health', leaf: 'value', amount: { kind: 'severity', condition: 'bleeding', sign: -1 } },
+    ],
     modifiers: [],
     from: 'the wound tables',
   },
@@ -39,7 +46,8 @@ export const CONDITIONS = [
     name: 'Coward',
     icon: 'coward.png',
     text: 'You must make a Fear Save to engage in violence, otherwise you flee.',
-    macros: ['fear-save'],
+    // Legacy's "Fear Save" macro named no modifier — the roll prompt opens rather than forcing one.
+    actions: [{ verb: 'check', scope: 'fear', advantage: 'none' }],
     modifiers: [],
     from: 'Panic 5',
   },
@@ -48,7 +56,7 @@ export const CONDITIONS = [
     name: 'Deflated',
     icon: 'deflated.png',
     text: 'Whenever a Close crewmember fails a Save, gain 1 Stress.',
-    macros: ['plus-1-stress'],
+    actions: [{ verb: 'gain', field: 'stress', leaf: 'value', amount: { kind: 'amount', amount: 1 } }],
     modifiers: [],
     from: 'Panic 9',
   },
@@ -57,7 +65,7 @@ export const CONDITIONS = [
     name: 'Doomed',
     icon: 'doomed.png',
     text: 'You feel cursed and unlucky. All Critical Successes are instead Critical Failures.',
-    macros: [],
+    actions: [],
     modifiers: [],
     from: 'Panic 10',
   },
@@ -66,9 +74,12 @@ export const CONDITIONS = [
     name: 'Frightened',
     icon: 'frightened.png',
     text: 'When encountering what frightened you make a Fear Save [-] or gain 1d5 Stress.',
-    macros: ['fear-save-minus', 'plus-1d5-stress'],
     // The book qualifies this with "when encountering what frightened you". Nothing models that
-    // trigger, so the Fear Save carries it and the player can still take the roll at normal.
+    // trigger, so both of the condition's own roll and gain stay offered and the player judges it.
+    actions: [
+      { verb: 'check', scope: 'fear', advantage: 'disadvantage' },
+      { verb: 'gain', field: 'stress', leaf: 'value', amount: { kind: 'roll', dice: '1d5' } },
+    ],
     modifiers: [{ modifier: 'disadvantage', scope: 'fear' }],
     from: 'Panic 6',
   },
@@ -78,7 +89,7 @@ export const CONDITIONS = [
     icon: 'haunted.png',
     text:
       'Something starts visiting you at night. In your dreams. Out of the corner of your eye. And soon it will start making demands.',
-    macros: [],
+    actions: [],
     modifiers: [],
     from: 'Panic 12',
   },
@@ -87,7 +98,7 @@ export const CONDITIONS = [
     name: 'Loss of Confidence',
     icon: 'loss_of_confidence.png',
     text: 'Choose one Skill and lose that Skill’s bonus.',
-    macros: [],
+    actions: [],
     modifiers: [],
     from: 'Panic 8',
   },
@@ -96,7 +107,7 @@ export const CONDITIONS = [
     name: 'Nightmares',
     icon: 'nightmares.png',
     text: 'Sleep is difficult, gain [-] on Rest Saves.',
-    macros: ['rest-save-minus'],
+    actions: [{ verb: 'check', scope: 'restSave', advantage: 'disadvantage' }],
     modifiers: [{ modifier: 'disadvantage', scope: 'restSave' }],
     from: 'Panic 7',
   },
@@ -105,7 +116,7 @@ export const CONDITIONS = [
     name: 'Spiraling',
     icon: 'spiraling.png',
     text: 'Panic Checks are at [-].',
-    macros: ['panic-check-minus'],
+    actions: [{ verb: 'check', scope: 'panicCheck', advantage: 'disadvantage' }],
     modifiers: [{ modifier: 'disadvantage', scope: 'panicCheck' }],
     from: 'Panic 17',
   },

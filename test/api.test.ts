@@ -250,9 +250,7 @@ describe('applyCondition', () => {
     expect(sarah.applyItem).toHaveBeenCalledWith(document, 2);
   });
 
-  /** R4b mints the slug→id map; until it does, a slug is looked up as an id and misses. */
-  it('has an empty condition catalogue for R4b to fill', () => {
-    expect(api.CONDITION_IDS).toEqual({});
+  it('resolves an unmapped slug as the bare id an old macro already passes', () => {
     expect(api.conditionRef('anything')).toBe('anything');
   });
 });

@@ -12,7 +12,7 @@
 
 import type { ItemCard } from '../documents/item.ts';
 import { format, has, localize } from '../i18n.ts';
-import type { FireOutcome, ReloadOutcome } from '../inventory/ammo.ts';
+import type { ReloadOutcome } from '../inventory/ammo.ts';
 import type { MutationResult } from '../mutation/mutate.ts';
 import { toRollString } from '../rolls/parse.ts';
 import type { Outcome } from '../rolls/resolve.ts';
@@ -428,22 +428,6 @@ export function reloadCard(
   switch (outcome.status) {
     case 'reloaded':
       return ammoCard(item, source, 'Mosh.WeaponReloaded');
-    case 'out-of-ammo':
-      return ammoCard(item, source, 'Mosh.OutOfAmmo');
-    default:
-      return null;
-  }
-}
-
-/** Firing posts the attack's own card; only the shot that could not happen posts this one. */
-export function fireCard(
-  item: ItemCard,
-  outcome: FireOutcome,
-  source: CardSource,
-): Card<ReloadCardData> | null {
-  switch (outcome.status) {
-    case 'needs-reload':
-      return ammoCard(item, source, 'Mosh.OutOfAmmoNeedReload');
     case 'out-of-ammo':
       return ammoCard(item, source, 'Mosh.OutOfAmmo');
     default:

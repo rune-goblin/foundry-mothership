@@ -7,9 +7,17 @@
  * document it had just created (audit F10). Here the count is part of what gets created, so one
  * awaited write says everything, and what happened comes back as a record for the chat layer to
  * narrate. Nothing in this module reads `game` or renders.
+ *
+ * `{keepId: true}` on the create call is load-bearing: without it Foundry mints a fresh id for
+ * every embedded document, and a Condition's whole identity story (`conditions.ts`'s `isCondition`)
+ * depends on the compendium id surviving the grant the way legacy's nine `keepId` call sites kept
+ * it alive.
  */
 
+import { CONDITION_IDS, isCondition } from '../conditions.ts';
+
 export interface HeldItem {
+  readonly id?: string | null;
   readonly name: string;
   readonly type: string;
   readonly system: unknown;
@@ -18,6 +26,7 @@ export interface HeldItem {
 
 /** The document being given: a compendium item, or a world one. */
 export interface GrantDocument {
+  readonly id?: string | null;
   readonly name: string;
   readonly img: string;
   readonly type: string;
@@ -27,7 +36,11 @@ export interface GrantDocument {
 
 export interface GrantTarget {
   readonly items: Iterable<HeldItem>;
-  createEmbeddedDocuments(type: string, data: readonly object[]): Promise<unknown>;
+  createEmbeddedDocuments(
+    type: string,
+    data: readonly object[],
+    options?: { readonly keepId?: boolean },
+  ): Promise<unknown>;
 }
 
 /** The field each type counts in. Anything else is counted by holding another one. */
@@ -63,9 +76,27 @@ function number(value: unknown): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-/** Held by name, the way legacy identified "the actor already has this one". */
-export function heldItem(actor: GrantTarget, name: string): HeldItem | null {
-  const wanted = name.trim().toLowerCase();
+/** The slug a Condition's own canonical name identifies — granting one never carries its slug
+ * this far, so this is the reverse of the join `conditions.ts`'s map states forward. */
+function conditionSlugOf(name: string): string | null {
+  for (const [slug, identity] of Object.entries(CONDITION_IDS)) {
+    if (identity.name === name) return slug;
+  }
+  return null;
+}
+
+/**
+ * Held by name, the way legacy identified "the actor already has this one" — except a Condition,
+ * which is held by the identity `isCondition` gives every other reader of one, so a rename or a
+ * translation cannot make this module and `checks/actions.ts` disagree about who has what.
+ */
+export function heldItem(actor: GrantTarget, document: Pick<GrantDocument, 'name' | 'type'>): HeldItem | null {
+  const slug = document.type === 'condition' ? conditionSlugOf(document.name) : null;
+  if (slug !== null) {
+    for (const item of actor.items) if (isCondition(item, slug)) return item;
+    return null;
+  }
+  const wanted = document.name.trim().toLowerCase();
   for (const item of actor.items) {
     if (item.name.trim().toLowerCase() === wanted) return item;
   }
@@ -77,7 +108,7 @@ export async function grantItem(
   document: GrantDocument,
   count: number,
 ): Promise<GrantResult> {
-  const held = heldItem(actor, document.name);
+  const held = heldItem(actor, document);
   const counted = COUNTED[document.type] ?? null;
   const identity = { name: document.name, img: document.img, type: document.type };
 
@@ -90,7 +121,8 @@ export async function grantItem(
 
   const data = document.toObject();
   if (counted !== null) data.system = { ...fields(data.system), [counted]: count };
-  await actor.createEmbeddedDocuments('Item', [data]);
+  // A second copy of a held item must mint its own id — re-sending the held _id would collide.
+  await actor.createEmbeddedDocuments('Item', [data], { keepId: held === null });
 
   return {
     ...identity,

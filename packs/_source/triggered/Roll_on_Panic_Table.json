@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "command": "game.mothershiprpg.initRollTable(game.settings.get('mothershiprpg','table1ePanicStressNormal'),`1d20`,`high`,false,false,'system.other.stress.value','>');",
+  "command": "game.mothershiprpg.rollPanic({ advantage: 'none' });",
   "img": "icons/svg/d10-grey.svg",
   "name": "Roll on Panic Table",
   "ownership": {

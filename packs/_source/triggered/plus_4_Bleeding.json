@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "command": "game.mothershiprpg.initModifyItem('pxtF1NfletmoFFGV',4);",
+  "command": "game.mothershiprpg.applyCondition('bleeding', 4);",
   "img": "icons/svg/d10-grey.svg",
   "name": "+4 Bleeding",
   "ownership": {

@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "command": "game.mothershiprpg.initRollCheck('1d100','low','intellect',null,null,null);",
+  "command": "game.mothershiprpg.rollStat('intellect', { advantage: 'none' });",
   "img": "icons/svg/d10-grey.svg",
   "name": "Intellect Check",
   "ownership": {

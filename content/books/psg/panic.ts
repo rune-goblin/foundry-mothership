@@ -4,6 +4,8 @@ import type { Modifier, RollRange } from '../common.ts';
 export interface PanicResult {
   range: RollRange;
   name: string;
+  /** PSG 21.1 — result 19's other half: the same effect, read by a machine instead. */
+  androidName?: string;
   effect: string;
   /** True where the result leaves a Condition behind — the eight the conditions pack comes from. */
   grantsCondition: boolean;
@@ -147,7 +149,8 @@ export const PANIC = {
     },
     {
       range: [19, 19],
-      name: 'Heart Attack / Short Circuit (Androids)',
+      name: 'Heart Attack',
+      androidName: 'Short Circuit',
       effect: 'Reduce Maximum Wounds by 1. Gain [-] on all rolls for 1d10 hours. Increase Minimum Stress by 1.',
       grantsCondition: false,
       modifiers: ['disadvantage'],

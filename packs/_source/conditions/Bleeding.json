@@ -11,7 +11,7 @@
     "default": 0
   },
   "system": {
-    "description": "<p>Some weapons or Wounds cause you to <strong>Bleed</strong>. This means you take <strong>1 Damage every round until the bleeding is stopped.</strong> This is cumulative. If a character is bleeding 1 Damage per round and gains <strong>Bleeding +1,</strong> they now take 2 Damage per round. Bleeding damage ignores armor and damage reduction.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.aur5HWqZJNspwdCd]{Take Bleeding Damage}</p>",
+    "description": "<p>Some weapons or Wounds cause you to <strong>Bleed</strong>. This means you take <strong>1 Damage every round until the bleeding is stopped.</strong> This is cumulative. If a character is bleeding 1 Damage per round and gains <strong>Bleeding +1,</strong> they now take 2 Damage per round. Bleeding damage ignores armor and damage reduction.<br><br>@Gain[health -bleeding]</p>",
     "modifiers": [],
     "severity": 1,
     "treatment": {

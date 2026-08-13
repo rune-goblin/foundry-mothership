@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "command": "game.mothershiprpg.initRollCheck('1d100','low','fear',null,null,null);",
+  "command": "game.mothershiprpg.rollStat('fear', { advantage: 'none' });",
   "img": "icons/svg/d10-grey.svg",
   "name": "Fear Save",
   "ownership": {

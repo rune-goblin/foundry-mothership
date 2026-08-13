@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { checkBookDir, type Book } from './book.ts';
 import { canonical, emit, type Emitted, type Stamp } from './emit.ts';
 import { allIds, IdRegistry, type Registry } from './ids.ts';
-import { checkIdPreservation, checkReferences } from './integrity.ts';
+import { checkIdPreservation, checkMacroCommands, checkReferences } from './integrity.ts';
 import { checkModelFields } from './model-guard.ts';
 import type { Provenance } from './record.ts';
 import { fileSlug } from './slug.ts';
@@ -78,6 +78,9 @@ export function build(options: BuildOptions): BuildResult {
   const compendia = new Set(packs.map((p) => p.compendium));
   const refErrors = checkReferences({ systemId: stamp.systemId, emitted, compendia });
   if (refErrors.length) throw new Error(`referential integrity failed:\n  ${refErrors.join('\n  ')}`);
+
+  const macroErrors = checkMacroCommands(emitted);
+  if (macroErrors.length) throw new Error(`macro command guard failed:\n  ${macroErrors.join('\n  ')}`);
 
   const lostErrors = checkIdPreservation(before, emitted, ids.registry);
   if (lostErrors.length) throw new Error(`ids went missing:\n  ${lostErrors.join('\n  ')}`);

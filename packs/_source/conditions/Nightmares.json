@@ -11,7 +11,7 @@
     "default": 0
   },
   "system": {
-    "description": "<p>Sleep is difficult, gain [-] on Rest Saves.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.AM9nIK5l7mC5Ho8C]{Rest Save [-]}</p>",
+    "description": "<p>Sleep is difficult, gain [-] on Rest Saves.<br><br>@Check[restSave -]</p>",
     "modifiers": [
       {
         "modifier": "disadvantage",

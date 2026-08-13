@@ -11,7 +11,7 @@
     "default": 0
   },
   "system": {
-    "description": "<p>When encountering what frightened you make a Fear Save [-] or gain 1d5 Stress.<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.wVhApjRP5MXue2kh]{Fear Save [-]}<br><br>@UUID[Compendium.mothershiprpg.macros_triggered_1e.Macro.luNKvwmm2tjUJhT6]{+1d5 Stress}</p>",
+    "description": "<p>When encountering what frightened you make a Fear Save [-] or gain 1d5 Stress.<br><br>@Check[fear -]<br><br>@Gain[stress 1d5]</p>",
     "modifiers": [
       {
         "modifier": "disadvantage",

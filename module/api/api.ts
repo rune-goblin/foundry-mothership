@@ -16,6 +16,7 @@ import { registerCheckActions } from '../checks/actions.ts';
 import { type CheckOptions, type CheckOutcome } from '../checks/checks.ts';
 import { type TableOptions, type TableResult } from '../checks/tables.ts';
 import { SYSTEM_ID } from '../chat/cards.ts';
+import { CONDITION_IDS } from '../conditions.ts';
 import { debug } from '../debug.ts';
 import { noCharacter } from '../dialogs/prompts.ts';
 import { format } from '../i18n.ts';
@@ -163,15 +164,12 @@ export function itemNamed(actor: MothershipActor, name: string): MothershipItem 
 }
 
 /**
- * The conditions the system can apply, by slug — `@Apply[coward]`'s half of the identity the
- * tables already have (audit C2, RC13). **R4b mints this map** from `content/ids.json`, the way
- * `TABLES` carries the seven table ids; until it does, a slug resolves as a document id, which is
- * what every imported `initModifyItem` macro passes anyway.
+ * `@Apply[coward]`'s half of the identity the tables already have (audit C2, RC13) — `../conditions.ts`
+ * is the one leaf both this module and `checks/actions.ts` read it from, rather than the two-file
+ * cycle importing it from here created.
  */
-export const CONDITION_IDS: Readonly<Record<string, string>> = {};
-
 export function conditionRef(condition: string): string {
-  return CONDITION_IDS[condition] ?? condition;
+  return CONDITION_IDS[condition]?.id ?? condition;
 }
 
 /** Give every targeted actor a condition — or another N of it, if they already have it. */

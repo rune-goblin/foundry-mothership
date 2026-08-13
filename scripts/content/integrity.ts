@@ -67,6 +67,37 @@ export function checkIdPreservation(before: Set<string>, emitted: Emitted[], reg
   return errors;
 }
 
+const FORBIDDEN_SETTINGS_GET = /\bgame\.settings\.get\s*\(/;
+const FORBIDDEN_INIT_CALL = /\bmothershiprpg\.init[A-Z]\w*\s*\(/;
+const FORBIDDEN_BARE_ID = /(['"`])[A-Za-z0-9]{16}\1/;
+
+/**
+ * Macros are user interface now, not the system (docs/plans/legacy-remake.md decision 4): every
+ * emitted command routes through `game.mothershiprpg`'s new entry points, which resolve targeting,
+ * tables and conditions themselves. This is the structural fix for two shipped bugs a content
+ * change could otherwise reintroduce — a `game.settings.get` namespace typo no tier caught until a
+ * player was dying (audit C1), and a wound-table id embedded past every reference check's reach
+ * (audit C2) — plus the retired `init*` verbs those bugs lived in.
+ */
+export function checkMacroCommands(emitted: Emitted[]): string[] {
+  const errors: string[] = [];
+  for (const doc of emitted) {
+    const command = doc.document.command;
+    if (typeof command !== 'string') continue;
+    const where = `${doc.compendium}/${doc.contentId}`;
+    if (FORBIDDEN_SETTINGS_GET.test(command)) {
+      errors.push(`${where}: macro command reads game.settings.get directly — call game.mothershiprpg instead`);
+    }
+    if (FORBIDDEN_INIT_CALL.test(command)) {
+      errors.push(`${where}: macro command calls a retired init* verb`);
+    }
+    if (FORBIDDEN_BARE_ID.test(command)) {
+      errors.push(`${where}: macro command embeds a bare document id`);
+    }
+  }
+  return errors;
+}
+
 const TABLE_SETTING = /game\.settings\.register\('[^']+',\s*'(table1e[A-Za-z]+)',[^}]*?default:\s*"([A-Za-z0-9]+)"/g;
 
 /** The rolltable settings default to bare `_id`s; each must still name a registered table. */

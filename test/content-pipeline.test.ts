@@ -409,6 +409,53 @@ describe('referential integrity', () => {
   });
 });
 
+// Catches: a macro command reading `game.settings.get` directly (audit C1's shipped bug), naming
+// a bare document id (audit C2), or calling a retired `init*` verb — decision 4 retires all three
+// in favour of `game.mothershiprpg`'s own entry points, which resolve targeting and identity
+// themselves.
+describe('the macro command guard', () => {
+  it('passes the fixture, whose macros call the new API', () => {
+    // `beforeAll` already built the fixture; a violation here would have thrown before this runs.
+    expect(built.emitted.filter((d) => d.pack === 'quips')).toHaveLength(2);
+  });
+
+  it('fails on a macro that reads game.settings.get directly', () => {
+    expect(() =>
+      run(
+        mutated('quips', (r) =>
+          r.body.kind === 'Macro'
+            ? { ...r, body: { ...r.body, command: "game.settings.get('mothershiprpg', 'macroTarget');" } }
+            : r,
+        ),
+      ),
+    ).toThrow(/macro command reads game\.settings\.get directly/);
+  });
+
+  it('fails on a macro that embeds a bare document id', () => {
+    expect(() =>
+      run(
+        mutated('quips', (r) =>
+          r.body.kind === 'Macro'
+            ? { ...r, body: { ...r.body, command: "game.mothershiprpg.rollTable('31YibfjueXuZdNLb');" } }
+            : r,
+        ),
+      ),
+    ).toThrow(/macro command embeds a bare document id/);
+  });
+
+  it('fails on a macro that calls a retired init* verb', () => {
+    expect(() =>
+      run(
+        mutated('quips', (r) =>
+          r.body.kind === 'Macro'
+            ? { ...r, body: { ...r.body, command: "game.mothershiprpg.initModifyActor('stress', 1, null, true);" } }
+            : r,
+        ),
+      ),
+    ).toThrow(/macro command calls a retired init\* verb/);
+  });
+});
+
 describe('the emitted document', () => {
   const stamp = readStamp(ROOT);
 

@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "command": "game.mothershiprpg.initModifyItem('z0avrplKe6M0RcXk',1);",
+  "command": "game.mothershiprpg.applyCondition('frightened', 1);",
   "img": "icons/svg/d10-grey.svg",
   "name": "+1 Frightened",
   "ownership": {

@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "command": "game.mothershiprpg.initModifyItem('x41AwiI03h7wNjaM',1);",
+  "command": "game.mothershiprpg.applyCondition('doomed', 1);",
   "img": "icons/svg/d10-grey.svg",
   "name": "+1 Doomed",
   "ownership": {

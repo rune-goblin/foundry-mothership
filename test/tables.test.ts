@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { parseRollSpec } from '../module/rolls/parse.ts';
+import { ANDROID_PANIC_RESULT } from '../module/rules.ts';
 import {
   androidSubstitution,
   isRobotic,
@@ -16,7 +17,7 @@ import {
   WOUND_TABLE_KEYS,
   type TableDocument,
 } from '../module/tables/tables.ts';
-import { clearFoundryStubs, installI18n, installRoll } from './foundry-stubs.ts';
+import { clearFoundryStubs, installRoll } from './foundry-stubs.ts';
 
 const ids = JSON.parse(
   readFileSync(fileURLToPath(new URL('../content/ids.json', import.meta.url)), 'utf8'),
@@ -76,7 +77,14 @@ describe('table identity is data, not a display name', () => {
 const rows = [
   { _id: 'r01', type: 'text', img: 'row.png', description: 'A scratch.', range: [0, 0] },
   { _id: 'r02', type: 'text', img: 'row.png', description: 'A gash.', range: [1, 1] },
-  { _id: 'r19', type: 'text', img: 'row.png', description: 'HEART ATTACK / SHORT CIRCUIT (ANDROIDS). Ouch.', range: [19, 19] },
+  {
+    _id: 'r19',
+    type: 'text',
+    img: 'row.png',
+    description:
+      '<span data-mosh-voice="human">HEART ATTACK</span><span data-mosh-voice="android">SHORT CIRCUIT</span>. Ouch.',
+    range: [19, 19],
+  },
 ];
 
 function table(name = 'Blunt Force Wound'): TableDocument {
@@ -153,12 +161,6 @@ describe('rollOnTable', () => {
   // Audit F22: the android line was chosen by reading `system.class.value` on any actor, so a
   // creature that panicked to 19 threw instead of reading its result.
   it('keeps one half of the Panic 19 result, and lets a creature through', async () => {
-    installI18n({
-      'Mosh.HEARTATTACKSHORTCIRCUITANDROIDS': 'HEART ATTACK / SHORT CIRCUIT (ANDROIDS).',
-      'Mosh.HEARTATTACK': 'HEART ATTACK.',
-      'Mosh.SHORTCIRCUIT': 'SHORT CIRCUIT.',
-    });
-
     const draw = async (robotic: boolean) => {
       installRoll([{ faces: 20, result: 19 }]);
       const result = await rollOnTable(table('Panic Check'), {
@@ -175,12 +177,19 @@ describe('rollOnTable', () => {
   });
 
   it('leaves every other row alone', () => {
-    installI18n({
-      'Mosh.HEARTATTACKSHORTCIRCUITANDROIDS': 'HEART ATTACK / SHORT CIRCUIT (ANDROIDS).',
-      'Mosh.SHORTCIRCUIT': 'SHORT CIRCUIT.',
-    });
+    expect(androidSubstitution('You freeze up.', true, 4)).toBe('You freeze up.');
+    // Even at the right roll, text carrying no voice marker is untouched.
+    expect(androidSubstitution('You freeze up.', true, ANDROID_PANIC_RESULT)).toBe('You freeze up.');
+  });
 
-    expect(androidSubstitution('You freeze up.', true)).toBe('You freeze up.');
+  // The old version matched the active locale's English against text baked in at build time, so a
+  // translated world's Panic 19 never substituted (it only ever worked by English coincidence).
+  it('substitutes by the voice marker, not by matching English text — a translated row still works', () => {
+    const translated =
+      '<span data-mosh-voice="human">ATAQUE CARDÍACO</span><span data-mosh-voice="android">CURTO-CIRCUITO</span>. Ai.';
+
+    expect(androidSubstitution(translated, true, ANDROID_PANIC_RESULT)).toBe('CURTO-CIRCUITO. Ai.');
+    expect(androidSubstitution(translated, false, ANDROID_PANIC_RESULT)).toBe('ATAQUE CARDÍACO. Ai.');
   });
 });
 

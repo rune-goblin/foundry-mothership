@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "command": "game.mothershiprpg.initModifyActor('system.stats.sanity.value',1,null,true);",
+  "command": "game.mothershiprpg.modify('system.stats.sanity.value', { kind: 'amount', amount: 1 });",
   "img": "icons/svg/d10-grey.svg",
   "name": "+1 Sanity Save",
   "ownership": {

@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "command": "game.mothershiprpg.initRollTable(game.settings.get('mothershiprpg','table1eDeath'),`1d10 [+]`,`low`,true,false,null,null);",
+  "command": "game.mothershiprpg.rollTable('death', { advantage: 'advantage' });",
   "img": "icons/svg/d10-grey.svg",
   "name": "Death Save +",
   "ownership": {

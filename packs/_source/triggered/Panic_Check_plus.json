@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "command": "game.mothershiprpg.initRollTable(`panicCheck`,`[+]`,null,false,false,null,null);",
+  "command": "game.mothershiprpg.rollPanic({ advantage: 'advantage' });",
   "img": "icons/svg/d10-grey.svg",
   "name": "Panic Check +",
   "ownership": {

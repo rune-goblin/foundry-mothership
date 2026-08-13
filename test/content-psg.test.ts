@@ -197,18 +197,15 @@ describe('the conditions', () => {
     ]);
   });
 
-  // A condition macro cannot hold its condition's id — the build mints it — so the loader writes
-  // the call. If that ever came apart, the macro would silently modify nothing.
+  // A condition macro names its condition by slug, not by id — `applyCondition` resolves the id
+  // at runtime through `CONDITION_IDS`, so no id is minted here to come apart in the first place.
   it('wires every +1 Condition macro to the condition it names', () => {
-    const byId = new Map(
-      built.emitted.filter((d) => d.pack === 'conditions').map((d) => [d.id, d.contentId] as const),
-    );
     const macros = built.emitted.filter((d) => d.pack === 'triggered' && d.contentId.startsWith('plus-'));
-    const wired = macros.filter((m) => (m.document as { command: string }).command.includes('initModifyItem'));
+    const wired = macros.filter((m) => (m.document as { command: string }).command.includes('applyCondition'));
     expect(wired.length).toBeGreaterThan(0);
     for (const macro of wired) {
-      const id = (macro.document as { command: string }).command.match(/'([A-Za-z0-9]{16})'/)![1]!;
-      expect(macro.contentId).toContain(byId.get(id)!);
+      const slug = (macro.document as { command: string }).command.match(/applyCondition\('([a-z-]+)'/)![1]!;
+      expect(macro.contentId).toContain(slug);
     }
   });
 });

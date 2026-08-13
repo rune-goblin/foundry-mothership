@@ -13,6 +13,7 @@
 import { registerChatAction } from '../chat/actions.ts';
 import { gainAddress, type ChatAction } from '../chat/enrichers.ts';
 import { mutationCard, postCard } from '../chat/cards.ts';
+import { isCondition } from '../conditions.ts';
 import { mutate, type Change } from '../mutation/mutate.ts';
 import { parseRollSpec } from '../rolls/parse.ts';
 import { CHECK_SEMANTICS, type Advantage, type RollSpec } from '../rolls/spec.ts';
@@ -33,15 +34,17 @@ function stated(advantage: Advantage): Advantage | null {
 }
 
 /**
- * How much of a condition this actor is carrying — `@Gain[health -bleeding]` asks for it. The
- * slug is matched against the condition's name until R4 gives conditions the machine identity the
- * tables already have; a renamed condition is worth nothing rather than an error.
+ * How much of a condition this actor is carrying — `@Gain[health -bleeding]` asks for it. Matched
+ * by `isCondition`, the same identity `@Apply` grants by: a compendium id when the condition was
+ * granted through this system (`mutation/items.ts` passes `{keepId: true}`), or the exact
+ * canonical name when it was not — a condition dragged straight onto the sheet from the
+ * compendium never touches this system's write path at all, and keeps whatever fresh id Foundry's
+ * own drop handler minted for it.
  */
 function severityOf(actor: CheckActor, condition: string): number {
-  const name = condition.replaceAll('-', ' ');
   let total = 0;
   for (const item of actor.items) {
-    if (item.type !== 'condition' || item.name.trim().toLowerCase() !== name) continue;
+    if (item.type !== 'condition' || !isCondition(item, condition)) continue;
     const system = (item.system ?? {}) as { severity?: unknown };
     total += Number(system.severity) || 0;
   }
@@ -92,8 +95,8 @@ export async function runAction(action: ChatAction, actors: readonly CheckActor[
         await gain(actor, action);
         break;
       case 'apply':
-        // R4 owns this one: a condition slug becomes a document only once the content pipeline
-        // pins the map, the way `TABLES` pins the seven table ids (audit C2, RC13).
+        // `api.ts`'s `registerActions` claims this verb directly, with `applyCondition` — the
+        // branch stays only so the switch covers every `ChatAction['verb']`.
         break;
     }
   }

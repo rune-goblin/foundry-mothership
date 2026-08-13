@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "command": "game.mothershiprpg.initRollCheck('1d100 [-]','low','combat',null,null,null);",
+  "command": "game.mothershiprpg.rollStat('combat', { advantage: 'disadvantage' });",
   "img": "icons/svg/d10-grey.svg",
   "name": "Combat Check -",
   "ownership": {

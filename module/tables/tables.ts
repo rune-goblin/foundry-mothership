@@ -12,12 +12,11 @@
  * is 38 KB of bookkeeping no player needs shipped.
  */
 
-import { localize } from '../i18n.ts';
 import { lookup, type LookupResult } from '../lookup.ts';
 import { parseRollSpec, themed, toFormula } from '../rolls/parse.ts';
 import { resolveOutcome, type EvaluatedRoll, type Outcome } from '../rolls/resolve.ts';
 import { CHECK_SEMANTICS, type Advantage, type CheckKind, type RollSpec } from '../rolls/spec.ts';
-import { DEATH_DIE, PANIC_DIE, WOUND_DIE } from '../rules.ts';
+import { ANDROID_PANIC_RESULT, DEATH_DIE, PANIC_DIE, WOUND_DIE } from '../rules.ts';
 
 export type TableKey =
   | 'panic'
@@ -159,15 +158,19 @@ export interface RollOnTableOptions {
 
 declare const Roll: new (formula: string) => { evaluate(): Promise<RollDocument> };
 
-/** PSG 21.1 — result 19 names both outcomes in one row, and only one of them happened. */
-const PANIC_BOTH = 'Mosh.HEARTATTACKSHORTCIRCUITANDROIDS';
-const PANIC_HUMAN = 'Mosh.HEARTATTACK';
-const PANIC_ROBOTIC = 'Mosh.SHORTCIRCUIT';
+/**
+ * PSG 21.1 — result 19 names both outcomes in one row, and only one of them happened. The content
+ * pipeline wraps each half in a `data-mosh-voice` span (`scripts/content/books/psg/tables.ts`); a
+ * translated row carries the same markers, so this selects by structure rather than by matching
+ * the current locale's English against baked-in text (audit-adjacent — the old version only ever
+ * matched a world running in English).
+ */
+const VOICE = /<span data-mosh-voice="(human|android)">(.*?)<\/span>/g;
 
-export function androidSubstitution(description: string, robotic: boolean): string {
-  const both = localize(PANIC_BOTH);
-  if (both === '' || !description.includes(both)) return description;
-  return description.replace(both, localize(robotic ? PANIC_ROBOTIC : PANIC_HUMAN));
+export function androidSubstitution(description: string, robotic: boolean, roll: number): string {
+  if (roll !== ANDROID_PANIC_RESULT) return description;
+  const wanted = robotic ? 'android' : 'human';
+  return description.replace(VOICE, (_match, voice: string, text: string) => (voice === wanted ? text : ''));
 }
 
 function rowType(type: string | number | undefined): RowType {
@@ -210,7 +213,7 @@ export async function rollOnTable(
     img: result.img ?? '',
     description:
       options.key === 'panic'
-        ? androidSubstitution(result.description ?? '', robotic)
+        ? androidSubstitution(result.description ?? '', robotic, outcome.total)
         : (result.description ?? ''),
     documentUuid: result.documentUuid ?? null,
     range: range(result.range),

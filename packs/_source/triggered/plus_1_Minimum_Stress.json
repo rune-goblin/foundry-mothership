@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "command": "game.mothershiprpg.initModifyActor('system.other.stress.min',1,null,true);",
+  "command": "game.mothershiprpg.modify('system.other.stress.min', { kind: 'amount', amount: 1 });",
   "img": "icons/svg/d10-grey.svg",
   "name": "+1 Minimum Stress",
   "ownership": {

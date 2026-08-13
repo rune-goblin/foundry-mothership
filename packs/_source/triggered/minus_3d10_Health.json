@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "command": "game.mothershiprpg.initModifyActor('system.health.value',null,'-3d10',true);",
+  "command": "game.mothershiprpg.modify('system.health.value', { kind: 'roll', dice: '-3d10' });",
   "img": "icons/svg/d10-grey.svg",
   "name": "-3d10 Health",
   "ownership": {

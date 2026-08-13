@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "command": "game.mothershiprpg.initModifyActor('system.other.stress.value',null,'-1d5',true);",
+  "command": "game.mothershiprpg.modify('system.other.stress.value', { kind: 'roll', dice: '-1d5' });",
   "img": "icons/svg/d10-grey.svg",
   "name": "-1d5 Stress",
   "ownership": {

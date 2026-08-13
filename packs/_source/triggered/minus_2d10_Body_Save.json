@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "command": "game.mothershiprpg.initModifyActor('system.stats.body.value',null,'-2d10',true);",
+  "command": "game.mothershiprpg.modify('system.stats.body.value', { kind: 'roll', dice: '-2d10' });",
   "img": "icons/svg/d10-grey.svg",
   "name": "-2d10 Body Save",
   "ownership": {

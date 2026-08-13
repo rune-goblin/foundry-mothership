@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "command": "game.mothershiprpg.initRollTable(game.settings.get('mothershiprpg','table1eWoundFireExplosives'),`1d10 [+]`,`low`,true,false,null,null);",
+  "command": "game.mothershiprpg.rollTable('fire-explosives', { advantage: 'advantage' });",
   "img": "icons/svg/d10-grey.svg",
   "name": "Fire & Explosives Wound +",
   "ownership": {

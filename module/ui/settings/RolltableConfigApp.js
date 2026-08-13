@@ -4,7 +4,7 @@ import RolltableConfig from './RolltableConfig.svelte';
 const { ApplicationV2 } = foundry.applications.api;
 
 /**
- * The 14 `table1e*` world settings, grouped and labelled the way the AppV1 template laid them
+ * The seven `table1e*` world settings, grouped and labelled the way the AppV1 template laid them
  * out. This is the single source both the component's markup and the submit handler read, so
  * the two can never drift the way `getData()`/`_updateObject()`'s hand-written lists could.
  * `null` marks a blank grid cell (the Death Save row centers its one field in a 4-column grid).

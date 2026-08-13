@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "command": "game.mothershiprpg.initModifyItem('MLPSYfWrwY6R7JDy',1);",
+  "command": "game.mothershiprpg.applyCondition('nightmares', 1);",
   "img": "icons/svg/d10-grey.svg",
   "name": "+1 Nightmares",
   "ownership": {
