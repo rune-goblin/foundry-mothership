@@ -151,9 +151,9 @@
   },
   "primaryTokenAttribute": "health",
   "secondaryTokenAttribute": "hits",
-  "url": "https://github.com/rune-goblin/foundry-mothership",
-  "manifest": "https://github.com/rune-goblin/foundry-mothership/releases/latest/download/system.json",
-  "download": "https://github.com/rune-goblin/foundry-mothership/releases/latest/download/mothershiprpg.zip",
+  "url": "https://github.com/rune-goblin/mothership-rpg",
+  "manifest": "https://github.com/rune-goblin/mothership-rpg/releases/latest/download/system.json",
+  "download": "https://github.com/rune-goblin/mothership-rpg/releases/latest/download/mothershiprpg.zip",
   "license": "LICENSE.txt",
   "authors": [
     {

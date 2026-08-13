@@ -1045,6 +1045,13 @@ Two things beyond the owner change:
   stale at 0.6.1 in the first place, so the fix is in `release.yml`, not just in the file. Also
   corrected: the zip is `mosh.zip`, not `foundry-mothership.zip`.
 
+**2026-08-14 — the repo itself renamed** `foundry-mothership` → **`mothership-rpg`** (owner's
+call: the tree has diverged far enough that the fork-era name misdescribed it; it now matches
+the system id). All three manifest URLs updated in the same commit. Existing installs keep
+updating: GitHub redirects the old repo URLs to the new name — which is also why **the old name
+must never be reused** for a new repo, or every pre-rename install silently loses its update
+path. `release.yml` reads the repo from the workflow context, so it needed nothing.
+
 Dry-run of the stamp step against a hypothetical `v0.7.0` tag produces
 `download …/releases/download/v0.7.0/mosh.zip` with `manifest` untouched.
 
