@@ -945,7 +945,38 @@
     "Type": "Tipo",
     "Errors": {
       "SkillAlreadyInList": "Essa habilidade já está na lista.",
-      "NoDropTarget": "Algo deu errado com o drop, tente novamente"
+      "NoDropTarget": "Algo deu errado com o drop, tente novamente",
+      "DocumentNotFound": "Nenhum {type} foi encontrado com o id {id}."
+    },
+    "Chat": {
+      "Success": "SUCESSO!",
+      "Failure": "FALHA!",
+      "CriticalSuccess": "SUCESSO CRÍTICO!",
+      "CriticalFailure": "FALHA CRÍTICA!",
+      "Rolled": "tirou",
+      "DidNotRoll": "não tirou",
+      "LessThan": "menos que",
+      "LessThanOrEqual": "menos que ou igual a",
+      "GreaterThan": "mais que",
+      "GreaterThanOrEqual": "mais que ou igual a",
+      "Increased": "aumentou",
+      "Decreased": "diminuiu",
+      "FieldChanged": "{field} {direction} de {from} para {to}.",
+      "ReduceStatBySurplus": "Reduza o Atributo ou Salvaguarda mais relevante em {amount}.",
+      "BoundedField": "{field} {bound}",
+      "GainLabel": "{amount} {field}",
+      "ApplyLabel": "{count} {condition}",
+      "SufferLabel": "Sofrer Dano de {condition}",
+      "ActionUnavailable": "Essa ação ainda não está disponível."
+    },
+    "Table": {
+      "panic": "Cheque de Pânico",
+      "death": "Salvaguarda de Morte",
+      "bleeding": "Ferimento de Sangramento",
+      "blunt-force": "Ferimento de Força Bruta",
+      "fire-explosives": "Ferimento de Fogo & Explosivos",
+      "gore-massive": "Ferimento Massivo & Dilacerante",
+      "gunshot": "Ferimento de Bala"
     }
   }
 }

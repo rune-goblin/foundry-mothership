@@ -949,7 +949,38 @@
     "Type": "Type",
     "Errors": {
       "SkillAlreadyInList": "This skill is already in the list.",
-      "NoDropTarget": "Something went wrong with the drop, please try again."
+      "NoDropTarget": "Something went wrong with the drop, please try again.",
+      "DocumentNotFound": "No {type} was found with the id {id}."
+    },
+    "Chat": {
+      "Success": "SUCCESS!",
+      "Failure": "FAILURE!",
+      "CriticalSuccess": "CRITICAL SUCCESS!",
+      "CriticalFailure": "CRITICAL FAILURE!",
+      "Rolled": "rolled",
+      "DidNotRoll": "did not roll",
+      "LessThan": "less than",
+      "LessThanOrEqual": "less than or equal to",
+      "GreaterThan": "greater than",
+      "GreaterThanOrEqual": "greater than or equal to",
+      "Increased": "increased",
+      "Decreased": "decreased",
+      "FieldChanged": "{field} {direction} from {from} to {to}.",
+      "ReduceStatBySurplus": "Reduce the most relevant Stat or Save by {amount}.",
+      "BoundedField": "{bound} {field}",
+      "GainLabel": "{amount} {field}",
+      "ApplyLabel": "{count} {condition}",
+      "SufferLabel": "Take {condition} Damage",
+      "ActionUnavailable": "That action is not available yet."
+    },
+    "Table": {
+      "panic": "Panic Check",
+      "death": "Death Save",
+      "bleeding": "Bleeding Wound",
+      "blunt-force": "Blunt Force Wound",
+      "fire-explosives": "Fire & Explosives Wound",
+      "gore-massive": "Gore & Massive Wound",
+      "gunshot": "Gunshot Wound"
     }
   }
 }

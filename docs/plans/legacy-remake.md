@@ -201,6 +201,7 @@ implemented book-side (decision 3) and pinned by a test:
 | R1-4 | Mutations read the derived `system` — a swarm creature's multiplied Combat would persist | Mutations read `toObject().system` | `test/mutate.test.ts` |
 | R1-5 | Rolled amounts use the kept-die total, zero-basing a rolled 10 to 0 | Rolled amounts use `roll.total` | `test/mutate.test.ts` |
 | R1-6 | Taking the **last** Wound leaves health at 0 (`hits.value + 1 < hits.max` guard) | The last Wound is survivable: the bar refills (PSG 28) | `test/mutate.test.ts` |
+| R2-1 | The at-max-Stress branch shadowed the surplus rule — a player at max Stress was never told to reduce a Stat or Save | The surplus is always spent (PSG 20); the card always says so | `test/chat-cards.test.ts` |
 
 ## Units
 
@@ -320,12 +321,12 @@ resumes it by diffing the working tree against the unit's description before con
 | R0 — TS wiring, rules, rolls | Opus | done | `R0: rules and the roll domain…` | 344 vitest (baseline 273), dual-run proves legacy equivalence per assertion; Vite bundles runtime .ts (proven out-of-tree; R5 wires `init.ts` into `index.js`, no config change needed). `Outcome.total` is the KEPT DIE, not formula arithmetic — damage totals read `roll.total`. |
 | R0-review — foundation interfaces | Fable | done | (same commit) | Approved: RollSpec/Outcome/CheckKind/CHECK_SEMANTICS sound; panic crit-exception now pinned by discriminating tests both implementations pass. Advisories parked: AUTOFAIL scope → R3, rank normalization → R1. |
 | R1 — mutation, inventory | Opus | done | `R1: the mutation engine…` | 416 vitest; 25 mutants, 0 survivors; divergences R1-1…R1-6 recorded above. Pod contract documented in `mutation/address.ts` header — R2/R3 read it before touching fields. Rank normalizer landed in `rules.ts` (`skillRank`/`rankBonus`). XP stays unbounded here — the U14 clamp is R7's, via a rules-side bound. |
-| R2 — tables, lookup, chat | Opus | pending | — | Owes: `Mosh.HealthZeroMessage2` is the correct key (F7's string half); decide whether legacy `chatDesc`'s trinket/patch name↔description swap survives in the card renderer. |
-| R3 — checks, dialogs | Opus | pending | — | Owes: decide `AUTOFAIL_AT` scope — legacy applies ≥90 to every comparison/die; the book scopes it to d100 stat/save checks. No reachable roll differs today. Also owes the literal F5 end-to-end spec: the damage flow calls nothing that touches shots (structural pin landed in R1; the flow-level spec needs `checks/damage.ts` to exist). |
-| R4 — API, content regen | Opus (API) / Sonnet (catalog regen) | pending | — | — |
+| R2 — tables, lookup, chat | Opus | done | `R2: tables are data…` | 506 vitest; 34 mutants, 0 survivors; dist byte-identical (inertness proven). Owes resolved: `HealthZeroMessage2` chosen; trinket/patch swap dropped (S5 removed its reason; evidence in the R2 report). Table ids join `content/ids.json` in CI — drift cannot land. Legacy setting names kept so stored GM choices survive. Divergence R2-1 recorded. |
+| R3 — checks, dialogs | Opus | pending | — | Owes: decide `AUTOFAIL_AT` scope — legacy applies ≥90 to every comparison/die; the book scopes it to d100 stat/save checks. No reachable roll differs today. The literal F5 end-to-end spec (damage flow touches nothing that touches shots). Fill the `check` slot in `chat/actions.ts`'s registry (until then `@Check` buttons warn). When consuming `lookup.ts`'s UUID path, guard the resolved document's type (a UUID naming an Actor currently satisfies a RollTable request). Don't trust `test/foundry-stubs.ts`'s `installRoll` `total` for pools — it sums all dice; derive from the kept die. |
+| R4 — API, content regen | Opus (API) / Sonnet (catalog regen) | pending | — | Owes: embed the class item on generated characters so `isRobotic`'s name-fallback dies (`tables.ts:244`); carry the android panic-19 variant as content data so the substitution stops being English-only; regenerate `RolltableConfigApp`'s `ROLLTABLE_KEYS` from `tableSettings()`. |
 | R5 — the swap | Opus | pending | — | Fable on call if the gate fails twice |
 | R6 — record and close | Sonnet | pending | — | — |
-| R7 — sheets adopt services | Opus | pending | — | — |
+| R7 — sheets adopt services | Opus | pending | — | Owes: reconcile `module/i18n.ts` (services' seam) with `module/ui/i18n.js` (UI's) — one should absorb the other. The U14 XP clamp via a rules-side bound. |
 
 ### Model policy
 
