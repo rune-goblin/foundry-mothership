@@ -13,7 +13,9 @@ description: >-
 
 Conventions and APIs for the MoSh Mothership system. Adapted from the runegoblin
 `foundry-pf2e` skill; the differences are called out because they matter — **this is a
-system, not a module, and its runtime code is still plain JavaScript mid-migration.**
+system, not a module. The service core is TypeScript, remade whole
+(`docs/plans/legacy-remake.md`); the UI layer above it (`module/ui/`) is still plain
+JavaScript and Svelte, mid-migration.**
 
 ## Two rules that override defaults
 
@@ -34,7 +36,8 @@ structured data `foundry.abstract.TypeDataModel` + `defineSchema()`.
 | Item sheets | ✅ every type — the 8 simple ones (`module/ui/item/`), `skill`, `class` |
 | Windows | ✅ ApplicationV2 throughout — no `FormApplication` subclass left |
 | Actor sheets | ✅ both — `module/ui/actor/` and `module/ui/creature/`, on the shared sections |
-| Templates | ✅ no sheet left; `templates/` holds 5 chat and 3 dialog partials |
+| Templates | ✅ `templates/` holds 6 chat cards; no dialog partials left — dialogs are Svelte, mounted through `dialogs/svelte-dialog.ts` |
+| Runtime core | ✅ remade in TypeScript — `documents/`, `checks/`, `mutation/`, `rolls/`, `tables/`, `chat/`, `api/` (`docs/plans/legacy-remake.md`, `MODERNIZATION.md` §35); `actor/actor.js` and `mosh.js` are gone |
 
 **Phase 4 is complete** (`MODERNIZATION.md` §33) — no `foundry.appv1.*` class remains. New code
 has no v1 precedent to copy, so don't introduce one.
@@ -44,12 +47,13 @@ has no v1 precedent to copy, so don't introduce one.
 `module/**/*.ts`** are TypeScript, checked by `npm run check`. Node ≥22.18 strips types, so
 scripts run under plain `node` with no `tsx`.
 
-**Amended by `docs/plans/legacy-remake.md` decision 2 (landed in R0).** New runtime code is
-written in TypeScript — Vite compiles `.ts` into the same bundle, proven by `module/rules.ts`
-and `module/rolls/`. The remaining legacy JS (`module/actor/actor.js`, `mosh.js`,
-`item/item.js`, `settings.js`) is **not** type-checked and **is not converted**: it is replaced
-module by module and deleted at the R5 swap. There is no per-file `// @ts-check` migration any
-more. `module/ui/**` stays `.js`/`.svelte` until R7.
+**`docs/plans/legacy-remake.md` decision 2, landed R0–R5.** The runtime core is TypeScript now,
+not migrated but remade — Vite compiles `.ts` into the same bundle. `module/actor/actor.js`,
+`mosh.js`, `item/item.js` and the old `settings.js` are **gone**, deleted at the R5 swap and
+replaced by `documents/`, `checks/`, `mutation/`, `rolls/`, `tables/`, `chat/`, `api/` and their
+neighbours. Nothing was translated file-by-file; there is no per-file `// @ts-check` migration
+any more. `module/ui/**` stays `.js`/`.svelte` — R7 is next there, and it is a service-adoption
+pass, not a TS conversion.
 
 ## Reference files — read the one that fits
 
@@ -73,22 +77,30 @@ settings (`game.settings.get('mothershiprpg', …)`), flags, and pack names
 path templates and art use at runtime. The `.mosh` CSS classes and `Mosh.*` lang keys are
 internal and were deliberately kept.
 
-**Public API.** `game.mothershiprpg` holds the macro entry points (`rollItemMacro`, `initRollTable`,
-`initRollCheck`, `initModifyActor`, …). Compendium macros call these, so **changing a
-signature breaks shipped content** — grep `packs/_source/` before you do.
+**Public API.** `game.mothershiprpg` is the verb surface (`module/api/api.ts`) — `rollStat`,
+`rollSkill`, `rollWeapon`, `rollPanic`, `rollRestSave`, `rollTable`, `modify`, `applyItem`,
+`promptStress`/`promptSave`/`promptWound`, `rollItem`, … — what shipped macros and new content
+call. The legacy names (`rollItemMacro`, `initRollTable`, `initRollCheck`, `initModifyActor`,
+`initModifyItem`, `noCharSelected`) and the old actor methods survive as a deprecated shim
+(`module/api/legacy.ts`) for macros already imported into worlds. **Changing either surface's
+signature breaks something** — grep `packs/_source/` for the new verbs, `test/api-legacy.test.ts`
+pins the old ones.
 
 **Localization.** `lang/en.json` under `Mosh.*`, read with `game.i18n.localize/format`.
 There is also a `pt-BR` translation; don't orphan keys.
 
-**Derived data.** `MothershipActor.prepareDerivedData()` dispatches to
-`_deriveCharacter` / `_deriveCreature` / `_deriveShip`, which **mutate `this.system` in
-place** (armour mod/total, net HP, bleeding). Consequence: when asserting *stored* data use
+**Derived data.** `MothershipActor.prepareDerivedData()` (`module/documents/actor.ts`) dispatches
+to `_deriveCharacter`/`_deriveCreature`, which **mutate `this.system` in place** (armour mod/total,
+net HP, bleeding — shared helpers both call). Consequence: when asserting *stored* data use
 `doc.toObject().system`, not `doc.system`.
 
-**The roll pipeline.** `parseRollString` translates `1d100[+]`/`[-]` into a Foundry keep
-formula; `parseRollResult` (≈400 lines) resolves zero-based dice, the 90+ auto-failure,
-doubles-as-criticals, and advantage/disadvantage crit preference. Both are unit-tested —
-if you change either, the tests are the spec.
+**The roll pipeline.** `module/rolls/` now — `actor.js`'s `parseRollString`/`parseRollResult` are
+gone (`docs/plans/legacy-remake.md` R0). `rolls/parse.ts`'s `parseRollSpec` turns `1d100[+]`/`[-]`
+into a `RollSpec` (die, count, sign, advantage, aim) and a Foundry keep formula; `rolls/resolve.ts`'s
+`resolveOutcome` is the pure function that turns an evaluated `Roll` into an `Outcome` — zero-based
+dice, the 90+ auto-failure, doubles-as-criticals, advantage/disadvantage crit preference — without
+touching the `Roll` itself. `checks/checks.ts` orchestrates a check end-to-end on top of both.
+All are unit-tested — the tests are still the spec.
 
 **Authoritative docs.** https://foundryvtt.com/api/ (pick the v14 build). The installed
 app at `/Applications/Foundry Virtual Tabletop.app/Contents/Resources/app/public/scripts/foundry.mjs`

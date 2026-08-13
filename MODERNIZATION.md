@@ -2711,3 +2711,139 @@ each of the three buttons still rolls what it says over the top of the preselect
 A Rest Save dialog is **titled with the save it resolved to** — "Sanity Save" — because
 `chooseSkill` is handed `stats[attribute].rollLabel` after the rewrite. Pre-existing, and the
 condition note reads correctly beside it. Booked for the `actor.js` split (S9).
+
+---
+
+## 35. The legacy remake — `actor.js` and the macro half of `mosh.js` are gone
+
+`docs/plans/legacy-remake.md`, written from `docs/audits/architecture-audit.md`'s findings. The
+audit's own conclusion was two codebases sharing one repo: new work (the DataModels, the content
+pipeline, the id registry, the guard-rail tests, the e2e harness, `parts/`, the generator draft)
+disciplined and self-verifying; the inherited core (`module/actor/actor.js`, 2,394 lines, and the
+macro half of `module/mosh.js`) a single God Object holding the roll engine, six dialogs, chat
+rendering and the mutation engine, with at least eight user-visible bugs living on the ~80% of it
+no test tier reached. Rather than refactor that core in place, it was **remade**: proper services
+and domains, written fresh, TypeScript throughout, cut over in one swap commit. §23's Svelte
+audit stays queued for the UI layer; this closes the runtime core the audit called the harder
+problem.
+
+### The five decisions
+
+1. **Big-bang, not strangler.** R0–R4 landed the new tree in-tree but inert — compiled,
+   type-checked, unit-tested, wired to nothing — while the shipped system kept running legacy
+   unchanged. R5 was the one commit that rewired `init` and deleted legacy. No façade, no
+   per-surface routing, no period where `master` shipped half of each.
+2. **TypeScript runtime, for new files only** — an amendment to the "JS for runtime" hard rule,
+   recorded in CLAUDE.md and the `foundry-mosh` skill at R0. Every module under `module/` written
+   after R0 is `.ts`; legacy `.js` was never converted, because it was deleted rather than
+   migrated.
+3. **The book is the spec.** The audit's ten-item bug list (C1, RC1, RC3, RC5, F2, F4, F5, F22,
+   C2, U14) is dead, each behind a test asserting *book* behaviour first. Sixteen more
+   divergences turned up while building and are pinned the same way — the "Divergences found in
+   execution" table in `docs/plans/legacy-remake.md` is the changelog for players; it is not
+   duplicated here.
+4. **Macros are user interface; services are the system.** Measured: of 104 shipped macros, 95
+   triggered ones called exactly four verbs (`initModifyActor`/`initRollCheck`/`initRollTable`/
+   `initModifyItem`) as an argument grid, and only 15 were referenced by any content. The new API
+   states each verb once (`rollStat`, `rollTable`, `modify`, `applyItem`, …); a semantic-action
+   text enricher (`chat/enrichers.ts`) renders `@Check[…]`, `@Gain[…]`, `@Apply[…]` as chat
+   buttons, and a delegated listener (`chat/actions.ts`) routes clicks to services. Conditions and
+   table results reference *meanings* now, not document ids — the dangling-macro-id bug class
+   (C2, C10) and `MACRO_LABEL` are structurally impossible.
+5. **Interfaces were free to change; the sheets' were touched twice on purpose.** R5 swapped the
+   sheets' call sites onto the new named verbs mechanically — enough to compile against the new
+   API, nothing structural. R7, still pending, is the secondary task where the sheets are
+   redesigned around the new interfaces rather than just compiled against them.
+
+### What landed, unit by unit
+
+| Unit | What |
+|---|---|
+| R0 | `module/**/*.ts` added to `npm run check`'s surface; `rules.ts` (every PSG constant, once); `rolls/` (`RollSpec`, `parseRollSpec`, `resolveOutcome` — the parse-once roll record and the pure Outcome resolver, `parseRollString`/`parseRollResult`'s heirs) |
+| R1 | `mutation/` (the one mutation engine, typed field addresses) and `documents/item.ts` (`fire`/`reload`/`toChat` — the item owns its own fields) |
+| R2 | `tables/` (table identity as data — a `TableKey` record, never a munged name), `lookup.ts`, `chat/` (cards, enrichers, actions) |
+| R3 | `checks/` (orchestration dispatched on the `CheckKind` union) and `dialogs/` (Svelte mounted in `DialogV2.wait`, every prompt a real promise) |
+| R4a | `documents/actor.ts`, `api/api.ts`, `api/legacy.ts` (the shim for macros already imported into worlds), `settings.ts`, `init.ts` — written, not yet the entry point |
+| R4b | the content regeneration: macros become typed generated records, conditions and the Panic table switch from `@UUID[…Macro…]` links to enricher actions, three emit-time guards added |
+| R5 | **the swap** — `module/index.js` imports `init.ts`, legacy is deleted, the sheets' call sites move onto the new named verbs |
+| R6 | this unit — recorded here, and closing the pipeline gaps below |
+| R7 | pending — the sheets adopt the services as designed interfaces, not merely compiled-against ones (U4, U5, U10's service-facing halves) |
+
+The full per-unit detail — what each landed, the owed items handed to the next, the divergences
+each pinned — lives in `docs/plans/legacy-remake.md`'s progress ledger; this section is the
+summary, not a second copy of it.
+
+### The archive
+
+Legacy is not destroyed. `archive/legacy-core` (the tree as of just before R5's deletion) and
+`archive/legacy-core-pre-swap` (a tag on the commit before the swap) hold it — the same precedent
+§25 set for the PSG cut. Both exist locally as of this writing; pushing them is a separate, still
+pending step.
+
+### The numbers
+
+- Legacy: **−3,862 lines** — `actor/actor.js`, `mosh.js`, `item/item.js` and the old
+  `settings.js`, gone at R5.
+- **700 vitest specs** at R5's landing, from 273 at the audit's baseline; **701** with this unit's
+  build-freshness spec added (below).
+- **124 e2e specs**, from 116 — run twice at R5 (the executor and an independent verifier)
+  against real headless Foundry, and once more at this unit's gate.
+- `content/books/psg/macros.ts`: **1,346 → 490** lines when R4b's typed-record generation
+  replaced the hand-unrolled cross-product, **→ 360** once R5 turned the last hand-written hotbar
+  dialogs into one-line API calls.
+- **Three emit-time pipeline guards**, added at R4b, each proven (by a failing fixture) to catch
+  what it exists for: a `settings.get` namespace/key check against the registered set, a bare
+  macro-id check, and a check that no emitted command still names a retired `init*` function.
+
+### The review-caught bug
+
+`module/conditions.ts`'s `CONDITION_IDS` (R4b) is the one leaf both `api.ts` (targeting
+`@Apply[…]`) and `checks/actions.ts` (reading a Bleeding severity) read a condition's identity
+from — a compendium id, or, because a condition dragged straight from the compendium onto a sheet
+gets a fresh id Foundry mints without this system's code ever seeing it, the exact book name.
+The first version of `isCondition` matched by id alone. Review blocked it before it landed: a
+plain `createEmbeddedDocuments` call mints a fresh id for every embedded document, so an id-only
+match could never survive the very grant that was supposed to establish it. The fix —
+`{keepId: true}` on the first copy of a condition an actor is given (`mutation/items.ts`), with
+`isCondition` falling back to the exact name for every copy after — was proven by reverting it
+and watching the regression reappear. This is the review gate `docs/plans/run-to-the-end.md`
+mandates doing exactly what it is for.
+
+### The audit, closed out
+
+`docs/audits/architecture-audit.md`'s findings were swept against this remake: every runtime-core
+and content-pipeline finding it resolved is tagged `[done]` with the unit that resolved it, two
+are `[partial]` (F13's android name-fallback, U10's three remaining string-built dialogs), two are
+`[deferred]` to R7 by the plan's own decision 5 (U5, U14), and the rest — the UI-layer U-series
+S9 was always going to own, the e2e-harness and content-tooling findings this plan never claimed
+— are untouched and stay untagged. `grep -v -e '\[done\]' -e '\[skipped\]' docs/audits/architecture-audit.md
+| grep '^####'` lists what is still open.
+
+### This unit's own two gaps closed
+
+The audit named two gaps in the pipeline's own guarantees that the remake did not happen to
+close, so R6 closes them directly:
+
+- **C4 — nothing proved `packs/_source/` matched a fresh build.** `test/content-freshness.test.ts`
+  runs `build()` in memory and byte-compares every emitted file against the committed tree;
+  `canonical()`'s determinism makes this exact equality, not a diff review.
+- **C5 — `test:e2e` rebuilt packs but never refreshed the harness's clone source.** `package.json`
+  now runs `build → packs.sh pack → npm run setup → playwright test`; `npm run setup` is a copy
+  script with no prompts, so it is safe in a headless gate the way `build` and `packs.sh` already
+  were.
+
+### Dead language keys
+
+R3-2 moved wound links in chat from `@UUID[…Macro…]` strings assembled through a lang-file lookup
+table to `woundEffect` action text (§34's neighbor, decision 4) — but left the table itself,
+`Mosh.macro.wound.*` (30 leaf keys — 5 wound types × android/human × plain/`[-]`/`[+]` folded into
+each type's own object — in each of `en.json` and `pt-BR.json`), unread by anything. A repo-wide
+grep — `module/`, `packs/_source/`, `templates/`, both lang files — found no literal or
+dynamically-built reference to the namespace. Both files lost the block.
+
+### Verified
+
+`npm run check` clean · **701 vitest** (700 inherited + `test/content-freshness.test.ts`) ·
+`npm run content` clean and byte-identical to the committed `packs/_source/` (both by the pipeline
+build and by the new freshness spec) · `npm run build` · **124/124 Playwright**, `test:e2e`'s new
+`npm run setup` step exercised for real against the live Foundry Data dir.

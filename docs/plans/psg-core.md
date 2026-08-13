@@ -11,8 +11,8 @@ the book instead. What survives from it is noted at the end.
 | | |
 |---|---|
 | **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26), **S2b** the TypeScript catalogs and **S3** the content (§27), **S4** the class sheet and `base_adjustment` (§28), **S5** the generator on a draft store and `selected_adjustment` (§29), **S6** the creature sheet and the section tier (§30), **S7** the character sheet (§33) — **phase 4 is complete** — **S8** conditions reach the roll they name (§34) |
-| **Next** | **S9 — the trailing list**: the Svelte architecture audit, the CSS dissolution, `checkJs`, the `actor.js` split, `template.json`'s retirement. |
-| **Green at** | `check` 0/0 (242 files) · **273 vitest** · **116 Playwright** · `build` |
+| **Next** | **S9 — the trailing list**: the Svelte architecture audit, the CSS dissolution, `checkJs`, `template.json`'s retirement. The `actor.js` split left this list: the **legacy remake** (`docs/plans/legacy-remake.md`, MODERNIZATION §35) rebuilt the runtime core as TypeScript services; its R7 unit overlaps S9's service-facing items. |
+| **Green at** | `check` 0/0 (280 files) · **701 vitest** · **124 Playwright** · `build` |
 | **Preserved** | Everything cut is on the pushed `archive/pre-psg-cut` branch **and** tag |
 
 What the system ships today: 2 actor types (character, creature), 7 item types, and **274

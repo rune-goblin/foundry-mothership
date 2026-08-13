@@ -1,7 +1,7 @@
 # MoSh — project rules
 
 The unofficial **Mothership** system for Foundry VTT. A Foundry **system** (not a module):
-`system.json` is the manifest, `module/mosh.js` the esmodule, built by Vite to
+`system.json` is the manifest, `module/index.js` the esmodule (css + `init.ts`), built by Vite to
 `dist/mothershiprpg.{js,css}`, plus compendium content built from JSON in `packs/_source/`.
 
 **Detailed conventions live in the `foundry-mosh` skill** (`.claude/skills/foundry-mosh/`) —
@@ -17,16 +17,21 @@ Code style: global `~/.claude/CLAUDE.md` — comment only the non-obvious *why*.
 Survival Guide, containing nothing else — then extend one book at a time.** The Warden's
 Operations Manual is next; the Shipbreaker's Toolkit brings ships back.
 
-**The plan is `docs/plans/psg-core.md`** — read that for what to do next. It supersedes
-`docs/plans/architecture.md`'s phases 1–3 (Decisions 1–4 there still stand; 5–7 do not).
-`docs/plans/evidence.md` holds the measurements; `docs/plans/run-to-the-end.md` holds how a unit
-is delegated and gated (its ten standing rules and review gate are current; its *wave order* is
-superseded). `MODERNIZATION.md` is the **record**: §10 the item-sheet conventions, §20 the
+**The plan is `docs/plans/psg-core.md`** for content and sheets — read that for what to do next.
+**`docs/plans/legacy-remake.md`** is the sibling plan for the runtime core: `module/actor/actor.js`
+and the macro half of `module/mosh.js` were remade as typed services rather than refactored
+(R0–R6 done, R7 — the sheets adopting them — pending); its own progress ledger is authoritative
+for that work, and it superseded psg-core's S9 item "the `actor.js` split". `docs/plans/architecture.md`'s
+phases 1–3 are further back still (Decisions 1–4 there stand; 5–7 do not). `docs/plans/evidence.md`
+holds the measurements; `docs/plans/run-to-the-end.md` holds how a unit is delegated and gated
+(its ten standing rules and review gate are current; its *wave order* is superseded by both plans'
+own ledgers). `MODERNIZATION.md` is the **record**: §10 the item-sheet conventions, §20 the
 component layer, §22 the windows, §24 phase 0, §25 the PSG cut, §26 the content pipeline, §27 the
 TypeScript catalogs and the generated content, §28 the class-adjustment schema and the last AppV1
 item sheet, §29 the character generator on a draft store, §30 the creature sheet and the section
 tier, §31 the weapon range enum, §32 the e2e harness's self-diagnosis, §33 the character sheet and
-the end of AppV1, §34 conditions reaching the roll they name. Update it as work lands.
+the end of AppV1, §34 conditions reaching the roll they name, §35 the legacy remake. Update it as
+work lands.
 
 **Ships, the Calm/android panic variants and all unsourced content were cut** (§25) and live on
 the pushed **`archive/pre-psg-cut`** branch and tag. Nothing was destroyed; ships return as an
@@ -53,6 +58,7 @@ Don't fix component architecture piecemeal mid-phase — note it in §23 instead
 | Both class adjustments are real `SchemaField`s (§28, §29) | |
 | **The character generator, on a draft store** (§29) — no `FormApplication` left | |
 | **Conditions preselect the roll they name** (§34) | |
+| **The runtime core remade — `actor.js`/`mosh.js` gone for typed services** (§35) | the sheets designed around them, not just compiled against — R7 |
 
 ## Hard rules (override defaults)
 
@@ -61,14 +67,15 @@ Don't fix component architecture piecemeal mid-phase — note it in §23 instead
   **v16** removal. New windows are ApplicationV2, dialogs DialogV2, data
   `foundry.abstract.TypeDataModel`. Existing v1 code is mid-migration: don't add to it;
   when you touch a v1 class, prefer converting it whole.
-- **TypeScript for tooling — and now for new runtime code.** `*.config.ts`, `scripts/*.ts`,
+- **TypeScript for tooling, and for the runtime core.** `*.config.ts`, `scripts/*.ts`,
   `test/**/*.ts` **and `module/**/*.ts`** are checked by `npm run check`. Node ≥22.18 runs `.ts`
   scripts directly — no `tsx`/`ts-node`.
-  **Amended by `docs/plans/legacy-remake.md` decision 2 (R0):** every new runtime module is
-  written in TypeScript; Vite compiles it with the rest of the entry. The legacy `.js`
-  (`actor/actor.js`, `mosh.js`, `item/item.js`, `settings.js`) is **never converted** — it stays
-  unchecked (`checkJs: false`) and is deleted at the R5 swap. Don't `// @ts-check` it; don't
-  translate it; write the replacement instead.
+  **`docs/plans/legacy-remake.md` decision 2, landed R0–R5:** the runtime core was remade in
+  TypeScript, not migrated — `actor/actor.js`, `mosh.js`, `item/item.js` and the old `settings.js`
+  are **gone**, deleted at the R5 swap, replaced by typed modules under `module/` (`documents/`,
+  `checks/`, `mutation/`, `rolls/`, `tables/`, `chat/`, `api/`, …). Nothing was translated
+  file-by-file; there is no per-file `// @ts-check` migration. `module/ui/**` stays
+  `.js`/`.svelte`, `checkJs: false` — R7 is next there, not a JS→TS pass.
 - **Verify, don't eyeball.** Every change runs the tier that covers it (below). Don't report
   work as done on an untested edit. If a green run surprises you, suspect the harness.
 
@@ -80,9 +87,9 @@ npm run setup            # dev install: symlink scaffold (packs are COPIED — r
 npm run deploy           # release rehearsal: link-free copy, same shape as the zip
 ./scripts/packs.sh pack  # packs/_source/*.json → LevelDB (close Foundry first)
 npm run content -- --allocate  # content/books/** -> packs/_source/** (--allocate mints new ids)
-npm test                 # 273 vitest specs — the CI tier
+npm test                 # 701 vitest specs — the CI tier
 npm run check            # tsc over the .ts surface, then svelte-check over module/ui
-npm run test:e2e         # 116 Playwright specs vs a real headless Foundry
+npm run test:e2e         # 124 Playwright specs vs a real headless Foundry
 ```
 
 A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — both `dist/` and
@@ -94,8 +101,13 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   (`mothershiprpg.<pack>`), the runtime path `systems/mothershiprpg/…`, **and the public API
   `game.mothershiprpg`**. One string identifies the package everywhere. The `.mosh` CSS classes
   and `Mosh.*` lang keys are internal and kept.
-- **`game.mothershiprpg` is the public API** (`rollItemMacro`, `initRollTable`, `initRollCheck`, …).
-  **Shipped compendium macros call it** — grep `packs/_source/` before changing a signature.
+- **`game.mothershiprpg` is the public API.** The verb surface — `rollStat`, `rollSkill`,
+  `rollWeapon`, `rollTable`, `modify`, `applyItem`, `promptStress`/`promptSave`/`promptWound`,
+  `rollItem`, … (`module/api/api.ts`) — is what shipped macros and new content call.
+  `rollItemMacro`/`initRollTable`/`initRollCheck`/`initModifyActor`/`initModifyItem`/
+  `noCharSelected` and the legacy actor methods survive as a deprecated shim (`module/api/legacy.ts`)
+  for macros already imported into worlds. **Changing either surface's signature breaks something** —
+  grep `packs/_source/` for the new verbs, `test/api-legacy.test.ts` pins the old ones.
 - **Strings** live in `lang/en.json` under `Mosh.*`; there is a `pt-BR` translation too.
 - **`css/mosh.css` is hand-authored, not compiled.** There is no SCSS step (the `scss/` tree
   was 17 months stale and was deleted). As sheets become Svelte, styles move into scoped
@@ -149,7 +161,9 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   `./scripts/packs.sh pack` → **`npm run setup`** (refreshes the live Data dir, which is where
   the harness clones from) → `npm run test:e2e`. Skipping `npm run setup` means the suite keeps
   testing the packs from whenever you last ran it, no matter what you do to the test tree.
-  Together with the point above this cost four e2e cycles during §25's cut.
+  Together with the point above this cost four e2e cycles during §25's cut. `npm run test:e2e`'s
+  script runs all three steps itself now (audit C5, §35) — this trap is only live if you run
+  `packs.sh` and `playwright test`/`test:e2e:run` by hand instead.
 - **A killed e2e run leaves a lock, not an occupied session** (§32 — this entry used to say the
   opposite). Foundry locks its data dir as `Config/options.json.lock`, a **directory**, and only
   releases it on a clean exit; `kill -9` leaves it behind and the next boot dies with *"already
