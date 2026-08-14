@@ -32,14 +32,14 @@ structured data `foundry.abstract.TypeDataModel` + `defineSchema()`.
 | Dialogs | ✅ DialogV2 throughout |
 | Namespacing | ✅ `foundry.utils.*`, `foundry.documents.collections.*` |
 | Svelte | ✅ wired into vite, `npm run check`, vitest — runes mode forced on |
-| Shared components | ✅ `module/ui/parts/` — build conversions out of these, see `MODERNIZATION.md` §20 |
+| Shared components | ✅ `module/ui/parts/` — build conversions out of these |
 | Item sheets | ✅ every type — the 8 simple ones (`module/ui/item/`), `skill`, `class` |
 | Windows | ✅ ApplicationV2 throughout — no `FormApplication` subclass left |
 | Actor sheets | ✅ both — `module/ui/actor/` and `module/ui/creature/`, on the shared sections |
 | Templates | ✅ `templates/` holds 6 chat cards; no dialog partials left — dialogs are Svelte, mounted through `dialogs/svelte-dialog.ts` |
-| Runtime core | ✅ remade in TypeScript — `documents/`, `checks/`, `mutation/`, `rolls/`, `tables/`, `chat/`, `api/` (`docs/plans/legacy-remake.md`, `MODERNIZATION.md` §35); `actor/actor.js` and `mosh.js` are gone |
+| Runtime core | ✅ remade in TypeScript — `documents/`, `checks/`, `mutation/`, `rolls/`, `tables/`, `chat/`, `api/` (`docs/plans/legacy-remake.md`); `actor/actor.js` and `mosh.js` are gone |
 
-**Phase 4 is complete** (`MODERNIZATION.md` §33) — no `foundry.appv1.*` class remains. New code
+**Phase 4 is complete** — no `foundry.appv1.*` class remains. New code
 has no v1 precedent to copy, so don't introduce one.
 
 **2. TypeScript for tooling — and for every new runtime module.** `vite.config.ts`,
@@ -71,7 +71,7 @@ pass, not a TS conversion.
 
 ## Essentials worth knowing without opening a file
 
-**Identity.** System id `mothershiprpg` (renamed from `mosh`; `MODERNIZATION.md` §18). It keys
+**Identity.** System id `mothershiprpg` (renamed from `mosh`). It keys
 settings (`game.settings.get('mothershiprpg', …)`), flags, and pack names
 (`mothershiprpg.<pack>`). Foundry serves the system at `systems/mothershiprpg/…` — that is the
 path templates and art use at runtime. The `.mosh` CSS classes and `Mosh.*` lang keys are
@@ -116,8 +116,8 @@ is the ground truth — grep it rather than guessing about an API.
 - **`packs/` is build output** — never commit it. Sources are `packs/_source/**/*.json`.
 - **`template.json` is inert but kept deliberately** — it is the oracle the DataModel
   equivalence tests compare against. Changing a schema means changing both, on purpose.
-- **A killed e2e run leaves a data-dir lock, not an occupied session** (`MODERNIZATION.md` §32 —
-  this entry used to say the opposite). `Config/options.json.lock` is a directory Foundry frees
+- **A killed e2e run leaves a data-dir lock, not an occupied session** (this entry used to say
+  the opposite). `Config/options.json.lock` is a directory Foundry frees
   only on a clean exit, and freeing the port does not clear it. `start-test-env.sh` clears a stale
   one itself, so prefer `npm run test:e2e` over a hand-started server and kill with **`kill`**.
 - **Foundry holds an exclusive LevelDB lock** on every pack it can see. `scripts/packs.sh`

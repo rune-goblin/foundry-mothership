@@ -265,7 +265,7 @@ describe('id preservation', () => {
 // Catches: a `system` key no DataModel declares. Foundry's SchemaField cleans such a key off on
 // load, so the build succeeds, the pack ships, and the data is gone the first time anyone opens
 // the document. This is the repo's signature bug — armour `equipped`, creature `swarm`, and the
-// twelve found in MODERNIZATION.md §10.
+// twelve like them that `test/sheet-bindings.test.ts` now pins across all 13 types.
 describe('the DataModel guard', () => {
   it('passes the fixture, whose system keys MoshCondition declares', () => {
     const item = built.emitted.find((d) => d.contentId === 'flux-capacitor')!;

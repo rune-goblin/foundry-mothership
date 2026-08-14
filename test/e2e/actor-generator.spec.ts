@@ -7,7 +7,7 @@ import { test, expect } from './fixtures/foundry-clients.ts';
 // answer its skill dialogs, roll everything, save -- and asserts what landed on the actor.
 //
 // The loadout is the part that matters most. The emitted rows link several gear documents each
-// (MODERNIZATION.md §27) and the AppV1 generator kept only the last link, so a three-item row
+// and the AppV1 generator kept only the last link, so a three-item row
 // handed out one item.
 
 // Foundry rolls a face as ceil((1 - randomUniform()) * faces), so a value just under 1 pins every

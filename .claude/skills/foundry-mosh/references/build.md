@@ -83,6 +83,6 @@ Foundry).
 - Pack `path` values are bare directories (`packs/conditions_1e`), matching what v14-native
   packages use. v14 also resolves a legacy `.db` suffix to the sibling directory, but don't
   reintroduce it.
-- `url`/`manifest`/`download` still point at `Futil/foundry-mothership` upstream, while
-  `origin` is `rune-goblin/foundry-mothership`. **Update these before releasing** — see
-  `MODERNIZATION.md` §5.
+- `url`/`manifest`/`download` point at `rune-goblin/mothership-rpg`. `manifest` must stay on
+  `/releases/latest` or Foundry can never detect an update; `download` is version-specific and
+  `release.yml` stamps it from the tag, so don't hardcode it.

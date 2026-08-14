@@ -87,8 +87,6 @@ The existing sheets follow one shape. Map it piece by piece rather than rewritin
 | `_updateObject(event, formData)` | call `doc.update({...})` directly from the handler |
 | `submitOnChange: true` | an `onchange` that calls `doc.update()` |
 
-Order of attack and per-sheet notes live in `MODERNIZATION.md` §Phase 4.
-
 **Things specific to this codebase, in rough order of how much trouble they cause:**
 
 1. **`getData()` builds HTML strings.** e.g. `actor-sheet.js` assembles XP pips into
@@ -121,7 +119,7 @@ Svelte 5 is installed and wired into vite, `npm run check` (`svelte-check` again
 idioms are compile errors. Component `<style>` blocks are scoped and fold into the single
 emitted `dist/mothershiprpg.css`.
 
-**`module/ui/parts/` holds the shared primitives** (`MODERNIZATION.md` §20) — `ItemList`,
+**`module/ui/parts/` holds the shared primitives** — `ItemList`,
 `ItemRow`, `ItemCell`, `ItemControls`, `ItemControl`, `Tabs`, `TabPanel`, `CircleStats`,
 `CircleStat`, `Field`, `CheckField`, `Editor`, `SheetHeader`, and the `dropTarget` attachment.
 Assemble a conversion from these rather than writing bespoke markup, and don't rename the class
@@ -129,7 +127,7 @@ names they emit: they are `css/mosh.css`'s, pinned by `test/ui-parts.test.ts`.
 
 `module/ui/item/` is the worked example and `module/ui/skill/` (§21) shows a sheet that needs
 more than the shared shell — it subclasses `MoshItemSheet`, overriding `static COMPONENT` and
-`_context()`. `MODERNIZATION.md` §10 states the conventions they settled; the two that bite hardest:
+`_context()`. Of the conventions these settled, the two that bite hardest:
 
 - **`css/mosh.css` targets the V1 frame.** A V2 window is `.application`, not `.window-app`,
   and carries the user's theme classes. Put `themed`, `theme-light` in `DEFAULT_OPTIONS.classes`

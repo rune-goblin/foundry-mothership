@@ -62,7 +62,7 @@ conditions pack comes from.
 ## Licence
 
 Transcribed from the published book, so no third-party *code* licence reaches it. It answers to
-Tuesday Knight Games' third-party policy like the rest of this system — `MODERNIZATION.md` §19.
+Tuesday Knight Games' third-party policy like the rest of this system.
 
 ## Adding the next book
 

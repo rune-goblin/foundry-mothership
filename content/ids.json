@@ -1259,14 +1259,14 @@
       "contentId": "minus-1-hull",
       "id": "uPY19Y49bGCLGK3N",
       "retired": "2026-08-12",
-      "reason": "the ship actor type was cut with the PSG cut (MODERNIZATION.md §25); this macro writes a field no surviving model declares"
+      "reason": "the ship actor type was cut with the PSG cut; this macro writes a field no surviving model declares"
     },
     {
       "pack": "triggered",
       "contentId": "minus-1-upgrade",
       "id": "06NSvDYTtmkeUtLq",
       "retired": "2026-08-12",
-      "reason": "the ship actor type was cut with the PSG cut (MODERNIZATION.md §25); this macro writes a field no surviving model declares"
+      "reason": "the ship actor type was cut with the PSG cut; this macro writes a field no surviving model declares"
     },
     {
       "pack": "triggered",
@@ -1280,14 +1280,14 @@
       "contentId": "minus-1d10-battle",
       "id": "X3cL9eS2HOPxhLH5",
       "retired": "2026-08-12",
-      "reason": "the ship actor type was cut with the PSG cut (MODERNIZATION.md §25); this macro writes a field no surviving model declares"
+      "reason": "the ship actor type was cut with the PSG cut; this macro writes a field no surviving model declares"
     },
     {
       "pack": "triggered",
       "contentId": "minus-1d10-systems",
       "id": "oDftFxRKkCQRNY2O",
       "retired": "2026-08-12",
-      "reason": "the ship actor type was cut with the PSG cut (MODERNIZATION.md §25); this macro writes a field no surviving model declares"
+      "reason": "the ship actor type was cut with the PSG cut; this macro writes a field no surviving model declares"
     },
     {
       "pack": "triggered",
@@ -1301,21 +1301,21 @@
       "contentId": "minus-1d5-oxygen",
       "id": "u7TchSo3qutnzaKF",
       "retired": "2026-08-12",
-      "reason": "the ship actor type was cut with the PSG cut (MODERNIZATION.md §25); this macro writes a field no surviving model declares"
+      "reason": "the ship actor type was cut with the PSG cut; this macro writes a field no surviving model declares"
     },
     {
       "pack": "triggered",
       "contentId": "minus-2d10-thrusters",
       "id": "jmOh8n2ps0YIeBC0",
       "retired": "2026-08-12",
-      "reason": "the ship actor type was cut with the PSG cut (MODERNIZATION.md §25); this macro writes a field no surviving model declares"
+      "reason": "the ship actor type was cut with the PSG cut; this macro writes a field no surviving model declares"
     },
     {
       "pack": "triggered",
       "contentId": "minus-50-crew-capacity",
       "id": "DUuRY7kHKd7n5luv",
       "retired": "2026-08-12",
-      "reason": "the ship actor type was cut with the PSG cut (MODERNIZATION.md §25); this macro writes a field no surviving model declares"
+      "reason": "the ship actor type was cut with the PSG cut; this macro writes a field no surviving model declares"
     },
     {
       "pack": "triggered",

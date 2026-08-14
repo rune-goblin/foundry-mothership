@@ -223,8 +223,8 @@ Every record is typed and attributed. A skill:
 ```
 
 This is exactly the content the system lacks (2.1) and the generator needs (2.2), in a better
-shape than what it currently ships (2.3). `MODERNIZATION.md` §19 already establishes the licence
-position: this is transcribed from the published book, so no third-party code licence reaches it,
+shape than what it currently ships (2.3). The licence position is already established: this is
+transcribed from the published book, so no third-party code licence reaches it,
 and it answers to Tuesday Knight Games' third-party policy like everything else here.
 
 ### 2.5 Nothing in the runtime is type-checked

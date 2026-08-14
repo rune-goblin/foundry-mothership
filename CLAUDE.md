@@ -25,23 +25,19 @@ for that work, and it superseded psg-core's S9 item "the `actor.js` split". `doc
 phases 1–3 are further back still (Decisions 1–4 there stand; 5–7 do not). `docs/plans/evidence.md`
 holds the measurements; `docs/plans/run-to-the-end.md` holds how a unit is delegated and gated
 (its ten standing rules and review gate are current; its *wave order* is superseded by both plans'
-own ledgers). `MODERNIZATION.md` is the **record**: §10 the item-sheet conventions, §20 the
-component layer, §22 the windows, §24 phase 0, §25 the PSG cut, §26 the content pipeline, §27 the
-TypeScript catalogs and the generated content, §28 the class-adjustment schema and the last AppV1
-item sheet, §29 the character generator on a draft store, §30 the creature sheet and the section
-tier, §31 the weapon range enum, §32 the e2e harness's self-diagnosis, §33 the character sheet and
-the end of AppV1, §34 conditions reaching the roll they name, §35 the legacy remake. Update it as
-work lands.
+own ledgers). **Git history is the record of what happened** — `git log -S"<symbol>"` finds the
+commit that introduced or removed anything, with the diff and the reasoning attached. Durable
+knowledge belongs in a test, in a comment at the site, or in the Gotchas below; not in a prose log.
 
-**Ships, the Calm/android panic variants and all unsourced content were cut** (§25) and live on
+**Ships, the Calm/android panic variants and all unsourced content were cut** and live on
 master's own history at ancestor `11eee67` (the archive refs were trimmed 2026-08-13 — a label
 on an ancestor preserves nothing history doesn't; `git show 11eee67:<path>` recovers any cut
 file). Nothing was destroyed; ships return as an
 additive book tier. **Do not re-add content without a book behind it.**
 
 **Port, verify, ship, and record the compromise.** Conversions deliberately keep AppV1-era
-shapes so each carries no visual risk; a Svelte best-practices audit is queued as S9 (§23).
-Don't fix component architecture piecemeal mid-phase — note it in §23 instead.
+shapes so each carries no visual risk; a Svelte best-practices audit is queued as S9.
+Don't fix component architecture piecemeal mid-phase — note it there instead.
 
 | Done | Not done |
 |---|---|
@@ -49,18 +45,18 @@ Don't fix component architecture piecemeal mid-phase — note it in §23 instead
 | DataModels for the 9 surviving types | |
 | Packs generated from the book, 0e removed | |
 | Svelte 5 wired into build, check, vitest | |
-| **Every item sheet on ApplicationV2 + Svelte** (§28) | |
-| **The creature sheet, on shared sections** (§30) | |
-| **The character sheet — no AppV1 class, no sheet template left** (§33) | |
+| **Every item sheet on ApplicationV2 + Svelte** | |
+| **The creature sheet, on shared sections** | |
+| **The character sheet — no AppV1 class, no sheet template left** | |
 | Shared components in `module/ui/parts/`, sections in `parts/sections/` | |
 | 0e / `firstEdition` rules removed | |
-| `creature-settings` on ApplicationV2 (§24) | |
-| The PSG cut — 13,337 lines removed (§25) | |
-| **274 documents generated from the PSG** (§27) | |
-| Both class adjustments are real `SchemaField`s (§28, §29) | |
-| **The character generator, on a draft store** (§29) — no `FormApplication` left | |
-| **Conditions preselect the roll they name** (§34) | |
-| **The runtime core remade — `actor.js`/`mosh.js` gone for typed services** (§35) | the sheets designed around them, not just compiled against — R7 |
+| `creature-settings` on ApplicationV2 | |
+| The PSG cut — 13,337 lines removed | |
+| **274 documents generated from the PSG** | |
+| Both class adjustments are real `SchemaField`s | |
+| **The character generator, on a draft store** — no `FormApplication` left | |
+| **Conditions preselect the roll they name** | |
+| **The runtime core remade — `actor.js`/`mosh.js` gone for typed services** | the sheets designed around them, not just compiled against — R7 |
 
 ## Hard rules (override defaults)
 
@@ -99,7 +95,7 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
 
 ## This repo's specifics
 
-- **System id `mothershiprpg`** (§18) — keys settings, flags, pack names
+- **System id `mothershiprpg`** — keys settings, flags, pack names
   (`mothershiprpg.<pack>`), the runtime path `systems/mothershiprpg/…`, **and the public API
   `game.mothershiprpg`**. One string identifies the package everywhere. The `.mosh` CSS classes
   and `Mosh.*` lang keys are internal and kept.
@@ -117,21 +113,21 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
 - **`template.json` is inert but kept on purpose** — it is the oracle the DataModel
   equivalence tests compare against. Changing a schema means changing both, deliberately.
 - **New UI lives in `module/ui/`** — an ApplicationV2 shell per window plus Svelte 5
-  components (runes mode is forced on). `MODERNIZATION.md` §10 has the conventions: the
-  document stays the source of truth, Foundry persists the form, mount once.
-- **`module/ui/parts/` holds the shared primitives** (§20) — `ItemList`/`ItemRow`/`ItemCell`/
+  components (runes mode is forced on). The conventions: the document stays the source of
+  truth, Foundry persists the form, mount once.
+- **`module/ui/parts/` holds the shared primitives** — `ItemList`/`ItemRow`/`ItemCell`/
   `ItemControls`/`ItemControl`, `Tabs`/`TabPanel`, `CircleStats`/`CircleStat`, `MainStat`,
   `Field`, `CheckField`, `Editor`, `SheetHeader`, plus the `dropTarget` attachment. Build a conversion
   out of these before writing bespoke markup. They emit the **global** class names from
   `css/mosh.css` on purpose and carry no `<style>` blocks; `test/ui-parts.test.ts` pins every
   one of those class names, because the stylesheet is a contract no compiler checks.
-- **Manifest URLs point at `rune-goblin`** (`MODERNIZATION.md` §15). `manifest` must stay on
+- **Manifest URLs point at `rune-goblin`**. `manifest` must stay on
   `/releases/latest` or Foundry can never detect an update; `download` is version-specific and
   is stamped by `release.yml` from the tag — don't hardcode it.
 
 ## Not in scope
 
-- **Both third-party content modules are dropped from the merge** (`MODERNIZATION.md` §19).
+- **Both third-party content modules are dropped from the merge**.
   `mothership-survival-guide` is GPL-3 (absorbing it would relicense this MIT system) and
   `mothership-character-builder` declares no licence and is Naurgul's. Only rune-goblin's own
   extraction merges. Don't merge content whose provenance is unsettled.
@@ -142,12 +138,12 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   and deleted (`scss/`, `_macros/`), each duplicating something that had moved on. Before
   building from any input, verify it produces what actually ships.
 - **`packs/_source/**` is generated — do not hand-edit it.** The real source is
-  `content/books/psg/*.ts` (typed catalogs, §27); `npm run content` emits the pack sources and
+  `content/books/psg/*.ts` (typed catalogs); `npm run content` emits the pack sources and
   `packs.sh pack` compiles them. `packs/` and `dist/` are never committed; `packs/_source/` is.
 - **A sheet can bind a field no schema declares.** A `SchemaField` cleans off keys it does not
   know, so the write is accepted and silently discarded. That is how the DataModel migration
   stopped armour from equipping; twelve such fields were found and restored.
-  `test/sheet-bindings.test.ts` pins all 13 types. See `MODERNIZATION.md` §10.
+  `test/sheet-bindings.test.ts` pins all 13 types.
 - **Foundry holds an exclusive LevelDB lock** on every pack it can see; `packs.sh` refuses
   to run while it is open. That guard is deliberate.
 - **`packs.sh pack` never deletes — not a pack, and not a document.** `fvtt package pack` writes
@@ -163,10 +159,10 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   `./scripts/packs.sh pack` → **`npm run setup`** (refreshes the live Data dir, which is where
   the harness clones from) → `npm run test:e2e`. Skipping `npm run setup` means the suite keeps
   testing the packs from whenever you last ran it, no matter what you do to the test tree.
-  Together with the point above this cost four e2e cycles during §25's cut. `npm run test:e2e`'s
-  script runs all three steps itself now (audit C5, §35) — this trap is only live if you run
+  Together with the point above this cost four e2e cycles during the PSG cut. `npm run test:e2e`'s
+  script runs all three steps itself now (audit C5) — this trap is only live if you run
   `packs.sh` and `playwright test`/`test:e2e:run` by hand instead.
-- **A killed e2e run leaves a lock, not an occupied session** (§32 — this entry used to say the
+- **A killed e2e run leaves a lock, not an occupied session** (this entry used to say the
   opposite). Foundry locks its data dir as `Config/options.json.lock`, a **directory**, and only
   releases it on a clean exit; `kill -9` leaves it behind and the next boot dies with *"already
   locked by another process"*, which Playwright reports as the contentless `webServer was not able
@@ -181,5 +177,5 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   still using it and silently doing nothing.
 - **History was rewritten** (`git filter-repo`, to drop 854 MB of committed release zips) and
   has now been **force-pushed**; `master` tracks `origin/master`, so plain `git push` works.
-  The pre-rewrite history is gone from both the remote and this clone (`MODERNIZATION.md` §14).
+  The pre-rewrite history is gone from both the remote and this clone.
   Anyone holding an older clone must re-clone.

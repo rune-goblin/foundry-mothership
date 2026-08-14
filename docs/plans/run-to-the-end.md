@@ -1,7 +1,7 @@
 # Run to the end — the delegation plan for phase 4 → phase 5
 
 How the rest of the modernization gets executed, who does what, and what has to be true before
-each wave is allowed to land. `MODERNIZATION.md` stays the **record** of what happened; this file
+each wave is allowed to land. Git history is the **record** of what happened; this file
 is the **method**.
 
 > **The wave order below is superseded.** The architecture review of 2026-08-12
@@ -67,7 +67,7 @@ Repeat these in every brief. They are the accumulated cost of the last four wave
    Fable in Wave 7. (§23)
 8. **Do not run `npm run test:e2e` or `npx playwright`.** One Foundry, one GM session. The
    orchestrator runs that tier.
-9. **Do not edit `MODERNIZATION.md`, `CLAUDE.md`, or the `foundry-mosh` skill.** Parallel agents
+9. **Do not edit `CLAUDE.md` or the `foundry-mosh` skill.** Parallel agents
    would conflict; the orchestrator writes the record.
 10. **Commit in your worktree** and report: files added/changed/deleted, exact `npm run check` and
     `npm test` output, decisions taken, anything contradicting the brief, and — explicitly —
@@ -98,7 +98,7 @@ Every item, every wave. A wave is not done until all of it passes.
    fail. A spec that cannot fail is not cover.
 6. **Verify visually** against real headless Foundry via the Playwright harness. Screenshot, or
    diff the rendered markup before/after for a pure refactor.
-7. Update `MODERNIZATION.md` (a numbered section per wave) and `CLAUDE.md`'s status table.
+7. Update `CLAUDE.md`'s status table.
 8. Commit, remove the worktree and its branch.
 
 ---
@@ -183,9 +183,8 @@ loop, which is why `character.xp.html` is a *number* in the schema. That becomes
 Runs once everything is converted and working, so it reviews the real thing rather than a
 prediction.
 
-**Inputs:** the whole `module/ui/` tree; `MODERNIZATION.md` §13, §20, §23 and the compromise log
-each wave adds to it; `css/mosh.css` (247 selectors, hand-authored); `test/ui-parts.test.ts` and
-the e2e tier; `svelte.config.js`.
+**Inputs:** the whole `module/ui/` tree; `css/mosh.css` (247 selectors, hand-authored);
+`test/ui-parts.test.ts` and the e2e tier; `svelte.config.js`.
 
 **Deliverable:** `docs/plans/svelte-architecture.md` — a plan, **not** applied changes. It should
 take a position on at least:

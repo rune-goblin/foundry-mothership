@@ -11,7 +11,7 @@ the book instead. What survives from it is noted at the end.
 | | |
 |---|---|
 | **Done** | Phase 0 (§24), **S1** the cut (§25), **S2** the book-tiered pipeline + DataModel guard (§26), **S2b** the TypeScript catalogs and **S3** the content (§27), **S4** the class sheet and `base_adjustment` (§28), **S5** the generator on a draft store and `selected_adjustment` (§29), **S6** the creature sheet and the section tier (§30), **S7** the character sheet (§33) — **phase 4 is complete** — **S8** conditions reach the roll they name (§34) |
-| **Next** | **S9 — the trailing list**: the Svelte architecture audit, the CSS dissolution, `checkJs`, `template.json`'s retirement. The `actor.js` split left this list: the **legacy remake** (`docs/plans/legacy-remake.md`, MODERNIZATION §35) rebuilt the runtime core as TypeScript services; its R7 unit overlaps S9's service-facing items. |
+| **Next** | **S9 — the trailing list**: the Svelte architecture audit, the CSS dissolution, `checkJs`, `template.json`'s retirement. The `actor.js` split left this list: the **legacy remake** (`docs/plans/legacy-remake.md`) rebuilt the runtime core as TypeScript services; its R7 unit overlaps S9's service-facing items. |
 | **Green at** | `check` 0/0 (280 files) · **701 vitest** · **124 Playwright** · `build` |
 | **Preserved** | Everything cut is in master's history at ancestor `11eee67` (the archive refs were trimmed 2026-08-13; `git show 11eee67:<path>` recovers any file) |
 
@@ -264,7 +264,7 @@ ships return by cherry-pick when the Shipbreaker's Toolkit is transcribed.
 | **Settings** | `table1eDistressSignal`, `table1eMegadamageEffects`, `table1eMaintenance`, `table1eBankruptcy`, `useCalm`, `androidPanic`, and the panic-variant table settings |
 
 The three ship dialogs repaired earlier today are cut too. That work was not wasted: it found a
-real defect class, the finding is recorded in `MODERNIZATION.md` §24, and if ships return they
+real defect class, the finding is recorded in the commit that made it, and if ships return they
 return repaired.
 
 ---

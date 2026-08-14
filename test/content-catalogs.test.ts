@@ -1,7 +1,7 @@
 // The book is the only source now, so a transcription error ships. TypeScript pins the joins —
 // a prerequisite or a granted skill that names nothing is a compile error — but it cannot count
 // rows or notice a gap in a table. That is what this file is for, and it is what replaced the
-// JSON Schemas when the datasets became typed catalogs (MODERNIZATION.md §27).
+// JSON Schemas when the datasets became typed catalogs.
 import { describe, expect, it } from 'vitest';
 import type { RollRange } from '../content/books/common.ts';
 import { ARMOR } from '../content/books/psg/armor.ts';

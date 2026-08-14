@@ -153,7 +153,7 @@ export class MoshClass extends foundry.abstract.TypeDataModel {
       // These eight keys are a contract, not a bag: the generator's draft copies every key except
       // skills_granted straight into its own bonus map, so anything added here is applied as a
       // stat bonus. Stats and saves share the one flat key space, which is what the book's
-      // adjustments map onto (MODERNIZATION.md §27).
+      // adjustments map onto.
       base_adjustment: new fields.SchemaField({
         strength: num(0),
         speed: num(0),
