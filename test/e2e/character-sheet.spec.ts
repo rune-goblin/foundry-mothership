@@ -184,7 +184,7 @@ test.describe('character sheet', () => {
 
     await expect(armour.locator('.whiteText').first()).toHaveText('0');
 
-    await gmPage.locator(`#${appId} a.tab-select[data-tab="items"]`).click();
+    await gmPage.locator(`#${appId} a.tab-select[data-tab="armor"]`).click();
     await gmPage.locator(`#${appId} li.item[data-item-id="${id}"] input[type="checkbox"]`).check();
 
     await expect(armour.locator('.whiteText').first()).toHaveText('3');
@@ -201,7 +201,7 @@ test.describe('character sheet', () => {
     await expect(sheet.locator('.tab[data-tab="skills"]')).toHaveCount(0);
   });
 
-  test('the notes and bio tabs show what is stored', async ({ gmPage }) => {
+  test('the notes tab shows bio and notes together', async ({ gmPage }) => {
     const { appId } = await open(gmPage, {
       notes: '<p>owes the company money</p>',
       biography: '<p>born on Prospero</p>',
@@ -210,9 +210,7 @@ test.describe('character sheet', () => {
 
     await sheet.locator('a.tab-select[data-tab="notes"]').click();
     await expect(sheet.locator('.tab[data-tab="notes"]')).toContainText('owes the company money');
-
-    await sheet.locator('a.tab-select[data-tab="description"]').click();
-    await expect(sheet.locator('.tab[data-tab="description"]')).toContainText('born on Prospero');
+    await expect(sheet.locator('.tab[data-tab="notes"]')).toContainText('born on Prospero');
   });
 
   test('the XP track fills to the stored value and steps both ways', async ({ gmPage }) => {
@@ -237,6 +235,7 @@ test.describe('character sheet', () => {
       type: 'condition',
       system: { severity: 2, treatment: { value: 1 } },
     });
+    await gmPage.locator(`#${appId} a.tab-select[data-tab="conditions"]`).click();
     const row = gmPage.locator(`#${appId} li.item[data-item-id="${id}"]`);
 
     await expect(row.locator('i.fas.fa-circle')).toHaveCount(1);
@@ -302,22 +301,84 @@ test.describe('character sheet', () => {
     await expect(sheet.locator('.tab[data-tab="items"] .item.flex-group-left')).toHaveCount(0);
   });
 
-  test('a panel creates and deletes its own item type', async ({ gmPage }) => {
+  test('a panel adds a pack document through the picker, and deletes it', async ({ gmPage }) => {
     const { appId, uuid } = await open(gmPage);
     const sheet = gmPage.locator(`#${appId}`);
 
     await sheet.locator('a.tab-select[data-tab="weapons"]').click();
     await sheet.locator('.item-header a.item-control').click();
+
+    const picker = gmPage.locator('.macro-popup-dialog');
+    await picker.locator('#pick-filter').fill('revolver');
+    await picker.getByRole('radio').check();
+    await picker.locator('button[data-action="add"]').click();
+
     await expect(sheet.locator('li.item[data-item-id]')).toHaveCount(1);
     await expect.poll(() =>
       gmPage.evaluate(
-        async (u: string) => (await (window as any).fromUuid(u)).items.map((i: any) => i.type),
+        async (u: string) =>
+          (await (window as any).fromUuid(u)).items.map((i: any) => [i.type, i.name]),
         uuid,
       ),
-    ).toEqual(['weapon']);
+    ).toEqual([['weapon', 'Revolver']]);
 
     await sheet.locator('li.item[data-item-id] a.item-control').last().click();
     await expect(sheet.locator('li.item[data-item-id]')).toHaveCount(0);
+  });
+
+  test('the skill picker resolves prerequisites from the pack, and the toggle lifts them', async ({
+    gmPage,
+  }) => {
+    const { appId, uuid } = await open(gmPage);
+    const sheet = gmPage.locator(`#${appId}`);
+    await addItem(gmPage, uuid, { name: 'Zero-G', type: 'skill' });
+
+    await sheet.locator('.item-header a.item-control').first().click();
+    const picker = gmPage.locator('.macro-popup-dialog');
+
+    // PSG 22: Piloting is unlocked by Zero-G, which this character owns.
+    await picker.locator('#pick-filter').fill('piloting');
+    await expect(picker.getByRole('radio')).toBeEnabled();
+
+    await picker.locator('#pick-filter').fill('sophontology');
+    await expect(picker.getByRole('radio')).toBeDisabled();
+
+    await picker.locator('#pick-enforce').uncheck();
+    await expect(picker.getByRole('radio')).toBeEnabled();
+    await picker.getByRole('radio').check();
+    await picker.locator('button[data-action="add"]').click();
+
+    await expect.poll(() =>
+      gmPage.evaluate(
+        async (u: string) =>
+          (await (window as any).fromUuid(u)).items.map((i: any) => [i.type, i.name]),
+        uuid,
+      ),
+    ).toEqual([
+      ['skill', 'Zero-G'],
+      ['skill', 'Sophontology'],
+    ]);
+  });
+
+  test('cancelling the picker adds nothing', async ({ gmPage }) => {
+    const { appId, uuid } = await open(gmPage);
+    const sheet = gmPage.locator(`#${appId}`);
+
+    await sheet.locator('a.tab-select[data-tab="weapons"]').click();
+    await sheet.locator('.item-header a.item-control').click();
+
+    const picker = gmPage.locator('.macro-popup-dialog');
+    await picker.getByRole('radio').first().check();
+    await picker.locator('button[data-action="cancel"]').click();
+
+    await expect(picker).toHaveCount(0);
+    await expect(sheet.locator('li.item[data-item-id]')).toHaveCount(0);
+    await expect.poll(() =>
+      gmPage.evaluate(
+        async (u: string) => (await (window as any).fromUuid(u)).items.size,
+        uuid,
+      ),
+    ).toBe(0);
   });
 
   test('a row added while the sheet is open is draggable', async ({ gmPage }) => {

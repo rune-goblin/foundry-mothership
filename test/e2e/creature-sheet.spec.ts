@@ -114,13 +114,17 @@ test.describe('creature sheet', () => {
     await expect(sheet.locator('.tab[data-tab="skills"]')).toHaveCount(0);
   });
 
-  test('the notes tab shows what is stored', async ({ gmPage }) => {
+  test('the notes tab shows bio and notes together', async ({ gmPage }) => {
     // AppV1 enriched description and biography but never notes, so this tab always rendered empty.
-    const { appId } = await open(gmPage, { notes: '<p>ate the away team</p>' });
+    const { appId } = await open(gmPage, {
+      notes: '<p>ate the away team</p>',
+      biography: '<p>found drifting near the derelict</p>',
+    });
     const sheet = gmPage.locator(`#${appId}`);
 
     await sheet.locator('a.tab-select[data-tab="notes"]').click();
     await expect(sheet.locator('.tab[data-tab="notes"]')).toContainText('ate the away team');
+    await expect(sheet.locator('.tab[data-tab="notes"]')).toContainText('found drifting near the derelict');
   });
 
   test('the XP track fills to the stored value and steps both ways', async ({ gmPage }) => {
@@ -149,6 +153,7 @@ test.describe('creature sheet', () => {
       type: 'condition',
       system: { severity: 2, treatment: { value: 1 } },
     });
+    await gmPage.locator(`#${appId} a.tab-select[data-tab="conditions"]`).click();
     const row = gmPage.locator(`#${appId} li.item[data-item-id="${id}"]`);
 
     await expect(row).toContainText('__e2e_frightened');
@@ -184,7 +189,7 @@ test.describe('creature sheet', () => {
     const id = await addItem(gmPage, uuid, { name: '__e2e_vac', type: 'armor' });
     const sheet = gmPage.locator(`#${appId}`);
 
-    await sheet.locator('a.tab-select[data-tab="items"]').click();
+    await sheet.locator('a.tab-select[data-tab="armor"]').click();
     const box = sheet.locator(`li.item[data-item-id="${id}"] input[type="checkbox"]`);
 
     await box.check();
@@ -194,19 +199,26 @@ test.describe('creature sheet', () => {
     await expect.poll(() => itemField(gmPage, uuid, id, 'system.equipped')).toBe(false);
   });
 
-  test('a panel creates and deletes its own item type', async ({ gmPage }) => {
+  test('a panel adds a pack document through the picker, and deletes it', async ({ gmPage }) => {
     const { appId, uuid } = await open(gmPage);
     const sheet = gmPage.locator(`#${appId}`);
 
     await sheet.locator('a.tab-select[data-tab="weapons"]').click();
     await sheet.locator('.item-header a.item-control').click();
+
+    const picker = gmPage.locator('.macro-popup-dialog');
+    await picker.locator('#pick-filter').fill('revolver');
+    await picker.getByRole('radio').check();
+    await picker.locator('button[data-action="add"]').click();
+
     await expect(sheet.locator('li.item[data-item-id]')).toHaveCount(1);
     await expect.poll(() =>
       gmPage.evaluate(
-        async (u: string) => (await (window as any).fromUuid(u)).items.map((i: any) => i.type),
+        async (u: string) =>
+          (await (window as any).fromUuid(u)).items.map((i: any) => [i.type, i.name]),
         uuid,
       ),
-    ).toEqual(['weapon']);
+    ).toEqual([['weapon', 'Revolver']]);
 
     await sheet.locator('li.item[data-item-id] a.item-control').last().click();
     await expect(sheet.locator('li.item[data-item-id]')).toHaveCount(0);

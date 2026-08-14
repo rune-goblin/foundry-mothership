@@ -202,6 +202,14 @@ export function installDialogV2(): OpenDialog[] {
   return opened;
 }
 
+/** Compendium packs by id, each answering `getDocuments()` with the documents given here. */
+export function installPacks(packs: Record<string, readonly object[]>): void {
+  gameStub().packs = {
+    get: (id: string) =>
+      packs[id] === undefined ? undefined : { getDocuments: async () => [...packs[id]] },
+  };
+}
+
 export interface Notifications {
   readonly errors: string[];
   readonly warnings: string[];

@@ -19,7 +19,7 @@
     createItem,
     deleteItem,
     editItem,
-    promptNewSkill,
+    promptAddItem,
     stepBy,
     stepShots,
     toggleEquipped,
@@ -44,8 +44,9 @@
   const tabs = $derived([
     { id: 'skills', label: localize('Mosh.Skills') },
     { id: 'weapons', label: localize('Mosh.Weapons') },
+    { id: 'armor', label: localize('Mosh.Armor') },
     { id: 'items', label: localize('Mosh.Items') },
-    { id: 'description', label: localize('Mosh.Bio') },
+    { id: 'conditions', label: localize('Mosh.Conditions') },
     { id: 'notes', label: localize('Mosh.Notes') },
   ]);
 
@@ -210,25 +211,34 @@
 <Tabs {tabs} bind:active={tab} />
 
 <section class="sheet-body">
-  <TabPanel tab="description" active={tab} class="biography">
-    <Editor
-      name="system.biography"
-      value={system.biography}
-      enriched={doc.enriched.biography}
-      uuid={doc.uuid}
-    />
-  </TabPanel>
-
   <TabPanel tab="notes" active={tab} class="biography">
-    <Editor
-      name="system.notes"
-      value={system.notes}
-      enriched={doc.enriched.notes}
-      uuid={doc.uuid}
-    />
+    <div style="display: flex; flex-direction: column; height: 100%; gap: 6px;">
+      <div class="item flex-group-left item-header">
+        <div class="skill-stat">{localize('Mosh.Bio')}</div>
+      </div>
+      <div style="flex: 1; min-height: 0;">
+        <Editor
+          name="system.biography"
+          value={system.biography}
+          enriched={doc.enriched.biography}
+          uuid={doc.uuid}
+        />
+      </div>
+      <div class="item flex-group-left item-header">
+        <div class="skill-stat">{localize('Mosh.Notes')}</div>
+      </div>
+      <div style="flex: 1; min-height: 0;">
+        <Editor
+          name="system.notes"
+          value={system.notes}
+          enriched={doc.enriched.notes}
+          uuid={doc.uuid}
+        />
+      </div>
+    </div>
   </TabPanel>
 
-  <TabPanel tab="items" active={tab} class="items">
+  <TabPanel tab="armor" active={tab} class="items">
     <ItemPanel
       headers={[
         { label: localize('Mosh.ArmorName'), grow: 2.5 },
@@ -239,10 +249,12 @@
         { label: localize('Mosh.Equipped') },
       ]}
       items={armors}
-      create={{ title: localize('Mosh.CreateArmor'), onclick: () => createItem(actor, 'armor') }}
+      create={{ title: localize('Mosh.CreateArmor'), onclick: () => promptAddItem(actor, 'armor') }}
       row={armorRow}
     />
+  </TabPanel>
 
+  <TabPanel tab="items" active={tab} class="items">
     <ItemPanel
       headers={[
         { label: localize('Mosh.ItemName'), grow: 1.5 },
@@ -251,7 +263,7 @@
         { label: localize('Mosh.Value') },
       ]}
       items={gear}
-      create={{ title: localize('Mosh.CreateItem'), onclick: () => createItem(actor, 'item') }}
+      create={{ title: localize('Mosh.CreateItem'), onclick: () => promptAddItem(actor, 'item') }}
       row={gearRow}
     />
   </TabPanel>
@@ -265,7 +277,7 @@
         { label: localize('Mosh.SkillBonus') },
       ]}
       items={skills}
-      create={{ title: localize('Mosh.CreateSkill'), onclick: () => promptNewSkill(actor) }}
+      create={{ title: localize('Mosh.CreateSkill'), onclick: () => promptAddItem(actor, 'skill') }}
       row={skillRow}
     />
 
@@ -295,8 +307,9 @@
       </div>
     </div>
 
-    <div class="seperatorLine"></div>
+  </TabPanel>
 
+  <TabPanel tab="conditions" active={tab} class="items">
     <ItemPanel
       headers={[
         { label: localize('Mosh.Condition') },
@@ -306,7 +319,7 @@
       items={conditions}
       create={{
         title: localize('Mosh.CreateCondition'),
-        onclick: () => createItem(actor, 'condition'),
+        onclick: () => promptAddItem(actor, 'condition'),
       }}
       row={conditionRow}
     />
@@ -322,7 +335,7 @@
         { label: localize('Mosh.Range') },
       ]}
       items={weapons}
-      create={{ title: localize('Mosh.CreateWeapon'), onclick: () => createItem(actor, 'weapon') }}
+      create={{ title: localize('Mosh.CreateWeapon'), onclick: () => promptAddItem(actor, 'weapon') }}
       row={weaponRow}
     />
   </TabPanel>
