@@ -416,18 +416,31 @@ not scale). Semantic aliases are preferred over raw ramp reads wherever a role e
    guard**: a check that intersects our defined token names with the installed Foundry build's
    and fails on any overlap (§4.4). That turns the one silent failure mode into a loud one.
 
-2. **Instantiate the subset, not the inventory.** The measured need (§1.6) is 46 colour literals
-   dominated by five values, three fonts, three focal radii. Take the naming law, the category
-   prefixes, and the two-layer alias discipline; mint roughly 60–100 tokens: a neutral ramp for
-   the grey scale, one `danger` family for the blood red, `surface`/`text`/`border` steps,
-   `--space-*`, three radii, the font trio (including `--font-icon-mothership` for Font Awesome).
-   Importing 500 names to read 40 recreates the §1.3 dead-CSS problem one layer up, and adding
-   a ramp later is additive and cheap.
+2. **~~Instantiate the subset, not the inventory.~~ Superseded 2026-08-15 — carry the rich
+   vocabulary; the stark look becomes values, not a trimmed vocabulary.** Mark's direction: the
+   current black-and-white theme must stay *changeable* through the full live-tokens language,
+   so MoSh vendors most of the 500-name Layer 1 inventory — full colour ramps for all families,
+   the surface/text/border tiers, the complete typography set (sizes, weights, line heights,
+   letter spacing, composite heading/body/code styles), spacing, the live-tokens radius scale,
+   shadows, motion, and the utility tokens. Cuts are Mark's, marked in
+   `docs/plans/token-inventory.md` (eyebrow, overlays, gradients pre-marked ❌ from his answer;
+   the rest awaits his pass). The stark theme is expressed by the *values* — mostly at the
+   semantic alias layer — so re-theming is an edit, not a build-out. DS6's 67-token set was
+   landed under the old decision and is widened in DS6b, reconciling the few names that differ
+   (`--text-inverse`→`--text-inverted`, the semantic `--surface-*`/`--border-*` singles onto
+   live-tokens' family tiers, our focal radius/space/size values instantiated onto the full
+   scales). Authoring stays a **static vendored `tokens.css`** — no theme-JSON build step now;
+   Vite already carries it to release, and the live-tokens editor pipeline can bolt on later
+   without rework (Mark: a build-to-release pipeline is acceptable if ever needed — ReignMaker
+   works that way).
 
-3. **No theming machinery.** `theme-light` stays pinned; the monochrome-brutalist look is the
-   product, and no reskin requirement exists. Tokens are justified by consistency and by killing
-   the 46 literals, not by themability. If a dark theme ever becomes real, the Layer-2 alias
-   indirection is the insertion point — nothing needs building in advance.
+3. **No *runtime* theming machinery — but re-themability is now a goal (revised 2026-08-15).**
+   `theme-light` stays pinned and no user-facing theme switcher ships; re-theming is a
+   design-time act. What changed: it is no longer hypothetical — the full vocabulary (decision 2
+   as revised) exists precisely so the stark theme can be swapped by editing values at the
+   Layer-2 alias layer and the semantic tiers, with no vocabulary work. Components must
+   therefore hold the alias discipline strictly: any component reading a raw palette ramp
+   directly forfeits the retheme point.
 
 4. **Sequencing: the R7 question is moot — R7 landed** (`bbfe33c`, 2026-08-13; the legacy
    remake is complete, R0–R7). Every component is already
@@ -584,9 +597,10 @@ set (decision 2), accepts baselines, reviews every diff, runs e2e, and commits.
 | DS4 — scope class everywhere | Sonnet | done | | Re-measured: **16 edit sites**, not 18 — six `classes:` arrays (Class/Skill sheets inherit ItemSheetApp's), the `svelte-dialog.ts` CLASSES const, six chat templates, three Svelte roots. `mothership` added first, `mosh` kept; the Tabs pin in `test/ui-parts.test.ts:479` updated in the same diff (rule 4). Nothing selects `.mothership` yet, so no visual change by construction. Gate: check clean · 753 vitest · build green. Noted for DS9: `MOUNT_CLASS = 'mosh-dialog-root'` (`svelte-dialog.ts:73`). |
 | DS5 — dead CSS dies | Opus | pending | | After DS3. Checked-in audit script first (the one-off audit false-positived `sbt-*`, §1.3); then delete the dead lines, the `.window-app` rules, `color: none`. `sbt-*` survivors are renamed in DS8's SheetHeader unit, not here. Gate: baselines unchanged. |
 | DS6 — `tokens.css` + guards | Fable designs · Opus authors | done | | **67 tokens** in `css/tokens.css`, custom properties only (no style rules — the font fallback rule waits for DS7's baseline review), imported ahead of `mosh.css` in `module/index.js`; no dev-server rewrite needed (tokens.css travels the esmodule graph, verified live). `test/css-guards.test.ts`: `!important` ceiling 6, unlayered-zero for tokens.css (the mosh.css twin is `it.skip` until DS7 — un-skipped it fails on 248 preludes today, so it is real), collision guard vs the installed build's `foundry2.css` (`FOUNDRY_APP` resolution as in `start-test-env.sh`, visible skip off-machine, size floors against silent parser death). All guards mutation-checked by executor and orchestrator independently. Gate: check clean · 756+1skip vitest · build green; dist opens with `@layer system{.mothership{`. §4.7 records the literal→token map for DS8. |
+| DS6b — widen Layer 1 to the rich vocabulary | Fable maps · Opus authors | blocked — awaiting Mark's ❌ marks in `docs/plans/token-inventory.md` | | Decision 2 as revised: vendor the kept categories from the 500-name inventory, stark values instantiated onto the full scales; reconcile DS6's 67 names onto live-tokens' (`--text-inverse`→`--text-inverted`, semantic singles onto family tiers, focal radii onto the radius scale); suffix stays only on the two Foundry collisions + the font trio. Collision guard must pass over the full set. Before DS8 (components alias into the final vocabulary); independent of DS7. `token-inventory.md` deletes when this lands. Gate: check + vitest (guards), build. |
 | DS7 — layer and scope the sheet | Opus | pending | | After DS3, DS4, DS6. Wrap in `@layer system`; scope the 36 global rules under `.mothership`; rename `css/mosh.css` → `css/mothership.css` (`module/index.js:3`, `vite.config.ts:25`, ~14 comments). Corrected risk profile (§7 addendum 2026-08-15): the `@layer` wrap is a cascade no-op vs core in production (the sheet already rides `layer(system)` via the server's import default) but converges dev with prod; the risk lives in the `.mothership` scoping. Gate: full e2e + baseline diff review, rule 2 at full strength. |
 | DS8 — dissolution, per-component series | Opus per unit | pending | | After DS6, DS7. One component (or coherent group) per commit: styles into scoped `<style>`, reading its own Layer-2 tokens; its `ui-parts` pin retired in the same diff (rule 4); fork-era class names it owns renamed (`sbt-*` in `SheetHeader`). R7 landed 2026-08-13, so nothing here waits on behaviour work. This row accumulates one note per landed component. |
 | DS9 — retire `mosh`, sweep the prose | Sonnet + orchestrator | pending | | Last. Drop `mosh` from every `classes` array; final grep proves zero `mosh` in code; then the prose — CLAUDE.md, the `foundry-mosh` skill, docs — says `mothership` everywhere it described the old names. |
 
-Dependencies: DS2 and DS4 any time; DS3 before DS5 and DS7; DS6 before DS7; DS7 before DS8;
-DS9 last. DS1 is done.
+Dependencies: DS2 and DS4 any time; DS3 before DS5 and DS7; DS6 before DS7; DS6b before DS8;
+DS7 before DS8; DS9 last. DS1, DS2, DS4, DS6 are done.
