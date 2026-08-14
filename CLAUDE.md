@@ -98,7 +98,9 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
 - **System id `mothershiprpg`** — keys settings, flags, pack names
   (`mothershiprpg.<pack>`), the runtime path `systems/mothershiprpg/…`, **and the public API
   `game.mothershiprpg`**. One string identifies the package everywhere. The `.mosh` CSS classes
-  and `Mosh.*` lang keys are internal and kept.
+  and `Mosh.*` lang keys are internal and **on their way out**: every `mosh` identifier
+  migrates to `mothership` (`docs/plans/design-system.md` §4.6 holds the inventory and unit
+  boundaries). Never name anything new `mosh` or `ms`.
 - **`game.mothershiprpg` is the public API.** The verb surface — `rollStat`, `rollSkill`,
   `rollWeapon`, `rollTable`, `modify`, `applyItem`, `promptStress`/`promptSave`/`promptWound`,
   `rollItem`, … (`module/api/api.ts`) — is what shipped macros and new content call.

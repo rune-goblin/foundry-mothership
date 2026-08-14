@@ -75,7 +75,8 @@ pass, not a TS conversion.
 settings (`game.settings.get('mothershiprpg', …)`), flags, and pack names
 (`mothershiprpg.<pack>`). Foundry serves the system at `systems/mothershiprpg/…` — that is the
 path templates and art use at runtime. The `.mosh` CSS classes and `Mosh.*` lang keys are
-internal and were deliberately kept.
+internal and **migrating to `mothership`** (`docs/plans/design-system.md` §4.6) — never name
+anything new `mosh` or `ms`.
 
 **Public API.** `game.mothershiprpg` is the verb surface (`module/api/api.ts`) — `rollStat`,
 `rollSkill`, `rollWeapon`, `rollPanic`, `rollRestSave`, `rollTable`, `modify`, `applyItem`,

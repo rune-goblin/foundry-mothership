@@ -553,7 +553,9 @@ answer components render their state from `value` (`SkillPicker`/`StatOption` ig
 - **The Svelte architecture audit** (§23) — the hybrid CSS decision itself, and `ClassSheet.svelte`'s
   six tabs in one component.
 - **The CSS dissolution.** §13 parked it as a styling project with real visual risk; `architecture.md`
-  C14/C15 give it an order and a verification method.
+  C14/C15 give it an order and a verification method. **`docs/plans/design-system.md` is now the
+  brief** — it holds the audit (the sheet is unlayered, so it outranks all of Foundry; 28% of it is
+  dead), what to adapt from live-tokens and what to leave, and the six decisions to take first.
 - **TypeScript, `checkJs` per file**, then globally — `module/**/*.js` is unchecked today.
 - **`actor.js` split into tested modules.** 2,338 lines, and the largest single file in the system.
 - **`template.json` retirement** (Decision 4): once a generated, committed type snapshot exists and
