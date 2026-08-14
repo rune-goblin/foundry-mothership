@@ -1,25 +1,35 @@
-/* Layer 1 — theme tokens. Adapted from @motion-proto/live-tokens v0.47.1
-   (src/system/styles/tokens.css + CONVENTIONS.md): the category-first naming law and the
-   two-layer discipline, instantiated for MoSh's measured need rather than the full inventory.
+/* Layer 1 — theme tokens. Vendored and adapted from @motion-proto/live-tokens v0.47.1
+   (src/system/styles/tokens.css + CONVENTIONS.md): its category-first naming law, its scale
+   shapes, and — where MoSh has no colour of its own yet — its values.
 
    Two layers: these theme tokens hold the palette and the scales; Layer 2 component tokens
    (--<componentId>-<part>[-<state>][-<element>]-<property>) alias them, and a component's
-   styles read only its own tokens.
+   styles read only its own tokens. A component that reads a ramp step directly forfeits the
+   point: the stark look is expressed in these values, so re-theming is an edit here.
 
    Scope: everything is declared on .mothership, the class every MoSh window, chat card and
    dialog root carries. Never :root — Foundry is one document and :root is everyone's.
    Layer 2 tokens follow the same rule: they land on .mothership too.
 
-   --font-sans-mothership carries its suffix because Foundry defines --font-sans on body and
-   aliases every heading off it; the whole family category takes the suffix so the trio reads
-   as one set. test/css-guards.test.ts fails if any name here ever meets a Foundry name. */
+   Suffixes: only --font-sans-mothership and --font-serif-mothership carry one, because
+   Foundry defines --font-sans/--font-serif on body and aliases every heading off the first.
+   Every other name here is disjoint from Foundry's 398; test/css-guards.test.ts re-proves
+   that against the installed build rather than trusting it.
+
+   Colour provenance: neutral, danger, success and warning carry MoSh's measured values
+   (§4.7 of docs/plans/design-system.md). alternate, canvas, brand, accent, special and info
+   are live-tokens' swatches, kept so a re-theme is an edit and not a build-out — nothing
+   aliases into them until a design decision names them. */
 
 @layer system {
   .mothership {
-    /* Colour primitives */
+    /* Invariants — never themed, in no ramp. */
     --color-white: #ffffff;
     --color-black: #000000;
+    --color-transparent: transparent;
 
+    /* Colour ramps — 100 (lightest) → 950 (darkest) */
+    /* Neutral — the measured greys. 950 is black; the ramp's foot doubles as the invariant. */
     --color-neutral-100: #f1f1f1;
     --color-neutral-200: #e3e3e3;
     --color-neutral-300: #bbbbbb;
@@ -30,60 +40,444 @@
     --color-neutral-800: #444444;
     --color-neutral-850: #222222;
     --color-neutral-900: #111111;
-    /* The ramp's foot doubles as black; kept for scale integrity. */
     --color-neutral-950: #000000;
 
-    /* The blood red — four measured steps, not a ramp */
+    /* Danger — the blood red. 200/300/400/500 are measured and stay byte-exact; 100 and
+       600–950 are interpolated in OKLCH along live-tokens' ramp shape, lightness monotone,
+       chroma gamut-mapped. Measured 300 is a dusty rose, so this ramp is not smooth in
+       chroma — that is the sheet, not an error. */
+    --color-danger-100: #fab0ac;
     --color-danger-200: rgb(255, 113, 113);
     --color-danger-300: rgb(151, 100, 100);
     --color-danger-400: #aa0200;
     --color-danger-500: rgb(117, 0, 0);
+    --color-danger-600: #5b0000;
+    --color-danger-700: #450000;
+    --color-danger-800: #310000;
+    --color-danger-850: #200000;
+    --color-danger-900: #120000;
+    --color-danger-950: #080000;
 
-    /* Single-use accents */
+    /* Success — measured at 500; the ramp interpolated around it, same method. */
+    --color-success-100: #76af6b;
+    --color-success-200: #58944d;
+    --color-success-300: #3d7c31;
+    --color-success-400: #236714;
     --color-success-500: #18520b;
+    --color-success-600: #103f06;
+    --color-success-700: #0a2e04;
+    --color-success-800: #052102;
+    --color-success-850: #021401;
+    --color-success-900: #010a00;
+    --color-success-950: #000400;
+
+    /* Warning — measured at 500; the ramp interpolated around it, same method. */
+    --color-warning-100: #ffeedb;
+    --color-warning-200: #ffdbb1;
+    --color-warning-300: #ffc887;
+    --color-warning-400: #ffb658;
     --color-warning-500: #ffa500;
+    --color-warning-600: #ca8100;
+    --color-warning-700: #9c6300;
+    --color-warning-800: #734801;
+    --color-warning-850: #503100;
+    --color-warning-900: #341e00;
+    --color-warning-950: #1c0e00;
 
-    /* Semantic — surfaces */
-    --surface-canvas: var(--color-white);
-    --surface-inset: var(--color-neutral-100);
-    --surface-inverse: var(--color-neutral-900);
-    --surface-inverse-raised: var(--color-neutral-850);
-    --surface-overlay: rgba(0, 0, 0, 0.2);
+    /* Alternate — vendored swatch, replaceable. */
+    --color-alternate-100: #e9e3e0;
+    --color-alternate-200: #d2ccc8;
+    --color-alternate-300: #b7b1ad;
+    --color-alternate-400: #9b9693;
+    --color-alternate-500: #817b78;
+    --color-alternate-600: #67625f;
+    --color-alternate-700: #4f4a47;
+    --color-alternate-800: #373330;
+    --color-alternate-850: #221d1b;
+    --color-alternate-900: #0e0b08;
+    --color-alternate-950: #030101;
 
-    /* Semantic — text */
+    /* Canvas — vendored swatch, replaceable. */
+    --color-canvas-100: #cecfe5;
+    --color-canvas-200: #abacc2;
+    --color-canvas-300: #8d8da4;
+    --color-canvas-400: #727289;
+    --color-canvas-500: #5a5a72;
+    --color-canvas-600: #45455c;
+    --color-canvas-700: #33324a;
+    --color-canvas-800: #232239;
+    --color-canvas-850: #15142b;
+    --color-canvas-900: #0b081f;
+    --color-canvas-950: #040215;
+
+    /* Brand — vendored swatch, replaceable. */
+    --color-brand-100: #ffbad3;
+    --color-brand-200: #ff7bb3;
+    --color-brand-300: #ec4495;
+    --color-brand-400: #cf0b7a;
+    --color-brand-500: #a80062;
+    --color-brand-600: #84004b;
+    --color-brand-700: #640038;
+    --color-brand-800: #490027;
+    --color-brand-850: #320019;
+    --color-brand-900: #1f000d;
+    --color-brand-950: #100005;
+
+    /* Accent — vendored swatch, replaceable. */
+    --color-accent-100: #98e1dd;
+    --color-accent-200: #70beba;
+    --color-accent-300: #4ba09c;
+    --color-accent-400: #248582;
+    --color-accent-500: #006b69;
+    --color-accent-600: #005351;
+    --color-accent-700: #003e3d;
+    --color-accent-800: #002c2b;
+    --color-accent-850: #001d1c;
+    --color-accent-900: #00100f;
+    --color-accent-950: #000606;
+
+    /* Special — vendored swatch, replaceable. */
+    --color-special-100: #d2c8ff;
+    --color-special-200: #b19cff;
+    --color-special-300: #9673f5;
+    --color-special-400: #7d54db;
+    --color-special-500: #6634c4;
+    --color-special-600: #5407af;
+    --color-special-700: #3f0088;
+    --color-special-800: #2d0064;
+    --color-special-850: #1d0046;
+    --color-special-900: #10002d;
+    --color-special-950: #060019;
+
+    /* Info — vendored swatch, replaceable. */
+    --color-info-100: #b4d4ff;
+    --color-info-200: #76b0ff;
+    --color-info-300: #398efa;
+    --color-info-400: #0571e0;
+    --color-info-500: #0059b6;
+    --color-info-600: #00458f;
+    --color-info-700: #00336d;
+    --color-info-800: #002350;
+    --color-info-850: #001637;
+    --color-info-900: #000b23;
+    --color-info-950: #000413;
+
+    /* Surfaces — 7-step elevation, lowest → highest.
+       Each tier reads the ramp step live-tokens chose for it, so MoSh's measured greys and
+       reds arrive here with no second set of values to keep in step. Those choices were made
+       against live-tokens' dark ground: elevation climbs toward light. MoSh's ground is white
+       paper with black chrome, so DS8 aliases deliberately rather than assuming the direction. */
+
+    --surface-neutral-lowest: var(--color-neutral-900);
+    --surface-neutral-lower: var(--color-neutral-800);
+    --surface-neutral-low: var(--color-neutral-700);
+    --surface-neutral: var(--color-neutral-600);
+    --surface-neutral-high: var(--color-neutral-500);
+    --surface-neutral-higher: var(--color-neutral-400);
+    --surface-neutral-highest: var(--color-neutral-300);
+
+    --surface-danger-lowest: var(--color-danger-900);
+    --surface-danger-lower: var(--color-danger-800);
+    --surface-danger-low: var(--color-danger-700);
+    --surface-danger: var(--color-danger-600);
+    --surface-danger-high: var(--color-danger-500);
+    --surface-danger-higher: var(--color-danger-400);
+    --surface-danger-highest: var(--color-danger-300);
+
+    --surface-success-lowest: var(--color-success-900);
+    --surface-success-lower: var(--color-success-800);
+    --surface-success-low: var(--color-success-700);
+    --surface-success: var(--color-success-600);
+    --surface-success-high: var(--color-success-500);
+    --surface-success-higher: var(--color-success-400);
+    --surface-success-highest: var(--color-success-300);
+
+    --surface-warning-lowest: var(--color-warning-900);
+    --surface-warning-lower: var(--color-warning-800);
+    --surface-warning-low: var(--color-warning-700);
+    --surface-warning: var(--color-warning-600);
+    --surface-warning-high: var(--color-warning-500);
+    --surface-warning-higher: var(--color-warning-400);
+    --surface-warning-highest: var(--color-warning-300);
+
+    --surface-alternate-lowest: var(--color-alternate-900);
+    --surface-alternate-lower: var(--color-alternate-800);
+    --surface-alternate-low: var(--color-alternate-700);
+    --surface-alternate: var(--color-alternate-600);
+    --surface-alternate-high: var(--color-alternate-500);
+    --surface-alternate-higher: var(--color-alternate-400);
+    --surface-alternate-highest: var(--color-alternate-300);
+
+    --surface-canvas-lowest: var(--color-canvas-900);
+    --surface-canvas-lower: var(--color-canvas-800);
+    --surface-canvas-low: var(--color-canvas-700);
+    --surface-canvas: var(--color-canvas-600);
+    --surface-canvas-high: var(--color-canvas-500);
+    --surface-canvas-higher: var(--color-canvas-400);
+    --surface-canvas-highest: var(--color-canvas-300);
+
+    --surface-brand-lowest: var(--color-brand-900);
+    --surface-brand-lower: var(--color-brand-800);
+    --surface-brand-low: var(--color-brand-700);
+    --surface-brand: var(--color-brand-600);
+    --surface-brand-high: var(--color-brand-500);
+    --surface-brand-higher: var(--color-brand-400);
+    --surface-brand-highest: var(--color-brand-300);
+
+    --surface-accent-lowest: var(--color-accent-900);
+    --surface-accent-lower: var(--color-accent-800);
+    --surface-accent-low: var(--color-accent-700);
+    --surface-accent: var(--color-accent-600);
+    --surface-accent-high: var(--color-accent-500);
+    --surface-accent-higher: var(--color-accent-400);
+    --surface-accent-highest: var(--color-accent-300);
+
+    --surface-special-lowest: var(--color-special-900);
+    --surface-special-lower: var(--color-special-800);
+    --surface-special-low: var(--color-special-700);
+    --surface-special: var(--color-special-600);
+    --surface-special-high: var(--color-special-500);
+    --surface-special-higher: var(--color-special-400);
+    --surface-special-highest: var(--color-special-300);
+
+    --surface-info-lowest: var(--color-info-900);
+    --surface-info-lower: var(--color-info-800);
+    --surface-info-low: var(--color-info-700);
+    --surface-info: var(--color-info-600);
+    --surface-info-high: var(--color-info-500);
+    --surface-info-higher: var(--color-info-400);
+    --surface-info-highest: var(--color-info-300);
+
+    /* Border widths — the value is the name */
+    --border-width-0: 0;
+    --border-width-1: 1px;
+    --border-width-2: 2px;
+    --border-width-3: 3px;
+    --border-width-4: 4px;
+    --border-width-5: 5px;
+    --border-width-6: 6px;
+    --border-width-8: 8px;
+    --border-width-10: 10px;
+    --border-width-12: 12px;
+    --border-width-16: 16px;
+    --border-width-20: 20px;
+    --border-width-24: 24px;
+
+    /* Border colours — 5-step emphasis, faint → strong */
+
+    --border-neutral-faint: var(--color-neutral-800);
+    --border-neutral-subtle: var(--color-neutral-600);
+    --border-neutral: var(--color-neutral-500);
+    --border-neutral-medium: var(--color-neutral-300);
+    --border-neutral-strong: var(--color-neutral-200);
+
+    --border-danger-faint: var(--color-danger-800);
+    --border-danger-subtle: var(--color-danger-600);
+    --border-danger: var(--color-danger-500);
+    --border-danger-medium: var(--color-danger-300);
+    --border-danger-strong: var(--color-danger-200);
+
+    --border-success-faint: var(--color-success-800);
+    --border-success-subtle: var(--color-success-600);
+    --border-success: var(--color-success-500);
+    --border-success-medium: var(--color-success-300);
+    --border-success-strong: var(--color-success-200);
+
+    --border-warning-faint: var(--color-warning-800);
+    --border-warning-subtle: var(--color-warning-600);
+    --border-warning: var(--color-warning-500);
+    --border-warning-medium: var(--color-warning-300);
+    --border-warning-strong: var(--color-warning-200);
+
+    --border-alternate-faint: var(--color-alternate-800);
+    --border-alternate-subtle: var(--color-alternate-600);
+    --border-alternate: var(--color-alternate-500);
+    --border-alternate-medium: var(--color-alternate-300);
+    --border-alternate-strong: var(--color-alternate-200);
+
+    --border-canvas-faint: var(--color-canvas-800);
+    --border-canvas-subtle: var(--color-canvas-600);
+    --border-canvas: var(--color-canvas-500);
+    --border-canvas-medium: var(--color-canvas-300);
+    --border-canvas-strong: var(--color-canvas-200);
+
+    --border-brand-faint: var(--color-brand-800);
+    --border-brand-subtle: var(--color-brand-600);
+    --border-brand: var(--color-brand-500);
+    --border-brand-medium: var(--color-brand-300);
+    --border-brand-strong: var(--color-brand-200);
+
+    --border-accent-faint: var(--color-accent-800);
+    --border-accent-subtle: var(--color-accent-600);
+    --border-accent: var(--color-accent-500);
+    --border-accent-medium: var(--color-accent-300);
+    --border-accent-strong: var(--color-accent-200);
+
+    --border-special-faint: var(--color-special-800);
+    --border-special-subtle: var(--color-special-600);
+    --border-special: var(--color-special-500);
+    --border-special-medium: var(--color-special-300);
+    --border-special-strong: var(--color-special-200);
+
+    --border-info-faint: var(--color-info-800);
+    --border-info-subtle: var(--color-info-600);
+    --border-info: var(--color-info-500);
+    --border-info-medium: var(--color-info-300);
+    --border-info-strong: var(--color-info-200);
+
+    /* Text colours — the neutral hierarchy carries MoSh's ink on paper (dark → pale); the
+       family tiers keep live-tokens' step choices, which read the other way. */
     --text-primary: var(--color-neutral-900);
     --text-secondary: var(--color-neutral-600);
+    --text-tertiary: var(--color-neutral-500);
     --text-muted: var(--color-neutral-400);
-    --text-inverse: var(--color-white);
-    --text-danger: var(--color-danger-400);
-    --text-danger-strong: var(--color-danger-500);
+    --text-disabled: var(--color-neutral-300);
+    --text-inverted: var(--color-white);
 
-    /* Semantic — borders */
-    --border-strong: var(--color-black);
-    --border-default: var(--color-neutral-900);
-    --border-muted: var(--color-neutral-300);
+    --text-danger: var(--color-danger-200);
+    --text-danger-secondary: var(--color-danger-400);
+    --text-danger-tertiary: var(--color-danger-500);
+    --text-danger-muted: var(--color-danger-700);
+    --text-danger-disabled: var(--color-danger-800);
 
-    /* Typography — families */
-    --font-display-mothership: "Chakra Petch", sans-serif;
+    --text-success: var(--color-success-200);
+    --text-success-secondary: var(--color-success-400);
+    --text-success-tertiary: var(--color-success-500);
+    --text-success-muted: var(--color-success-700);
+    --text-success-disabled: var(--color-success-800);
+
+    --text-warning: var(--color-warning-200);
+    --text-warning-secondary: var(--color-warning-400);
+    --text-warning-tertiary: var(--color-warning-500);
+    --text-warning-muted: var(--color-warning-700);
+    --text-warning-disabled: var(--color-warning-800);
+
+    --text-alternate: var(--color-alternate-200);
+    --text-alternate-secondary: var(--color-alternate-400);
+    --text-alternate-tertiary: var(--color-alternate-500);
+    --text-alternate-muted: var(--color-alternate-700);
+    --text-alternate-disabled: var(--color-alternate-800);
+
+    --text-canvas: var(--color-canvas-200);
+    --text-canvas-secondary: var(--color-canvas-400);
+    --text-canvas-tertiary: var(--color-canvas-500);
+    --text-canvas-muted: var(--color-canvas-700);
+    --text-canvas-disabled: var(--color-canvas-800);
+
+    --text-brand: var(--color-brand-200);
+    --text-brand-secondary: var(--color-brand-400);
+    --text-brand-tertiary: var(--color-brand-500);
+    --text-brand-muted: var(--color-brand-700);
+    --text-brand-disabled: var(--color-brand-800);
+
+    --text-accent: var(--color-accent-200);
+    --text-accent-secondary: var(--color-accent-400);
+    --text-accent-tertiary: var(--color-accent-500);
+    --text-accent-muted: var(--color-accent-700);
+    --text-accent-disabled: var(--color-accent-800);
+
+    --text-special: var(--color-special-200);
+    --text-special-secondary: var(--color-special-400);
+    --text-special-tertiary: var(--color-special-500);
+    --text-special-muted: var(--color-special-700);
+    --text-special-disabled: var(--color-special-800);
+
+    --text-info: var(--color-info-200);
+    --text-info-secondary: var(--color-info-400);
+    --text-info-tertiary: var(--color-info-500);
+    --text-info-muted: var(--color-info-700);
+    --text-info-disabled: var(--color-info-800);
+
+    /* Typography — families.
+       Chakra Petch and Barlow are self-hosted (fonts/, SIL OFL 1.1); Font Awesome 6 Pro ships
+       with Foundry under its own name (--font-awesome), so --font-icon is free. The serif and
+       mono stacks are vendored swatches — MoSh hosts neither face. */
+    --font-display: "Chakra Petch", sans-serif;
     --font-sans-mothership: "Barlow", sans-serif;
-    --font-icon-mothership: "Font Awesome 6 Pro";
+    --font-serif-mothership: "GFS Didot", serif;
+    --font-mono: "fira-code", ui-monospace, "SF Mono", Menlo, Consolas, monospace, monospace;
+    --font-icon: "Font Awesome 6 Pro";
 
     /* Typography — sizes */
-    --font-size-xs: 0.75rem;
-    --font-size-sm: 0.85rem;
-    --font-size-md: 0.9rem;
-    --font-size-lg: 1rem;
-    --font-size-xl: 1.1rem;
-    --font-size-2xl: 1.25rem;
-    --font-size-3xl: 1.5rem;
-    --font-size-display: 2.625rem;
+    --font-size-xs: 0.75rem;          /* 12px */
+    --font-size-sm: 0.85rem;          /* 13.6px */
+    --font-size-md: 0.9rem;           /* 14.4px */
+    --font-size-lg: 1rem;             /* 16px */
+    --font-size-xl: 1.1rem;           /* 17.6px */
+    --font-size-2xl: 1.25rem;         /* 20px */
+    --font-size-3xl: 1.5rem;          /* 24px */
+    --font-size-4xl: 1.75rem;         /* 28px */
+    --font-size-5xl: 2rem;            /* 32px */
+    --font-size-6xl: 2.25rem;         /* 36px */
+    --font-size-7xl: 2.625rem;        /* 42px */
 
     /* Typography — weights */
+    --font-weight-thin: 100;
+    --font-weight-extralight: 200;
+    --font-weight-light: 300;
     --font-weight-normal: 400;
     --font-weight-medium: 500;
+    --font-weight-semibold: 600;
     --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    --font-weight-black: 900;
+
+    /* Typography — line heights */
+    --line-height-none: 1;
+    --line-height-tightest: 1.1;
+    --line-height-tighter: 1.25;
+    --line-height-tight: 1.35;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.75;
+
+    /* Typography — letter spacing */
+    --letter-spacing-tighter: -0.04em;
+    --letter-spacing-tight: -0.02em;
+    --letter-spacing-normal: 0;
+    --letter-spacing-wide: 0.04em;
+    --letter-spacing-wider: 0.08em;
+
+    /* Typography — composite styles */
+    /* The sizes are MoSh's measured headings (42/24/20/17.6px); the weight is the sheet's today. */
+
+    --heading-xl-font-family: var(--font-display);
+    --heading-xl-font-size: var(--font-size-7xl);
+    --heading-xl-font-weight: var(--font-weight-bold);
+    --heading-xl-line-height: var(--line-height-tightest);
+    --heading-xl-letter-spacing: var(--letter-spacing-normal);
+
+    --heading-lg-font-family: var(--font-display);
+    --heading-lg-font-size: var(--font-size-3xl);
+    --heading-lg-font-weight: var(--font-weight-bold);
+    --heading-lg-line-height: var(--line-height-tightest);
+    --heading-lg-letter-spacing: var(--letter-spacing-normal);
+
+    --heading-md-font-family: var(--font-display);
+    --heading-md-font-size: var(--font-size-2xl);
+    --heading-md-font-weight: var(--font-weight-bold);
+    --heading-md-line-height: var(--line-height-tighter);
+    --heading-md-letter-spacing: var(--letter-spacing-normal);
+
+    --heading-sm-font-family: var(--font-display);
+    --heading-sm-font-size: var(--font-size-xl);
+    --heading-sm-font-weight: var(--font-weight-bold);
+    --heading-sm-line-height: var(--line-height-tighter);
+    --heading-sm-letter-spacing: var(--letter-spacing-normal);
+
+    --body-md-font-family: var(--font-sans-mothership);
+    --body-md-font-size: var(--font-size-md);
+    --body-md-font-weight: var(--font-weight-normal);
+    --body-md-line-height: var(--line-height-normal);
+    --body-md-letter-spacing: var(--letter-spacing-normal);
+
+    --body-sm-font-family: var(--font-sans-mothership);
+    --body-sm-font-size: var(--font-size-sm);
+    --body-sm-font-weight: var(--font-weight-normal);
+    --body-sm-line-height: var(--line-height-tight);
+    --body-sm-letter-spacing: var(--letter-spacing-normal);
 
     /* Space — the value is the name */
+    --space-0: 0;
     --space-2: 2px;
     --space-4: 4px;
     --space-6: 6px;
@@ -92,21 +486,39 @@
     --space-12: 12px;
     --space-16: 16px;
     --space-20: 20px;
+    --space-24: 24px;
+    --space-32: 32px;
+    --space-40: 40px;
+    --space-48: 48px;
+    --space-64: 64px;
+    --space-96: 96px;
+    --space-128: 128px;
+    --space-full: 100%;
 
-    /* Radius — the three focal sizes, a small tail, and the pill */
-    --radius-xs: 3px;
-    --radius-sm: 10px;
-    --radius-md: 15px;
-    --radius-lg: 21px;
+    /* Radius — MoSh's three focal sizes at sm/md/lg, the tail extrapolated */
+    --radius-none: 0;
+    --radius-sm: 3px;
+    --radius-md: 10px;
+    --radius-lg: 15px;
+    --radius-xl: 21px;
+    --radius-2xl: 28px;
+    --radius-3xl: 36px;
+    --radius-4xl: 48px;
     --radius-full: 999px;
 
-    /* Border width */
-    --border-width-thin: 1px;
-    --border-width-default: 2px;
-    --border-width-thick: 3px;
-    --border-width-heavy: 4px;
+    /* Gradients — vendored swatches, replaceable */
+    --gradient-1: linear-gradient(90deg, var(--color-brand-500) 0%, var(--color-accent-500) 100%);
+    --gradient-2: linear-gradient(135deg, var(--color-brand-500) 0%, var(--color-special-500) 100%);
+    --gradient-3: linear-gradient(90deg, var(--color-success-500) 0%, var(--color-info-500) 100%);
+    --gradient-4: linear-gradient(45deg, var(--color-danger-500) 0%, var(--color-warning-500) 100%);
+    --gradient-angle-horizontal: 90deg;
+    --gradient-angle-diagonal: 135deg;
+    --gradient-angle-vertical: 180deg;
+    --gradient-stop-start: 0%;
+    --gradient-stop-mid: 50%;
+    --gradient-stop-end: 100%;
 
-    /* Shadow and ring */
+    /* Effects — MoSh's own, measured from the sheet */
     --shadow-glow: 0 0 15px var(--color-white);
     --shadow-glow-soft: 0 0 10px 0 var(--color-neutral-400);
     --ring-danger: 0 0 0 2px rgba(139, 0, 0, 0.35);

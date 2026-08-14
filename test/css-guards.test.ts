@@ -114,7 +114,7 @@ describe('token collisions with Foundry', () => {
     const ours = new Set(stylesheets.flatMap(({ css }) => [...definedCustomProperties(css)]));
 
     // A parser that returns nothing would pass an intersection test in silence.
-    expect(ours.size).toBeGreaterThan(50);
+    expect(ours.size).toBeGreaterThan(350);
     expect(theirs.size).toBeGreaterThan(300);
     expect([...ours].filter((name) => theirs.has(name))).toEqual([]);
   });
