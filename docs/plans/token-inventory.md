@@ -62,7 +62,7 @@ Ten families × 11-step ramps (100–950), plus three invariants.
 - ✅ `--letter-spacing-*` (5)
 - ✅ `--heading-xl/lg/md/sm-*` (20) — composite heading styles (family/size/weight/line-height/letter-spacing each)
 - ✅ `--body-md/sm-*` (10) — composite body styles
-- ✅ `--code-*` (5) — composite code style
+- ❌ `--code-*` (5) — composite code style
 - ❌ `--eyebrow-*` (6) — composite eyebrow/overline style *(pre-marked from your answer)*
 
 ## Spacing — `--space-*` (17)
@@ -75,31 +75,31 @@ Ten families × 11-step ramps (100–950), plus three invariants.
 
 ## Shadows & focus (9)
 
-- ✅ `--shadow-none…2xl` (6)
-- ✅ `--ring-focus-sm/md/lg` (3)
+- ❌ `--shadow-none…2xl` (6)
+- ❌ `--ring-focus-sm/md/lg` (3)
 
 ## Motion (38)
 
-- ✅ `--duration-75…1000` (7)
-- ✅ `--ease-*` (31) — linear + in/out/in-out families
+- ❌ `--duration-75…1000` (7)
+- ❌`--ease-*` (31) — linear + in/out/in-out families
 
 ## Utility (33)
 
-- ✅ `--z-*` (7) — base/dropdown/sticky/overlay/modal/popover/tooltip
-- ✅ `--icon-size-*` (10)
-- ✅ `--blur-*` (6)
-- ✅ `--scale-*` (5) — transform-scale steps
-- ✅ `--dot-size-*` (5)
+- ❌`--z-*` (7) — base/dropdown/sticky/overlay/modal/popover/tooltip
+- ❌ `--icon-size-*` (10)
+- ❌ `--blur-*` (6)
+- ❌ `--scale-*` (5) — transform-scale steps
+- ❌ `--dot-size-*` (5)
 
 ## Overlays & gradients (13)
 
 - ❌ `--overlay`, `--overlay-low/high` (3) *(pre-marked from your answer)*
-- ❌ `--gradient-1…4`, `--gradient-angle-*`, `--gradient-stop-*` (10) *(pre-marked from your answer)*
+- ✅  `--gradient-1…4`, `--gradient-angle-*`, `--gradient-stop-*` (10) *(pre-marked from your answer)*
 
 ## Page layout (8)
 
 Live-tokens' demo-site scaffolding — the categories with no obvious MoSh surface.
 
-- ✅ `--columns-count/max-width/gutter/margin` (4)
-- ✅ `--page-bg`, `--page-bg-attachment` (2)
-- ✅ `--shimmer-on/off` (2) — loading-shimmer toggle
+- ❌ `--columns-count/max-width/gutter/margin` (4)
+- ❌`--page-bg`, `--page-bg-attachment` (2)
+- ❌ `--shimmer-on/off` (2) — loading-shimmer toggle
