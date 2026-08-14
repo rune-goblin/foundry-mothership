@@ -491,6 +491,23 @@ for the gap. Trust the runner's numbers.
 **Settled:** the browser floor (§4.3) — `@layer`, native nesting (both syntaxes), and
 `:where()` all clear Foundry v13's stated minimums, and core CSS already requires `@layer`.
 
+**Addendum 2026-08-15 — §1.1's mechanism corrected.** The installed v14 defaults a system
+stylesheet into the cascade: the server's view builder injects manifest styles as
+`@import "…" layer(system)` when the manifest declares no layer (verified in
+`dist/server/views/view.mjs` — `layer === undefined ? "system" : layer` — and rendered by
+`templates/views/layouts/main.hbs`; `test/e2e/system-loads.spec.ts:23` had already recorded
+this). So in production our 2,043 lines sit in **slot 8**, not above `exceptions`. Every §1.2
+symptom stands — slot 8 still outranks core's `elements`/`blocks`/`applications`, and the
+unscoped selectors still reach foreign surfaces — but DS7's `@layer system` wrap is a
+cascade no-op versus core (it nests our rules into the `system.system` sub-layer). The wrap
+still earns its place: the **Vite dev server** loads our CSS through the esmodule graph as
+unlayered `<style>` tags, so dev currently renders with different cascade priority than
+production; the explicit wrap converges the two. DS7's risk therefore concentrates in the
+`.mothership` scoping, not the layering. One transitional guarantee, recorded for DS7/DS8:
+while the built sheet mixes wrapped and unwrapped rules, direct-in-layer rules beat
+`system.system` rules — harmless today because the only wrapped rules are `tokens.css`'s
+custom properties, which conflict with nothing; DS7 wraps the remainder in one unit.
+
 **Addendum, same day:** the scope class and token suffix renamed from `mosh` to `mothership` at
 Mark's direction — `ms` was rejected for its two established CSS meanings (§4.1, decisions
 1–2). Mark then widened the scope: **every** existing `mosh` identifier migrates — CSS class,
@@ -567,7 +584,7 @@ set (decision 2), accepts baselines, reviews every diff, runs e2e, and commits.
 | DS4 — scope class everywhere | Sonnet | done | | Re-measured: **16 edit sites**, not 18 — six `classes:` arrays (Class/Skill sheets inherit ItemSheetApp's), the `svelte-dialog.ts` CLASSES const, six chat templates, three Svelte roots. `mothership` added first, `mosh` kept; the Tabs pin in `test/ui-parts.test.ts:479` updated in the same diff (rule 4). Nothing selects `.mothership` yet, so no visual change by construction. Gate: check clean · 753 vitest · build green. Noted for DS9: `MOUNT_CLASS = 'mosh-dialog-root'` (`svelte-dialog.ts:73`). |
 | DS5 — dead CSS dies | Opus | pending | | After DS3. Checked-in audit script first (the one-off audit false-positived `sbt-*`, §1.3); then delete the dead lines, the `.window-app` rules, `color: none`. `sbt-*` survivors are renamed in DS8's SheetHeader unit, not here. Gate: baselines unchanged. |
 | DS6 — `tokens.css` + guards | Fable designs · Opus authors | done | | **67 tokens** in `css/tokens.css`, custom properties only (no style rules — the font fallback rule waits for DS7's baseline review), imported ahead of `mosh.css` in `module/index.js`; no dev-server rewrite needed (tokens.css travels the esmodule graph, verified live). `test/css-guards.test.ts`: `!important` ceiling 6, unlayered-zero for tokens.css (the mosh.css twin is `it.skip` until DS7 — un-skipped it fails on 248 preludes today, so it is real), collision guard vs the installed build's `foundry2.css` (`FOUNDRY_APP` resolution as in `start-test-env.sh`, visible skip off-machine, size floors against silent parser death). All guards mutation-checked by executor and orchestrator independently. Gate: check clean · 756+1skip vitest · build green; dist opens with `@layer system{.mothership{`. §4.7 records the literal→token map for DS8. |
-| DS7 — layer and scope the sheet | Opus | pending | | After DS3, DS4, DS6. Wrap in `@layer system`; scope the 36 global rules under `.mothership`; rename `css/mosh.css` → `css/mothership.css` (`module/index.js:3`, `vite.config.ts:25`, ~14 comments). The unit that changes what beats core. Gate: full e2e + baseline diff review, rule 2 at full strength. |
+| DS7 — layer and scope the sheet | Opus | pending | | After DS3, DS4, DS6. Wrap in `@layer system`; scope the 36 global rules under `.mothership`; rename `css/mosh.css` → `css/mothership.css` (`module/index.js:3`, `vite.config.ts:25`, ~14 comments). Corrected risk profile (§7 addendum 2026-08-15): the `@layer` wrap is a cascade no-op vs core in production (the sheet already rides `layer(system)` via the server's import default) but converges dev with prod; the risk lives in the `.mothership` scoping. Gate: full e2e + baseline diff review, rule 2 at full strength. |
 | DS8 — dissolution, per-component series | Opus per unit | pending | | After DS6, DS7. One component (or coherent group) per commit: styles into scoped `<style>`, reading its own Layer-2 tokens; its `ui-parts` pin retired in the same diff (rule 4); fork-era class names it owns renamed (`sbt-*` in `SheetHeader`). R7 landed 2026-08-13, so nothing here waits on behaviour work. This row accumulates one note per landed component. |
 | DS9 — retire `mosh`, sweep the prose | Sonnet + orchestrator | pending | | Last. Drop `mosh` from every `classes` array; final grep proves zero `mosh` in code; then the prose — CLAUDE.md, the `foundry-mosh` skill, docs — says `mothership` everywhere it described the old names. |
 
