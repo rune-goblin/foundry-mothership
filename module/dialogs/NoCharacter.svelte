@@ -6,10 +6,10 @@
   let { target } = $props();
 
   const EXPLANATION = {
-    character: 'Mosh.Errors.NoCharacterSelected',
-    token: 'Mosh.Errors.NoTokenSelected',
+    character: 'Mothership.Errors.NoCharacterSelected',
+    token: 'Mothership.Errors.NoTokenSelected',
   };
 </script>
 
-<h3>{localize('Mosh.Errors.NoCharacterTitle')}</h3>
+<h3>{localize('Mothership.Errors.NoCharacterTitle')}</h3>
 <div class="macro_prompt">{localize(EXPLANATION[target] ?? EXPLANATION.character)}</div>

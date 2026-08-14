@@ -119,14 +119,14 @@ export function checkOf(scope: CheckScope): Check {
 
 function describeCheck(check: Check): string {
   const scope = checkScope(check);
-  return scope === null ? check.kind : localize(`Mosh.RollScope.${scope}`);
+  return scope === null ? check.kind : localize(`Mothership.RollScope.${scope}`);
 }
 
 /** A roll this actor has no stat for is a message, not a `undefined is not an object`. */
 function notifyUnavailable(actor: CheckActor, check: Check): null {
   if (typeof ui !== 'undefined') {
     ui?.notifications?.error(
-      format('Mosh.Errors.CheckUnavailable', { actor: actor.name, check: describeCheck(check) }),
+      format('Mothership.Errors.CheckUnavailable', { actor: actor.name, check: describeCheck(check) }),
     );
   }
   return null;
@@ -250,7 +250,7 @@ async function spendShot(actor: CheckActor, item: CheckItem): Promise<boolean> {
 function headerOf(check: Check, stat: StatValue, weapon: CheckItem | null): { title: string; image: string } {
   if (weapon !== null) return { title: weapon.name, image: weapon.img };
   if (check.kind === 'rest-save') {
-    return { title: localize('Mosh.RestSave'), image: asset('images/icons/ui/macros/rest_save.png') };
+    return { title: localize('Mothership.RestSave'), image: asset('images/icons/ui/macros/rest_save.png') };
   }
   return { title: stat.rollLabel, image: asset(`images/icons/ui/attributes/${stat.key}.png`) };
 }

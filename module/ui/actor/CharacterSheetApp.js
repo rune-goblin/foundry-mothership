@@ -21,7 +21,7 @@ export class MoshCharacterSheet extends ActorSheetV2 {
         {
           action: 'generateCharacter',
           icon: 'fas fa-cogs',
-          label: 'Mosh.CharacterGenerator.name',
+          label: 'Mothership.CharacterGenerator.name',
           ownership: 'OWNER',
         },
       ],

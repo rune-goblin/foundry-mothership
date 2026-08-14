@@ -104,7 +104,7 @@ function panicDescription(result: PanicResult): string {
 }
 
 // "Panic Check", not the old "Panic Check (Stress, Normal)": the Calm and android variants went
-// with §25, and actor.js derives its flavour-text key from the table's name — `Mosh.table.panic_check`
+// with §25, and actor.js derives its flavour-text key from the table's name — `Mothership.table.panic_check`
 // is the key that has always been there.
 const panic = (): ContentRecord => ({
   contentId: 'panic-check-stress-normal',

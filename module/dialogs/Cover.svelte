@@ -10,20 +10,20 @@
 <div class="macro_window">
   <div class="grid grid-2col" style="grid-template-columns: 150px auto">
     <div class="macro_img">
-      <img src={asset('images/icons/ui/attributes/armor.png')} alt={localize('Mosh.Cover')} />
+      <img src={asset('images/icons/ui/attributes/armor.png')} alt={localize('Mothership.Cover')} />
     </div>
     <div class="macro_desc">
-      <h4>{localize('Mosh.Cover')}</h4>
-      {localize('Mosh.TheEnvironmentCanProvideProtectionCalled')}
-      <strong>{localize('Mosh.Cover')}</strong>. {localize('Mosh.ItCanBeDestroyedLikeArmor')}
-      <strong>{localize('Mosh.IfYouShotWhileInCover')}.</strong>
-      {localize('Mosh.YourCoverValuesAreDisplayedIn')}
-      <strong><span style="color: orangered">{localize('Mosh.Orange')}</span></strong>.
+      <h4>{localize('Mothership.Cover')}</h4>
+      {localize('Mothership.TheEnvironmentCanProvideProtectionCalled')}
+      <strong>{localize('Mothership.Cover')}</strong>. {localize('Mothership.ItCanBeDestroyedLikeArmor')}
+      <strong>{localize('Mothership.IfYouShotWhileInCover')}.</strong>
+      {localize('Mothership.YourCoverValuesAreDisplayedIn')}
+      <strong><span style="color: orangered">{localize('Mothership.Orange')}</span></strong>.
     </div>
   </div>
 </div>
 
-<div class="macro_prompt">{localize('Mosh.SelectYourCurrentCoverSituation')}:</div>
+<div class="macro_prompt">{localize('Mothership.SelectYourCurrentCoverSituation')}:</div>
 
 {#each options as option (option.key)}
   <label for="cover-{option.key}">
@@ -60,8 +60,8 @@
             </div>
           </div>
           <div class="grid">
-            <div class="healthmaxtext mosh health resource">{localize('Mosh.ArmorPoints')}</div>
-            <div class="healthmaxtext mosh health resource">{localize('Mosh.DMGReduction')}</div>
+            <div class="healthmaxtext mosh health resource">{localize('Mothership.ArmorPoints')}</div>
+            <div class="healthmaxtext mosh health resource">{localize('Mothership.DMGReduction')}</div>
           </div>
         </div>
       </div>

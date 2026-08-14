@@ -53,10 +53,10 @@ describe('asset paths', () => {
 describe('the verdict line', () => {
   it('names what happened, from the lang files', () => {
     installI18n({
-      'Mosh.Chat.Success': 'SUCCESS!',
-      'Mosh.Chat.Failure': 'FAILURE!',
-      'Mosh.Chat.CriticalSuccess': 'CRITICAL SUCCESS!',
-      'Mosh.Chat.CriticalFailure': 'CRITICAL FAILURE!',
+      'Mothership.Chat.Success': 'SUCCESS!',
+      'Mothership.Chat.Failure': 'FAILURE!',
+      'Mothership.Chat.CriticalSuccess': 'CRITICAL SUCCESS!',
+      'Mothership.Chat.CriticalFailure': 'CRITICAL FAILURE!',
     });
 
     expect(outcomeHtml(outcome('1d100', [30], 40))).toContain('SUCCESS!');
@@ -93,7 +93,7 @@ describe('the dice block', () => {
 
 describe('the check card', () => {
   it('gives the template every key it reads', () => {
-    installI18n({ 'Mosh.Chat.Rolled': 'rolled', 'Mosh.Chat.LessThan': 'less than' });
+    installI18n({ 'Mothership.Chat.Rolled': 'rolled', 'Mothership.Chat.LessThan': 'less than' });
     const card = checkCard({
       source: SOURCE,
       outcome: outcome('1d100', [30], 40),
@@ -154,8 +154,8 @@ describe('the table card', () => {
 
   it('takes its prose from the key, not from the table’s name', () => {
     installI18n({
-      'Mosh.table.panic_check.roll.human': 'Your heartbeat races.',
-      'Mosh.table.panic_check.success.human': 'You regain your composure.',
+      'Mothership.table.panic_check.roll.human': 'Your heartbeat races.',
+      'Mothership.table.panic_check.success.human': 'You regain your composure.',
     });
 
     const card = tableCard({
@@ -194,21 +194,21 @@ describe('the table card', () => {
 });
 
 const FLAVOR = {
-  'Mosh.attribute.health.decrease.human': 'You wince from the pain.',
-  'Mosh.attribute.health.decreaseHeader.human': 'Health Lost',
-  'Mosh.attribute.stress.pastFloor.human': 'You are already at your lowest Stress.',
-  'Mosh.attribute.hits.increase.human': 'You take a wound.',
-  'Mosh.attribute.hits.hitCeiling.human': 'You are dead.',
-  'Mosh.attribute.stress.increase.human': 'Your nerves fray.',
-  'Mosh.attribute.stress.increase.android': 'Your processes stall.',
-  'Mosh.attribute.stress.increaseHeader.human': 'Stress Gained',
-  'Mosh.attribute.stress.hitCeiling.human': 'You are at maximum Stress.',
-  'Mosh.HealthZeroMessage2': 'Your health has hit zero and you must take a wound. Your health has been reset to ',
-  'Mosh.Chat.FieldChanged': '{field} {direction} from {from} to {to}.',
-  'Mosh.Chat.Increased': 'increased',
-  'Mosh.Chat.Decreased': 'decreased',
-  'Mosh.Chat.ReduceStatBySurplus': 'Reduce the most relevant Stat or Save by {amount}.',
-  'Mosh.Maximum': 'Maximum',
+  'Mothership.attribute.health.decrease.human': 'You wince from the pain.',
+  'Mothership.attribute.health.decreaseHeader.human': 'Health Lost',
+  'Mothership.attribute.stress.pastFloor.human': 'You are already at your lowest Stress.',
+  'Mothership.attribute.hits.increase.human': 'You take a wound.',
+  'Mothership.attribute.hits.hitCeiling.human': 'You are dead.',
+  'Mothership.attribute.stress.increase.human': 'Your nerves fray.',
+  'Mothership.attribute.stress.increase.android': 'Your processes stall.',
+  'Mothership.attribute.stress.increaseHeader.human': 'Stress Gained',
+  'Mothership.attribute.stress.hitCeiling.human': 'You are at maximum Stress.',
+  'Mothership.HealthZeroMessage2': 'Your health has hit zero and you must take a wound. Your health has been reset to ',
+  'Mothership.Chat.FieldChanged': '{field} {direction} from {from} to {to}.',
+  'Mothership.Chat.Increased': 'increased',
+  'Mothership.Chat.Decreased': 'decreased',
+  'Mothership.Chat.ReduceStatBySurplus': 'Reduce the most relevant Stat or Save by {amount}.',
+  'Mothership.Maximum': 'Maximum',
 };
 
 function actor(system: object): MutableDocument & { writes: Record<string, number>[] } {
@@ -373,7 +373,7 @@ describe('the ammunition cards', () => {
   const weapon = { itemId: 'w1', name: 'Pulse Rifle', img: 'weapon.png', type: 'weapon', description: '', roll: null };
 
   it('speaks only when there is something to say', () => {
-    installI18n({ 'Mosh.WeaponReloaded': 'Weapon reloaded', 'Mosh.OutOfAmmo': 'Out of ammo' });
+    installI18n({ 'Mothership.WeaponReloaded': 'Weapon reloaded', 'Mothership.OutOfAmmo': 'Out of ammo' });
 
     expect(reloadCard(weapon, { status: 'reloaded', curShots: 6, ammo: 0, loaded: 6 }, SOURCE)?.data).toEqual({
       actor: { _id: 'actor1', img: 'actor.png' },

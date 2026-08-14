@@ -43,36 +43,36 @@
   let tab = $state('skills');
 
   const tabs = $derived([
-    { id: 'skills', label: localize('Mosh.Skills') },
-    { id: 'weapons', label: localize('Mosh.Weapons') },
-    { id: 'armor', label: localize('Mosh.Armor') },
-    { id: 'items', label: localize('Mosh.Items') },
-    { id: 'conditions', label: localize('Mosh.Conditions') },
-    { id: 'notes', label: localize('Mosh.Notes') },
+    { id: 'skills', label: localize('Mothership.Skills') },
+    { id: 'weapons', label: localize('Mothership.Weapons') },
+    { id: 'armor', label: localize('Mothership.Armor') },
+    { id: 'items', label: localize('Mothership.Items') },
+    { id: 'conditions', label: localize('Mothership.Conditions') },
+    { id: 'notes', label: localize('Mothership.Notes') },
   ]);
 
   // The header's five free-text fields differ only by path and caption. The path is spelled out
   // rather than built from a key, because test/sheet-bindings.test.ts checks these against the
   // schema and it can only do that for a literal.
   const IDENTITY = [
-    { name: 'system.credits.value', label: 'Mosh.Credits' },
-    { name: 'system.class.value', label: 'Mosh.CLASS' },
-    { name: 'system.rank.value', label: 'Mosh.RANK' },
-    { name: 'system.pronouns.value', label: 'Mosh.Pronouns' },
-    { name: 'system.attributes.level.value', label: 'Mosh.HighScore' },
+    { name: 'system.credits.value', label: 'Mothership.Credits' },
+    { name: 'system.class.value', label: 'Mothership.CLASS' },
+    { name: 'system.rank.value', label: 'Mothership.RANK' },
+    { name: 'system.pronouns.value', label: 'Mothership.Pronouns' },
+    { name: 'system.attributes.level.value', label: 'Mothership.HighScore' },
   ];
 
   const STATS = [
-    { key: 'strength', label: 'Mosh.Strength' },
-    { key: 'speed', label: 'Mosh.Speed' },
-    { key: 'intellect', label: 'Mosh.Intellect' },
-    { key: 'combat', label: 'Mosh.Combat' },
+    { key: 'strength', label: 'Mothership.Strength' },
+    { key: 'speed', label: 'Mothership.Speed' },
+    { key: 'intellect', label: 'Mothership.Intellect' },
+    { key: 'combat', label: 'Mothership.Combat' },
   ];
 
   const SAVES = [
-    { key: 'sanity', label: 'Mosh.Sanity' },
-    { key: 'fear', label: 'Mosh.Fear' },
-    { key: 'body', label: 'Mosh.Body' },
+    { key: 'sanity', label: 'Mothership.Sanity' },
+    { key: 'fear', label: 'Mothership.Fear' },
+    { key: 'body', label: 'Mothership.Body' },
   ];
 
   const XP_MILESTONES = {
@@ -118,14 +118,14 @@
 
       <div class="headergrid">
         <div class="headernamegrid">
-          <div class="headerinputtext">{localize('Mosh.Name')}</div>
+          <div class="headerinputtext">{localize('Mothership.Name')}</div>
           <div class="headerinputfield charname">
             <input
               name="name"
               class="noborder"
               type="text"
               value={doc.name}
-              placeholder={localize('Mosh.Name')}
+              placeholder={localize('Mothership.Name')}
             />
           </div>
         </div>
@@ -150,15 +150,15 @@
       <HealthBlock health={system.health} hits={system.hits} />
 
       <MinMaxField
-        label={localize('Mosh.Stress')}
+        label={localize('Mothership.Stress')}
         labelClass="rollable"
         onroll={panic}
         name="system.other.stress.value"
         value={system.other.stress.value}
         rightName="system.other.stress.min"
         rightValue={system.other.stress.min}
-        leftLabel={localize('Mosh.Current')}
-        rightLabel={localize('Mosh.Minimum')}
+        leftLabel={localize('Mothership.Current')}
+        rightLabel={localize('Mothership.Minimum')}
       />
 
       <ArmorBlock
@@ -168,7 +168,7 @@
       />
 
       <div style="margin-left: 6px; margin-right: 0px; flex: 0; grid-column-start: 1; grid-column-end: 3;">
-        <div class="resource-label">{localize('Mosh.TraumaResponse')}</div>
+        <div class="resource-label">{localize('Mothership.TraumaResponse')}</div>
         <textarea
           name="system.other.stressdesc.value"
           rows="2"
@@ -243,7 +243,7 @@
   <TabPanel tab="notes" active={tab} class="biography">
     <div style="display: flex; flex-direction: column; height: 100%; gap: 6px;">
       <div class="item flex-group-left item-header">
-        <div class="skill-stat">{localize('Mosh.Bio')}</div>
+        <div class="skill-stat">{localize('Mothership.Bio')}</div>
       </div>
       <div style="flex: 1; min-height: 0;">
         <Editor
@@ -254,7 +254,7 @@
         />
       </div>
       <div class="item flex-group-left item-header">
-        <div class="skill-stat">{localize('Mosh.Notes')}</div>
+        <div class="skill-stat">{localize('Mothership.Notes')}</div>
       </div>
       <div style="flex: 1; min-height: 0;">
         <Editor
@@ -270,15 +270,15 @@
   <TabPanel tab="armor" active={tab} class="items">
     <ItemPanel
       headers={[
-        { label: localize('Mosh.ArmorName'), grow: 2.5 },
-        { label: localize('Mosh.AP') },
-        { label: localize('Mosh.DR') },
-        { label: localize('Mosh.Speed') },
-        { label: localize('Mosh.Oxygen') },
-        { label: localize('Mosh.Equipped') },
+        { label: localize('Mothership.ArmorName'), grow: 2.5 },
+        { label: localize('Mothership.AP') },
+        { label: localize('Mothership.DR') },
+        { label: localize('Mothership.Speed') },
+        { label: localize('Mothership.Oxygen') },
+        { label: localize('Mothership.Equipped') },
       ]}
       items={armors}
-      create={{ title: localize('Mosh.CreateArmor'), onclick: () => promptAddItem(actor, 'armor') }}
+      create={{ title: localize('Mothership.CreateArmor'), onclick: () => promptAddItem(actor, 'armor') }}
       row={armorRow}
     />
   </TabPanel>
@@ -286,22 +286,22 @@
   <TabPanel tab="items" active={tab} class="items">
     <ItemPanel
       headers={[
-        { label: localize('Mosh.ItemName'), grow: 1.5 },
-        { label: localize('Mosh.Quantity') },
-        ...(doc.hideWeight ? [] : [{ label: localize('Mosh.Weight') }]),
-        { label: localize('Mosh.Value') },
+        { label: localize('Mothership.ItemName'), grow: 1.5 },
+        { label: localize('Mothership.Quantity') },
+        ...(doc.hideWeight ? [] : [{ label: localize('Mothership.Weight') }]),
+        { label: localize('Mothership.Value') },
       ]}
       items={gear}
-      create={{ title: localize('Mosh.CreateItem'), onclick: () => promptAddItem(actor, 'item') }}
+      create={{ title: localize('Mothership.CreateItem'), onclick: () => promptAddItem(actor, 'item') }}
       row={gearRow}
     />
 
     {#if !doc.hideWeight}
       <div class="item flex-group-left item-header">
         <div class="skill-stat" style="flex-grow: 1.5;">
-          {localize('Mosh.CarryingCapacity')}: {system.weight.capacity}
+          {localize('Mothership.CarryingCapacity')}: {system.weight.capacity}
         </div>
-        <div class="skill-stat">{localize('Mosh.CurrentWeight')}: {system.weight.current}</div>
+        <div class="skill-stat">{localize('Mothership.CurrentWeight')}: {system.weight.current}</div>
       </div>
     {/if}
   </TabPanel>
@@ -310,19 +310,19 @@
     <ItemPanel
       style="margin-bottom: 10px;"
       headers={[
-        { label: localize('Mosh.SkillName') },
-        { label: localize('Mosh.SkillRank') },
-        { label: localize('Mosh.SkillBonus') },
+        { label: localize('Mothership.SkillName') },
+        { label: localize('Mothership.SkillRank') },
+        { label: localize('Mothership.SkillBonus') },
       ]}
       items={skills}
-      create={{ title: localize('Mosh.CreateSkill'), onclick: () => promptAddItem(actor, 'skill') }}
+      create={{ title: localize('Mothership.CreateSkill'), onclick: () => promptAddItem(actor, 'skill') }}
       row={skillRow}
     />
 
     <div class="skill_training_frame" style="margin-bottom: 10px;">
       <div class="grid grid-3col" style="grid-template-columns: 90px auto 283px ;">
         <div class="skill-stat" style="position: relative; top: 6px;">
-          <strong>{localize('Mosh.SkillTraining')}</strong>
+          <strong>{localize('Mothership.SkillTraining')}</strong>
         </div>
         <textarea
           name="system.xp.selectedSkill"
@@ -350,13 +350,13 @@
   <TabPanel tab="conditions" active={tab} class="items">
     <ItemPanel
       headers={[
-        { label: localize('Mosh.Condition') },
-        { label: localize('Mosh.Severity') },
-        { label: localize('Mosh.Treatment') },
+        { label: localize('Mothership.Condition') },
+        { label: localize('Mothership.Severity') },
+        { label: localize('Mothership.Treatment') },
       ]}
       items={conditions}
       create={{
-        title: localize('Mosh.CreateCondition'),
+        title: localize('Mothership.CreateCondition'),
         onclick: () => promptAddItem(actor, 'condition'),
       }}
       row={conditionRow}
@@ -366,14 +366,14 @@
   <TabPanel tab="weapons" active={tab} class="items">
     <ItemPanel
       headers={[
-        { label: localize('Mosh.WeaponName'), grow: 2 },
-        { label: localize('Mosh.Damage') },
-        { label: localize('Mosh.Ammo') },
-        { label: localize('Mosh.Shots') },
-        { label: localize('Mosh.Range') },
+        { label: localize('Mothership.WeaponName'), grow: 2 },
+        { label: localize('Mothership.Damage') },
+        { label: localize('Mothership.Ammo') },
+        { label: localize('Mothership.Shots') },
+        { label: localize('Mothership.Range') },
       ]}
       items={weapons}
-      create={{ title: localize('Mosh.CreateWeapon'), onclick: () => promptAddItem(actor, 'weapon') }}
+      create={{ title: localize('Mothership.CreateWeapon'), onclick: () => promptAddItem(actor, 'weapon') }}
       row={weaponRow}
     />
   </TabPanel>
@@ -406,7 +406,7 @@
       {armor.system.oxygenCurrent}/{armor.system.oxygenMax}
     </ItemCell>
   {:else}
-    <ItemCell>{localize('Mosh.NA')}</ItemCell>
+    <ItemCell>{localize('Mothership.NA')}</ItemCell>
   {/if}
   <ItemCell>
     <input
@@ -418,12 +418,12 @@
   <ItemControls>
     <ItemControl
       icon="edit"
-      title={localize('Mosh.EditArmor')}
+      title={localize('Mothership.EditArmor')}
       onclick={() => editItem(actor, armor.id)}
     />
     <ItemControl
       icon="trash"
-      title={localize('Mosh.DeleteArmor')}
+      title={localize('Mothership.DeleteArmor')}
       onclick={() => deleteItem(actor, armor.id)}
     />
   </ItemControls>
@@ -444,12 +444,12 @@
   <ItemControls>
     <ItemControl
       icon="edit"
-      title={localize('Mosh.EditItem')}
+      title={localize('Mothership.EditItem')}
       onclick={() => editItem(actor, item.id)}
     />
     <ItemControl
       icon="trash"
-      title={localize('Mosh.DeleteItem')}
+      title={localize('Mothership.DeleteItem')}
       onclick={() => deleteItem(actor, item.id)}
     />
   </ItemControls>
@@ -463,12 +463,12 @@
   <ItemControls>
     <ItemControl
       icon="edit"
-      title={localize('Mosh.EditSkill')}
+      title={localize('Mothership.EditSkill')}
       onclick={() => editItem(actor, skill.id)}
     />
     <ItemControl
       icon="trash"
-      title={localize('Mosh.DeleteSkill')}
+      title={localize('Mothership.DeleteSkill')}
       onclick={() => deleteItem(actor, skill.id)}
     />
   </ItemControls>
@@ -500,12 +500,12 @@
   <ItemControls>
     <ItemControl
       icon="edit"
-      title={localize('Mosh.EditCondition')}
+      title={localize('Mothership.EditCondition')}
       onclick={() => editItem(actor, condition.id)}
     />
     <ItemControl
       icon="trash"
-      title={localize('Mosh.DeleteCondition')}
+      title={localize('Mothership.DeleteCondition')}
       onclick={() => deleteItem(actor, condition.id)}
     />
   </ItemControls>
@@ -516,7 +516,7 @@
   <ItemCell variant="name" grow={2.05} roll onclick={weaponRoll(weapon.id)}>{weapon.name}</ItemCell>
   <ItemCell roll onclick={damageRoll(weapon.id)}>
     {weapon.system.damage}{weapon.system.antiArmor
-      ? ` (${localize('Mosh.AntiArmorAcronym')})`
+      ? ` (${localize('Mothership.AntiArmorAcronym')})`
       : ''}
   </ItemCell>
   {#if weapon.system.useAmmo}
@@ -530,7 +530,7 @@
         role="button"
         tabindex="0"
         title={weapon.system.curShots === weapon.system.shots
-          ? localize('Mosh.EditWeapon')
+          ? localize('Mothership.EditWeapon')
           : undefined}
         onclick={shotStep(weapon.id)}
         oncontextmenu={shotStep(weapon.id)}
@@ -544,7 +544,7 @@
           href={null}
           role="button"
           tabindex="0"
-          title={localize('Mosh.Reload')}
+          title={localize('Mothership.Reload')}
           onclick={() => actor.reloadWeapon(weapon.id)}
           onkeydown={onActivate(() => actor.reloadWeapon(weapon.id))}
         >
@@ -553,19 +553,19 @@
       {/if}
     </ItemCell>
   {:else}
-    <ItemCell>{localize('Mosh.NA')}</ItemCell>
-    <ItemCell>{localize('Mosh.NA')}</ItemCell>
+    <ItemCell>{localize('Mothership.NA')}</ItemCell>
+    <ItemCell>{localize('Mothership.NA')}</ItemCell>
   {/if}
-  <ItemCell>{localize(`Mosh.RangeBand.${weapon.system.range}`)}</ItemCell>
+  <ItemCell>{localize(`Mothership.RangeBand.${weapon.system.range}`)}</ItemCell>
   <ItemControls>
     <ItemControl
       icon="edit"
-      title={localize('Mosh.EditWeapon')}
+      title={localize('Mothership.EditWeapon')}
       onclick={() => editItem(actor, weapon.id)}
     />
     <ItemControl
       icon="trash"
-      title={localize('Mosh.DeleteWeapon')}
+      title={localize('Mothership.DeleteWeapon')}
       onclick={() => deleteItem(actor, weapon.id)}
     />
   </ItemControls>

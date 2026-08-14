@@ -152,17 +152,17 @@ let notifications: Notifications;
 beforeEach(() => {
   for (const prompt of Object.values(prompts)) prompt.mockReset();
   installI18n({
-    'Mosh.Chat.FieldChanged': '{field} {direction} from {from} to {to}.',
-    'Mosh.Chat.Increased': 'increased',
-    'Mosh.Chat.Decreased': 'decreased',
-    'Mosh.Severity': 'Severity',
-    'Mosh.Quantity': 'Quantity',
-    'Mosh.YouLearnThisSkill': 'You learn this skill',
-    'Mosh.YouAddThisToYourInventory': 'You add this to your inventory.',
-    'Mosh.YouAddAnotherOfThisToYourInventory': 'You add another one of these to your inventory.',
-    'Mosh.item.condition.add.human': 'A new affliction.',
-    'Mosh.item.condition.increase.human': 'It worsens.',
-    'Mosh.attribute.health.decrease.human': 'You wince from the pain.',
+    'Mothership.Chat.FieldChanged': '{field} {direction} from {from} to {to}.',
+    'Mothership.Chat.Increased': 'increased',
+    'Mothership.Chat.Decreased': 'decreased',
+    'Mothership.Severity': 'Severity',
+    'Mothership.Quantity': 'Quantity',
+    'Mothership.YouLearnThisSkill': 'You learn this skill',
+    'Mothership.YouAddThisToYourInventory': 'You add this to your inventory.',
+    'Mothership.YouAddAnotherOfThisToYourInventory': 'You add another one of these to your inventory.',
+    'Mothership.item.condition.add.human': 'A new affliction.',
+    'Mothership.item.condition.increase.human': 'It worsens.',
+    'Mothership.attribute.health.decrease.human': 'You wince from the pain.',
   });
   chat = installChat();
   notifications = installNotifications();

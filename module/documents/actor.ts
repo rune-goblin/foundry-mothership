@@ -345,13 +345,13 @@ export class MothershipActor extends Actor {
   #grantFlavor(result: GrantResult): string {
     const { change } = result;
     if (change.counted === null) {
-      if (!change.created) return localize('Mosh.YouAddAnotherOfThisToYourInventory');
-      return localize(result.type === 'skill' ? 'Mosh.YouLearnThisSkill' : 'Mosh.YouAddThisToYourInventory');
+      if (!change.created) return localize('Mothership.YouAddAnotherOfThisToYourInventory');
+      return localize(result.type === 'skill' ? 'Mothership.YouLearnThisSkill' : 'Mothership.YouAddThisToYourInventory');
     }
 
-    const changed = format('Mosh.Chat.FieldChanged', {
-      field: localize(change.counted === 'severity' ? 'Mosh.Severity' : 'Mosh.Quantity'),
-      direction: localize(change.to >= change.from ? 'Mosh.Chat.Increased' : 'Mosh.Chat.Decreased'),
+    const changed = format('Mothership.Chat.FieldChanged', {
+      field: localize(change.counted === 'severity' ? 'Mothership.Severity' : 'Mothership.Quantity'),
+      direction: localize(change.to >= change.from ? 'Mothership.Chat.Increased' : 'Mothership.Chat.Decreased'),
       from: `<strong>${change.from}</strong>`,
       to: `<strong>${change.to}</strong>`,
     });

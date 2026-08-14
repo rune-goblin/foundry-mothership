@@ -10,9 +10,9 @@
 {#if skills.length > 0}
   <div class="macro_window">
     <div class="macro_desc" style="padding-left: 8px;">
-      <h4>{localize('Mosh.AddASkill')}</h4>
-      {localize('Mosh.IfYouHaveARelevantSkill')}
-      <em>{localize('Mosh.GivingYouAHigherNumber')}</em>
+      <h4>{localize('Mothership.AddASkill')}</h4>
+      {localize('Mothership.IfYouHaveARelevantSkill')}
+      <em>{localize('Mothership.GivingYouAHigherNumber')}</em>
     </div>
   </div>
 
@@ -29,7 +29,7 @@
         />
         <div class="macro_desc" style="display: table;">
           <span style="display: table-cell; vertical-align: middle;">
-            <p>{localize('Mosh.DoNotAddASkillToThisRoll')}</p>
+            <p>{localize('Mothership.DoNotAddASkillToThisRoll')}</p>
           </span>
         </div>
       </div>
@@ -75,5 +75,5 @@
   <div class="macro_prompt condition-modifier">{note}</div>
 {/if}
 {#if prompt}
-  <div class="macro_prompt">{localize('Mosh.SelectYourRollType')}:</div>
+  <div class="macro_prompt">{localize('Mothership.SelectYourRollType')}:</div>
 {/if}

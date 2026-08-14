@@ -6,21 +6,21 @@
 </script>
 
 <MinMaxField
-  label={localize('Mosh.Health')}
+  label={localize('Mothership.Health')}
   name="system.health.value"
   value={health.value}
   rightName="system.health.max"
   rightValue={health.max}
-  leftLabel={localize('Mosh.Current')}
-  rightLabel={localize('Mosh.Maximum')}
+  leftLabel={localize('Mothership.Current')}
+  rightLabel={localize('Mothership.Maximum')}
 />
 
 <MinMaxField
-  label={localize('Mosh.Wounds')}
+  label={localize('Mothership.Wounds')}
   name="system.hits.value"
   value={hits.value}
   rightName="system.hits.max"
   rightValue={hits.max}
-  leftLabel={localize('Mosh.Current')}
-  rightLabel={localize('Mosh.Maximum')}
+  leftLabel={localize('Mothership.Current')}
+  rightLabel={localize('Mothership.Maximum')}
 />

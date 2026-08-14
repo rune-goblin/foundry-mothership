@@ -80,7 +80,7 @@ let notifications: Notifications;
 
 beforeEach(() => {
   prompts.noCharacter.mockClear();
-  installI18n({ 'Mosh.Errors.NoItemNamed': '{actor} has no item named {name}.' });
+  installI18n({ 'Mothership.Errors.NoItemNamed': '{actor} has no item named {name}.' });
   installSettings({ macroTarget: 'character' });
   installChat();
   notifications = installNotifications();

@@ -21,20 +21,20 @@
   const doc = $derived(store.current);
 
   const TABS = [
-    { id: 'description', label: localize('Mosh.Description') },
-    { id: 'stats&saves', label: localize('Mosh.CharacterGenerator.StatOption') },
-    { id: 'skills.fixed', label: localize('Mosh.SkillsFixed') },
-    { id: 'skills.selected.and', label: localize('Mosh.SkillsOptionalAnd') },
-    { id: 'skills.selected.or', label: localize('Mosh.SkillsOptionalOr') },
-    { id: 'tables', label: localize('Mosh.CharacterGenerator.Tables') },
+    { id: 'description', label: localize('Mothership.Description') },
+    { id: 'stats&saves', label: localize('Mothership.CharacterGenerator.StatOption') },
+    { id: 'skills.fixed', label: localize('Mothership.SkillsFixed') },
+    { id: 'skills.selected.and', label: localize('Mothership.SkillsOptionalAnd') },
+    { id: 'skills.selected.or', label: localize('Mothership.SkillsOptionalOr') },
+    { id: 'tables', label: localize('Mothership.CharacterGenerator.Tables') },
   ];
 
   const PICKS = [
-    ['trained', 'Mosh.SkillRankTrained'],
-    ['expert', 'Mosh.SkillRankExpert'],
-    ['master', 'Mosh.SkillRankMaster'],
-    ['expert_full_set', 'Mosh.CharacterGenerator.SkillOption.PopupFullExpertName'],
-    ['master_full_set', 'Mosh.CharacterGenerator.SkillOption.PopupFullMasterName'],
+    ['trained', 'Mothership.SkillRankTrained'],
+    ['expert', 'Mothership.SkillRankExpert'],
+    ['master', 'Mothership.SkillRankMaster'],
+    ['expert_full_set', 'Mothership.CharacterGenerator.SkillOption.PopupFullExpertName'],
+    ['master_full_set', 'Mothership.CharacterGenerator.SkillOption.PopupFullMasterName'],
   ];
 
   let tab = $state('description');
@@ -57,7 +57,7 @@
     return dropped?.type === 'skill' ? dropped : null;
   }
 
-  const already = () => void ui.notifications.warn(localize('Mosh.Errors.SkillAlreadyInList'));
+  const already = () => void ui.notifications.warn(localize('Mothership.Errors.SkillAlreadyInList'));
 
   async function grantSkill(data) {
     const skill = await droppedSkill(data);
@@ -133,25 +133,25 @@
     <MainStat
       name="system.base_adjustment.strength"
       value={doc.system.base_adjustment.strength}
-      label={localize('Mosh.Strength')}
+      label={localize('Mothership.Strength')}
       key="strength"
     />
     <MainStat
       name="system.base_adjustment.speed"
       value={doc.system.base_adjustment.speed}
-      label={localize('Mosh.Speed')}
+      label={localize('Mothership.Speed')}
       key="speed"
     />
     <MainStat
       name="system.base_adjustment.intellect"
       value={doc.system.base_adjustment.intellect}
-      label={localize('Mosh.Intellect')}
+      label={localize('Mothership.Intellect')}
       key="intellect"
     />
     <MainStat
       name="system.base_adjustment.combat"
       value={doc.system.base_adjustment.combat}
-      label={localize('Mosh.Combat')}
+      label={localize('Mothership.Combat')}
       key="combat"
     />
   </div>
@@ -160,25 +160,25 @@
     <MainStat
       name="system.base_adjustment.max_wounds"
       value={doc.system.base_adjustment.max_wounds}
-      label={localize('Mosh.Wounds')}
+      label={localize('Mothership.Wounds')}
       key="max_wounds"
     />
     <MainStat
       name="system.base_adjustment.sanity"
       value={doc.system.base_adjustment.sanity}
-      label={localize('Mosh.Sanity')}
+      label={localize('Mothership.Sanity')}
       key="sanity"
     />
     <MainStat
       name="system.base_adjustment.fear"
       value={doc.system.base_adjustment.fear}
-      label={localize('Mosh.Fear')}
+      label={localize('Mothership.Fear')}
       key="fear"
     />
     <MainStat
       name="system.base_adjustment.body"
       value={doc.system.base_adjustment.body}
-      label={localize('Mosh.Body')}
+      label={localize('Mothership.Body')}
       key="body"
     />
 
@@ -187,7 +187,7 @@
       type="checkbox"
       checked={doc.system.robotic}
       dtype="Boolean"
-      label={localize('Mosh.Robotic')}
+      label={localize('Mothership.Robotic')}
       key="robotic"
     />
   </div>
@@ -196,7 +196,7 @@
 <br />
 
 <div style="margin-left: 6px; flex: 0; grid-column-start: 1; grid-column-end: 3;">
-  <div class="resource-label">{localize('Mosh.TraumaResponse')}</div>
+  <div class="resource-label">{localize('Mothership.TraumaResponse')}</div>
   <textarea
     name="system.trauma_response"
     rows="2"
@@ -221,14 +221,14 @@
   <TabPanel tab="stats&saves" active={tab}>
     <ItemList style="margin-bottom: 10px;">
       <ItemRow header>
-        <ItemCell>{localize('Mosh.Value')}</ItemCell>
-        <ItemCell>{localize('Mosh.StatsAndSaves')}</ItemCell>
+        <ItemCell>{localize('Mothership.Value')}</ItemCell>
+        <ItemCell>{localize('Mothership.StatsAndSaves')}</ItemCell>
         <ItemControls>
           <ItemControl
             icon="plus"
             class="stat-option-add"
-            title={localize('Mosh.AddOption')}
-            label={localize('Mosh.AddOption')}
+            title={localize('Mothership.AddOption')}
+            label={localize('Mothership.AddOption')}
             onclick={addStatOption}
           />
         </ItemControls>
@@ -242,7 +242,7 @@
             <ItemControl
               icon="trash"
               class="stat-option-delete"
-              title={localize('Mosh.DeleteOption')}
+              title={localize('Mothership.DeleteOption')}
               onclick={() => removeStatOption(index)}
             />
           </ItemControls>
@@ -255,9 +255,9 @@
     <ItemList style="margin-bottom: 10px;">
       <ItemRow header>
         <ItemImage />
-        <ItemCell>{localize('Mosh.SkillName')}</ItemCell>
-        <ItemCell>{localize('Mosh.SkillRank')}</ItemCell>
-        <ItemCell>{localize('Mosh.SkillBonus')}</ItemCell>
+        <ItemCell>{localize('Mothership.SkillName')}</ItemCell>
+        <ItemCell>{localize('Mothership.SkillRank')}</ItemCell>
+        <ItemCell>{localize('Mothership.SkillBonus')}</ItemCell>
         <ItemControls />
       </ItemRow>
 
@@ -273,7 +273,7 @@
             <ItemControl
               icon="trash"
               class="skills-granted-delete"
-              title={localize('Mosh.DeleteSkill')}
+              title={localize('Mothership.DeleteSkill')}
               onclick={() => revokeSkill(uuid)}
             />
           </ItemControls>
@@ -286,7 +286,7 @@
     <div class="grid grid-3col widegap">
       <Field
         name="system.selected_adjustment.choose_skill_and.trained"
-        label={localize('Mosh.SkillRankTrained')}
+        label={localize('Mothership.SkillRankTrained')}
         value={doc.system.selected_adjustment.choose_skill_and.trained}
         dtype="Number"
         wrapper="text"
@@ -295,7 +295,7 @@
       />
       <Field
         name="system.selected_adjustment.choose_skill_and.expert"
-        label={localize('Mosh.SkillRankExpert')}
+        label={localize('Mothership.SkillRankExpert')}
         value={doc.system.selected_adjustment.choose_skill_and.expert}
         dtype="Number"
         wrapper="text"
@@ -304,7 +304,7 @@
       />
       <Field
         name="system.selected_adjustment.choose_skill_and.master"
-        label={localize('Mosh.SkillRankMaster')}
+        label={localize('Mothership.SkillRankMaster')}
         value={doc.system.selected_adjustment.choose_skill_and.master}
         dtype="Number"
         wrapper="text"
@@ -313,7 +313,7 @@
       />
       <Field
         name="system.selected_adjustment.choose_skill_and.expert_full_set"
-        label={localize('Mosh.CharacterGenerator.SkillOption.PopupFullExpertName')}
+        label={localize('Mothership.CharacterGenerator.SkillOption.PopupFullExpertName')}
         value={doc.system.selected_adjustment.choose_skill_and.expert_full_set}
         dtype="Number"
         wrapper="text"
@@ -322,7 +322,7 @@
       />
       <Field
         name="system.selected_adjustment.choose_skill_and.master_full_set"
-        label={localize('Mosh.CharacterGenerator.SkillOption.PopupFullMasterName')}
+        label={localize('Mothership.CharacterGenerator.SkillOption.PopupFullMasterName')}
         value={doc.system.selected_adjustment.choose_skill_and.master_full_set}
         dtype="Number"
         wrapper="text"
@@ -337,8 +337,8 @@
       <ItemControl
         icon="plus"
         class="skills-group-add"
-        title={localize('Mosh.AddGroup')}
-        label={localize('Mosh.AddGroup')}
+        title={localize('Mothership.AddGroup')}
+        label={localize('Mothership.AddGroup')}
         onclick={addGroup}
       />
     </div>
@@ -350,12 +350,12 @@
           {#each PICKS as [key, label] (key)}
             <ItemCell>{localize(label)}</ItemCell>
           {/each}
-          <ItemCell>{localize('Mosh.Skills')}</ItemCell>
+          <ItemCell>{localize('Mothership.Skills')}</ItemCell>
           <ItemControls>
             <ItemControl
               icon="trash"
               class="skills-group-delete"
-              title={localize('Mosh.DeleteGroup')}
+              title={localize('Mothership.DeleteGroup')}
               onclick={() => removeGroup(group.index)}
             />
           </ItemControls>
@@ -379,7 +379,7 @@
               <ItemControl
                 icon="trash"
                 class="skills-group-option-delete"
-                title={localize('Mosh.DeleteOption')}
+                title={localize('Mothership.DeleteOption')}
                 onclick={() => removeOption(group.index, index)}
               />
             </ItemControls>
@@ -395,7 +395,7 @@
     <br />
     <Field
       name="system.roll_tables.patch"
-      label={localize('Mosh.CharacterGenerator.Table.Patch')}
+      label={localize('Mothership.CharacterGenerator.Table.Patch')}
       value={doc.system.roll_tables.patch}
       wrapper="text"
       width="100%"
@@ -403,7 +403,7 @@
     <br />
     <Field
       name="system.roll_tables.trinket"
-      label={localize('Mosh.CharacterGenerator.Table.Trinket')}
+      label={localize('Mothership.CharacterGenerator.Table.Trinket')}
       value={doc.system.roll_tables.trinket}
       wrapper="text"
       width="100%"
@@ -411,7 +411,7 @@
     <br />
     <Field
       name="system.roll_tables.loadout"
-      label={localize('Mosh.CharacterGenerator.Table.Loadout')}
+      label={localize('Mothership.CharacterGenerator.Table.Loadout')}
       value={doc.system.roll_tables.loadout}
       wrapper="text"
       width="100%"

@@ -81,13 +81,13 @@ export function damageFlavor(actor: CheckActor, item: CheckItem, options: Damage
   const strength = statOf(actor.system, 'strength');
 
   if (damage === UNARMED && strength !== null) {
-    return format('Mosh.Chat.UnarmedDamage', {
+    return format('Mothership.Chat.UnarmedDamage', {
       damage: `<strong>[[floor(${strength.value}/${STR_CAPACITY_DIVISOR})]]</strong>`,
     });
   }
 
   const rolled = options.critical === true ? critFormula(damage, critDamage(), weaponText(item, 'critDmg')) : damage;
-  return format('Mosh.Chat.DamageDealt', { damage: `[[${themed(rolled, damageTheme())}]]` });
+  return format('Mothership.Chat.DamageDealt', { damage: `[[${themed(rolled, damageTheme())}]]` });
 }
 
 /** The wound tables a weapon can name, as its `woundEffect` field spells them. */

@@ -88,21 +88,21 @@ export const TOKEN_BARS = { bar1: 'health', bar2: 'hits' } as const;
 export const DICE_COLORSETS = [
   {
     name: 'roll',
-    description: 'Mosh.Dice.Roll',
+    description: 'Mothership.Dice.Roll',
     foreground: '#FFFFFF',
     background: '#262626',
     material: 'none',
   },
   {
     name: SETTING_DEFAULTS.damageDiceTheme,
-    description: 'Mosh.Dice.Damage',
+    description: 'Mothership.Dice.Damage',
     foreground: '#FFFFFF',
     background: '#cc2828',
     material: 'none',
   },
   {
     name: SETTING_DEFAULTS.panicDieTheme,
-    description: 'Mosh.Dice.Panic',
+    description: 'Mothership.Dice.Panic',
     foreground: '#000000',
     background: '#FFF200',
     material: 'metal',
@@ -230,7 +230,7 @@ interface DroppedItem {
 export async function createItemMacro(data: DropData, slot: number): Promise<void> {
   const found = await lookup<DroppedItem>(data.uuid ?? '', 'Item');
   if (!found.found) {
-    if (typeof ui !== 'undefined') ui?.notifications?.warn(localize('Mosh.Errors.ItemMacroNotOwned'));
+    if (typeof ui !== 'undefined') ui?.notifications?.warn(localize('Mothership.Errors.ItemMacroNotOwned'));
     return;
   }
 

@@ -101,13 +101,13 @@ describe('lookup', () => {
 
 describe('surfacing a miss', () => {
   it('says what was not found', () => {
-    installI18n({ 'Mosh.Errors.DocumentNotFound': 'No {type} with id {id}.' });
+    installI18n({ 'Mothership.Errors.DocumentNotFound': 'No {type} with id {id}.' });
 
     expect(describeMiss({ ref: 'abc', type: 'RollTable' })).toBe('No RollTable with id abc.');
   });
 
   it('notifies through the UI when there is one', () => {
-    installI18n({ 'Mosh.Errors.DocumentNotFound': 'No {type} with id {id}.' });
+    installI18n({ 'Mothership.Errors.DocumentNotFound': 'No {type} with id {id}.' });
     const error = vi.fn();
     (globalThis as Globals).ui = { notifications: { error } };
 

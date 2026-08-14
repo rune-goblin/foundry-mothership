@@ -99,9 +99,9 @@ let chat: ChatLog;
 
 function stubs(dice: { faces: number; result: number }[]): void {
   installI18n({
-    'Mosh.Chat.FieldChanged': '{field} {direction} from {from} to {to}.',
-    'Mosh.Chat.Increased': 'increased',
-    'Mosh.Chat.Decreased': 'decreased',
+    'Mothership.Chat.FieldChanged': '{field} {direction} from {from} to {to}.',
+    'Mothership.Chat.Increased': 'increased',
+    'Mothership.Chat.Decreased': 'decreased',
   });
   installSettings({ autoStress: true, critDamage: 'advantage', damageDiceTheme: '', panicDieTheme: '' });
   rolls = installRoll(dice);
@@ -141,7 +141,7 @@ describe('the verbs checks/ answers for', () => {
 
   it('leaves the verb it cannot serve for the registry to report', async () => {
     stubs([]);
-    installI18n({ 'Mosh.Chat.ActionUnavailable': 'Not available yet.' });
+    installI18n({ 'Mothership.Chat.ActionUnavailable': 'Not available yet.' });
     const notices = installNotifications();
     registerCheckActions(() => []);
 

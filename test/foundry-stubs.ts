@@ -1,6 +1,6 @@
 /**
  * The Foundry globals the new runtime reaches for at call time: the localizer, `Roll`, the
- * settings, chat, and DialogV2. Stubbing them here keeps every spec asserting on `Mosh.*` keys
+ * settings, chat, and DialogV2. Stubbing them here keeps every spec asserting on `Mothership.*` keys
  * rather than on English, which is the point of routing user-visible strings through `i18n.ts`.
  *
  * Each installer merges into the same `game`/`foundry` object, so a spec can install exactly the

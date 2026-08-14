@@ -281,7 +281,7 @@ describe('the dice colorsets', () => {
   });
 
   it('describe themselves with keys the translation can reach', () => {
-    for (const colorset of init.DICE_COLORSETS) expect(colorset.description).toMatch(/^Mosh\./);
+    for (const colorset of init.DICE_COLORSETS) expect(colorset.description).toMatch(/^Mothership\./);
   });
 });
 
@@ -321,7 +321,7 @@ describe('dropping an item on the hotbar', () => {
 
     await init.createItemMacro({ type: 'Item', uuid: 'nothing' }, 1);
 
-    expect(warnings).toEqual(['Mosh.Errors.ItemMacroNotOwned']);
+    expect(warnings).toEqual(['Mothership.Errors.ItemMacroNotOwned']);
   });
 });
 

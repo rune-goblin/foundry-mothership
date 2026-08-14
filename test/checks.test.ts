@@ -199,13 +199,13 @@ let chat: ChatLog;
 
 function stubs(dice: { faces: number; result: number }[], settings: Record<string, unknown> = {}): void {
   installI18n({
-    'Mosh.RestSave': 'Rest Save',
-    'Mosh.ConditionModifier': '{conditions}: this roll is at {sign}.',
-    'Mosh.Chat.FieldChanged': '{field} {direction} from {from} to {to}.',
-    'Mosh.Chat.Increased': 'increased',
-    'Mosh.Chat.Decreased': 'decreased',
-    'Mosh.Chat.DamageDealt': 'You inflict {damage} points of damage.',
-    'Mosh.attribute.body.check.human': 'You keep your footing.',
+    'Mothership.RestSave': 'Rest Save',
+    'Mothership.ConditionModifier': '{conditions}: this roll is at {sign}.',
+    'Mothership.Chat.FieldChanged': '{field} {direction} from {from} to {to}.',
+    'Mothership.Chat.Increased': 'increased',
+    'Mothership.Chat.Decreased': 'decreased',
+    'Mothership.Chat.DamageDealt': 'You inflict {damage} points of damage.',
+    'Mothership.attribute.body.check.human': 'You keep your footing.',
   });
   installSettings({ autoStress: true, critDamage: 'advantage', damageDiceTheme: '', panicDieTheme: '', ...settings });
   rolls = installRoll(dice);
@@ -318,11 +318,11 @@ describe('a stat check', () => {
 
   it('says so rather than crashing when the actor has no such stat', async () => {
     stubs([{ faces: 100, result: 10 }]);
-    installI18n({ 'Mosh.Errors.CheckUnavailable': '{actor} has no {check} to roll.' });
+    installI18n({ 'Mothership.Errors.CheckUnavailable': '{actor} has no {check} to roll.' });
     const notices = installNotifications();
 
     expect(await runCheck(creature(), { kind: 'stat', stat: 'fear' })).toBeNull();
-    expect(notices.errors).toEqual(['Thing has no Mosh.RollScope.fear to roll.']);
+    expect(notices.errors).toEqual(['Thing has no Mothership.RollScope.fear to roll.']);
     expect(chat.cards).toEqual([]);
   });
 });
@@ -476,7 +476,7 @@ describe('an attack', () => {
 
   it('reports a weapon that is not there instead of dereferencing it', async () => {
     stubs([{ faces: 100, result: 20 }]);
-    installI18n({ 'Mosh.Errors.DocumentNotFound': 'No {type} with id {id}.' });
+    installI18n({ 'Mothership.Errors.DocumentNotFound': 'No {type} with id {id}.' });
     const notices = installNotifications();
 
     expect(await runCheck(character(), { kind: 'weapon-attack', itemId: 'gone' })).toBeNull();
@@ -519,7 +519,7 @@ describe('a Panic Check', () => {
   // that panicked to 19 threw. It rolls like anyone else's now.
   it('lets a creature through', async () => {
     stubs([{ faces: 20, result: 19 }]);
-    installI18n({ 'Mosh.HEARTATTACKSHORTCIRCUITANDROIDS': 'HEART ATTACK / SHORT CIRCUIT (ANDROIDS)' });
+    installI18n({ 'Mothership.HEARTATTACKSHORTCIRCUITANDROIDS': 'HEART ATTACK / SHORT CIRCUIT (ANDROIDS)' });
     world('Panic Check');
 
     const result = await runCheck(creature(), { kind: 'panic' }, { advantage: 'none' });
@@ -583,7 +583,7 @@ describe('a table roll', () => {
 
   it('reports a table the world no longer holds', async () => {
     stubs([{ faces: 10, result: 4 }]);
-    installI18n({ 'Mosh.Errors.DocumentNotFound': 'No {type} with id {id}.' });
+    installI18n({ 'Mothership.Errors.DocumentNotFound': 'No {type} with id {id}.' });
     const notices = installNotifications();
     globals.game.tables = { get: () => undefined };
     globals.game.packs = [];
@@ -721,7 +721,7 @@ describe('conditions reach the roll they name', () => {
   });
 
   it('says which button opens, and which line the dialog shows', () => {
-    installI18n({ 'Mosh.ConditionModifier': '{conditions}: this roll is at {sign}.' });
+    installI18n({ 'Mothership.ConditionModifier': '{conditions}: this roll is at {sign}.' });
     const modifier = conditionModifier([NIGHTMARES], 'restSave');
 
     expect(conditionPreselect(modifier)).toBe('disadvantage');

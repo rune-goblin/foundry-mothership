@@ -61,8 +61,8 @@ function actor(strength = 40, items: readonly CheckItem[] = []): CheckActor & { 
 
 function stubs(settings: Record<string, unknown> = {}) {
   installI18n({
-    'Mosh.Chat.DamageDealt': 'You inflict {damage} points of damage.',
-    'Mosh.Chat.UnarmedDamage': 'You strike your target for {damage} damage.',
+    'Mothership.Chat.DamageDealt': 'You inflict {damage} points of damage.',
+    'Mothership.Chat.UnarmedDamage': 'You strike your target for {damage} damage.',
   });
   installSettings({ critDamage: 'advantage', damageDiceTheme: '', ...settings });
   installRoll([]);

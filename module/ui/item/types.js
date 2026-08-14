@@ -17,6 +17,6 @@ export const ITEM_BODIES = {
 
 /** Only armor and weapon carry a second tab. */
 export const ITEM_EXTRA_TABS = {
-  armor: { tab: 'item', label: 'Mosh.Item', component: ArmorExtra },
-  weapon: { tab: 'item', label: 'Mosh.Other', component: WeaponExtra },
+  armor: { tab: 'item', label: 'Mothership.Item', component: ArmorExtra },
+  weapon: { tab: 'item', label: 'Mothership.Other', component: WeaponExtra },
 };

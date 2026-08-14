@@ -108,7 +108,7 @@ export async function lookup<T>(ref: string, type: CollectionName): Promise<Look
 
 /** What went missing, in words — the message a caller shows instead of crashing on a null. */
 export function describeMiss(request: LookupRequest): string {
-  return format('Mosh.Errors.DocumentNotFound', { type: request.type, id: request.ref });
+  return format('Mothership.Errors.DocumentNotFound', { type: request.type, id: request.ref });
 }
 
 export function notifyMiss(request: LookupRequest): void {

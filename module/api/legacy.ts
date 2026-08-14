@@ -71,7 +71,7 @@ declare const ui: { readonly notifications?: { warn(message: string): unknown } 
 /** An argument this system has no reading for. Said once, and nothing is rolled instead. */
 function unknownArgument(argument: string): void {
   if (typeof ui === 'undefined') return;
-  ui?.notifications?.warn(format('Mosh.Errors.UnknownArgument', { argument }));
+  ui?.notifications?.warn(format('Mothership.Errors.UnknownArgument', { argument }));
 }
 
 function idOf(value: unknown): string | null {

@@ -84,7 +84,7 @@ describe('bindChatActions', () => {
 
   // R3 fills the check entry. Until it does, the button says so rather than doing nothing.
   it('reports a verb nobody has claimed', () => {
-    installI18n({ 'Mosh.Chat.ActionUnavailable': 'That action is not available yet.' });
+    installI18n({ 'Mothership.Chat.ActionUnavailable': 'That action is not available yet.' });
     const warn = vi.fn();
     (globalThis as Record<string, unknown>).ui = { notifications: { warn } };
 

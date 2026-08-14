@@ -18,14 +18,14 @@
     />
 
     <div>
-      <div class="headerinputtext">{localize('Mosh.Name')}</div>
+      <div class="headerinputtext">{localize('Mothership.Name')}</div>
       <div class="headerinputfield charname">
         <input
           name="name"
           class="noborder"
           type="text"
           value={documentName}
-          placeholder={localize('Mosh.Name')}
+          placeholder={localize('Mothership.Name')}
         />
       </div>
     </div>

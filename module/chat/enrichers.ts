@@ -217,22 +217,22 @@ export function gainAddress(action: Extract<ChatAction, { verb: 'gain' }>): stri
 }
 
 const FIELD_NOUNS: Readonly<Record<FieldKey, string>> = {
-  health: 'Mosh.Health',
-  wounds: 'Mosh.Wounds',
-  stress: 'Mosh.Stress',
-  strength: 'Mosh.Strength',
-  speed: 'Mosh.Speed',
-  intellect: 'Mosh.Intellect',
-  combat: 'Mosh.Combat',
-  sanity: 'Mosh.Sanity',
-  fear: 'Mosh.Fear',
-  body: 'Mosh.Body',
+  health: 'Mothership.Health',
+  wounds: 'Mothership.Wounds',
+  stress: 'Mothership.Stress',
+  strength: 'Mothership.Strength',
+  speed: 'Mothership.Speed',
+  intellect: 'Mothership.Intellect',
+  combat: 'Mothership.Combat',
+  sanity: 'Mothership.Sanity',
+  fear: 'Mothership.Fear',
+  body: 'Mothership.Body',
 };
 
 const BOUNDS: Readonly<Record<PodLeaf, string | null>> = {
   value: null,
-  min: 'Mosh.Minimum',
-  max: 'Mosh.Maximum',
+  min: 'Mothership.Minimum',
+  max: 'Mothership.Maximum',
 };
 
 const MODIFIER_LABELS: Readonly<Record<Advantage, string>> = {
@@ -256,25 +256,25 @@ function conditionName(condition: string): string {
 function fieldLabel(field: FieldKey, leaf: PodLeaf): string {
   const noun = localize(FIELD_NOUNS[field]);
   const bound = BOUNDS[leaf];
-  return bound === null ? noun : format('Mosh.Chat.BoundedField', { bound: localize(bound), field: noun });
+  return bound === null ? noun : format('Mothership.Chat.BoundedField', { bound: localize(bound), field: noun });
 }
 
 /** What the button says when the content does not say it itself. */
 export function actionLabel(action: ChatAction): string {
   switch (action.verb) {
     case 'check':
-      return `${localize(`Mosh.RollScope.${action.scope}`)}${MODIFIER_LABELS[action.advantage]}`;
+      return `${localize(`Mothership.RollScope.${action.scope}`)}${MODIFIER_LABELS[action.advantage]}`;
     case 'table':
-      return `${localize(`Mosh.Table.${action.table}`)}${MODIFIER_LABELS[action.advantage]}`;
+      return `${localize(`Mothership.Table.${action.table}`)}${MODIFIER_LABELS[action.advantage]}`;
     case 'gain':
       return action.amount.kind === 'severity'
-        ? format('Mosh.Chat.SufferLabel', { condition: conditionName(action.amount.condition) })
-        : format('Mosh.Chat.GainLabel', {
+        ? format('Mothership.Chat.SufferLabel', { condition: conditionName(action.amount.condition) })
+        : format('Mothership.Chat.GainLabel', {
             amount: signed(amountText(action.amount)),
             field: fieldLabel(action.field, action.leaf),
           });
     case 'apply':
-      return format('Mosh.Chat.ApplyLabel', {
+      return format('Mothership.Chat.ApplyLabel', {
         count: signed(String(action.count)),
         condition: conditionName(action.condition),
       });

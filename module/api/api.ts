@@ -174,7 +174,7 @@ export async function rollItem(itemName: string): Promise<unknown[]> {
     const item = itemNamed(actor, itemName);
     if (item === null) {
       if (typeof ui !== 'undefined') {
-        ui?.notifications?.warn(format('Mosh.Errors.NoItemNamed', { actor: actor.name, name: itemName }));
+        ui?.notifications?.warn(format('Mothership.Errors.NoItemNamed', { actor: actor.name, name: itemName }));
       }
       return null;
     }

@@ -2,7 +2,7 @@
  * What the GM can decide, registered once. Two things change from the old registration and
  * nothing else does:
  *
- * - **Every name, hint and choice is a `Mosh.*` key.** Foundry localizes registration strings
+ * - **Every name, hint and choice is a `Mothership.*` key.** Foundry localizes registration strings
  *   itself, so hardcoding English left the shipped `pt-BR` translation structurally unable to
  *   cover the settings window (audit RC14).
  * - **`macroTarget` is client-scoped.** It answers "whose sheet do my macros act on", which is a
@@ -59,11 +59,11 @@ export const SETTINGS: readonly SettingDefinition[] = [
 export const MENU_KEY = 'rolltableSelector';
 
 export function settingKey(key: string, part: 'Name' | 'Hint' | 'Label'): string {
-  return `Mosh.Settings.${key}.${part}`;
+  return `Mothership.Settings.${key}.${part}`;
 }
 
 export function choiceKey(key: string, choice: string): string {
-  return `Mosh.Settings.${key}.Choices.${choice}`;
+  return `Mothership.Settings.${key}.Choices.${choice}`;
 }
 
 function labelled(definition: SettingDefinition): Record<string, string> | undefined {

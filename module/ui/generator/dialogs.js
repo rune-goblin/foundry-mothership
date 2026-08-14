@@ -35,17 +35,17 @@ const SETS = {
 export const PICK_KINDS = Object.keys(SETS);
 
 const DESCRIPTION = {
-  master_full_set: 'Mosh.CharacterGenerator.SkillOption.PopupFullMasterDescription',
-  expert_full_set: 'Mosh.CharacterGenerator.SkillOption.PopupFullExpertDescription',
-  trained: 'Mosh.CharacterGenerator.SkillOption.PopupTrainedDescription',
-  expert: 'Mosh.CharacterGenerator.SkillOption.PopupExpertDescription',
-  master: 'Mosh.CharacterGenerator.SkillOption.PopupMasterDescription',
+  master_full_set: 'Mothership.CharacterGenerator.SkillOption.PopupFullMasterDescription',
+  expert_full_set: 'Mothership.CharacterGenerator.SkillOption.PopupFullExpertDescription',
+  trained: 'Mothership.CharacterGenerator.SkillOption.PopupTrainedDescription',
+  expert: 'Mothership.CharacterGenerator.SkillOption.PopupExpertDescription',
+  master: 'Mothership.CharacterGenerator.SkillOption.PopupMasterDescription',
 };
 
 const RANK_LABEL = {
-  Trained: 'Mosh.SkillRankTrained',
-  Expert: 'Mosh.SkillRankExpert',
-  Master: 'Mosh.SkillRankMaster',
+  Trained: 'Mothership.SkillRankTrained',
+  Expert: 'Mothership.SkillRankExpert',
+  Master: 'Mothership.SkillRankMaster',
 };
 
 /**
@@ -62,12 +62,12 @@ export async function pickSkills(kind, catalog, owned) {
   const picked = await svelteDialog({
     component: SkillPicker,
     props: { description: localize(DESCRIPTION[kind]), lists },
-    title: localize('Mosh.CharacterGenerator.SkillOption.PopupTitle'),
+    title: localize('Mothership.CharacterGenerator.SkillOption.PopupTitle'),
     initial: {},
     buttons: [
       {
         action: 'save',
-        label: localize('Mosh.Save'),
+        label: localize('Mothership.Save'),
         icon: 'fas fa-check',
         default: true,
         // Rank order, broadest first: the order a class hands its picks out in.
@@ -81,11 +81,11 @@ export async function pickSkills(kind, catalog, owned) {
 
 /** The counts a bonus package hands out, in the order the dialog lists them. */
 const PACKAGE_COUNTS = [
-  ['master', 'Mosh.SkillRankMaster'],
-  ['expert', 'Mosh.SkillRankExpert'],
-  ['trained', 'Mosh.SkillRankTrained'],
-  ['master_full_set', 'Mosh.CharacterGenerator.SkillOption.PopupFullMasterName'],
-  ['expert_full_set', 'Mosh.CharacterGenerator.SkillOption.PopupFullExpertName'],
+  ['master', 'Mothership.SkillRankMaster'],
+  ['expert', 'Mothership.SkillRankExpert'],
+  ['trained', 'Mothership.SkillRankTrained'],
+  ['master_full_set', 'Mothership.CharacterGenerator.SkillOption.PopupFullMasterName'],
+  ['expert_full_set', 'Mothership.CharacterGenerator.SkillOption.PopupFullExpertName'],
 ];
 
 /**
@@ -103,8 +103,8 @@ export async function pickBonusOption(options) {
 
   return await svelteDialog({
     component: BonusOption,
-    props: { text: localize('Mosh.CharacterGenerator.SkillOption.ChoiceText'), options: described },
-    title: localize('Mosh.CharacterGenerator.SkillOption.PopupTitle'),
+    props: { text: localize('Mothership.CharacterGenerator.SkillOption.ChoiceText'), options: described },
+    title: localize('Mothership.CharacterGenerator.SkillOption.PopupTitle'),
     initial: null,
     width: 500,
     buttons: options.map((option, index) => ({
@@ -121,12 +121,12 @@ export async function pickBonusOption(options) {
  * stats or saves. Resolves the chosen key, or null if the dialog is closed.
  */
 export async function pickStat(entry) {
-  const question = `${localize('Mosh.CharacterGenerator.StatOptionPopupText')} (${entry.modification})`;
+  const question = `${localize('Mothership.CharacterGenerator.StatOptionPopupText')} (${entry.modification})`;
 
   return await svelteDialog({
     component: StatChoice,
     props: { text: question },
-    title: localize('Mosh.CharacterGenerator.StatOptionPopupTitle'),
+    title: localize('Mothership.CharacterGenerator.StatOptionPopupTitle'),
     initial: null,
     buttons: entry.stats.map((stat) => ({
       action: stat,

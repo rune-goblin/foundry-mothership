@@ -24,12 +24,12 @@ let notifications: Notifications;
 
 beforeEach(() => {
   installI18n({
-    'Mosh.Speed': 'Speed',
-    'Mosh.Strength': 'Strength',
-    'Mosh.SkillRankTrained': 'Trained',
-    'Mosh.SkillRankExpert': 'Expert',
-    'Mosh.classNewStatOptionEmptyError': 'You must select at least two stat or saves',
-    'Mosh.NewSkill': 'New Skill',
+    'Mothership.Speed': 'Speed',
+    'Mothership.Strength': 'Strength',
+    'Mothership.SkillRankTrained': 'Trained',
+    'Mothership.SkillRankExpert': 'Expert',
+    'Mothership.classNewStatOptionEmptyError': 'You must select at least two stat or saves',
+    'Mothership.NewSkill': 'New Skill',
   });
   notifications = installNotifications();
   opened = installDialogV2();

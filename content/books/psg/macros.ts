@@ -274,7 +274,7 @@ const BESPOKE_TRIGGERED: readonly CommandMacro[] = [
   setFieldMacro('raise-maximum-stress-to-85', 'Raise Maximum Stress to 85', MAX_STRESS, 85, true),
 ];
 
-/** Called by table results, condition descriptions and the `Mosh.macro.*` flavour-text links. */
+/** Called by table results and condition descriptions. */
 export const TRIGGERED_MACROS: readonly MacroRecord[] = [
   ...STAT_CROSS_PRODUCT,
   ...REST_SAVE_CROSS_PRODUCT,

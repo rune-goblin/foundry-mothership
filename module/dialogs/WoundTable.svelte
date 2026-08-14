@@ -42,4 +42,4 @@
   </label>
 {/each}
 
-<div class="macro_prompt">{localize('Mosh.SelectYourRollType')}:</div>
+<div class="macro_prompt">{localize('Mothership.SelectYourRollType')}:</div>

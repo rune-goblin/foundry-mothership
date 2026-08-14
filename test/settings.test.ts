@@ -64,8 +64,8 @@ describe('the settings the GM sees', () => {
 
   it('names every one of them with a key, so the translation can reach them', () => {
     for (const definition of SETTINGS) {
-      expect(of(definition.key).name).toBe(`Mosh.Settings.${definition.key}.Name`);
-      expect(of(definition.key).hint).toBe(`Mosh.Settings.${definition.key}.Hint`);
+      expect(of(definition.key).name).toBe(`Mothership.Settings.${definition.key}.Name`);
+      expect(of(definition.key).hint).toBe(`Mothership.Settings.${definition.key}.Hint`);
     }
   });
 

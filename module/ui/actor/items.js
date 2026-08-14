@@ -66,32 +66,32 @@ export const createItem = (actor, type) =>
 const PICKS = {
   skill: {
     pack: 'mothershiprpg.skills_1e',
-    title: 'Mosh.AddSkill',
-    headers: ['Mosh.SkillName', 'Mosh.SkillRank', 'Mosh.SkillBonus'],
+    title: 'Mothership.AddSkill',
+    headers: ['Mothership.SkillName', 'Mothership.SkillRank', 'Mothership.SkillBonus'],
     cells: (doc) => [doc.system.rank, `+${doc.system.bonus}`],
   },
   weapon: {
     pack: 'mothershiprpg.weapons_1e',
-    title: 'Mosh.AddWeapon',
-    headers: ['Mosh.WeaponName', 'Mosh.Damage', 'Mosh.Range'],
-    cells: (doc) => [doc.system.damage, localize(`Mosh.RangeBand.${doc.system.range}`)],
+    title: 'Mothership.AddWeapon',
+    headers: ['Mothership.WeaponName', 'Mothership.Damage', 'Mothership.Range'],
+    cells: (doc) => [doc.system.damage, localize(`Mothership.RangeBand.${doc.system.range}`)],
   },
   item: {
     pack: 'mothershiprpg.equipment_1e',
-    title: 'Mosh.AddItem',
-    headers: ['Mosh.ItemName', 'Mosh.Cost', 'Mosh.Weight'],
+    title: 'Mothership.AddItem',
+    headers: ['Mothership.ItemName', 'Mothership.Cost', 'Mothership.Weight'],
     cells: (doc) => [doc.system.cost, doc.system.weight],
   },
   armor: {
     pack: 'mothershiprpg.armor_1e',
-    title: 'Mosh.AddArmor',
-    headers: ['Mosh.ArmorName', 'Mosh.AP', 'Mosh.DR'],
+    title: 'Mothership.AddArmor',
+    headers: ['Mothership.ArmorName', 'Mothership.AP', 'Mothership.DR'],
     cells: (doc) => [doc.system.armorPoints, doc.system.damageReduction],
   },
   condition: {
     pack: 'mothershiprpg.conditions_1e',
-    title: 'Mosh.AddCondition',
-    headers: ['Mosh.Condition'],
+    title: 'Mothership.AddCondition',
+    headers: ['Mothership.Condition'],
     cells: () => [],
   },
 };
@@ -143,9 +143,9 @@ export async function promptAddItem(actor, type) {
   const picked = await svelteDialog({
     component: PickFromPack,
     props: {
-      filterLabel: localize('Mosh.Filter'),
+      filterLabel: localize('Mothership.Filter'),
       headers: spec.headers.map((key) => localize(key)),
-      enforceLabel: skills ? localize('Mosh.EnforcePrerequisites') : '',
+      enforceLabel: skills ? localize('Mothership.EnforcePrerequisites') : '',
       rows: sorted.map((doc) => ({
         id: doc.id,
         name: doc.name,
@@ -160,12 +160,12 @@ export async function promptAddItem(actor, type) {
     buttons: [
       {
         action: 'add',
-        label: localize('Mosh.Add'),
+        label: localize('Mothership.Add'),
         icon: 'fas fa-check',
         default: true,
         answer: (id) => ({ id }),
       },
-      { action: 'cancel', label: localize('Mosh.Cancel'), icon: 'fas fa-times', answer: () => null },
+      { action: 'cancel', label: localize('Mothership.Cancel'), icon: 'fas fa-times', answer: () => null },
     ],
   });
 
@@ -175,7 +175,7 @@ export async function promptAddItem(actor, type) {
   return actor.createEmbeddedDocuments('Item', [doc.toObject()]);
 }
 
-/** Skill items store the rank capitalized, and `Mosh.SkillRank<Rank>` names it the same way. */
+/** Skill items store the rank capitalized, and `Mothership.SkillRank<Rank>` names it the same way. */
 const stored = (rank) => `${rank[0].toUpperCase()}${rank.slice(1)}`;
 
 /**
@@ -186,24 +186,24 @@ export async function promptNewSkill(actor) {
   const skill = await svelteDialog({
     component: NewSkill,
     props: {
-      nameLabel: localize('Mosh.Name'),
-      rankLabel: localize('Mosh.SkillRank'),
+      nameLabel: localize('Mothership.Name'),
+      rankLabel: localize('Mothership.SkillRank'),
       ranks: SKILL_RANKS.map((rank) => ({
         value: stored(rank),
-        label: localize(`Mosh.SkillRank${stored(rank)}`),
+        label: localize(`Mothership.SkillRank${stored(rank)}`),
       })),
     },
-    title: localize('Mosh.CreateSkill'),
-    initial: { name: localize('Mosh.NewSkill'), rank: stored(SKILL_RANKS[0]) },
+    title: localize('Mothership.CreateSkill'),
+    initial: { name: localize('Mothership.NewSkill'), rank: stored(SKILL_RANKS[0]) },
     buttons: [
       {
         action: 'create',
-        label: localize('Mosh.Create'),
+        label: localize('Mothership.Create'),
         icon: 'fas fa-check',
         default: true,
         answer: (draft) => draft,
       },
-      { action: 'cancel', label: localize('Mosh.Cancel'), icon: 'fas fa-times', answer: () => null },
+      { action: 'cancel', label: localize('Mothership.Cancel'), icon: 'fas fa-times', answer: () => null },
     ],
   });
   if (skill === null) return null;

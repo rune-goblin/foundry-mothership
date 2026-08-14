@@ -22,7 +22,7 @@
     <ItemControls>
       <ItemControl
         icon="plus"
-        label={localize('Mosh.Add')}
+        label={localize('Mothership.Add')}
         title={create.title}
         onclick={create.onclick}
       />

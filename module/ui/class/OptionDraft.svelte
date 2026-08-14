@@ -25,12 +25,12 @@
   {#each picks as [key] (key)}
     <ItemCell><input type="text" bind:value={draft[key]} /></ItemCell>
   {/each}
-  <ItemCell>{localize('Mosh.classNewSkillOptionSkillTip')}</ItemCell>
+  <ItemCell>{localize('Mothership.classNewSkillOptionSkillTip')}</ItemCell>
   <ItemControls>
     <ItemControl
       icon="save"
       class="skills-group-option-createnew"
-      title={localize('Mosh.AddOption')}
+      title={localize('Mothership.AddOption')}
       onclick={save}
     />
   </ItemControls>

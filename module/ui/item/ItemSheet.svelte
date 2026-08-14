@@ -13,7 +13,7 @@
   const extra = $derived(ITEM_EXTRA_TABS[doc.type]);
 
   const tabs = $derived([
-    { id: 'description', label: localize('Mosh.Description') },
+    { id: 'description', label: localize('Mothership.Description') },
     ...(extra ? [{ id: extra.tab, label: localize(extra.label) }] : []),
   ]);
 

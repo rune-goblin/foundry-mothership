@@ -23,7 +23,7 @@ export class MoshCreatureSheet extends ActorSheetV2 {
         {
           action: 'configureCreature',
           icon: 'fas fa-tasks',
-          label: 'Mosh.CreatureSettings',
+          label: 'Mothership.CreatureSettings',
           ownership: 'OWNER',
         },
       ],

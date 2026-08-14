@@ -11,13 +11,13 @@
     <div class="circle-statwrapper-horizontal transparentBackground">
       <Field
         name="system.armorPoints"
-        label={localize('Mosh.ArmorPoints')}
+        label={localize('Mothership.ArmorPoints')}
         value={system.armorPoints}
         dtype="Number"
       />
       <Field
         name="system.damageReduction"
-        label={localize('Mosh.DMGReduction')}
+        label={localize('Mothership.DMGReduction')}
         value={system.damageReduction}
         dtype="Number"
       />
@@ -26,26 +26,26 @@
     <div class="circle-statwrapper-horizontal transparentBackground">
       <CheckField
         name="system.equipped"
-        label={localize('Mosh.Equipped')}
+        label={localize('Mothership.Equipped')}
         checked={system.equipped}
       />
-      <Field name="system.speed" label={localize('Mosh.Speed')} value={system.speed} />
+      <Field name="system.speed" label={localize('Mothership.Speed')} value={system.speed} />
     </div>
   </div>
 
   <div class="circle-statwrapper-vertical" style="gap: 10px;">
     <Field name="system.oxygenMax" value={system.oxygenMax} dtype="Number">
-      {#snippet label()}{localize('Mosh.Maximum')} O<sup>2</sup>{/snippet}
+      {#snippet label()}{localize('Mothership.Maximum')} O<sup>2</sup>{/snippet}
     </Field>
     <Field name="system.oxygenCurrent" value={system.oxygenCurrent} dtype="Number">
-      {#snippet label()}{localize('Mosh.Current')} O<sup>2</sup>{/snippet}
+      {#snippet label()}{localize('Mothership.Current')} O<sup>2</sup>{/snippet}
     </Field>
   </div>
 </div>
 
 <Field
   name="system.features"
-  label={localize('Mosh.Features')}
+  label={localize('Mothership.Features')}
   value={system.features}
   wrapper="text"
   width="100%"

@@ -6,5 +6,5 @@
 </script>
 
 <div class="circle-statwrapper-horizontal">
-  <Field name="system.roll" label={localize('Mosh.Damage')} value={system.roll} />
+  <Field name="system.roll" label={localize('Mothership.Damage')} value={system.roll} />
 </div>

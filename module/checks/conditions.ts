@@ -64,7 +64,7 @@ export function conditionModifier(
 /** The line a roll dialog shows to name what is modifying it, or '' when nothing is. */
 export function conditionNote(modifier: ConditionModifier | null): string {
   if (modifier === null) return '';
-  return format('Mosh.ConditionModifier', {
+  return format('Mothership.ConditionModifier', {
     conditions: modifier.names.join(', '),
     sign: SIGNS[modifier.advantage],
   });

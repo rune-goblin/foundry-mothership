@@ -616,10 +616,10 @@ describe('ItemPanel', () => {
 
   const panel = (onclick = () => {}) =>
     render(ItemPanel, {
-      headers: [{ label: 'Mosh.ItemName', grow: 1.5 }, { label: 'Mosh.Quantity' }],
+      headers: [{ label: 'Mothership.ItemName', grow: 1.5 }, { label: 'Mothership.Quantity' }],
       items,
       row,
-      create: { title: 'Mosh.CreateItem', onclick },
+      create: { title: 'Mothership.CreateItem', onclick },
       style: 'margin-bottom: 10px;',
     }).firstElementChild!;
 
@@ -631,8 +631,8 @@ describe('ItemPanel', () => {
     const [header, ...rows] = [...list.children];
     expect([...header.classList]).toEqual(['item', 'flexrow', 'item-header']);
     expect([...header.querySelectorAll('.skill-stat')].map((n) => n.textContent!.trim())).toEqual([
-      'Mosh.ItemName',
-      'Mosh.Quantity',
+      'Mothership.ItemName',
+      'Mothership.Quantity',
     ]);
     expect(header.querySelector('.skill-stat')!.getAttribute('style')).toBe('flex-grow: 1.5;');
     // The spacer under the thumbnail column keeps the header's cells aligned with the rows'.
@@ -648,9 +648,9 @@ describe('ItemPanel', () => {
     const controls = [...panel(onclick).querySelectorAll('.item-controls a.item-control')];
 
     expect(controls).toHaveLength(1);
-    expect(controls[0].getAttribute('title')).toBe('Mosh.CreateItem');
+    expect(controls[0].getAttribute('title')).toBe('Mothership.CreateItem');
     expect(controls[0].querySelector('i')!.className).toBe('fas fa-plus');
-    expect(controls[0].textContent).toBe(' Mosh.Add');
+    expect(controls[0].textContent).toBe(' Mothership.Add');
 
     (controls[0] as HTMLElement).click();
     expect(onclick).toHaveBeenCalledOnce();
@@ -671,8 +671,8 @@ describe('HealthBlock', () => {
       'system.hits.max',
     ]);
     expect([...target.querySelectorAll('label')].map((l) => l.textContent!.trim())).toEqual([
-      'Mosh.Health',
-      'Mosh.Wounds',
+      'Mothership.Health',
+      'Mothership.Wounds',
     ]);
   });
 });

@@ -6,11 +6,11 @@
 </script>
 
 <div class="grid grid-3col">
-  <Field name="system.cost" label={localize('Mosh.Value')} value={system.cost} dtype="Number" />
-  <Field name="system.weight" label={localize('Mosh.Weight')} value={system.weight} dtype="Number" />
+  <Field name="system.cost" label={localize('Mothership.Value')} value={system.cost} dtype="Number" />
+  <Field name="system.weight" label={localize('Mothership.Weight')} value={system.weight} dtype="Number" />
   <Field
     name="system.bonus"
-    label={localize('Mosh.ShipWeaponBonus')}
+    label={localize('Mothership.ShipWeaponBonus')}
     value={system.bonus}
     dtype="Number"
   />

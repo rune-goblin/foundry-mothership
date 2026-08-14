@@ -16,7 +16,7 @@
 
   const RANGE_CHOICES = WEAPON_RANGES.map((range) => ({
     value: range,
-    label: localize(`Mosh.RangeBand.${range}`),
+    label: localize(`Mothership.RangeBand.${range}`),
   }));
 </script>
 
@@ -25,14 +25,14 @@
     <div class="circle-statwrapper-horizontal transparentBackground">
       <Field
         name="system.damage"
-        label={localize('Mosh.Damage')}
+        label={localize('Mothership.Damage')}
         value={system.damage}
         wrapper="text"
         width="180px"
       />
       <Field
         name="system.critDmg"
-        label={localize('Mosh.CriticalDamage')}
+        label={localize('Mothership.CriticalDamage')}
         value={system.critDmg}
         wrapper="text"
         width="180px"
@@ -42,12 +42,12 @@
     <div class="circle-statwrapper-horizontal transparentBackground">
       <CheckField
         name="system.antiArmor"
-        label={localize('Mosh.AntiArmor')}
+        label={localize('Mothership.AntiArmor')}
         checked={system.antiArmor}
       />
       <Field
         name="system.range"
-        label={localize('Mosh.Range')}
+        label={localize('Mothership.Range')}
         value={system.range}
         wrapper="text"
         width="180px"
@@ -58,14 +58,14 @@
     <div class="circle-statwrapper-horizontal">
       <Field
         name="system.ammoType"
-        label={localize('Mosh.AmmoType')}
+        label={localize('Mothership.AmmoType')}
         value={system.ammoType}
         wrapper="text"
         width="180px"
       />
       <CheckField
         name="system.useAmmo"
-        label={localize('Mosh.UsesAmmo')}
+        label={localize('Mothership.UsesAmmo')}
         checked={system.useAmmo}
       />
     </div>
@@ -73,7 +73,7 @@
     <br />
 
     <div class="resource">
-      <label class="resource-label" for="system.woundEffect">{localize('Mosh.WoundEffect')}</label>
+      <label class="resource-label" for="system.woundEffect">{localize('Mothership.WoundEffect')}</label>
       <input
         id="system.woundEffect"
         type="text"
@@ -91,18 +91,18 @@
   </div>
 
   <div class="circle-statwrapper-vertical" style="gap: 10px;">
-    <Field name="system.shots" label={localize('Mosh.MaxShots')} value={system.shots} dtype="Number" />
+    <Field name="system.shots" label={localize('Mothership.MaxShots')} value={system.shots} dtype="Number" />
     <Field
       name="system.curShots"
-      label={localize('Mosh.CurrentShots')}
+      label={localize('Mothership.CurrentShots')}
       value={system.curShots}
       dtype="Number"
     />
     <Field
       name="system.shotsPerFire"
-      label={localize('Mosh.ShotsPerFiring')}
+      label={localize('Mothership.ShotsPerFiring')}
       value={system.shotsPerFire}
     />
-    <Field name="system.ammo" label={localize('Mosh.Ammunition')} value={system.ammo} dtype="Number" />
+    <Field name="system.ammo" label={localize('Mothership.Ammunition')} value={system.ammo} dtype="Number" />
   </div>
 </div>

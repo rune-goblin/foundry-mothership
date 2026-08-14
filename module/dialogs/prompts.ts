@@ -30,9 +30,9 @@ const ICONS: Readonly<Record<Advantage, string>> = {
 };
 
 const LABELS: Readonly<Record<Advantage, string>> = {
-  advantage: 'Mosh.Advantage',
-  none: 'Mosh.Normal',
-  disadvantage: 'Mosh.Disadvantage',
+  advantage: 'Mothership.Advantage',
+  none: 'Mothership.Normal',
+  disadvantage: 'Mothership.Disadvantage',
 };
 
 const ORDER: readonly Advantage[] = ['advantage', 'none', 'disadvantage'];
@@ -60,7 +60,7 @@ function advantageButtons<V, T>(
 function nextButton<V, T>(answer: (value: V) => T): DialogButton<V, T> {
   return {
     action: 'next',
-    label: localize('Mosh.Next'),
+    label: localize('Mothership.Next'),
     icon: 'fas fa-chevron-circle-right',
     answer,
   };
@@ -74,17 +74,17 @@ interface StatRow {
 
 /** The four stats a Skill Check can be rolled against, as the dialog lists them. */
 const ATTRIBUTES: readonly StatRow[] = [
-  { key: 'strength', label: 'Mosh.Strength', example: 'Mosh.StrengthSkillExample' },
-  { key: 'speed', label: 'Mosh.Speed', example: 'Mosh.SpeedSkillExample' },
-  { key: 'intellect', label: 'Mosh.Intellect', example: 'Mosh.IntellectSkillExample' },
-  { key: 'combat', label: 'Mosh.Combat', example: 'Mosh.CombatSkillExample' },
+  { key: 'strength', label: 'Mothership.Strength', example: 'Mothership.StrengthSkillExample' },
+  { key: 'speed', label: 'Mothership.Speed', example: 'Mothership.SpeedSkillExample' },
+  { key: 'intellect', label: 'Mothership.Intellect', example: 'Mothership.IntellectSkillExample' },
+  { key: 'combat', label: 'Mothership.Combat', example: 'Mothership.CombatSkillExample' },
 ];
 
 /** PSG 22's three Saves. The same picker, a different list — the hotbar's Save macro asks with it. */
 const SAVES: readonly StatRow[] = [
-  { key: 'sanity', label: 'Mosh.Sanity', example: 'Mosh.SanitySaveExample' },
-  { key: 'fear', label: 'Mosh.Fear', example: 'Mosh.FearSaveExample' },
-  { key: 'body', label: 'Mosh.Body', example: 'Mosh.BodySaveExample' },
+  { key: 'sanity', label: 'Mothership.Sanity', example: 'Mothership.SanitySaveExample' },
+  { key: 'fear', label: 'Mothership.Fear', example: 'Mothership.FearSaveExample' },
+  { key: 'body', label: 'Mothership.Body', example: 'Mothership.BodySaveExample' },
 ];
 
 export interface ChosenAttribute {
@@ -132,9 +132,9 @@ export async function chooseAttribute(options: AttributePrompt): Promise<ChosenA
   return await pickStat(
     ATTRIBUTES,
     {
-      title: localize('Mosh.ChooseAStat'),
-      heading: localize('Mosh.SelectAStat'),
-      intro: `${localize('Mosh.ChooseTheStatForSkillCheck')} <em>${localize('Mosh.GivingYouAHigherNumber')}</em>`,
+      title: localize('Mothership.ChooseAStat'),
+      heading: localize('Mothership.SelectAStat'),
+      intro: `${localize('Mothership.ChooseTheStatForSkillCheck')} <em>${localize('Mothership.GivingYouAHigherNumber')}</em>`,
     },
     options,
   );
@@ -145,9 +145,9 @@ export async function chooseSave(): Promise<ChosenAttribute | null> {
   return await pickStat(
     SAVES,
     {
-      title: localize('Mosh.ChooseASave'),
-      heading: localize('Mosh.SelectASave'),
-      intro: localize('Mosh.WhatASaveIs'),
+      title: localize('Mothership.ChooseASave'),
+      heading: localize('Mothership.SelectASave'),
+      intro: localize('Mothership.WhatASaveIs'),
     },
     { advantage: true },
   );
@@ -217,12 +217,12 @@ export async function chooseAdvantage(options: AdvantagePrompt): Promise<Advanta
 export async function askReload(): Promise<boolean> {
   const answer = await svelteDialog<null, boolean, { message: string }>({
     component: ReloadPrompt,
-    props: { message: localize('Mosh.OutOfAmmoNeedReload') },
-    title: localize('Mosh.WeaponIssue'),
+    props: { message: localize('Mothership.OutOfAmmoNeedReload') },
+    title: localize('Mothership.WeaponIssue'),
     initial: null,
     buttons: [
-      { action: 'reload', label: localize('Mosh.Reload'), icon: 'fas fa-check', answer: () => true },
-      { action: 'cancel', label: localize('Mosh.Cancel'), icon: 'fas fa-times', answer: () => false },
+      { action: 'reload', label: localize('Mothership.Reload'), icon: 'fas fa-check', answer: () => true },
+      { action: 'cancel', label: localize('Mothership.Cancel'), icon: 'fas fa-times', answer: () => false },
     ],
   });
   return answer === true;
@@ -231,18 +231,18 @@ export async function askReload(): Promise<boolean> {
 export async function outOfAmmo(): Promise<void> {
   await svelteDialog<null, null, { message: string }>({
     component: ReloadPrompt,
-    props: { message: localize('Mosh.OutOfAmmo') },
-    title: localize('Mosh.WeaponIssue'),
+    props: { message: localize('Mothership.OutOfAmmo') },
+    title: localize('Mothership.WeaponIssue'),
     initial: null,
-    buttons: [{ action: 'ok', label: localize('Mosh.OK'), icon: 'fas fa-check', answer: () => null }],
+    buttons: [{ action: 'ok', label: localize('Mothership.OK'), icon: 'fas fa-check', answer: () => null }],
   });
 }
 
 const COVER_LABELS: Readonly<Record<Cover, { readonly label: string; readonly examples: string }>> = {
-  none: { label: 'Mosh.NoCover', examples: 'Mosh.UnprotectedOutInTheOpen' },
-  insignificant: { label: 'Mosh.InsignificantCover', examples: 'Mosh.WoodFurnitureDoorsShields' },
-  light: { label: 'Mosh.LightCover', examples: 'Mosh.TreesBulkheadWallMetalFurniture' },
-  heavy: { label: 'Mosh.HeavyCover', examples: 'Mosh.AirlockDoorsCementBeamsShips' },
+  none: { label: 'Mothership.NoCover', examples: 'Mothership.UnprotectedOutInTheOpen' },
+  insignificant: { label: 'Mothership.InsignificantCover', examples: 'Mothership.WoodFurnitureDoorsShields' },
+  light: { label: 'Mothership.LightCover', examples: 'Mothership.TreesBulkheadWallMetalFurniture' },
+  heavy: { label: 'Mothership.HeavyCover', examples: 'Mothership.AirlockDoorsCementBeamsShips' },
 };
 
 export interface CoverPromptArmor {
@@ -261,11 +261,11 @@ export async function chooseCover(current: Cover, armor: CoverPromptArmor): Prom
   return await svelteDialog<Cover, Cover, typeof props>({
     component: CoverPrompt,
     props,
-    title: localize('Mosh.Cover'),
+    title: localize('Mothership.Cover'),
     initial: current,
     width: DIALOG_WIDTH,
     buttons: [
-      { action: 'ok', label: localize('Mosh.OK'), icon: 'fas fa-check', answer: (cover: Cover) => cover },
+      { action: 'ok', label: localize('Mothership.OK'), icon: 'fas fa-check', answer: (cover: Cover) => cover },
     ],
   });
 }
@@ -284,18 +284,18 @@ interface StressPromptText {
 
 const STRESS_PROMPTS: Readonly<Record<StressDirection, StressPromptText>> = {
   gain: {
-    title: 'Mosh.GainStress',
+    title: 'Mothership.GainStress',
     image: 'images/icons/ui/macros/gain_stress.png',
-    body: 'Mosh.WhatGainingStressIs',
-    label: 'Mosh.GainNStress',
+    body: 'Mothership.WhatGainingStressIs',
+    label: 'Mothership.GainNStress',
     icons: ['fas fa-angle-up', 'fas fa-angle-double-up', 'fas fa-arrow-circle-up'],
     sign: 1,
   },
   relieve: {
-    title: 'Mosh.RelieveStress',
+    title: 'Mothership.RelieveStress',
     image: 'images/icons/ui/macros/relieve_stress.png',
-    body: 'Mosh.WhatRelievingStressIs',
-    label: 'Mosh.RelieveNStress',
+    body: 'Mothership.WhatRelievingStressIs',
+    label: 'Mothership.RelieveNStress',
     icons: ['fas fa-angle-down', 'fas fa-angle-double-down', 'fas fa-arrow-circle-down'],
     sign: -1,
   },
@@ -316,7 +316,7 @@ export async function chooseStress(direction: StressDirection): Promise<Amount |
     image: asset(text.image),
     heading,
     body: localize(text.body),
-    prompt: `${localize('Mosh.SelectYourModification')}:`,
+    prompt: `${localize('Mothership.SelectYourModification')}:`,
   };
 
   return await svelteDialog<null, Amount, typeof props>({
@@ -362,20 +362,20 @@ const DEFAULT_WOUND: TableKey = 'blunt-force';
 export async function chooseWound(): Promise<ChosenWound | null> {
   const tables = WOUND_TABLE_KEYS.map((key) => ({
     key,
-    label: localize(`Mosh.Table.${key}`),
+    label: localize(`Mothership.Table.${key}`),
     img: asset(`images/icons/ui/rolltables/${WOUND_ICONS[key]}`),
   }));
   const props = {
     image: asset('images/icons/ui/macros/wound_roll.png'),
-    heading: localize('Mosh.WoundRoll'),
-    body: localize('Mosh.WhatAWoundRollIs'),
+    heading: localize('Mothership.WoundRoll'),
+    body: localize('Mothership.WhatAWoundRollIs'),
     tables,
   };
 
   return await svelteDialog<TableKey, ChosenWound, typeof props>({
     component: WoundTable,
     props,
-    title: localize('Mosh.WoundRoll'),
+    title: localize('Mothership.WoundRoll'),
     initial: DEFAULT_WOUND,
     width: DIALOG_WIDTH,
     buttons: advantageButtons(null, (advantage, key) => ({ key, advantage })),
@@ -387,8 +387,8 @@ export async function noCharacter(target: string): Promise<void> {
   await svelteDialog<null, null, { target: string }>({
     component: NoCharacter,
     props: { target },
-    title: localize('Mosh.Errors.NoCharacterTitle'),
+    title: localize('Mothership.Errors.NoCharacterTitle'),
     initial: null,
-    buttons: [{ action: 'ok', label: localize('Mosh.OK'), icon: 'fas fa-check', answer: () => null }],
+    buttons: [{ action: 'ok', label: localize('Mothership.OK'), icon: 'fas fa-check', answer: () => null }],
   });
 }

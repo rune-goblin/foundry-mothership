@@ -19,8 +19,8 @@
   const doc = $derived(store.current);
 
   const TABS = [
-    { id: 'description', label: localize('Mosh.Description') },
-    { id: 'skills.prerequisite', label: localize('Mosh.SkillsPrerequisite') },
+    { id: 'description', label: localize('Mothership.Description') },
+    { id: 'skills.prerequisite', label: localize('Mothership.SkillsPrerequisite') },
   ];
 
   let tab = $state('description');
@@ -54,13 +54,13 @@
 <CircleStats variant="horizontal">
   <Field
     name="system.bonus"
-    label={localize('Mosh.Bonus')}
+    label={localize('Mothership.Bonus')}
     value={doc.system.bonus}
     dtype="Number"
   />
   <Field
     name="system.rank"
-    label={localize('Mosh.RANK')}
+    label={localize('Mothership.RANK')}
     value={doc.system.rank}
     wrapper="text"
     width="180px"
@@ -87,9 +87,9 @@
     <ItemList style="margin-bottom: 10px;">
       <ItemRow header>
         <ItemImage />
-        <ItemCell>{localize('Mosh.SkillName')}</ItemCell>
-        <ItemCell>{localize('Mosh.SkillRank')}</ItemCell>
-        <ItemCell>{localize('Mosh.SkillBonus')}</ItemCell>
+        <ItemCell>{localize('Mothership.SkillName')}</ItemCell>
+        <ItemCell>{localize('Mothership.SkillRank')}</ItemCell>
+        <ItemCell>{localize('Mothership.SkillBonus')}</ItemCell>
         <ItemControls />
       </ItemRow>
 
@@ -105,7 +105,7 @@
           <ItemControls>
             <ItemControl
               icon="trash"
-              title={localize('Mosh.DeleteSkill')}
+              title={localize('Mothership.DeleteSkill')}
               onclick={() => removePrerequisite(uuid)}
             />
           </ItemControls>

@@ -44,7 +44,7 @@ declare const ui: { readonly notifications?: { warn(message: string): unknown } 
 
 function unavailable(): void {
   if (typeof ui === 'undefined') return;
-  ui?.notifications?.warn(localize('Mosh.Chat.ActionUnavailable'));
+  ui?.notifications?.warn(localize('Mothership.Chat.ActionUnavailable'));
 }
 
 /** Run one action. Exported because a dialog reaches the same services a button does. */

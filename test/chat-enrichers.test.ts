@@ -134,14 +134,14 @@ describe('the button', () => {
 
   it('labels itself from the lang files, and yields to a label the content gives it', () => {
     installI18n({
-      'Mosh.RollScope.fear': 'Fear Save',
-      'Mosh.Chat.GainLabel': '{amount} {field}',
-      'Mosh.Chat.ApplyLabel': '{count} {condition}',
-      'Mosh.Chat.SufferLabel': 'Take {condition} Damage',
-      'Mosh.Chat.BoundedField': '{bound} {field}',
-      'Mosh.Minimum': 'Minimum',
-      'Mosh.Stress': 'Stress',
-      'Mosh.Table.gunshot': 'Gunshot Wound',
+      'Mothership.RollScope.fear': 'Fear Save',
+      'Mothership.Chat.GainLabel': '{amount} {field}',
+      'Mothership.Chat.ApplyLabel': '{count} {condition}',
+      'Mothership.Chat.SufferLabel': 'Take {condition} Damage',
+      'Mothership.Chat.BoundedField': '{bound} {field}',
+      'Mothership.Minimum': 'Minimum',
+      'Mothership.Stress': 'Stress',
+      'Mothership.Table.gunshot': 'Gunshot Wound',
     });
 
     expect(actionLabel(parsed('@Check[fear -]'))).toBe('Fear Save [-]');

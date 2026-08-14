@@ -21,7 +21,7 @@
 
 <div class="resource healthspread minmaxtopstat" {style}>
   <label for="system.stats.armor.value" class="resource-label minmaxtext rollable" {...rollable}>
-    {localize('Mosh.Armor')}
+    {localize('Mothership.Armor')}
   </label>
 
   <div class="minmaxwrapper" style="width: 100%; background: black; border-radius: 0.3em;">
@@ -44,6 +44,6 @@
     </div>
   </div>
 
-  <div class="healthmaxtext">{localize('Mosh.ArmorPoints')}</div>
-  <div class="healthmaxtext">{localize('Mosh.DMGReduction')}</div>
+  <div class="healthmaxtext">{localize('Mothership.ArmorPoints')}</div>
+  <div class="healthmaxtext">{localize('Mothership.DMGReduction')}</div>
 </div>

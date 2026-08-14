@@ -11,5 +11,5 @@
   <div class="macro_prompt condition-modifier">{note}</div>
 {/if}
 <div class="macro_prompt">
-  {localize('Mosh.SelectYourRollType')}{die ? ` — ${die}` : ''}:
+  {localize('Mothership.SelectYourRollType')}{die ? ` — ${die}` : ''}:
 </div>

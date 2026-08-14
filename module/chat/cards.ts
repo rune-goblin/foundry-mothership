@@ -69,12 +69,12 @@ export function voiceOf(robotic: boolean): Voice {
 }
 
 /**
- * The flavour library: `Mosh.<type>.<context>.<action>.<voice>`. A missing android line falls
+ * The flavour library: `Mothership.<type>.<context>.<action>.<voice>`. A missing android line falls
  * back to the human one; a missing entry is nothing at all, where `getFlavorText` printed its own
  * argument — "increase" — into the card (audit F20).
  */
 export function flavor(voice: Voice, ...path: readonly string[]): string {
-  const key = `Mosh.${path.join('.')}`;
+  const key = `Mothership.${path.join('.')}`;
   if (has(`${key}.${voice}`)) return localize(`${key}.${voice}`);
   if (has(`${key}.human`)) return localize(`${key}.human`);
   return '';
@@ -88,10 +88,10 @@ const COMPARE_ICONS: Readonly<Record<Comparison, string>> = {
 };
 
 const COMPARE_WORDS: Readonly<Record<Comparison, string>> = {
-  '<': 'Mosh.Chat.LessThan',
-  '<=': 'Mosh.Chat.LessThanOrEqual',
-  '>': 'Mosh.Chat.GreaterThan',
-  '>=': 'Mosh.Chat.GreaterThanOrEqual',
+  '<': 'Mothership.Chat.LessThan',
+  '<=': 'Mothership.Chat.LessThanOrEqual',
+  '>': 'Mothership.Chat.GreaterThan',
+  '>=': 'Mothership.Chat.GreaterThanOrEqual',
 };
 
 /**
@@ -103,11 +103,11 @@ export function outcomeHtml(outcome: Outcome): string {
   if (outcome.target === null) return '';
   const key = outcome.critical
     ? outcome.success
-      ? 'Mosh.Chat.CriticalSuccess'
-      : 'Mosh.Chat.CriticalFailure'
+      ? 'Mothership.Chat.CriticalSuccess'
+      : 'Mothership.Chat.CriticalFailure'
     : outcome.success
-      ? 'Mosh.Chat.Success'
-      : 'Mosh.Chat.Failure';
+      ? 'Mothership.Chat.Success'
+      : 'Mothership.Chat.Failure';
 
   return (
     `<div style="font-size: 1.1rem; margin-top : -10px; margin-bottom : 5px;">` +
@@ -213,7 +213,7 @@ export function checkCard(input: CheckCardInput): Card<object> {
       attribute: input.attribute,
       skill: input.skill ?? '',
       skillValue: input.skillBonus ?? 0,
-      outcomeVerb: localize(input.outcome.success ? 'Mosh.Chat.Rolled' : 'Mosh.Chat.DidNotRoll'),
+      outcomeVerb: localize(input.outcome.success ? 'Mothership.Chat.Rolled' : 'Mothership.Chat.DidNotRoll'),
       comparisonText: localize(COMPARE_WORDS[input.comparison]),
       flavorText: input.flavor ?? '',
       needsDesc: weapon !== null && (weapon.system.description !== '' || woundEffect !== ''),
@@ -292,8 +292,8 @@ const STRESS_IMAGES: Readonly<Record<'increase' | 'decrease', string>> = {
 
 const BOUND_LABELS: Readonly<Record<string, string | null>> = {
   value: null,
-  min: 'Mosh.Minimum',
-  max: 'Mosh.Maximum',
+  min: 'Mothership.Minimum',
+  max: 'Mothership.Maximum',
 };
 
 const strong = (value: number): string => `<strong>${value}</strong>`;
@@ -309,7 +309,7 @@ export interface MutationCardInput {
 
 /**
  * What the change did, in words. The two 140-line copies legacy kept of this had already drifted
- * apart on which of `Mosh.HealthZeroMessage`/`HealthZeroMessage2` they used (audit F7); the second
+ * apart on which of `Mothership.HealthZeroMessage`/`HealthZeroMessage2` they used (audit F7); the second
  * is the one that names the health the bar came back with, and since the last Wound now refills
  * the bar too (divergence R1-6) it is the only one left with anything to say.
  *
@@ -327,14 +327,14 @@ export function mutationOutcome(input: MutationCardInput): string {
 
   if (result.wounds !== null) {
     return (
-      `${localize('Mosh.HealthZeroMessage2')}${strong(result.field.to)}.` +
+      `${localize('Mothership.HealthZeroMessage2')}${strong(result.field.to)}.` +
       `<br><br>${flavor(voice, 'attribute', 'hits', 'increase')}`
     );
   }
 
-  const changed = format('Mosh.Chat.FieldChanged', {
+  const changed = format('Mothership.Chat.FieldChanged', {
     field: bound === null ? label : `${localize(bound)} ${label}`,
-    direction: localize(result.amount >= 0 ? 'Mosh.Chat.Increased' : 'Mosh.Chat.Decreased'),
+    direction: localize(result.amount >= 0 ? 'Mothership.Chat.Increased' : 'Mothership.Chat.Decreased'),
     from: strong(result.field.from),
     to: strong(result.field.to),
   });
@@ -343,7 +343,7 @@ export function mutationOutcome(input: MutationCardInput): string {
   // not the bar itself moved. Legacy's "already at maximum" branch shadowed the second half of
   // that rule, so a player at 20 Stress was never told to reduce anything (divergence R2-1).
   if (pod === 'stress' && result.overflow > 0) {
-    const surplus = format('Mosh.Chat.ReduceStatBySurplus', { amount: result.overflow });
+    const surplus = format('Mothership.Chat.ReduceStatBySurplus', { amount: result.overflow });
     return moved ? `${changed} ${surplus}` : `${flavor(voice, 'attribute', pod, 'hitCeiling')} ${surplus}`;
   }
 
@@ -427,9 +427,9 @@ export function reloadCard(
 ): Card<ReloadCardData> | null {
   switch (outcome.status) {
     case 'reloaded':
-      return ammoCard(item, source, 'Mosh.WeaponReloaded');
+      return ammoCard(item, source, 'Mothership.WeaponReloaded');
     case 'out-of-ammo':
-      return ammoCard(item, source, 'Mosh.OutOfAmmo');
+      return ammoCard(item, source, 'Mothership.OutOfAmmo');
     default:
       return null;
   }

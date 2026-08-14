@@ -45,9 +45,9 @@ const settingKeys = [
 
 /** What the runtime spells out, plus the families it builds from a key space. */
 const used = [
-  ...new Set(sources(root).flatMap((source) => [...source.matchAll(/'(Mosh\.[A-Za-z][\w.]*)'/g)].map((m) => m[1]))),
-  ...CHECK_SCOPES.map((scope) => `Mosh.RollScope.${scope}`),
-  ...TABLE_KEYS.map((key) => `Mosh.Table.${key}`),
+  ...new Set(sources(root).flatMap((source) => [...source.matchAll(/'(Mothership\.[A-Za-z][\w.]*)'/g)].map((m) => m[1]))),
+  ...CHECK_SCOPES.map((scope) => `Mothership.RollScope.${scope}`),
+  ...TABLE_KEYS.map((key) => `Mothership.Table.${key}`),
   ...settingKeys,
 ].sort();
 

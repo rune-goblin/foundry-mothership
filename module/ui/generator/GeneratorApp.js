@@ -30,7 +30,7 @@ export class GeneratorApp extends ApplicationV2 {
   }
 
   get title() {
-    return `${this.#actor.name}: ${localize('Mosh.CharacterGenerator.name')}`;
+    return `${this.#actor.name}: ${localize('Mothership.CharacterGenerator.name')}`;
   }
 
   /** For specs and macros: the live draft, so a generated character can be asserted on. */

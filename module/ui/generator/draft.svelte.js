@@ -35,15 +35,15 @@ export const STARTING_STRESS = 2;
 const BASE_WOUNDS = 2;
 
 const ROLLS = {
-  strength: { formula: FORMULA.stats, label: 'Mosh.Strength' },
-  speed: { formula: FORMULA.stats, label: 'Mosh.Speed' },
-  intellect: { formula: FORMULA.stats, label: 'Mosh.Intellect' },
-  combat: { formula: FORMULA.stats, label: 'Mosh.Combat' },
-  sanity: { formula: FORMULA.saves, label: 'Mosh.Sanity' },
-  fear: { formula: FORMULA.saves, label: 'Mosh.Fear' },
-  body: { formula: FORMULA.saves, label: 'Mosh.Body' },
-  health: { formula: FORMULA.health, label: 'Mosh.Health' },
-  credits: { formula: FORMULA.credits, label: 'Mosh.Credits' },
+  strength: { formula: FORMULA.stats, label: 'Mothership.Strength' },
+  speed: { formula: FORMULA.stats, label: 'Mothership.Speed' },
+  intellect: { formula: FORMULA.stats, label: 'Mothership.Intellect' },
+  combat: { formula: FORMULA.stats, label: 'Mothership.Combat' },
+  sanity: { formula: FORMULA.saves, label: 'Mothership.Sanity' },
+  fear: { formula: FORMULA.saves, label: 'Mothership.Fear' },
+  body: { formula: FORMULA.saves, label: 'Mothership.Body' },
+  health: { formula: FORMULA.health, label: 'Mothership.Health' },
+  credits: { formula: FORMULA.credits, label: 'Mothership.Credits' },
 };
 
 export const ROLL_KEYS = Object.keys(ROLLS);
@@ -96,14 +96,14 @@ export class CharacterDraft {
     if (this.rolled[key] !== null) return;
     const { formula, label } = ROLLS[key];
     const roll = await new Roll(formula).roll();
-    await roll.toMessage({ flavor: format('Mosh.RollingForGeneric', { name: localize(label) }) });
+    await roll.toMessage({ flavor: format('Mothership.RollingForGeneric', { name: localize(label) }) });
     this.rolled[key] = roll.total;
   }
 
   async rollTable(kind) {
     if (this[kind]) return;
     if (!this.classUuid) {
-      ui.notifications.error(localize('Mosh.CharacterGenerator.Error.NoClass'));
+      ui.notifications.error(localize('Mothership.CharacterGenerator.Error.NoClass'));
       return;
     }
     const table = await fromUuid(this.#tables[kind]);
@@ -158,7 +158,7 @@ export class CharacterDraft {
 
   async applyClassSkills() {
     if (!this.classUuid) {
-      ui.notifications.error(localize('Mosh.CharacterGenerator.SkillOption.Classerror'));
+      ui.notifications.error(localize('Mothership.CharacterGenerator.SkillOption.Classerror'));
       return;
     }
     const klass = await fromUuid(this.classUuid);

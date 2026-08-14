@@ -8,17 +8,17 @@
   let { draft, close } = $props();
 
   const STATS = [
-    ['strength', 'Mosh.Strength'],
-    ['speed', 'Mosh.Speed'],
-    ['intellect', 'Mosh.Intellect'],
-    ['combat', 'Mosh.Combat'],
+    ['strength', 'Mothership.Strength'],
+    ['speed', 'Mothership.Speed'],
+    ['intellect', 'Mothership.Intellect'],
+    ['combat', 'Mothership.Combat'],
   ];
 
   const SAVES = [
-    ['health', 'Mosh.Health'],
-    ['sanity', 'Mosh.Sanity'],
-    ['fear', 'Mosh.Fear'],
-    ['body', 'Mosh.Body'],
+    ['health', 'Mothership.Health'],
+    ['sanity', 'Mothership.Sanity'],
+    ['fear', 'Mothership.Fear'],
+    ['body', 'Mothership.Body'],
   ];
 
   /** The name field doubles as the class picker: a datalist entry carries the class it names. */
@@ -42,14 +42,14 @@
   <header class="char-header grid">
     <div id="generator-header-grid-1col" class="header">
       <div>
-        <div class="headerinputtext">{localize('Mosh.Name')}</div>
+        <div class="headerinputtext">{localize('Mothership.Name')}</div>
         <div class="headerinputfield charname">
           <input class="noborder" type="text" name="name" bind:value={draft.name} placeholder="Name" />
         </div>
       </div>
 
       <div>
-        <div class="headerinputtext">{localize('Mosh.CLASS')}</div>
+        <div class="headerinputtext">{localize('Mothership.CLASS')}</div>
         <div class="headerinputfield charname">
           <input
             class="noborder"
@@ -68,7 +68,7 @@
       </div>
 
       <div>
-        <div class="headerinputtext">{localize('Mosh.Wounds')}</div>
+        <div class="headerinputtext">{localize('Mothership.Wounds')}</div>
         <div class="headerinputfield charname">
           <input
             class="noborder"
@@ -81,7 +81,7 @@
       </div>
 
       <div>
-        <div class="headerinputtext">{localize('Mosh.Credits')}</div>
+        <div class="headerinputtext">{localize('Mothership.Credits')}</div>
         <div class="headerinputfield charname">
           {#if draft.rolled.credits === null}
             <!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
@@ -160,7 +160,7 @@
 
   <div class="element-group grid grid-2col">
     <div class="grid grid-1col">
-      <MainStat key="skills" label={localize('Mosh.Skills')} labelClass="fulllabel" wrapper={false}>
+      <MainStat key="skills" label={localize('Mothership.Skills')} labelClass="fulllabel" wrapper={false}>
         {#snippet control()}
           <!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
           <i

@@ -5,12 +5,12 @@
   let { store } = $props();
 
   const STAT_TOGGLES = [
-    { key: 'combat', label: 'Mosh.Combat' },
-    { key: 'instinct', label: 'Mosh.Instinct' },
-    { key: 'loyalty', label: 'Mosh.Loyalty' },
-    { key: 'speed', label: 'Mosh.Speed' },
-    { key: 'armor', label: 'Mosh.Armor' },
-    { key: 'sanity', label: 'Mosh.Sanity' },
+    { key: 'combat', label: 'Mothership.Combat' },
+    { key: 'instinct', label: 'Mothership.Instinct' },
+    { key: 'loyalty', label: 'Mothership.Loyalty' },
+    { key: 'speed', label: 'Mothership.Speed' },
+    { key: 'armor', label: 'Mothership.Armor' },
+    { key: 'sanity', label: 'Mothership.Sanity' },
   ];
 
   // Not a form field: the toggle rewrites Combat as well as itself (the rule is the document's,
