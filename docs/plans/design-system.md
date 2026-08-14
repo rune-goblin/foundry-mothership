@@ -1,9 +1,10 @@
 # Design system — context handover
 
-**Status:** reviewed and verified 2026-08-14 — implementation not started. Every measurable
-claim was re-measured independently; corrections are applied in place and the review ledger
-is §7. The open questions in §5 now carry decisions. This document exists to brief a fresh
-session cold, so it restates what a reader would otherwise have to rediscover.
+**Status:** reviewed and verified 2026-08-14; execution started the same day. Every measurable
+claim was re-measured independently; corrections are applied in place and the review ledger is
+§7. The open questions in §5 now carry decisions. **§8 is the execution protocol and the
+progress ledger — the authoritative state; start there to resume.** This document exists to
+brief a fresh session cold, so it restates what a reader would otherwise have to rediscover.
 
 **What this is.** MoSh's CSS never went through the ApplicationV2/Svelte migration. It is still
 the AppV1-era community stylesheet, and it leaks into the rest of Foundry. The fix is a design
@@ -12,8 +13,8 @@ from live-tokens.
 
 **Where it sits in the plans.** This is `psg-core.md` **S9**'s "the CSS dissolution" and "the
 Svelte architecture audit", and `architecture.md` **C14**. S9 is marked *next* and is ungated.
-Nothing here supersedes `legacy-remake.md` R7 (the sheets adopting the typed services); R7 and
-this work touch the same files and should be sequenced deliberately — see *Open questions*.
+`legacy-remake.md` is complete (R0–R7; R7 landed 2026-08-13, `bbfe33c`), so every sheet is
+already on the typed services and nothing here waits on behaviour work — decision 4.
 
 ---
 
@@ -399,12 +400,11 @@ system's own files — `packs/_source/` carries zero `Mosh.*` references — and
    the 46 literals, not by themability. If a dark theme ever becomes real, the Layer-2 alias
    indirection is the insertion point — nothing needs building in advance.
 
-4. **Sequencing: steps 0–4 now, step 5 behind R7.** Steps 0–4 touch `css/mosh.css`, the shell
-   `classes` arrays, and a new file nothing consumes — zero overlap with R7's service-adoption
-   work inside component logic — so they need not wait. Step 5 rewrites component internals and
-   must not interleave with R7 in the same unit: behaviour and presentation in one diff defeats
-   the review gate (`run-to-the-end.md`). Rule: a component is restyled only after R7 has passed
-   through it.
+4. **Sequencing: the R7 question is moot — R7 landed** (`bbfe33c`, 2026-08-13; the
+   `legacy-remake.md` ledger is authoritative and complete, R0–R7). Every component is already
+   on the typed services, so step 5 is unblocked and nothing here interleaves with behaviour
+   work. The surviving principle: behaviour and presentation never share a commit unit. The
+   execution ledger (§8) carries the order.
 
 5. **Split `test/ui-parts.test.ts`.** Keep the interactive-behaviour specs permanently; retire
    each primitive's class-name pin in the same unit that moves its styles into a scoped
@@ -468,3 +468,78 @@ Mark's direction — `ms` was rejected for its two established CSS meanings (§4
 lang root key, `Mosh*` symbols, the `css/mosh.css` filename, and eventually the prose name.
 The measured inventory and unit boundaries are §4.6; CLAUDE.md and the `foundry-mosh` skill no
 longer describe `.mosh`/`Mosh.*` as kept.
+
+---
+
+## 8. Execution — the protocol and the ledger
+
+This plan executes across sessions with no shared memory: **the plan is the state.** One
+orchestration session (Fable) runs the ledger; each unit is delegated to an executor subagent,
+reviewed as a diff, gated, committed with its ledger row update, and only then does the next
+unit start. This section is self-contained on purpose — `run-to-the-end.md` was written for one
+plan, not as standing law; what applies here is restated here in full.
+
+**Recovery:** if the orchestration session is lost, resume any fresh session with:
+
+> Read `docs/plans/design-system.md` in full. Execute the next `pending` unit from the §8
+> ledger, following the §8 protocol. Stop at the unit's gate — do not start the next unit.
+
+An interrupted unit shows `in-progress` with no commit; diff the working tree against the
+unit's description before continuing.
+
+### Rules for every delegated unit
+
+1. **Base check first.** `git log --oneline -1` — confirm HEAD is the ledger's last commit
+   before writing anything.
+2. **Visual work is verified visually.** Once DS3's baselines exist, no unit that changes a
+   stylesheet or a `<style>` block lands on green greps alone — the orchestrator reviews the
+   screenshot diff and accepts or rejects each pixel change deliberately.
+3. **Executors never run `npm run test:e2e` or `playwright`.** One Foundry, one data dir, one
+   port — the orchestrator runs that tier serially, and it cannot run at all while the desktop
+   Foundry is open.
+4. **The class names in `test/ui-parts.test.ts` are pinned contracts.** A unit that renames or
+   retires one updates the pin in the same diff, names the change in its report, and never
+   works around a pin to get green.
+5. **Components read their own Layer-2 tokens only** (the §2.1 alias discipline). No raw
+   palette values in component styles; after DS6 lands, no new colour literals outside
+   `tokens.css`.
+6. **No new `!important`; no rule outside `@layer`** except `@font-face`. The DS6 guard tests
+   enforce both — a unit never weakens a guard to pass it.
+7. **Behaviour and presentation never share a commit unit.**
+8. **Executors do not edit `CLAUDE.md`, the skill, or this plan** except their own ledger row.
+   The orchestrator writes the record.
+9. **Report what you could not verify**, explicitly, alongside files changed and exact
+   `npm run check` / `npm test` output.
+
+### The gate — before a unit's commit
+
+1. Read the diff in full; assume the report is optimistic; re-verify its factual claims.
+2. `npm run check` · `npm test` · `npm run build`.
+3. `npm run test:e2e` serially, for any unit that changes what renders.
+4. For stylesheet units: the baseline diff review (rule 2).
+5. Mutation-check any new guard or spec — break the behaviour it claims to cover, watch it fail.
+6. Commit with the ledger row update in the same commit.
+
+### Model policy
+
+Assignment is by hazard, not size. **Sonnet** takes mechanical units with greppable
+done-conditions and no visual risk. **Opus** takes anything with judgment in it — deletion
+calls, cascade changes, per-component restyling. **Fable (the orchestrator)** designs the token
+set (decision 2), accepts baselines, reviews every diff, runs e2e, and commits.
+
+### Progress ledger — the authoritative state
+
+| Unit | Model | Status | Commit | Notes |
+|---|---|---|---|---|
+| DS1 — lang keys `Mosh.*` → `Mothership.*` | Fable (direct) | done | `61e2e42` | Root key + 461 refs + escaped regex forms + stale `Mosh.macro.*` comment. check clean · 753 vitest · grep 0. e2e not run (Foundry open — rule 3's constraint); rides the next e2e-gated unit. Found: `itemRoll.html`'s dead `MajorRepair`/`MinorRepair` branch (§4.6). |
+| DS2 — symbols `Mosh*` → `Mothership*` | Sonnet | pending | | The five sheet classes (`module/init.ts:14-18` + defining files), matching `MothershipActor`. Gate: check + vitest; grep `Mosh[A-Z]` returns 0. Independent — can land any time. |
+| DS3 — visual baselines | Opus authors · Fable accepts | pending | | `toHaveScreenshot` specs: 7 windows + 6 chat cards, deterministic rendering (self-hosted fonts, animations off). Gate: two consecutive e2e runs byte-stable; baselines committed. **Gates DS5 and DS7.** |
+| DS4 — scope class everywhere | Sonnet | pending | | Add `mothership` alongside `mosh`: 7 shells, 6 chat templates, `Tabs`/`SkillPicker`/`BonusOption`, `svelte-dialog.ts` CLASSES. Additive, no visual change. Gate: check + vitest; grep counts all 18 sites. |
+| DS5 — dead CSS dies | Opus | pending | | After DS3. Checked-in audit script first (the one-off audit false-positived `sbt-*`, §1.3); then delete the dead lines, the `.window-app` rules, `color: none`. `sbt-*` survivors are renamed in DS8's SheetHeader unit, not here. Gate: baselines unchanged. |
+| DS6 — `tokens.css` + guards | Fable designs · Opus authors | pending | | The ~60–100-token set (decision 2), Layer 1 scoped to `.mothership` inside `@layer system`; the collision guard vs the installed Foundry build; the metric guards (`!important` ceiling, unlayered-rule zero). Nothing consumes it yet. Gate: check + vitest; each guard mutation-checked. |
+| DS7 — layer and scope the sheet | Opus | pending | | After DS3, DS4, DS6. Wrap in `@layer system`; scope the 36 global rules under `.mothership`; rename `css/mosh.css` → `css/mothership.css` (`module/index.js:3`, `vite.config.ts:25`, ~14 comments). The unit that changes what beats core. Gate: full e2e + baseline diff review, rule 2 at full strength. |
+| DS8 — dissolution, per-component series | Opus per unit | pending | | After DS6, DS7. One component (or coherent group) per commit: styles into scoped `<style>`, reading its own Layer-2 tokens; its `ui-parts` pin retired in the same diff (rule 4); fork-era class names it owns renamed (`sbt-*` in `SheetHeader`). R7 landed 2026-08-13, so nothing here waits on behaviour work. This row accumulates one note per landed component. |
+| DS9 — retire `mosh`, sweep the prose | Sonnet + orchestrator | pending | | Last. Drop `mosh` from every `classes` array; final grep proves zero `mosh` in code; then the prose — CLAUDE.md, the `foundry-mosh` skill, docs — says `mothership` everywhere it described the old names. |
+
+Dependencies: DS2 and DS4 any time; DS3 before DS5 and DS7; DS6 before DS7; DS7 before DS8;
+DS9 last. DS1 is done.

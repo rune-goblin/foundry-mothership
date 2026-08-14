@@ -20,8 +20,10 @@ Operations Manual is next; the Shipbreaker's Toolkit brings ships back.
 **The plan is `docs/plans/psg-core.md`** for content and sheets — read that for what to do next.
 **`docs/plans/legacy-remake.md`** is the sibling plan for the runtime core: `module/actor/actor.js`
 and the macro half of `module/mosh.js` were remade as typed services rather than refactored
-(R0–R6 done, R7 — the sheets adopting them — pending); its own progress ledger is authoritative
-for that work, and it superseded psg-core's S9 item "the `actor.js` split". `docs/plans/architecture.md`'s
+(**complete — R0–R7 done, R7 landed 2026-08-13**); its own progress ledger is authoritative
+for that work, and it superseded psg-core's S9 item "the `actor.js` split".
+**`docs/plans/design-system.md`** is the CSS/design-system plan; its §8 ledger tracks that
+execution. `docs/plans/architecture.md`'s
 phases 1–3 are further back still (Decisions 1–4 there stand; 5–7 do not). `docs/plans/evidence.md`
 holds the measurements; `docs/plans/run-to-the-end.md` holds how a unit is delegated and gated
 (its ten standing rules and review gate are current; its *wave order* is superseded by both plans'
@@ -56,7 +58,7 @@ Don't fix component architecture piecemeal mid-phase — note it there instead.
 | Both class adjustments are real `SchemaField`s | |
 | **The character generator, on a draft store** — no `FormApplication` left | |
 | **Conditions preselect the roll they name** | |
-| **The runtime core remade — `actor.js`/`mosh.js` gone for typed services** | the sheets designed around them, not just compiled against — R7 |
+| **The runtime core remade — `actor.js`/`mosh.js` gone for typed services, sheets adopted them (R7)** | |
 
 ## Hard rules (override defaults)
 
