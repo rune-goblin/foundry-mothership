@@ -65,7 +65,7 @@ describe('the dev server serves what system.json asks Foundry to fetch', () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get('content-type')).toContain('text/css');
-    expect(await response.text()).toContain('Futura PT Book');
+    expect(await response.text()).toContain('images/icons/ui/system/logo.webp');
   });
 
   it('never proxies the dev server to itself', () => {

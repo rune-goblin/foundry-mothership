@@ -41,7 +41,7 @@ export default defineConfig({
     proxy: {
       // The two built entries are handled by `devEntry` above, before these rules run.
       // Templates, lang, packs and art are served from disk by Foundry, not bundled.
-      [`^/systems/${id}/(lang|packs|images|templates)/`]: FOUNDRY,
+      [`^/systems/${id}/(lang|packs|images|fonts|templates)/`]: FOUNDRY,
       // Everything outside our system (Foundry core, other systems, modules).
       [`^(?!/systems/${id}/)`]: FOUNDRY,
       '/socket.io': { target: 'ws://localhost:30000', ws: true },

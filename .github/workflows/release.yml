@@ -48,7 +48,7 @@ jobs:
         run: |
           zip -r mothershiprpg.zip \
             system.json template.json LICENSE.txt README.md \
-            dist packs lang templates images data \
+            dist packs lang templates images fonts data \
             -x "packs/_source/*" -x "packs/*/LOCK" -x "packs/*/LOG" \
             -x "packs/*/LOG.old" -x "packs/*/*.log"
 
@@ -69,6 +69,10 @@ jobs:
           if ! printf '%s\n' "$listing" | grep -q "dist/mothershiprpg.js"; then
             echo "::error::the built esmodule is missing from the zip"; exit 1
           fi
+          # Absent fonts fall back to the browser default and the sheets still render,
+          # so nothing else here would catch the omission.
+          faces=$(printf '%s\n' "$listing" | grep -c "fonts/.*\.woff2" || true)
+          [ "$faces" -ge 12 ] || { echo "::error::expected 12 font files, found $faces"; exit 1; }
           echo "$expected packs present with data, index and manifest"
 
       - name: Create GitHub Release

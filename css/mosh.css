@@ -1,44 +1,125 @@
-@import url("https://fonts.googleapis.com/css2?family=Martel:wght@400;800&family=Roboto:wght@300;400;500&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&display=swap');
+/* Chakra Petch (display) and Barlow (text), self-hosted: SIL OFL 1.1, see
+   fonts/OFL-chakrapetch.txt and fonts/OFL-barlow.txt. Foundry serves fonts/ from disk,
+   so these are absolute like the image URLs below — Vite leaves them alone. */
 
-@include-when-export url(https://fonts.loli.net/css?family=PT+Serif:400,400italic,700,700italic&subset=latin,cyrillic-ext,cyrillic,latin-ext);
-
-/* =========== */
-
-/* pt-serif-regular - latin */
+/* latin */
 @font-face {
-  font-family: 'Futura PT Book';
+  font-family: 'Chakra Petch';
   font-style: normal;
-  font-weight: normal;
-	src: local('Futura PT Book');
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/systems/mothershiprpg/fonts/chakra-petch-500-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* pt-serif-700 - latin */
+/* latin-ext */
 @font-face {
-  font-family: 'Futura PT Bold';
+  font-family: 'Chakra Petch';
   font-style: normal;
-  font-weight: bold;
-	src: local('Futura PT Bold');
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/systems/mothershiprpg/fonts/chakra-petch-500-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* pt-serif-700 - latin */
+/* latin */
 @font-face {
-  font-family: 'Futura PT Cond Medium';
+  font-family: 'Chakra Petch';
   font-style: normal;
-  font-weight: normal;
-	src: local('Futura PT Cond Medium');
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/systems/mothershiprpg/fonts/chakra-petch-700-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* pt-serif-700 - latin */
+/* latin-ext */
 @font-face {
-  font-family: 'Futura PT Cond Bold';
+  font-family: 'Chakra Petch';
   font-style: normal;
-  font-weight: bold;
-	src: local('Futura PT Cond Bold');
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/systems/mothershiprpg/fonts/chakra-petch-700-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* latin */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/systems/mothershiprpg/fonts/barlow-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* latin-ext */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/systems/mothershiprpg/fonts/barlow-400-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* latin */
+@font-face {
+  font-family: 'Barlow';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/systems/mothershiprpg/fonts/barlow-400italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* latin-ext */
+@font-face {
+  font-family: 'Barlow';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/systems/mothershiprpg/fonts/barlow-400italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* latin */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/systems/mothershiprpg/fonts/barlow-500-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* latin-ext */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/systems/mothershiprpg/fonts/barlow-500-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* latin */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/systems/mothershiprpg/fonts/barlow-700-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* latin-ext */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/systems/mothershiprpg/fonts/barlow-700-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
 /* Branding */
@@ -63,7 +144,7 @@
 }
 
 #pause figcaption {
-  font-family: "Roboto", sans-serif;
+  font-family: "Barlow", sans-serif;
   color: #ffffff;
   opacity: .3;
   padding-left: 6px;
@@ -78,13 +159,12 @@ p {
 /* .window-app is the AppV1 frame, .application the V2 one -- both are in play mid-migration. */
 .window-app,
 .mosh.application {
-  font-family: "Roboto", sans-serif;
+  font-family: "Barlow", sans-serif;
 }
 
 .window-app .window-content,
 .mosh.application .window-content {
   background: #fff;
-  /* font-family: "Montserrat", "Arial Black", sans-serif; */
 }
 
 /* AppV1 sheets sized .sheet-body from setPosition(); a V2 window has no such hook, so the
@@ -264,12 +344,12 @@ p {
 
 /* Styles limited to mosh sheets */
 .mosh .item-form {
-  font-family: "Roboto", sans-serif;
+  font-family: "Barlow", sans-serif;
 }
 
 .mosh input {
   font-weight: inherit;
-  font-family: 'Roboto';
+  font-family: "Barlow", sans-serif;
 }
 
 .mosh .center-icon{
@@ -304,7 +384,7 @@ p {
   right: -25px;
   font-size: 17px;
   font-weight: bold;
-  font-family: 'Roboto';
+  font-family: "Barlow", sans-serif;
   bottom: 2px;
 }
 
@@ -316,7 +396,7 @@ p {
   right: -25px;
   font-size: 17px;
   font-weight: bold;
-  font-family: 'Roboto';
+  font-family: "Barlow", sans-serif;
   bottom: 2px;
   /* text-shadow: 0 0 11px grey; */
 }
@@ -458,13 +538,13 @@ p {
   height: 47px;
   background: rgb(230,230,230);
   border-radius: 9px;
-  font-family: "Roboto", sans-serif;
+  font-family: "Barlow", sans-serif;
   font-size: 11pt;
   font-weight: 400;
   padding: 8px;
 }
 .mosh .skill_training_text{
-  font-family: "Roboto", sans-serif;
+  font-family: "Barlow", sans-serif;
   font-size: 11pt;
   font-weight: 500;
   color: grey;
@@ -472,7 +552,6 @@ p {
 
 .mosh .resource-label {
   font-weight: bold;
-  text-transform: uppercase;
   margin-bottom: 3px;
   text-align: center;
 }
@@ -485,7 +564,6 @@ p {
 
   text-align: left;
   grid-column: 1/-1;
-  /* font-family: "Montserrat", "Arial Black", sans-serif; */
   font-size: 1.1rem;
   line-height: 1;
   text-align: center;
@@ -577,7 +655,6 @@ p {
 .mosh .items-list .skill-name {
   font-weight: bold;
   font-size: 14px;
-  /* font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; */
   color: white;
   /* text-transform: uppercase; */
   margin-left: 0px;
@@ -592,7 +669,6 @@ p {
 
 .mosh .items-list .skill-stat {
   font-size: medium;
-  /* font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; */
   color: #111;
   margin-left: 0px;
   /* background: black; */
@@ -764,7 +840,6 @@ p {
 .mosh .tab-select {
   font-size: medium;
   font-weight: bold;
-  /* font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; */
   color: white;
   text-align: center;
 }
@@ -788,7 +863,7 @@ p {
   width: 100%;
   padding: 0.1rem;
   color: white;
-  font-family: "Montserrat", "Arial Black", sans-serif;
+  font-family: "Chakra Petch", sans-serif;
   font-size: 0.75rem;
   font-weight: bold;
   text-align: left;
@@ -810,6 +885,7 @@ p {
 /* A two-digit bonus overflows the 28px pill under an ApplicationV2 window's input padding,
    which is wider than AppV1's. Every other input in this file already zeroes it. */
 .mosh .mainstatmod-input {
+  font-family: "Chakra Petch", sans-serif;
   height: 26px;
   width: 28px;
   padding: 0;
@@ -829,6 +905,7 @@ p {
 }
 
 .mosh .mainsavemod-input {
+  font-family: "Chakra Petch", sans-serif;
   height: 26px;
   width: 28px;
   padding: 0;
@@ -852,7 +929,6 @@ p {
   color: lightgrey;
   font-size: 1rem;
   line-height: 1;
-  text-transform: uppercase;
   margin-left: -38px;
   pointer-events: none;
   top: 13px;
@@ -860,6 +936,7 @@ p {
 }
 
 .mosh .maxhealth-input {
+  font-family: "Chakra Petch", sans-serif;
   margin: auto;
   border: 0px solid #111;
   font-size: 1.5rem;
@@ -972,14 +1049,13 @@ p {
 }
 
 .mosh .minmaxtext{
+  font-family: "Chakra Petch", sans-serif;
   text-align: left;
   grid-column: 1/-1;
-  /* font-family: "Montserrat", "Arial Black", sans-serif; */
   font-size: 1rem;
   font-weight: bold;
   line-height: 1;
   text-align: center;
-  text-transform: uppercase;
 }
 
 .mosh .slant{
@@ -1087,14 +1163,13 @@ p {
 }
 
 .mosh .mainstattext {
+  font-family: "Chakra Petch", sans-serif;
   width: 100%;
   padding: 0.5rem;
   color: white;
-  /* font-family: "Montserrat", "Arial Black", sans-serif; */
   font-size: 1.3rem;
   font-weight: bold;
   text-align: left;
-  text-transform: uppercase;
 }
 
 
@@ -1106,7 +1181,7 @@ p {
   text-transform: uppercase;
   /* margin-bottom: 7px; */
   color: #363636;
-  font-family: 'Roboto';
+  font-family: "Barlow", sans-serif;
 }
 
 .mosh .circlestatlabel {
@@ -1141,6 +1216,7 @@ p {
 }
 
 .mosh .circle-input {
+  font-family: "Chakra Petch", sans-serif;
   margin: -0.15em;
   height: 50px;
   width: 50px;
@@ -1184,7 +1260,7 @@ p {
    the item thumbnails' border: the rule was never ours, and an .application window never saw it. */
 .mosh .textarea-input {
   width: 100%;
-  font-family: "Roboto", sans-serif;
+  font-family: "Barlow", sans-serif;
   margin: -0.15em;
   /* padding: 9px; */
   border: 2px solid #111;
@@ -1199,7 +1275,7 @@ p {
 }
 
 .mosh .textarea-input-grey {
-  font-family: "Roboto", sans-serif;
+  font-family: "Barlow", sans-serif;
   border: 0;
   border-radius: 0.8em;
   font-size: 11pt;
@@ -1212,6 +1288,7 @@ p {
 
 
 .mosh .square-input {
+  font-family: "Chakra Petch", sans-serif;
   margin: -0.15em;
   height: 42px;
   width: 45px;
@@ -1242,15 +1319,14 @@ p {
 }
 
 .mosh .savetext {
+  font-family: "Chakra Petch", sans-serif;
   display: block;
   margin-bottom: .2em;
   width: 100%;
   color: white;
-  /* font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; */
   font-size: 0.8rem;
   font-weight: bold;
   text-align: center;
-  text-transform: uppercase;
 }
 
 .mosh .savebackground {
@@ -1271,9 +1347,8 @@ p {
   grid-column: 1/-1;
   background: #111;
   color: white;
-  font-family: "Montserrat", "Arial Black", sans-serif;
+  font-family: "Chakra Petch", sans-serif;
   font-weight: bold;
-  text-transform: uppercase;
   border-radius: 15px;
 }
 
@@ -1325,7 +1400,7 @@ p {
   flex-direction: row-reverse;
   align-items: center;
   color: white;
-  font-family: "Montserrat", "Arial Black", sans-serif;
+  font-family: "Chakra Petch", sans-serif;
   font-weight: bold;
   text-transform: uppercase;
   grid-area: header;
@@ -1369,7 +1444,7 @@ p {
 }
 
 .mosh .sbt-text-area{
-  font-family: "Roboto", sans-serif;
+  font-family: "Barlow", sans-serif;
   margin: -0.15em;
   border: 2px solid #c5c5c5;
   border-radius: 15px;
@@ -1485,7 +1560,7 @@ p {
   font-weight: bold;
   color:white;
   text-transform: uppercase;
-  font-family: "Century Gothic", "Diadact Gothic", sans-serif;
+  font-family: "Chakra Petch", sans-serif;
 }
 
 .mosh .creaturestat {
@@ -1493,7 +1568,7 @@ p {
   height: auto;
   font-size: 0.9rem;
   text-transform: uppercase;
-  font-family: "Century Gothic", "Diadact Gothic", sans-serif;
+  font-family: "Chakra Petch", sans-serif;
   color:white;
 }
 
@@ -1518,7 +1593,7 @@ p {
   text-align: center;
   font-size: 0.9rem;
   text-transform: uppercase;
-  font-family: "Century Gothic", "Diadact Gothic", sans-serif;
+  font-family: "Chakra Petch", sans-serif;
   color:white;
   font-weight: bold;
 }
@@ -1526,7 +1601,7 @@ p {
 .mosh .creature-ability-text {
   height: auto;
   font-size: 0.8rem;
-  font-family: "Century Gothic", "Diadact Gothic", sans-serif;
+  font-family: "Chakra Petch", sans-serif;
   color:white;
 }
 
@@ -1545,12 +1620,10 @@ p {
 .mosh .headerinputtext {
   padding: 0.1rem;
   color: white;
-  /* font-family: "Montserrat", "Arial Black", sans-serif; */
-  font-family: 'Roboto';
+  font-family: "Barlow", sans-serif;
   font-size: 0.9rem;
   font-weight: bold;
   text-align: left;
-  text-transform: uppercase;
   margin-right: 10px;
   margin-top: 3px;
 }
@@ -1606,7 +1679,7 @@ p {
   width: 100%;
   border: 2px solid #111;
   border-radius: 0em 0em 0em 0em;
-  font-family: "Century Gothic", "Diadact Gothic", sans-serif;
+  font-family: "Chakra Petch", sans-serif;
 }
 
 .mosh .rollh1 {
@@ -1664,7 +1737,6 @@ p {
   width: 100%;
   padding: 0.5rem;
   color: black;
-  /* font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; */
   font-size: 0.9rem;
   text-align: center;
 }
@@ -1700,7 +1772,7 @@ p {
   border-radius: 1.5rem;
   color: #111;
 
-  font-family: "Montserrat", "Arial Black", sans-serif;
+  font-family: "Chakra Petch", sans-serif;
   font-weight: bold;
   text-transform: uppercase;
   text-align: right;
@@ -1725,7 +1797,7 @@ p {
   color: rgb(117, 0, 0);
   font-weight: normal;
   text-transform: uppercase;
-  font-family: "Montserrat", "Arial Black", sans-serif;
+  font-family: "Chakra Petch", sans-serif;
 }
 
 .mosh .roll-damagebox {
@@ -1791,7 +1863,7 @@ p {
 /* Base dialog styling */
 .application.dialog.macro-popup-dialog {
 	background: rgb(255,255,255);
-	font-family: "Roboto", sans-serif;
+	font-family: "Barlow", sans-serif;
 	color: #1A1915;
 }
 
@@ -1828,7 +1900,7 @@ p {
 
 /* MPD macro desc */
 .macro-popup-dialog .macro_desc {
-  font-family: "Roboto", sans-serif;
+  font-family: "Barlow", sans-serif;
   font-size: 10.5pt;
   font-weight: 400;
   padding-top: 8px;
@@ -1839,7 +1911,7 @@ p {
 
 /* MPD macro desc — title styling */
 .macro-popup-dialog .macro_desc h4 {
-  font-family: "Roboto", sans-serif;
+  font-family: "Barlow", sans-serif;
   font-size: 14pt;
   font-weight: 400;
   color: #1A1915;

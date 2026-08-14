@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MoSh — type pairing specimen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Archivo+Black&family=Barlow:wght@400;500;600&family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Jost:wght@400;500;700&family=Roboto:wght@300;400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ui: ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+  --page: #d8d8d6;
+  --card: #ffffff;
+  --ink: #0a0a0a;
+  --ink-2: #56564f;
+  --rule: #0a0a0a;
+  --hair: #c9c9c4;
+  --inv-bg: #0a0a0a;
+  --inv-ink: #ffffff;
+  --accent: #d8402a;
+  --chrome-bg: #16161a;
+  --chrome-ink: #f2f2ef;
+  --chrome-dim: #8f8f88;
+}
+:root[data-theme="dark"] {
+  --page: #0b0b0d;
+  --card: #141417;
+  --ink: #ededea;
+  --ink-2: #8d8d86;
+  --rule: #ededea;
+  --hair: #2c2c31;
+  --inv-bg: #ededea;
+  --inv-ink: #141417;
+  --accent: #ff6b4a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- page chrome: deliberately neutral so it never competes with the specimens ---- */
+.bar {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; align-items: baseline;
+  padding: .85rem 1.5rem;
+  background: var(--chrome-bg); color: var(--chrome-ink);
+  border-bottom: 1px solid #000;
+}
+.bar h1 { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; margin: 0; font-weight: 600; }
+.bar p { margin: 0; font-size: .78rem; color: var(--chrome-dim); }
+.bar .grow { flex: 1; }
+.ctl { display: flex; gap: .4rem; align-items: center; font-size: .72rem; color: var(--chrome-dim); }
+button {
+  font: inherit; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase;
+  background: transparent; color: var(--chrome-ink);
+  border: 1px solid #45454d; border-radius: 2px;
+  padding: .3rem .6rem; cursor: pointer;
+}
+button[aria-pressed="true"] { background: var(--chrome-ink); color: var(--chrome-bg); border-color: var(--chrome-ink); }
+button:hover { border-color: var(--chrome-ink); }
+
+.intro { max-width: 62ch; padding: 2rem 1.5rem .5rem; font-size: .9rem; line-height: 1.55; color: var(--ink-2); }
+.intro strong { color: var(--ink); }
+
+.stack { display: grid; gap: 2rem; padding: 1.5rem; }
+@media (min-width: 1500px) { .stack.side-by-side { grid-template-columns: 1fr 1fr; } }
+
+/* ---- one specimen card ---- */
+.spec { background: var(--card); border: 1px solid var(--hair); }
+.spec-head { padding: 1rem 1.25rem; border-bottom: 2px solid var(--rule); display: flex; gap: 1rem; align-items: flex-start; }
+.spec-id {
+  flex: none; width: 1.9rem; height: 1.9rem; display: grid; place-items: center;
+  background: var(--inv-bg); color: var(--inv-ink);
+  font-size: .82rem; font-weight: 700;
+}
+.spec-head h2 { margin: 0 0 .25rem; font-size: .95rem; letter-spacing: .01em; }
+.spec-head h2 em { font-style: normal; color: var(--ink-2); font-weight: 400; padding: 0 .3em; }
+.spec-head p { margin: 0; font-size: .82rem; line-height: 1.5; color: var(--ink-2); max-width: 64ch; }
+.tags { margin: .45rem 0 0; display: flex; flex-wrap: wrap; gap: .4rem; list-style: none; padding: 0; }
+.tags li { font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); border: 1px solid var(--hair); padding: .15rem .4rem; }
+.tags li.warn { color: var(--accent); border-color: var(--accent); }
+
+/* ---- the sheet mock. Everything below inherits the pairing's faces. ---- */
+.sheet { padding: 1.25rem; font-family: var(--body); font-size: var(--body-size, 13px); line-height: 1.45; }
+.sheet h3, .sheet h4, .sheet .display { font-family: var(--head); }
+
+.name-row { display: flex; align-items: flex-end; gap: .75rem; border-bottom: 2px solid var(--rule); padding-bottom: .5rem; }
+.sheet h3 { margin: 0; font-size: 1.75rem; line-height: 1; letter-spacing: var(--head-track, 0); text-transform: uppercase; font-weight: var(--head-weight, 700); }
+.name-row .sub { font-size: .82rem; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-2); padding-bottom: .15rem; }
+.name-row .grow { flex: 1; }
+
+.band { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--hair); margin: 1rem 0; border: 1px solid var(--hair); }
+.band.saves { grid-template-columns: repeat(3, 1fr); }
+.cell { background: var(--card); padding: .6rem .5rem; text-align: center; }
+.cell .k { font-size: .64rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); font-family: var(--head); font-weight: var(--head-weight, 700); }
+.cell .v { font-family: var(--head); font-size: 2rem; line-height: 1.1; font-weight: var(--head-weight, 700); font-variant-numeric: tabular-nums; }
+
+.sheet h4 {
+  margin: 1.25rem 0 .5rem; font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+  font-weight: var(--head-weight, 700);
+  background: var(--inv-bg); color: var(--inv-ink); padding: .25rem .5rem;
+}
+.cols { display: grid; gap: 1.25rem; }
+@media (min-width: 720px) { .cols { grid-template-columns: 1.35fr 1fr; } }
+
+table { width: 100%; border-collapse: collapse; }
+th {
+  text-align: left; font-family: var(--head); font-weight: var(--head-weight, 700);
+  font-size: .64rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2);
+  border-bottom: 1px solid var(--rule); padding: .2rem .4rem .25rem;
+}
+td { padding: .3rem .4rem; border-bottom: 1px solid var(--hair); vertical-align: baseline; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+td .special { display: block; font-size: .78em; color: var(--ink-2); line-height: 1.35; }
+
+.skills { list-style: none; margin: 0; padding: 0; }
+.skills li { display: flex; justify-content: space-between; gap: .5rem; padding: .28rem .4rem; border-bottom: 1px solid var(--hair); }
+.skills .tier { font-family: var(--head); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); font-weight: var(--head-weight, 700); }
+
+.prose { margin: .5rem 0 0; max-width: 66ch; }
+.prose + .prose { margin-top: .6rem; }
+.prose .lede { font-weight: 600; }
+.flavour { color: var(--ink-2); font-style: italic; }
+
+.figures { margin-top: 1.25rem; padding-top: .75rem; border-top: 1px solid var(--hair); display: grid; gap: .5rem; }
+.figures div { display: flex; gap: .9rem; align-items: baseline; flex-wrap: wrap; }
+.figures .lbl { font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); width: 5.5rem; flex: none; }
+.figures .head-fig { font-family: var(--head); font-size: 1.45rem; font-variant-numeric: tabular-nums; letter-spacing: .02em; font-weight: var(--head-weight, 700); }
+.figures .body-fig { font-variant-numeric: tabular-nums; font-size: 1rem; }
+.figures .small { font-size: 11px; }
+
+/* ---- the pairings ---- */
+[data-pair="a"] { --head: "Space Grotesk", sans-serif; --body: "IBM Plex Sans", sans-serif; --head-weight: 700; }
+[data-pair="b"] { --head: "Archivo Black", sans-serif; --body: "Archivo", sans-serif; --head-weight: 400; --head-track: -.01em; }
+[data-pair="c"] { --head: "Chakra Petch", sans-serif; --body: "Barlow", sans-serif; --head-weight: 700; }
+[data-pair="d"] { --head: "Jost", sans-serif; --body: "Jost", sans-serif; --head-weight: 700; --head-track: .02em; }
+[data-pair="e"] { --head: "Roboto", sans-serif; --body: "Roboto", sans-serif; --head-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <h1>MoSh — Type Pairing Specimen</h1>
+  <p>Same content, five settings. All faces OFL 1.1 or Apache 2.0 — free to bundle.</p>
+  <span class="grow"></span>
+  <span class="ctl">Ground <button id="theme" aria-pressed="false">Dark</button></span>
+  <span class="ctl">Body <button data-size="12">12</button><button data-size="13" aria-pressed="true">13</button><button data-size="14">14</button></span>
+  <span class="ctl"><button id="cols" aria-pressed="false">Two-up</button></span>
+</div>
+
+<div class="intro">
+  <p>Judge four things: the <strong>uppercase display line</strong> (character name, section bars), the
+  <strong>small caps-style labels</strong> at 10–11px where most of a Foundry sheet lives, the
+  <strong>tabular figures</strong> in the weapon table, and whether the <strong>body paragraph</strong> stays
+  comfortable at sheet size. Text is real — pulled from <code>content/books/psg/</code>.</p>
+</div>
+
+<div class="stack" id="stack">
+
+  <article class="spec" data-pair="a">
+    <header class="spec-head">
+      <div class="spec-id">A</div>
+      <div>
+        <h2>Space Grotesk <em>over</em> IBM Plex Sans</h2>
+        <p>Retro-futurist display over institutional body. Space Grotesk is Space Mono redrawn as a proportional
+        face — it keeps the mono's odd, engineered details at display size and drops them at text size.
+        Plex is IBM's corporate face: technical, tireless, built for small sizes and dense tables.</p>
+        <ul class="tags"><li>OFL 1.1</li><li>2 families</li><li>~70 KB, 5 weights</li><li>pairs with IBM Plex Mono</li></ul>
+      </div>
+    </header>
+    <div class="sheet"><!--CONTENT--></div>
+  </article>
+
+  <article class="spec" data-pair="b">
+    <header class="spec-head">
+      <div class="spec-id">B</div>
+      <div>
+        <h2>Archivo Black <em>over</em> Archivo</h2>
+        <p>One superfamily, two extremes. Archivo is a grotesque built for high performance in small sizes;
+        Archivo Black is the same skeleton at maximum weight — stencilled-on-a-bulkhead headers.
+        The cheapest option to ship and the most internally consistent.</p>
+        <ul class="tags"><li>OFL 1.1</li><li>1 family</li><li>~55 KB, 4 weights</li><li>variable width axis available</li></ul>
+      </div>
+    </header>
+    <div class="sheet"><!--CONTENT--></div>
+  </article>
+
+  <article class="spec" data-pair="c">
+    <header class="spec-head">
+      <div class="spec-id">C</div>
+      <div>
+        <h2>Chakra Petch <em>over</em> Barlow</h2>
+        <p>The overtly sci-fi option — Chakra Petch is angular and clipped, HUD typography.
+        Barlow underneath is a low-contrast grotesk drawn off Californian highway signage: neutral,
+        slightly condensed, very economical in a stat block.</p>
+        <ul class="tags"><li>OFL 1.1</li><li>2 families</li><li>~60 KB, 5 weights</li><li class="warn">reads gamey at large sizes</li></ul>
+      </div>
+    </header>
+    <div class="sheet"><!--CONTENT--></div>
+  </article>
+
+  <article class="spec" data-pair="d">
+    <header class="spec-head">
+      <div class="spec-id">D</div>
+      <div>
+        <h2>Jost* <em>alone</em></h2>
+        <p>The honest replacement for the Futura PT blocks just deleted — Jost* is a Futura-alike you can
+        actually ship. One family doing both jobs, geometric and poster-ish, closest to <em>2001</em> and to
+        the film-poster end of the genre.</p>
+        <ul class="tags"><li>OFL 1.1</li><li>1 family</li><li>~40 KB, 3 weights</li><li class="warn">wide circular forms cost table width</li></ul>
+      </div>
+    </header>
+    <div class="sheet"><!--CONTENT--></div>
+  </article>
+
+  <article class="spec" data-pair="e">
+    <header class="spec-head">
+      <div class="spec-id">E</div>
+      <div>
+        <h2>Roboto <em>—</em> the control</h2>
+        <p>What ships today, for reference. Not a candidate: it is the default-Android face and reads as
+        an absence of a decision rather than a decision.</p>
+        <ul class="tags"><li>Apache 2.0</li><li>currently CDN-loaded</li></ul>
+      </div>
+    </header>
+    <div class="sheet"><!--CONTENT--></div>
+  </article>
+
+</div>
+
+<template id="content">
+  <div class="name-row">
+    <h3>Halleck, R.</h3>
+    <span class="grow"></span>
+    <span class="sub">Teamster · Rank 2</span>
+  </div>
+
+  <div class="band">
+    <div class="cell"><div class="k">Strength</div><div class="v">41</div></div>
+    <div class="cell"><div class="k">Speed</div><div class="v">33</div></div>
+    <div class="cell"><div class="k">Intellect</div><div class="v">28</div></div>
+    <div class="cell"><div class="k">Combat</div><div class="v">45</div></div>
+  </div>
+  <div class="band saves">
+    <div class="cell"><div class="k">Sanity</div><div class="v">30</div></div>
+    <div class="cell"><div class="k">Fear</div><div class="v">35</div></div>
+    <div class="cell"><div class="k">Body</div><div class="v">40</div></div>
+  </div>
+
+  <div class="cols">
+    <section>
+      <h4>Weapons</h4>
+      <table>
+        <thead><tr><th>Weapon</th><th>Damage</th><th>Range</th><th>Shots</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td>Boarding Axe</td><td class="num">2d10 DMG</td><td>Adjacent</td><td class="num">—</td><td class="num">1.5kcr</td></tr>
+          <tr><td>Combat Shotgun</td><td class="num">4d10 DMG</td><td>Close</td><td class="num">4</td><td class="num">1.4kcr</td></tr>
+          <tr><td>Laser Cutter<span class="special">Two-handed. Heavy. 1 round recharge between shots.</span></td><td class="num">1d100 DMG</td><td>Long</td><td class="num">6</td><td class="num">1,200cr</td></tr>
+          <tr><td>Nail Gun</td><td class="num">1d5 DMG</td><td>Close</td><td class="num">32</td><td class="num">150cr</td></tr>
+          <tr><td>Frag Grenade<span class="special">On a hit, damages all Adjacent to enemy.</span></td><td class="num">3d10 DMG</td><td>Close</td><td class="num">1</td><td class="num">350cr</td></tr>
+          <tr><td>General-Purpose Machine Gun<span class="special">Two-handed. Heavy. Barrel can be maneuvered to fire around corners.</span></td><td class="num">4d10 DMG</td><td>Long</td><td class="num">5</td><td class="num">4.5kcr</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h4>Skills</h4>
+      <ul class="skills">
+        <li><span>Industrial Equipment</span><span class="tier">Trained</span></li>
+        <li><span>Zero-G</span><span class="tier">Trained</span></li>
+        <li><span>Jury-Rigging</span><span class="tier">Trained</span></li>
+        <li><span>Mechanical Repair</span><span class="tier">Expert</span></li>
+        <li><span>Asteroid Mining</span><span class="tier">Expert</span></li>
+        <li><span>Hand-to-Hand Combat</span><span class="tier">Master</span></li>
+      </ul>
+
+      <h4>Condition</h4>
+      <p class="prose"><span class="lede">Overwhelmed.</span> [-] on all rolls for the next 1d10 minutes.
+      Increase Minimum Stress by 1.</p>
+    </section>
+  </div>
+
+  <h4>Notes</h4>
+  <p class="prose">Teamsters are rough and tumble blue-collar space workers, mechanics, engineers, miners,
+  and pilots. Marines are handy in a fight, but whenever they Panic it may cause problems for the rest of
+  the crew. Androids are a terrifying and exciting addition to any crew — they tend to unnerve other
+  crewmembers with their cold inhumanity.</p>
+  <p class="prose flavour">You feel tightness in your chest and start to sweat. Your heartbeat races out of
+  control and you start to feel dizzy.</p>
+
+  <div class="figures">
+    <div><span class="lbl">Display</span><span class="head-fig">0123456789 · 41 33 28 45 · 1d100</span></div>
+    <div><span class="lbl">Body</span><span class="body-fig">0123456789 · 2d10 DMG · 4.5kcr · 18/22 HP</span></div>
+    <div><span class="lbl">Body 11px</span><span class="body-fig small">Wounds 1/3 · Stress 7 (min. 2) · Armor Points 7 · Credits 1,240cr · [+] [-]</span></div>
+  </div>
+</template>
+
+<script>
+  const tpl = document.getElementById('content');
+  for (const slot of document.querySelectorAll('.sheet')) slot.append(tpl.content.cloneNode(true));
+
+  const theme = document.getElementById('theme');
+  theme.addEventListener('click', () => {
+    const dark = document.documentElement.dataset.theme !== 'dark';
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    theme.setAttribute('aria-pressed', String(dark));
+    theme.textContent = dark ? 'Light' : 'Dark';
+  });
+
+  for (const b of document.querySelectorAll('[data-size]')) {
+    b.addEventListener('click', () => {
+      for (const o of document.querySelectorAll('[data-size]')) o.setAttribute('aria-pressed', String(o === b));
+      for (const s of document.querySelectorAll('.sheet')) s.style.setProperty('--body-size', b.dataset.size + 'px');
+    });
+  }
+
+  const cols = document.getElementById('cols');
+  cols.addEventListener('click', () => {
+    const on = !document.getElementById('stack').classList.contains('side-by-side');
+    document.getElementById('stack').classList.toggle('side-by-side', on);
+    cols.setAttribute('aria-pressed', String(on));
+  });
+</script>
+</body>
+</html>

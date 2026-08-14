@@ -15,7 +15,7 @@ import { detectFoundryData, SYSTEM_ID, warnIfWorldsPresent } from './foundry-dat
 const REPO = resolve(import.meta.dirname, '..');
 
 const FILES = ['system.json', 'template.json', 'LICENSE.txt', 'README.md'];
-const DIRS = ['dist', 'packs', 'lang', 'templates', 'images', 'data'];
+const DIRS = ['dist', 'packs', 'lang', 'templates', 'images', 'fonts', 'data'];
 
 const data = detectFoundryData();
 if (!data) {

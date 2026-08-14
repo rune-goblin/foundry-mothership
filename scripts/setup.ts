@@ -23,7 +23,7 @@ if (!DATA) {
 }
 const TARGET = join(DATA, 'systems', SYSTEM_ID);
 
-const LINKED = ['system.json', 'template.json', 'dist', 'templates', 'images', 'lang', 'data'];
+const LINKED = ['system.json', 'template.json', 'dist', 'templates', 'images', 'fonts', 'lang', 'data'];
 
 if (!existsSync(join(REPO, 'dist'))) {
   console.error('dist/ is missing — run `npm run build` first.');
