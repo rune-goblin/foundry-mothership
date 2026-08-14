@@ -1,0 +1,16 @@
+/* Applied by Playwright only while a screenshot is taken (playwright.config.ts →
+   expect.toHaveScreenshot.stylePath), never during a normal run. Everything here removes a
+   source of drift between two captures of the same window, not a source of ugliness.
+
+   The three hidden nodes float above the interface and can land inside a window's rectangle:
+   an element screenshot captures whatever paints in that rectangle, overlays included. */
+#tooltip,
+#notifications,
+#chat-notifications {
+  display: none !important;
+}
+
+/* A smooth scroll still in flight is a different picture every time it is sampled. */
+* {
+  scroll-behavior: auto !important;
+}

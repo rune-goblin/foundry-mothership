@@ -48,6 +48,12 @@ The world is **cloned** into `test/foundry-data/`, not shared, so the suite neve
 real data and you can run your own Foundry at the same time. The clone is point-in-time —
 changes made in desktop Foundry reach the harness only after another setup run.
 
+**No module is ever active here.** `setup-test-env.ts` arms the cloned world's `safeMode`, so
+Foundry drops every module from `core.moduleConfiguration` as it launches (and deactivates the
+scene, and stops playlists). The clone inherits whatever your live Data dir has enabled, and one
+module is enough to paint over a visual baseline or to break a spec that was testing the system.
+The flag is one-shot, so it is re-armed on every boot.
+
 ## Check the harness before trusting green
 
 - `global-setup` logs the system version, core version, world and compendium list it exercised.
@@ -67,3 +73,20 @@ changes made in desktop Foundry reach the harness only after another setup run.
   (the application element id, `data-*` hooks — not text or nth-child).
 - Compare **`doc.toObject().system`**, not `doc.system`, when asserting stored data:
   `prepareDerivedData` mutates the live object in place (armour mod, net HP, bleeding).
+
+## Visual baselines
+
+`visual-baselines.spec.ts` captures every surface `css/mosh.css` paints — seven windows, the
+check dialog, six chat cards — and compares them at **`maxDiffPixels: 0`**. The images live in
+`baselines/visual-baselines.spec/`, are named `<subject>-<platform>.png`, and **are committed**.
+
+```bash
+npx playwright test visual-baselines --update-snapshots   # write/refresh the images
+```
+
+Rewrite them only when the change to what renders was intended, and read the diff before you
+accept it — that review is the gate the design-system plan (§8 rule 2) puts on every stylesheet
+change. Determinism is bought in the spec's header comment and in `expect.toHaveScreenshot`
+(`playwright.config.ts`), including the capture-only stylesheet `screenshot.css`. A capture that
+disagrees with itself between two runs means one of those measures stopped holding; fix that
+rather than raising the pixel budget.

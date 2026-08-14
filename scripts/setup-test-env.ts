@@ -197,20 +197,38 @@ if (existsSync(worldDest)) {
 // `systemVersion` is newer than the installed one — and the rename to `mothershiprpg` reset the
 // version to 0.0.0, so a world made on 0.6.1 fails both checks. The clone is throwaway, so
 // repoint it rather than requiring a hand-migrated world just to run the harness.
+//
+// `safeMode` is armed in the same write. It is Foundry's own "launch in safe configuration"
+// flag (`common/packages/base-world.mjs`): on launch the server deletes every module from the
+// world's `core.moduleConfiguration` setting, keeping only what the system or world declares as
+// a hard dependency — this system declares none — so the harness runs against **no modules at
+// all**. The clone comes from the live Data dir, which carries whatever happens to be enabled
+// there; one enabled module (a timer widget with a `position: fixed` overlay) is enough to paint
+// pixels into a visual baseline, and any module's CSS can reach our windows. The flag is
+// one-shot — the server writes `safeMode: false` back after it launches — so it is re-armed on
+// every setup run, which is every boot. Safe mode also deactivates the active scene and stops
+// playlists; no spec touches either.
 const worldManifest = join(worldDest, 'world.json');
 if (existsSync(worldManifest)) {
   const world = JSON.parse(readFileSync(worldManifest, 'utf8')) as Record<string, unknown>;
   const { version } = JSON.parse(readFileSync(join(repo, "system.json"), 'utf8')) as { version: string };
   const was = { system: world.system, systemVersion: world.systemVersion };
-  if (was.system !== SYSTEM_ID || was.systemVersion !== version) {
+  const repoint = was.system !== SYSTEM_ID || was.systemVersion !== version;
+  if (repoint) {
     world.system = SYSTEM_ID;
     world.systemVersion = version;
+  }
+  if (repoint || world.safeMode !== true) {
+    world.safeMode = true;
     writeFileSync(worldManifest, `${JSON.stringify(world, null, 2)}\n`);
+  }
+  if (repoint) {
     console.log(
       `   ↳ world.json ${was.system}@${was.systemVersion} → ${SYSTEM_ID}@${version} ` +
         '(clone only; the original is untouched)',
     );
   }
+  console.log('   ↳ safeMode armed — Foundry drops every module from this clone on launch');
 }
 
 console.log('\n✨ Test data path ready at test/foundry-data (no shared LevelDBs — run your own Foundry freely)');

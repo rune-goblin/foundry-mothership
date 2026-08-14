@@ -9,7 +9,23 @@ export default defineConfig({
   workers: 1,
   retries: process.env.CI ? 1 : 0,
   timeout: 60_000,
-  expect: { timeout: 10_000 },
+  expect: {
+    timeout: 10_000,
+    // The visual baselines (test/e2e/visual-baselines.spec.ts, plan DS3). `maxDiffPixels: 0`
+    // is the point: a stylesheet change either moves no pixel or is reviewed pixel by pixel.
+    // `scale: 'css'` captures in CSS pixels rather than the display's device pixels;
+    // `stylePath` neutralises the overlays that float above a window. The images carry the
+    // platform in their name — a font stack renders differently on another OS, and only a
+    // machine with a licensed Foundry runs this tier anyway.
+    toHaveScreenshot: {
+      maxDiffPixels: 0,
+      animations: 'disabled',
+      caret: 'hide',
+      scale: 'css',
+      stylePath: './test/e2e/screenshot.css',
+      pathTemplate: '{testDir}/baselines/{testFileBaseName}/{arg}-{platform}{ext}',
+    },
+  },
   reporter: process.env.CI ? 'github' : [['list'], ['html', { open: 'never' }]],
   // Joins the world as GM and asserts it is the world and system we meant to test, before any
   // spec runs. Fails loud rather than testing the wrong target.
