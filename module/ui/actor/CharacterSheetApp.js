@@ -10,7 +10,7 @@ const { ActorSheetV2 } = foundry.applications.sheets;
  * ActorSheetV2 brings drag-and-drop and form persistence, the document stays the source of truth,
  * and the component mounts once.
  */
-export class MoshCharacterSheet extends ActorSheetV2 {
+export class MothershipCharacterSheet extends ActorSheetV2 {
   static DEFAULT_OPTIONS = {
     // css/mosh.css paints the content white and has no dark variant, so pin the light theme.
     classes: ['mosh', 'sheet', 'actor', 'character', 'themed', 'theme-light'],
@@ -27,7 +27,7 @@ export class MoshCharacterSheet extends ActorSheetV2 {
       ],
     },
     form: { submitOnChange: true, closeOnSubmit: false },
-    actions: { generateCharacter: MoshCharacterSheet.#onGenerateCharacter },
+    actions: { generateCharacter: MothershipCharacterSheet.#onGenerateCharacter },
   };
 
   /** AppV1's ActorSheet titled the window with the bare actor name; keep that. */

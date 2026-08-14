@@ -44,7 +44,7 @@ const baseSchema = () => ({
   bleeding: pool(0, null, 'Bleeding', { withMax: false }),
 });
 
-export class MoshCharacter extends foundry.abstract.TypeDataModel {
+export class MothershipCharacterModel extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       ...baseSchema(),
@@ -74,7 +74,7 @@ export class MoshCharacter extends foundry.abstract.TypeDataModel {
   }
 }
 
-export class MoshCreature extends foundry.abstract.TypeDataModel {
+export class MothershipCreatureModel extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       ...baseSchema(),
@@ -102,6 +102,6 @@ export class MoshCreature extends foundry.abstract.TypeDataModel {
 }
 
 export const ACTOR_MODELS = {
-  character: MoshCharacter,
-  creature: MoshCreature,
+  character: MothershipCharacterModel,
+  creature: MothershipCreatureModel,
 };

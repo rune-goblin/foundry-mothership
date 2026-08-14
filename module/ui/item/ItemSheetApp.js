@@ -11,7 +11,7 @@ const { DocumentSheetV2 } = foundry.applications.api;
  * Fields keep their `name="system.…"` attributes and Foundry's own form handling persists them,
  * exactly as the AppV1 sheet did with `submitOnChange: true` -- no per-field update calls.
  */
-export class MoshItemSheet extends DocumentSheetV2 {
+export class MothershipItemSheet extends DocumentSheetV2 {
   /** Subclasses swap the component and extend `_context()`; the shell itself is unchanged. */
   static COMPONENT = ItemSheet;
 

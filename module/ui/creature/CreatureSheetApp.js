@@ -12,7 +12,7 @@ const { ActorSheetV2 } = foundry.applications.sheets;
  * Fields keep their `name="system.…"` attributes and Foundry's own form handling persists them,
  * exactly as the AppV1 sheet did with `submitOnChange: true`.
  */
-export class MoshCreatureSheet extends ActorSheetV2 {
+export class MothershipCreatureSheet extends ActorSheetV2 {
   static DEFAULT_OPTIONS = {
     // css/mosh.css paints the content white and has no dark variant, so pin the light theme.
     classes: ['mosh', 'sheet', 'actor', 'creature', 'themed', 'theme-light'],
@@ -29,7 +29,7 @@ export class MoshCreatureSheet extends ActorSheetV2 {
       ],
     },
     form: { submitOnChange: true, closeOnSubmit: false },
-    actions: { configureCreature: MoshCreatureSheet.#onConfigureCreature },
+    actions: { configureCreature: MothershipCreatureSheet.#onConfigureCreature },
   };
 
   /** AppV1's ActorSheet titled the window with the bare actor name; keep that. */

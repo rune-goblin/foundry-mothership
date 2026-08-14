@@ -53,7 +53,7 @@ export class RolltableConfigApp extends ApplicationV2 {
     // the `form` config below expects -- see DocumentSheetV2, which does the same.
     tag: 'form',
     // css/mosh.css paints the content white with no dark variant, so pin the light theme (see
-    // MoshItemSheet) or the window renders dark text-on-dark against those light boxes.
+    // MothershipItemSheet) or the window renders dark text-on-dark against those light boxes.
     classes: ['mosh', 'themed', 'theme-light'],
     window: { title: 'Rolltable Configuration', icon: 'fa-solid fa-list', resizable: false },
     position: { width: 800, height: 'auto' },

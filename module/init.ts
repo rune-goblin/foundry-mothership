@@ -11,11 +11,11 @@
 import { compare } from './compare.js';
 import { ACTOR_MODELS } from './data/actor-models.js';
 import { ITEM_MODELS } from './data/item-models.js';
-import { MoshCharacterSheet } from './ui/actor/CharacterSheetApp.js';
-import { MoshCreatureSheet } from './ui/creature/CreatureSheetApp.js';
-import { MoshClassSheet } from './ui/class/ClassSheetApp.js';
-import { MoshItemSheet } from './ui/item/ItemSheetApp.js';
-import { MoshSkillSheet } from './ui/skill/SkillSheetApp.js';
+import { MothershipCharacterSheet } from './ui/actor/CharacterSheetApp.js';
+import { MothershipCreatureSheet } from './ui/creature/CreatureSheetApp.js';
+import { MothershipClassSheet } from './ui/class/ClassSheetApp.js';
+import { MothershipItemSheet } from './ui/item/ItemSheetApp.js';
+import { MothershipSkillSheet } from './ui/skill/SkillSheetApp.js';
 import { RolltableConfigApp } from './ui/settings/RolltableConfigApp.js';
 
 import { NEW_API, registerActions } from './api/api.ts';
@@ -134,11 +134,11 @@ function registerSheets(): void {
     Items.unregisterSheet('core', v1.sheets.ItemSheet);
   }
 
-  Actors.registerSheet(SYSTEM_ID, MoshCharacterSheet, { types: [CHARACTER], makeDefault: true });
-  Actors.registerSheet(SYSTEM_ID, MoshCreatureSheet, { types: [CREATURE], makeDefault: true });
-  Items.registerSheet(SYSTEM_ID, MoshClassSheet, { types: ['class'], makeDefault: true });
-  Items.registerSheet(SYSTEM_ID, MoshSkillSheet, { types: ['skill'], makeDefault: true });
-  Items.registerSheet(SYSTEM_ID, MoshItemSheet, {
+  Actors.registerSheet(SYSTEM_ID, MothershipCharacterSheet, { types: [CHARACTER], makeDefault: true });
+  Actors.registerSheet(SYSTEM_ID, MothershipCreatureSheet, { types: [CREATURE], makeDefault: true });
+  Items.registerSheet(SYSTEM_ID, MothershipClassSheet, { types: ['class'], makeDefault: true });
+  Items.registerSheet(SYSTEM_ID, MothershipSkillSheet, { types: ['skill'], makeDefault: true });
+  Items.registerSheet(SYSTEM_ID, MothershipItemSheet, {
     types: ['item', 'weapon', 'armor', 'ability', 'condition'],
     makeDefault: true,
   });

@@ -60,19 +60,19 @@ const picks = () => ({
 // Shared by every item type.
 const base = () => ({ description: new fields.HTMLField({ required: true, blank: true, initial: '' }) });
 
-export class MoshItem extends foundry.abstract.TypeDataModel {
+export class MothershipItemModel extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return { ...base(), quantity: num(1, true), weight: num(0), cost: num(0) };
   }
 }
 
-export class MoshSkill extends foundry.abstract.TypeDataModel {
+export class MothershipSkillModel extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return { ...base(), rank: str('Trained'), bonus: num(10), prerequisite_ids: uuidList() };
   }
 }
 
-export class MoshWeapon extends foundry.abstract.TypeDataModel {
+export class MothershipWeaponModel extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       ...base(),
@@ -100,7 +100,7 @@ export class MoshWeapon extends foundry.abstract.TypeDataModel {
   }
 }
 
-export class MoshArmor extends foundry.abstract.TypeDataModel {
+export class MothershipArmorModel extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       ...base(),
@@ -120,13 +120,13 @@ export class MoshArmor extends foundry.abstract.TypeDataModel {
   }
 }
 
-export class MoshAbility extends foundry.abstract.TypeDataModel {
+export class MothershipAbilityModel extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return { ...base(), roll: str('') };
   }
 }
 
-export class MoshCondition extends foundry.abstract.TypeDataModel {
+export class MothershipConditionModel extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       ...base(),
@@ -144,7 +144,7 @@ export class MoshCondition extends foundry.abstract.TypeDataModel {
   }
 }
 
-export class MoshClass extends foundry.abstract.TypeDataModel {
+export class MothershipClassModel extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       ...base(),
@@ -190,11 +190,11 @@ export class MoshClass extends foundry.abstract.TypeDataModel {
 }
 
 export const ITEM_MODELS = {
-  item: MoshItem,
-  skill: MoshSkill,
-  weapon: MoshWeapon,
-  armor: MoshArmor,
-  ability: MoshAbility,
-  condition: MoshCondition,
-  class: MoshClass,
+  item: MothershipItemModel,
+  skill: MothershipSkillModel,
+  weapon: MothershipWeaponModel,
+  armor: MothershipArmorModel,
+  ability: MothershipAbilityModel,
+  condition: MothershipConditionModel,
+  class: MothershipClassModel,
 };

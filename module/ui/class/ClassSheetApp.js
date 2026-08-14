@@ -1,4 +1,4 @@
-import { MoshItemSheet } from '../item/ItemSheetApp.js';
+import { MothershipItemSheet } from '../item/ItemSheetApp.js';
 import ClassSheet from './ClassSheet.svelte';
 
 /**
@@ -10,7 +10,7 @@ import ClassSheet from './ClassSheet.svelte';
  * base_adjustment a free-form ObjectField: a SchemaField would have cleaned the derived keys off.
  * Nothing is written back to the document now; the resolved names travel beside it.
  */
-export class MoshClassSheet extends MoshItemSheet {
+export class MothershipClassSheet extends MothershipItemSheet {
   static COMPONENT = ClassSheet;
 
   static DEFAULT_OPTIONS = {

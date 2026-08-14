@@ -1,4 +1,4 @@
-import { MoshItemSheet } from '../item/ItemSheetApp.js';
+import { MothershipItemSheet } from '../item/ItemSheetApp.js';
 import SkillSheet from './SkillSheet.svelte';
 
 /**
@@ -6,7 +6,7 @@ import SkillSheet from './SkillSheet.svelte';
  * so they have to be resolved before the component can render them. `fromUuid` is async, which is
  * why this happens here rather than in the component.
  */
-export class MoshSkillSheet extends MoshItemSheet {
+export class MothershipSkillSheet extends MothershipItemSheet {
   static COMPONENT = SkillSheet;
 
   /**

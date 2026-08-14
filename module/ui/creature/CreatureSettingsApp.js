@@ -12,7 +12,7 @@ const { DocumentSheetV2 } = foundry.applications.api;
 export class CreatureSettingsApp extends DocumentSheetV2 {
   static DEFAULT_OPTIONS = {
     // css/mosh.css paints the content white with no dark variant, so pin the light theme (see
-    // MoshItemSheet) or the window renders dark text on those light boxes.
+    // MothershipItemSheet) or the window renders dark text on those light boxes.
     // `creature-settings` is what tells this window apart from the creature sheet underneath,
     // which is an ApplicationV2 carrying the same mosh/sheet/actor/creature classes.
     classes: ['mosh', 'sheet', 'actor', 'creature', 'creature-settings', 'themed', 'theme-light'],

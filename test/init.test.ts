@@ -42,11 +42,11 @@ vi.mock('../module/api/api.ts', async (importOriginal) => ({
 
 vi.mock('../module/data/actor-models.js', () => ({ ACTOR_MODELS: { character: class {} } }));
 vi.mock('../module/data/item-models.js', () => ({ ITEM_MODELS: { item: class {} } }));
-vi.mock('../module/ui/actor/CharacterSheetApp.js', () => ({ MoshCharacterSheet: class {} }));
-vi.mock('../module/ui/creature/CreatureSheetApp.js', () => ({ MoshCreatureSheet: class {} }));
-vi.mock('../module/ui/class/ClassSheetApp.js', () => ({ MoshClassSheet: class {} }));
-vi.mock('../module/ui/item/ItemSheetApp.js', () => ({ MoshItemSheet: class {} }));
-vi.mock('../module/ui/skill/SkillSheetApp.js', () => ({ MoshSkillSheet: class {} }));
+vi.mock('../module/ui/actor/CharacterSheetApp.js', () => ({ MothershipCharacterSheet: class {} }));
+vi.mock('../module/ui/creature/CreatureSheetApp.js', () => ({ MothershipCreatureSheet: class {} }));
+vi.mock('../module/ui/class/ClassSheetApp.js', () => ({ MothershipClassSheet: class {} }));
+vi.mock('../module/ui/item/ItemSheetApp.js', () => ({ MothershipItemSheet: class {} }));
+vi.mock('../module/ui/skill/SkillSheetApp.js', () => ({ MothershipSkillSheet: class {} }));
 vi.mock('../module/ui/settings/RolltableConfigApp.js', () => ({ RolltableConfigApp: class {} }));
 
 interface HookRegistration {
@@ -172,11 +172,11 @@ describe('init', () => {
     init.onInit();
 
     expect(sheets.registered).toEqual([
-      'MoshCharacterSheet',
-      'MoshCreatureSheet',
-      'MoshClassSheet',
-      'MoshSkillSheet',
-      'MoshItemSheet',
+      'MothershipCharacterSheet',
+      'MothershipCreatureSheet',
+      'MothershipClassSheet',
+      'MothershipSkillSheet',
+      'MothershipItemSheet',
     ]);
     expect(sheets.unregistered).toEqual(['v1 ActorSheet', 'v1 ItemSheet']);
   });
