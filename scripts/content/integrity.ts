@@ -71,7 +71,7 @@ const FORBIDDEN_INIT_CALL = /\bmothershiprpg\.init[A-Z]\w*\s*\(/;
 const FORBIDDEN_BARE_ID = /(['"`])[A-Za-z0-9]{16}\1/;
 
 /**
- * Macros are user interface now, not the system (docs/plans/legacy-remake.md decision 4): every
+ * Macros are user interface now, not the system: every
  * emitted command routes through `game.mothershiprpg`'s new entry points, which resolve targeting,
  * tables and conditions themselves. This is the structural fix for two shipped bugs a content
  * change could otherwise reintroduce — a `game.settings.get` namespace typo no tier caught until a

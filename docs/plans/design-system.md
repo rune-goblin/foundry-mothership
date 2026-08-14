@@ -11,10 +11,12 @@ the AppV1-era community stylesheet, and it leaks into the rest of Foundry. The f
 token layer adapted from **live-tokens**, plus MoSh's own components built on top — not ported
 from live-tokens.
 
-**Where it sits in the plans.** This is `psg-core.md` **S9**'s "the CSS dissolution" and "the
-Svelte architecture audit", and `architecture.md` **C14**. S9 is marked *next* and is ungated.
-`legacy-remake.md` is complete (R0–R7; R7 landed 2026-08-13, `bbfe33c`), so every sheet is
-already on the typed services and nothing here waits on behaviour work — decision 4.
+**Where it sits.** This is the only plan file: the finished plans — the PSG core (S1–S8), the
+legacy remake (R0–R7, `bbfe33c` 2026-08-13), the architecture review and its evidence, and the
+run-to-the-end protocol — were deleted 2026-08-15; `git show <commit>:docs/plans/<file>`
+recovers any of them. This plan carries what the PSG core called S9: the CSS dissolution and
+the Svelte architecture audit. Every sheet is already on the typed services, so nothing here
+waits on behaviour work — decision 4.
 
 ---
 
@@ -316,7 +318,7 @@ unsupported by Foundry and constrains nothing.
 
 ### 4.4 Verification — the gap that must close first
 
-`architecture.md` C14 requires screenshot verification. **There is no visual baseline today:**
+This work has always required screenshot verification. **There is no visual baseline today:**
 `playwright.config.ts:22` sets `screenshot: 'only-on-failure'` and no spec calls
 `toHaveScreenshot()`. The 124 e2e specs boot a real headless Foundry, so the harness for a
 visual-regression gate exists — the baselines do not.
@@ -400,8 +402,8 @@ system's own files — `packs/_source/` carries zero `Mosh.*` references — and
    the 46 literals, not by themability. If a dark theme ever becomes real, the Layer-2 alias
    indirection is the insertion point — nothing needs building in advance.
 
-4. **Sequencing: the R7 question is moot — R7 landed** (`bbfe33c`, 2026-08-13; the
-   `legacy-remake.md` ledger is authoritative and complete, R0–R7). Every component is already
+4. **Sequencing: the R7 question is moot — R7 landed** (`bbfe33c`, 2026-08-13; the legacy
+   remake is complete, R0–R7). Every component is already
    on the typed services, so step 5 is unblocked and nothing here interleaves with behaviour
    work. The surviving principle: behaviour and presentation never share a commit unit. The
    execution ledger (§8) carries the order.
@@ -476,8 +478,9 @@ longer describe `.mosh`/`Mosh.*` as kept.
 This plan executes across sessions with no shared memory: **the plan is the state.** One
 orchestration session (Fable) runs the ledger; each unit is delegated to an executor subagent,
 reviewed as a diff, gated, committed with its ledger row update, and only then does the next
-unit start. This section is self-contained on purpose — `run-to-the-end.md` was written for one
-plan, not as standing law; what applies here is restated here in full.
+unit start. This section is self-contained on purpose — the earlier run-to-the-end protocol was
+written for one plan (and deleted with it), not as standing law; what applies here is restated
+here in full.
 
 **Recovery:** if the orchestration session is lost, resume any fresh session with:
 

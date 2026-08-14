@@ -13,8 +13,8 @@ description: >-
 
 Conventions and APIs for the MoSh Mothership system. Adapted from the runegoblin
 `foundry-pf2e` skill; the differences are called out because they matter — **this is a
-system, not a module. The service core is TypeScript, remade whole
-(`docs/plans/legacy-remake.md`); the UI layer above it (`module/ui/`) is still plain
+system, not a module. The service core is TypeScript, remade whole (the legacy remake,
+R0–R7, complete); the UI layer above it (`module/ui/`) is still plain
 JavaScript and Svelte, mid-migration.**
 
 ## Two rules that override defaults
@@ -37,7 +37,7 @@ structured data `foundry.abstract.TypeDataModel` + `defineSchema()`.
 | Windows | ✅ ApplicationV2 throughout — no `FormApplication` subclass left |
 | Actor sheets | ✅ both — `module/ui/actor/` and `module/ui/creature/`, on the shared sections |
 | Templates | ✅ `templates/` holds 6 chat cards; no dialog partials left — dialogs are Svelte, mounted through `dialogs/svelte-dialog.ts` |
-| Runtime core | ✅ remade in TypeScript — `documents/`, `checks/`, `mutation/`, `rolls/`, `tables/`, `chat/`, `api/` (`docs/plans/legacy-remake.md`); `actor/actor.js` and `mosh.js` are gone |
+| Runtime core | ✅ remade in TypeScript — `documents/`, `checks/`, `mutation/`, `rolls/`, `tables/`, `chat/`, `api/`; `actor/actor.js` and `mosh.js` are gone |
 
 **Phase 4 is complete** — no `foundry.appv1.*` class remains. New code
 has no v1 precedent to copy, so don't introduce one.
@@ -47,13 +47,14 @@ has no v1 precedent to copy, so don't introduce one.
 `module/**/*.ts`** are TypeScript, checked by `npm run check`. Node ≥22.18 strips types, so
 scripts run under plain `node` with no `tsx`.
 
-**`docs/plans/legacy-remake.md` decision 2, landed R0–R5.** The runtime core is TypeScript now,
-not migrated but remade — Vite compiles `.ts` into the same bundle. `module/actor/actor.js`,
-`mosh.js`, `item/item.js` and the old `settings.js` are **gone**, deleted at the R5 swap and
-replaced by `documents/`, `checks/`, `mutation/`, `rolls/`, `tables/`, `chat/`, `api/` and their
-neighbours. Nothing was translated file-by-file; there is no per-file `// @ts-check` migration
-any more. `module/ui/**` stays `.js`/`.svelte` — R7 is next there, and it is a service-adoption
-pass, not a TS conversion.
+**The runtime core is TypeScript now, not migrated but remade** (the legacy remake, R0–R7;
+`git log --grep='^R[0-9]'` has the record) — Vite compiles `.ts` into the same bundle.
+`module/actor/actor.js`, `mosh.js`, `item/item.js` and the old `settings.js` are **gone**,
+deleted at the R5 swap and replaced by `documents/`, `checks/`, `mutation/`, `rolls/`,
+`tables/`, `chat/`, `api/` and their neighbours. Nothing was translated file-by-file; there is
+no per-file `// @ts-check` migration. `module/ui/**` stays `.js`/`.svelte` — the sheets adopted
+the services at R7; the remaining UI work is the design system (`docs/plans/design-system.md`),
+not a JS→TS pass.
 
 ## Reference files — read the one that fits
 
@@ -96,7 +97,7 @@ net HP, bleeding — shared helpers both call). Consequence: when asserting *sto
 `doc.toObject().system`, not `doc.system`.
 
 **The roll pipeline.** `module/rolls/` now — `actor.js`'s `parseRollString`/`parseRollResult` are
-gone (`docs/plans/legacy-remake.md` R0). `rolls/parse.ts`'s `parseRollSpec` turns `1d100[+]`/`[-]`
+gone (the legacy remake, R0). `rolls/parse.ts`'s `parseRollSpec` turns `1d100[+]`/`[-]`
 into a `RollSpec` (die, count, sign, advantage, aim) and a Foundry keep formula; `rolls/resolve.ts`'s
 `resolveOutcome` is the pure function that turns an evaluated `Roll` into an `Outcome` — zero-based
 dice, the 90+ auto-failure, doubles-as-criticals, advantage/disadvantage crit preference — without

@@ -10,7 +10,7 @@
 // (audit C2, C10).
 //
 // `modifiers` is seeded on the three the book vouches for and left empty on the rest — the owner's
-// decision, recorded in docs/plans/psg-core.md. Each names the one roll it reaches, because that is
+// decision (S8). Each names the one roll it reaches, because that is
 // how the book states them: Nightmares is [-] on Rest Saves, not on everything.
 import type { ChatAction } from '../../../module/chat/enrichers.ts';
 import type { ScopedModifier } from '../common.ts';

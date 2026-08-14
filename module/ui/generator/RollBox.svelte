@@ -1,7 +1,7 @@
 <script>
   // One rolled value: a die you click, which becomes the result, plus the class bonus beside it.
-  // Local to the generator by design (architecture.md Decision 1 — recurrence inside one window
-  // gets a local component, not a shared primitive); the label and circle come from MainStat so
+  // Local to the generator by design — recurrence inside one window gets a local component,
+  // not a shared primitive; the label and circle come from MainStat so
   // the css/mosh.css class names stay in one place.
   import MainStat from '../parts/MainStat.svelte';
   import { onActivate } from '../parts/activate.js';

@@ -1,6 +1,6 @@
 // The five Item packs the price lists and the class/skill tables become.
 //
-// architecture.md Decision 2 governs the shape: the runtime schema is not reshaped to match the
+// The runtime schema is not reshaped to match the
 // book, so this file is the adapter. Where the two disagree — a book `tier` against a runtime
 // `rank`, a wound reference against the `woundEffect` string actor.js parses — the book form is
 // translated here and the DataModel guard checks the result.

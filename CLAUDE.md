@@ -17,19 +17,18 @@ Code style: global `~/.claude/CLAUDE.md` — comment only the non-obvious *why*.
 Survival Guide, containing nothing else — then extend one book at a time.** The Warden's
 Operations Manual is next; the Shipbreaker's Toolkit brings ships back.
 
-**The plan is `docs/plans/psg-core.md`** for content and sheets — read that for what to do next.
-**`docs/plans/legacy-remake.md`** is the sibling plan for the runtime core: `module/actor/actor.js`
-and the macro half of `module/mosh.js` were remade as typed services rather than refactored
-(**complete — R0–R7 done, R7 landed 2026-08-13**); its own progress ledger is authoritative
-for that work, and it superseded psg-core's S9 item "the `actor.js` split".
-**`docs/plans/design-system.md`** is the CSS/design-system plan; its §8 ledger tracks that
-execution. `docs/plans/architecture.md`'s
-phases 1–3 are further back still (Decisions 1–4 there stand; 5–7 do not). `docs/plans/evidence.md`
-holds the measurements; `docs/plans/run-to-the-end.md` holds how a unit is delegated and gated
-(its ten standing rules and review gate are current; its *wave order* is superseded by both plans'
-own ledgers). **Git history is the record of what happened** — `git log -S"<symbol>"` finds the
-commit that introduced or removed anything, with the diff and the reasoning attached. Durable
-knowledge belongs in a test, in a comment at the site, or in the Gotchas below; not in a prose log.
+**The plan is `docs/plans/design-system.md`** — the token-based design system and the CSS
+dissolution; its §8 ledger is the authoritative state and its §8 protocol governs execution.
+It is the only plan file: the finished plans were deleted 2026-08-15 — the PSG core (S1–S8
+landed), the legacy remake (R0–R7 landed; the runtime core is typed services), the architecture
+review, its evidence file, and the run-to-the-end protocol (written for that one plan).
+**Git history is the record of what happened** — `git log -S"<symbol>"` finds the commit that
+introduced or removed anything, with the diff and the reasoning attached, and
+`git show <commit>:docs/plans/<file>` recovers any deleted plan. Still open beyond the design
+system, recorded here so it keeps a home: `checkJs` over `module/ui/**`; `template.json`'s
+retirement once a generated type snapshot is mutation-proven (v16 removes support regardless);
+and the open U-series findings in `docs/audits/architecture-audit.md`. Durable knowledge
+belongs in a test, in a comment at the site, or in the Gotchas below; not in a prose log.
 
 **Ships, the Calm/android panic variants and all unsourced content were cut** and live on
 master's own history at ancestor `11eee67` (the archive refs were trimmed 2026-08-13 — a label
@@ -70,12 +69,12 @@ Don't fix component architecture piecemeal mid-phase — note it there instead.
 - **TypeScript for tooling, and for the runtime core.** `*.config.ts`, `scripts/*.ts`,
   `test/**/*.ts` **and `module/**/*.ts`** are checked by `npm run check`. Node ≥22.18 runs `.ts`
   scripts directly — no `tsx`/`ts-node`.
-  **`docs/plans/legacy-remake.md` decision 2, landed R0–R5:** the runtime core was remade in
-  TypeScript, not migrated — `actor/actor.js`, `mosh.js`, `item/item.js` and the old `settings.js`
-  are **gone**, deleted at the R5 swap, replaced by typed modules under `module/` (`documents/`,
-  `checks/`, `mutation/`, `rolls/`, `tables/`, `chat/`, `api/`, …). Nothing was translated
-  file-by-file; there is no per-file `// @ts-check` migration. `module/ui/**` stays
-  `.js`/`.svelte`, `checkJs: false` — R7 is next there, not a JS→TS pass.
+  **The runtime core was remade in TypeScript, not migrated** (the legacy remake, R0–R7;
+  `git log --grep='^R[0-9]'`) — `actor/actor.js`, `mosh.js`, `item/item.js` and the old
+  `settings.js` are **gone**, deleted at the R5 swap, replaced by typed modules under `module/`
+  (`documents/`, `checks/`, `mutation/`, `rolls/`, `tables/`, `chat/`, `api/`, …). Nothing was
+  translated file-by-file; there is no per-file `// @ts-check` migration. `module/ui/**` stays
+  `.js`/`.svelte`, `checkJs: false`.
 - **Verify, don't eyeball.** Every change runs the tier that covers it (below). Don't report
   work as done on an untested edit. If a green run surprises you, suspect the harness.
 

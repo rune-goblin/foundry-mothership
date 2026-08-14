@@ -8,7 +8,7 @@ sourcemaps on. `system.json` loads `dist/`.
 ```js
 // module/index.js — the entry
 import '../css/mosh.css';   // hand-authored, NOT compiled from scss/
-import './init.ts';         // hooks/registration only (docs/plans/legacy-remake.md, R5)
+import './init.ts';         // hooks/registration only (the R5 swap)
 ```
 
 ```bash

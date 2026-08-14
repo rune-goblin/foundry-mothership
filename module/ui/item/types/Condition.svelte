@@ -7,7 +7,8 @@
   let { system } = $props();
 
   // Read-only: the modifiers come from the book via the content build, and Foundry's form handling
-  // has no shape for editing an array of objects. Editing is booked as S9 in docs/plans/psg-core.md.
+  // has no shape for editing an array of objects. Editing is booked with the Svelte architecture
+  // audit (docs/plans/design-system.md).
   const modifiers = $derived(
     (system.modifiers ?? []).map((m) => `${localize(`Mothership.RollScope.${m.scope}`)} ${SIGN[m.modifier]}`),
   );

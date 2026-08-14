@@ -5,7 +5,7 @@ import { pickSkills, pickBonusOption, pickStat, PICK_KINDS } from './dialogs.js'
 import { localize, format } from '../../i18n.ts';
 
 /**
- * The draft store (architecture.md Decision 3). The generator is a wizard, not a sheet: the actor
+ * The draft store. The generator is a wizard, not a sheet: the actor
  * is read once when the window opens and written once on save, so the state lives here rather than
  * in the form. The AppV1 window had no state at all — every step reached into the DOM with
  * `this._element.find(...)`, and `getData()` wrote its render scaffolding onto the live actor.

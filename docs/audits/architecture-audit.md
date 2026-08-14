@@ -665,11 +665,11 @@ Every entry above also appears as a full finding below, in its subsystem.
 # Part III — Recommendations
 
 > **Superseded in part (2026-08-13):** the owner reframed the conclusion — one good codebase
-> containing a legacy mess — and chose a **remake over refactoring**: the legacy core is parked
-> and rebuilt as TypeScript services with the PSG book as the spec. `docs/plans/legacy-remake.md`
-> is now the execution plan; it replaces the wave sequence below. The themes, target structure,
-> and findings in this document remain the evidence base — findings the remake resolves get
-> `[done]` tags as its units land; U-series findings stay with S9.
+> containing a legacy mess — and chose a **remake over refactoring**: the legacy core was parked
+> and rebuilt as TypeScript services with the PSG book as the spec. The legacy remake landed in
+> full (R0–R7; its plan file was deleted 2026-08-15, git history recovers it) and replaced the
+> wave sequence below. The themes, target structure, and findings in this document remain the
+> evidence base — resolved findings carry `[done]` tags; the open U-series is the live remainder.
 
 ## The seven themes behind the 78 findings
 

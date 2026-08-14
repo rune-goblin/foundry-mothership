@@ -1,5 +1,5 @@
 // The macros the shipped tables, sheets and conditions call. Macros are user interface, not the
-// system (docs/plans/legacy-remake.md decision 4): every command here is a one-liner into
+// system: every command here is a one-liner into
 // `game.mothershiprpg`. Nothing in this file draws a dialog — the prompts that choose an amount,
 // a Save or a Wound table are the system's own, in `module/dialogs/`, so they are translated and
 // a sheet can open the same ones.
