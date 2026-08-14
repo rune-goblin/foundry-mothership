@@ -476,7 +476,7 @@ describe('Tabs', () => {
   it('renders the nav and the a.tab-select[data-tab] the e2e specs click', () => {
     const el = render(Tabs, { tabs, active: 'description' }).firstElementChild!;
     expect(el.tagName).toBe('NAV');
-    expect([...el.classList]).toEqual(['mosh', 'sheet-tabs', 'tabs']);
+    expect([...el.classList]).toEqual(['mothership', 'mosh', 'sheet-tabs', 'tabs']);
     expect(el.getAttribute('data-group')).toBe('primary');
 
     const links = [...el.querySelectorAll('a.tab-select')];

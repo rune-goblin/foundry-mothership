@@ -68,7 +68,7 @@ declare const foundry:
   | undefined;
 
 /** The class the legacy dialogs carry, so `css/mosh.css` styles these the same way. */
-const CLASSES = ['macro-popup-dialog'] as const;
+const CLASSES = ['mothership', 'macro-popup-dialog'] as const;
 
 const MOUNT_CLASS = 'mosh-dialog-root';
 

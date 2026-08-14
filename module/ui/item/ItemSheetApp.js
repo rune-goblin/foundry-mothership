@@ -18,7 +18,7 @@ export class MothershipItemSheet extends DocumentSheetV2 {
   static DEFAULT_OPTIONS = {
     // css/mosh.css paints the content white and has no dark variant, so pin the light theme.
     // DocumentSheetV2 only appends the user's theme classes when "themed" is not already here.
-    classes: ['mosh', 'sheet', 'item', 'themed', 'theme-light'],
+    classes: ['mothership', 'mosh', 'sheet', 'item', 'themed', 'theme-light'],
     position: { width: 600, height: 500 },
     window: { resizable: true },
     form: { submitOnChange: true, closeOnSubmit: false },

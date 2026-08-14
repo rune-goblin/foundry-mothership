@@ -13,7 +13,7 @@ const { ActorSheetV2 } = foundry.applications.sheets;
 export class MothershipCharacterSheet extends ActorSheetV2 {
   static DEFAULT_OPTIONS = {
     // css/mosh.css paints the content white and has no dark variant, so pin the light theme.
-    classes: ['mosh', 'sheet', 'actor', 'character', 'themed', 'theme-light'],
+    classes: ['mothership', 'mosh', 'sheet', 'actor', 'character', 'themed', 'theme-light'],
     position: { width: 820, height: 820 },
     window: {
       resizable: true,
