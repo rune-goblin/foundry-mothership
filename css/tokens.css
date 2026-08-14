@@ -1,0 +1,114 @@
+/* Layer 1 — theme tokens. Adapted from @motion-proto/live-tokens v0.47.1
+   (src/system/styles/tokens.css + CONVENTIONS.md): the category-first naming law and the
+   two-layer discipline, instantiated for MoSh's measured need rather than the full inventory.
+
+   Two layers: these theme tokens hold the palette and the scales; Layer 2 component tokens
+   (--<componentId>-<part>[-<state>][-<element>]-<property>) alias them, and a component's
+   styles read only its own tokens.
+
+   Scope: everything is declared on .mothership, the class every MoSh window, chat card and
+   dialog root carries. Never :root — Foundry is one document and :root is everyone's.
+   Layer 2 tokens follow the same rule: they land on .mothership too.
+
+   --font-sans-mothership carries its suffix because Foundry defines --font-sans on body and
+   aliases every heading off it; the whole family category takes the suffix so the trio reads
+   as one set. test/css-guards.test.ts fails if any name here ever meets a Foundry name. */
+
+@layer system {
+  .mothership {
+    /* Colour primitives */
+    --color-white: #ffffff;
+    --color-black: #000000;
+
+    --color-neutral-100: #f1f1f1;
+    --color-neutral-200: #e3e3e3;
+    --color-neutral-300: #bbbbbb;
+    --color-neutral-400: #9e9e9e;
+    --color-neutral-500: #808080;
+    --color-neutral-600: #707070;
+    --color-neutral-700: #5c5c5c;
+    --color-neutral-800: #444444;
+    --color-neutral-850: #222222;
+    --color-neutral-900: #111111;
+    /* The ramp's foot doubles as black; kept for scale integrity. */
+    --color-neutral-950: #000000;
+
+    /* The blood red — four measured steps, not a ramp */
+    --color-danger-200: rgb(255, 113, 113);
+    --color-danger-300: rgb(151, 100, 100);
+    --color-danger-400: #aa0200;
+    --color-danger-500: rgb(117, 0, 0);
+
+    /* Single-use accents */
+    --color-success-500: #18520b;
+    --color-warning-500: #ffa500;
+
+    /* Semantic — surfaces */
+    --surface-canvas: var(--color-white);
+    --surface-inset: var(--color-neutral-100);
+    --surface-inverse: var(--color-neutral-900);
+    --surface-inverse-raised: var(--color-neutral-850);
+    --surface-overlay: rgba(0, 0, 0, 0.2);
+
+    /* Semantic — text */
+    --text-primary: var(--color-neutral-900);
+    --text-secondary: var(--color-neutral-600);
+    --text-muted: var(--color-neutral-400);
+    --text-inverse: var(--color-white);
+    --text-danger: var(--color-danger-400);
+    --text-danger-strong: var(--color-danger-500);
+
+    /* Semantic — borders */
+    --border-strong: var(--color-black);
+    --border-default: var(--color-neutral-900);
+    --border-muted: var(--color-neutral-300);
+
+    /* Typography — families */
+    --font-display-mothership: "Chakra Petch", sans-serif;
+    --font-sans-mothership: "Barlow", sans-serif;
+    --font-icon-mothership: "Font Awesome 6 Pro";
+
+    /* Typography — sizes */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.85rem;
+    --font-size-md: 0.9rem;
+    --font-size-lg: 1rem;
+    --font-size-xl: 1.1rem;
+    --font-size-2xl: 1.25rem;
+    --font-size-3xl: 1.5rem;
+    --font-size-display: 2.625rem;
+
+    /* Typography — weights */
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-bold: 700;
+
+    /* Space — the value is the name */
+    --space-2: 2px;
+    --space-4: 4px;
+    --space-6: 6px;
+    --space-8: 8px;
+    --space-10: 10px;
+    --space-12: 12px;
+    --space-16: 16px;
+    --space-20: 20px;
+
+    /* Radius — the three focal sizes, a small tail, and the pill */
+    --radius-xs: 3px;
+    --radius-sm: 10px;
+    --radius-md: 15px;
+    --radius-lg: 21px;
+    --radius-full: 999px;
+
+    /* Border width */
+    --border-width-thin: 1px;
+    --border-width-default: 2px;
+    --border-width-thick: 3px;
+    --border-width-heavy: 4px;
+
+    /* Shadow and ring */
+    --shadow-glow: 0 0 15px var(--color-white);
+    --shadow-glow-soft: 0 0 10px 0 var(--color-neutral-400);
+    --ring-danger: 0 0 0 2px rgba(139, 0, 0, 0.35);
+  }
+}

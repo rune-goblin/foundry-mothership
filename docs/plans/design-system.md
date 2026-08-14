@@ -374,6 +374,33 @@ Worlds and shipped content are unaffected: the lang keys and class names never l
 system's own files — `packs/_source/` carries zero `Mosh.*` references — and the system id
 `mothershiprpg`, the only externally visible name, already changed.
 
+### 4.7 The literal→token map — DS8's migration guide
+
+Minted in DS6 (2026-08-15). When a component's styles dissolve, each literal snaps to its
+token; neighbours collapse onto the ramp step listed. Per-site judgment stays with the DS8
+executor under the baseline diff.
+
+| Ramp step | Value | Absorbs |
+|---|---|---|
+| `--color-neutral-100` | `#f1f1f1` | |
+| `--color-neutral-200` | `#e3e3e3` | `rgb(230,230,230)`, `rgb(226,226,226)`, `#ddd` |
+| `--color-neutral-300` | `#bbbbbb` | `#c5c5c5`, `#b9b9b9` |
+| `--color-neutral-400` | `#9e9e9e` | `#999`, `#9a9a9a` |
+| `--color-neutral-500` | `#808080` | `grey`, `gray`, `rgb(129,129,129)` |
+| `--color-neutral-600` | `#707070` | `rgb(112,112,112)`, `#777`, `rgb(100,100,100)` |
+| `--color-neutral-700` | `#5c5c5c` | `rgb(92,92,92)` |
+| `--color-neutral-800` | `#444444` | `#494949`, `#3d3d3d`, `rgb(56,56,56)`, `#363636` |
+| `--color-neutral-850` | `#222222` | `#202020`, `rgb(25,25,25)`, `rgb(22,22,22)`, `#1a1915` |
+| `--color-neutral-900` | `#111111` | |
+
+Danger: `rgb(255,113,113)`→200, `rgb(151,100,100)`→300, `#aa0200`→400, `rgb(117,0,0)`→500.
+Accents: `green`/`#18520b`→`--color-success-500`, `orange`→`--color-warning-500`.
+Spacing snaps 3→2|4, 5→4|6, 7→6|8, 9→8|10, 11→12, 15→16. Radii: the 2–4px tail→`--radius-xs`,
+10/15/21→sm/md/lg, `3em`/`100px` pills→`--radius-full`, `50%` circles stay literal (geometry,
+not scale). Semantic aliases are preferred over raw ramp reads wherever a role exists
+(`--surface-*`, `--text-*`, `--border-*`); components alias through their own Layer-2 tokens
+(§2.1) either way.
+
 ---
 
 ## 5. The decisions — resolved 2026-08-14
@@ -539,7 +566,7 @@ set (decision 2), accepts baselines, reviews every diff, runs e2e, and commits.
 | DS3 — visual baselines | Opus authors · Fable accepts | pending | | `toHaveScreenshot` specs: 7 windows + 6 chat cards, deterministic rendering (self-hosted fonts, animations off). Gate: two consecutive e2e runs byte-stable; baselines committed. **Gates DS5 and DS7.** |
 | DS4 — scope class everywhere | Sonnet | done | | Re-measured: **16 edit sites**, not 18 — six `classes:` arrays (Class/Skill sheets inherit ItemSheetApp's), the `svelte-dialog.ts` CLASSES const, six chat templates, three Svelte roots. `mothership` added first, `mosh` kept; the Tabs pin in `test/ui-parts.test.ts:479` updated in the same diff (rule 4). Nothing selects `.mothership` yet, so no visual change by construction. Gate: check clean · 753 vitest · build green. Noted for DS9: `MOUNT_CLASS = 'mosh-dialog-root'` (`svelte-dialog.ts:73`). |
 | DS5 — dead CSS dies | Opus | pending | | After DS3. Checked-in audit script first (the one-off audit false-positived `sbt-*`, §1.3); then delete the dead lines, the `.window-app` rules, `color: none`. `sbt-*` survivors are renamed in DS8's SheetHeader unit, not here. Gate: baselines unchanged. |
-| DS6 — `tokens.css` + guards | Fable designs · Opus authors | pending | | The ~60–100-token set (decision 2), Layer 1 scoped to `.mothership` inside `@layer system`; the collision guard vs the installed Foundry build; the metric guards (`!important` ceiling, unlayered-rule zero). Nothing consumes it yet. Gate: check + vitest; each guard mutation-checked. |
+| DS6 — `tokens.css` + guards | Fable designs · Opus authors | done | | **67 tokens** in `css/tokens.css`, custom properties only (no style rules — the font fallback rule waits for DS7's baseline review), imported ahead of `mosh.css` in `module/index.js`; no dev-server rewrite needed (tokens.css travels the esmodule graph, verified live). `test/css-guards.test.ts`: `!important` ceiling 6, unlayered-zero for tokens.css (the mosh.css twin is `it.skip` until DS7 — un-skipped it fails on 248 preludes today, so it is real), collision guard vs the installed build's `foundry2.css` (`FOUNDRY_APP` resolution as in `start-test-env.sh`, visible skip off-machine, size floors against silent parser death). All guards mutation-checked by executor and orchestrator independently. Gate: check clean · 756+1skip vitest · build green; dist opens with `@layer system{.mothership{`. §4.7 records the literal→token map for DS8. |
 | DS7 — layer and scope the sheet | Opus | pending | | After DS3, DS4, DS6. Wrap in `@layer system`; scope the 36 global rules under `.mothership`; rename `css/mosh.css` → `css/mothership.css` (`module/index.js:3`, `vite.config.ts:25`, ~14 comments). The unit that changes what beats core. Gate: full e2e + baseline diff review, rule 2 at full strength. |
 | DS8 — dissolution, per-component series | Opus per unit | pending | | After DS6, DS7. One component (or coherent group) per commit: styles into scoped `<style>`, reading its own Layer-2 tokens; its `ui-parts` pin retired in the same diff (rule 4); fork-era class names it owns renamed (`sbt-*` in `SheetHeader`). R7 landed 2026-08-13, so nothing here waits on behaviour work. This row accumulates one note per landed component. |
 | DS9 — retire `mosh`, sweep the prose | Sonnet + orchestrator | pending | | Last. Drop `mosh` from every `classes` array; final grep proves zero `mosh` in code; then the prose — CLAUDE.md, the `foundry-mosh` skill, docs — says `mothership` everywhere it described the old names. |
