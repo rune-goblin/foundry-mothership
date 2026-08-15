@@ -532,3 +532,193 @@
     />
   </ItemControls>
 {/snippet}
+
+<style>
+  /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
+     application; @layer system puts these in the slot the rest of the system occupies.
+     Eleven names are here, each written by this file and nothing else. The component has no
+     single root -- the header grid and the description grid are siblings -- and `whiteline` is
+     drawn inside both, so the slots are declared on the pair and inherit down.
+     What css/mothership.css keeps declaring: `creaturestat` and `darkgrey`, which this sheet
+     also writes alone but hands to RollableStat and ItemControl as class props, where a scoped
+     block can never reach the element (the `savetext` case); `mainstatwrapper` and the shared
+     stat vocabulary around `creature-mainstat`; `profile`, `skill_training_frame` and
+     `textarea-input-grey` (CharacterSheet writes all three); `skill-stat`, `item`,
+     `item-header`, `sheet-body`, `noborder`, the `.grid*`/`.flex*` set, and the
+     `list-roll`/`rollable` hover group. `resource` beside `creature-mainstat` carries no rule
+     anywhere -- Field declares its own slots on that name, scoped to itself.
+     That hover group is the tie to preserve. `:where(.mothership) .list-roll:hover` weighs
+     (0,2,0) and so does the scoped `.creature-ability-title`, which sets `color` too; the
+     component sheet loads after css/mothership.css, so an ability title stays white on the dark
+     panel when hovered, which is the survival DS7 chose deliberately. */
+  @layer system {
+    .creature-header-grid,
+    .creature-description-grid {
+      --creaturesheet-header-surface: var(--surface-neutral-lowest);
+      --creaturesheet-header-text: var(--text-inverted);
+      --creaturesheet-header-font-family: var(--font-display);
+      --creaturesheet-header-font-weight: var(--font-weight-bold);
+      --creaturesheet-header-padding: var(--space-8);
+
+      --creaturesheet-name-text: var(--text-inverted);
+      --creaturesheet-name-font-family: var(--font-display);
+      --creaturesheet-name-font-weight: var(--font-weight-bold);
+      /* 1.3rem falls between --font-size-2xl (1.25) and -3xl (1.5), and 13 between --space-12
+         and -16. Both wait for the reviewed literal sweep. */
+      --creaturesheet-name-font-size: 1.3rem;
+      --creaturesheet-name-padding-inline-start: 13px;
+
+      /* The creature's stat pair is narrower than MainStat's `1fr 5em`; em against a px scale is
+         off it either way. */
+      --creaturesheet-stat-columns: 1fr 3em;
+      --creaturesheet-stat-gap: var(--space-0);
+
+      --creaturesheet-rule-border-width: var(--border-width-3);
+      /* Every border tier reads a step built for a dark ground (faint is #444), so none of them
+         holds a white line -- DS6b's parked tier-inversion call. */
+      --creaturesheet-rule-color: var(--color-white);
+      /* §4.7 snaps 5 to 4 or 6 and 15 to 16; both move the line off its measured position, so
+         they wait for the sweep. 10 is on the scale already. */
+      --creaturesheet-rule-margin-block-start: 5px;
+      --creaturesheet-rule-margin-block-end: var(--space-10);
+      --creaturesheet-rule-margin-inline: 15px;
+
+      /* 15em against a px scale, and 400 off it outright: the description pane is a fixed box
+         the editor scrolls inside. */
+      --creaturesheet-body-columns: 1fr 15em;
+      --creaturesheet-description-height: 400px;
+      --creaturesheet-description-padding: var(--space-10);
+
+      /* §4.7 collapses rgb(22,22,22) onto --color-neutral-850 (#222222) -- a visible lift on a
+         panel this size, and again on the outline that doubles its edge. Both wait for the
+         sweep; PipTrack holds the same colour for the same reason. */
+      --creaturesheet-abilities-surface: rgb(22, 22, 22);
+      --creaturesheet-abilities-outline-color: rgb(22, 22, 22);
+      --creaturesheet-abilities-outline-width: var(--border-width-5);
+      --creaturesheet-abilities-border-width: var(--border-width-2);
+      --creaturesheet-abilities-border-color: var(--color-white);
+      --creaturesheet-abilities-radius: var(--radius-md);
+      --creaturesheet-abilities-margin: var(--space-12);
+      /* The panel scrolls, so 375 is a layout decision as much as a measurement, and it is off
+         every scale. */
+      --creaturesheet-abilities-height: 375px;
+
+      --creaturesheet-ability-padding: var(--space-4);
+      --creaturesheet-ability-margin-inline-start: var(--space-2);
+      --creaturesheet-ability-title-font-family: var(--font-display);
+      --creaturesheet-ability-title-font-size: var(--font-size-md);
+      --creaturesheet-ability-title-font-weight: var(--font-weight-bold);
+      --creaturesheet-ability-title-text: var(--text-inverted);
+      --creaturesheet-ability-body-font-family: var(--font-display);
+      /* 0.8rem falls between --font-size-xs (0.75) and -sm (0.85). */
+      --creaturesheet-ability-body-font-size: 0.8rem;
+      --creaturesheet-ability-body-text: var(--text-inverted);
+    }
+
+    .creature-header-grid {
+      display: grid;
+      grid-template-areas:
+        'name header header'
+        'line line line';
+      background: var(--creaturesheet-header-surface);
+    }
+
+    .creature-header {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      grid-area: header;
+      padding: var(--creaturesheet-header-padding);
+      color: var(--creaturesheet-header-text);
+      font-family: var(--creaturesheet-header-font-family);
+      font-weight: var(--creaturesheet-header-font-weight);
+      text-transform: uppercase;
+    }
+
+    .creaturename {
+      height: auto;
+      width: 100%;
+      padding-left: var(--creaturesheet-name-padding-inline-start);
+      color: var(--creaturesheet-name-text);
+      font-family: var(--creaturesheet-name-font-family);
+      font-size: var(--creaturesheet-name-font-size);
+      font-weight: var(--creaturesheet-name-font-weight);
+      text-transform: uppercase;
+    }
+
+    .creature-mainstat {
+      position: relative;
+      display: grid;
+      grid-template-columns: var(--creaturesheet-stat-columns);
+      align-items: center;
+      gap: var(--creaturesheet-stat-gap);
+      width: 100%;
+    }
+
+    /* `grid-area` places the first of the two; the one inside the ability panel receives it
+       inertly, the way Cover's captions receive the character sheet's. */
+    .whiteline {
+      grid-area: line;
+      border-top: var(--creaturesheet-rule-border-width) solid var(--creaturesheet-rule-color);
+      margin-top: var(--creaturesheet-rule-margin-block-start);
+      margin-bottom: var(--creaturesheet-rule-margin-block-end);
+      margin-left: var(--creaturesheet-rule-margin-inline);
+      margin-right: var(--creaturesheet-rule-margin-inline);
+    }
+
+    .creature-description-grid {
+      display: grid;
+      grid-template-columns: var(--creaturesheet-body-columns);
+    }
+
+    .creaturedescription {
+      height: var(--creaturesheet-description-height);
+      padding: var(--creaturesheet-description-padding);
+      overflow-y: auto;
+    }
+
+    /* ProseMirror's own element and the div inside it, both rendered by Editor.svelte: :global
+       reaches across that boundary, and the `.creaturedescription` ancestor keeps the pair at
+       the (0,3,0) they carry today. The pane above does the scrolling for all three. */
+    .creaturedescription :global(.editor) {
+      overflow: visible;
+    }
+
+    .creaturedescription :global(.editor-content) {
+      overflow-y: visible;
+    }
+
+    .creature-abilities {
+      height: var(--creaturesheet-abilities-height);
+      margin: var(--creaturesheet-abilities-margin);
+      border: var(--creaturesheet-abilities-border-width) solid
+        var(--creaturesheet-abilities-border-color);
+      outline: var(--creaturesheet-abilities-outline-width) solid
+        var(--creaturesheet-abilities-outline-color);
+      border-radius: var(--creaturesheet-abilities-radius);
+      background: var(--creaturesheet-abilities-surface);
+      overflow: auto;
+    }
+
+    .creature-ability-container {
+      padding: var(--creaturesheet-ability-padding);
+      margin-left: var(--creaturesheet-ability-margin-inline-start);
+    }
+
+    .creature-ability-title {
+      color: var(--creaturesheet-ability-title-text);
+      font-family: var(--creaturesheet-ability-title-font-family);
+      font-size: var(--creaturesheet-ability-title-font-size);
+      font-weight: var(--creaturesheet-ability-title-font-weight);
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .creature-ability-text {
+      height: auto;
+      color: var(--creaturesheet-ability-body-text);
+      font-family: var(--creaturesheet-ability-body-font-family);
+      font-size: var(--creaturesheet-ability-body-font-size);
+    }
+  }
+</style>
