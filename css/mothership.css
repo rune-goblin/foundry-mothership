@@ -909,19 +909,11 @@
     margin-bottom: 8px;
   }
 
-  /* The last of the dialog's grid copies. It declares exactly what `.mothership .grid-2col`
-     above declares, so on specificity alone it would be redundant — but `.mothership .widegap`
-     follows that rule at equal specificity, so 16px beats its 2px everywhere the two meet. The
-     extra `.macro-popup-dialog` here wins that tie back for BonusOption's `grid grid-2col
-     widegap` row, the one element wearing both inside a dialog. The `grid-1col` and `grid-3col`
-     copies had no such tie to settle and were deleted. */
-  .mothership.macro-popup-dialog .grid-2col {
-    display: grid;
-    grid-column: span 2 / span 2;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2px;
-    padding: 0;
-  }
+  /* The dialog's three `grid-*col` copies are all gone now. Each declared exactly what its
+     `.mothership .grid-*col` twin above declares; `grid-1col` and `grid-3col` had no tie to
+     settle, and `grid-2col`'s only remaining job was to outweigh `.mothership .widegap` on
+     BonusOption's row — a tie that row lost by wearing a class it never received. BonusOption
+     owns that gap now. */
 
   /* update buttons to look more old school */
   .mothership.macro-popup-dialog .form-footer button {
