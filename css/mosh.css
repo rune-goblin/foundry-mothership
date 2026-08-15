@@ -156,13 +156,10 @@ p {
 }
 
 /* Global styles */
-/* .window-app is the AppV1 frame, .application the V2 one -- both are in play mid-migration. */
-.window-app,
 .mosh.application {
   font-family: "Barlow", sans-serif;
 }
 
-.window-app .window-content,
 .mosh.application .window-content {
   background: #fff;
 }
@@ -192,10 +189,6 @@ p {
 .mosh .window-content{
   scrollbar-width: thin;
   scrollbar-color: black #fff;
-}
-
-.mosh .white{
-  color:white;
 }
 
 .mosh .darkgrey{
@@ -255,44 +248,8 @@ p {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
-.grid-6col {
-  grid-column: span 5 / span 5;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-}
-
-.grid-7col {
-  grid-column: span 7 / span 7;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-}
-
-.grid-8col {
-  grid-column: span 8 / span 8;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
-}
-
-.grid-9col {
-  grid-column: span 9 / span 9;
-  grid-template-columns: repeat(9, minmax(0, 1fr));
-}
-
-.grid-10col {
-  grid-column: span 10 / span 10;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
-}
-
-.grid-11col {
-  grid-column: span 11 / span 11;
-  grid-template-columns: repeat(11, minmax(0, 1fr));
-}
-
-.grid-12col {
-  grid-column: span 12 / span 12;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-}
-
 .flex-group-center,
-.flex-group-left,
-.flex-group-right {
+.flex-group-left {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
@@ -311,13 +268,6 @@ p {
   text-align: left;
 }
 
-.flex-group-right {
-  -webkit-box-pack: end;
-  -ms-flex-pack: end;
-  justify-content: flex-end;
-  text-align: right;
-}
-
 .flex-center {
   -webkit-box-align: center;
   -ms-flex-align: center;
@@ -326,12 +276,6 @@ p {
   -ms-flex-pack: center;
   justify-content: center;
   text-align: center;
-}
-
-.flex-between {
-  -webkit-box-pack: justify;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
 }
 
 .flex {
@@ -343,32 +287,13 @@ p {
 
 
 /* Styles limited to mosh sheets */
-.mosh .item-form {
-  font-family: "Barlow", sans-serif;
-}
-
 .mosh input {
   font-weight: inherit;
   font-family: "Barlow", sans-serif;
 }
 
-.mosh .center-icon{
-  font-size: 42px;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-}
 
-.mosh .transponder input[type="checkbox"] {
-  /* display: none; */
-  appearance: inherit;
-  border: 2px white;
-  border-style: double;
-  border-radius: 100px;
-}
-
-
-.mosh .transponder input[type="checkbox"]:checked, .mosh input[type="radio"]:checked {
+.mosh input[type="radio"]:checked {
   background: white;
     border-radius: 100px;
     appearance: inherit;
@@ -376,42 +301,10 @@ p {
     box-shadow: 0 0 15px white;
 }
 
-.mosh .transponder input[type="checkbox"] span {
-  color: grey;
-  position: relative;
-  /* margin-left: -1rem; */
-  display: inline-block;
-  right: -25px;
-  font-size: 17px;
-  font-weight: bold;
-  font-family: "Barlow", sans-serif;
-  bottom: 2px;
-}
-
-.mosh .transponder input[type="checkbox"]:checked span {
-  color: grey;
-  position: relative;
-  /* margin-left: -1rem; */
-  display: inline-block;
-  right: -25px;
-  font-size: 17px;
-  font-weight: bold;
-  font-family: "Barlow", sans-serif;
-  bottom: 2px;
-  /* text-shadow: 0 0 11px grey; */
-}
-
 @keyframes transponderblink {
   from {background-color: black;}
   to {
     background-color: white;
-  }
-}
-
-@keyframes transpondertextblink {
-  from {color: grey;}
-  to {
-    color: white;
   }
 }
 
@@ -435,14 +328,6 @@ p {
 }
 
 
-
-.mosh .char-header .profile-img {
-  -webkit-box-flex: 0;
-  width: 100px;
-  height: 100px;
-  margin-right: 10px;
-  margin-top: 10px;
-}
 
 .mosh .char-header .header-fields {
   -webkit-box-flex: 1;
@@ -515,25 +400,6 @@ p {
   border-radius: 10px;
 }
 
-.mosh .tox .tox-editor-container {
-  background: #fff;
-}
-
-.mosh .tox .tox-edit-area {
-  padding: 0 8px;
-}
-
-.mosh .origin {
-  width: 0;
-  height: 0;
-}
-
-.mosh .seperatorLine{
-  border-bottom: 2px solid #111;
-  height: 0;
-  width: 100%;
-}
-
 .mosh .skill_training_frame{
   height: 47px;
   background: rgb(230,230,230);
@@ -553,19 +419,6 @@ p {
 .mosh .resource-label {
   font-weight: bold;
   margin-bottom: 3px;
-  text-align: center;
-}
-
-.mosh .faded-label {
-  text-transform: uppercase;
-  margin-bottom: 3px;
-  color:rgb(129, 129, 129);
-  font-weight:normal;
-
-  text-align: left;
-  grid-column: 1/-1;
-  font-size: 1.1rem;
-  line-height: 1;
   text-align: center;
 }
 
@@ -613,13 +466,6 @@ p {
   border-bottom: 1px solid #BBB;
 }
 
-.mosh .skills-list .item {
-  height: 36px;
-  line-height: 21px;
-  padding: 3px 0;
-  border-bottom: 1px solid #BBB;
-}
-
 .mosh .items-list .item .item-image {
   -webkit-box-flex: 0;
   -ms-flex: 0 0 24px;
@@ -646,10 +492,6 @@ p {
   box-sizing: border-box;
   border: 1px solid #000;
   border-radius: 2px;
-}
-
-.mosh .items-list .item-name {
-  margin: 0;
 }
 
 .mosh .items-list .skill-name {
@@ -686,49 +528,6 @@ p {
   text-align: right;
 }
 
-.mosh .button-black {
-  font-weight: bold;
-  font-size: 16px;
-  color: white;
-  margin-left: 0px;
-  background: #111;
-  border-radius: 21px;
-  text-align: center;
-  overflow: hidden;
-  padding: 10px;
-}
-
-.button-black:hover,
-.button-black:focus{
-  /* color: #ffffff; */
-  text-shadow: 0 0 10px rgb(112, 112, 112);
-  box-shadow: 0 0 10px 0px #9e9e9e;
-  background: #202020;
-  cursor: pointer;
-}
-
-.mosh .button-grey {
-  font-weight: bold;
-  font-size: 16px;
-  color: white;
-  margin-left: 0px;
-  background: grey;
-  border-radius: 21px;
-  text-align: center;
-  overflow: hidden;
-  padding: 10px;
-}
-
-.button-grey:hover,
-.button-grey:focus{
-  /* color: #494949; */
-  text-shadow: 0 0 10px rgb(112, 112, 112);
-  box-shadow: 0 0 5px 0px #b9b9b9;
-  background: rgb(100, 100, 100);
-  cursor: pointer;
-  /* border: 1px solid #ffffff; */
-}
-
 .mosh .button-white {
   font-weight: bold;
   font-size: 16px;
@@ -742,99 +541,12 @@ p {
   border: 3px solid #111;
 }
 
-/* Dropdown Button */
-.mosh .dropbtn {
-  background-color: #111;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-}
-
-/* The container <div> - needed to position the dropdown content */
-.mosh.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-/* Dropdown Content (Hidden by Default) */
-.mosh .dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f1f1f1;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-/* Links inside the dropdown */
-.mosh .dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-/* Change color of dropdown links on hover */
-.mosh .dropdown-content a:hover {background-color: #ddd;}
-
-/* Show the dropdown menu on hover */
-.mosh .dropdown:hover .dropdown-content {display: block;}
-
-/* Change the background color of the dropdown button when the dropdown content is shown */
-.mosh .dropdown:hover .dropbtn {background-color: #3d3d3d;}
-
 
 .mosh .sbt-profile {
   width: 100px;
   height: auto;
   border: 0;
   padding: 10px;
-}
-
-.mosh .sbt-crew-name .hidden-item-controls {
-  -webkit-box-flex: 0;
-  -ms-flex: 0 0 86px;
-  flex: 0 0 86px;
-  text-align: right;
-  display: none;
-}
-
-.mosh .sbt-crew-name:hover .hidden-item-controls {
-  -webkit-box-flex: 0;
-  -ms-flex: 0 0 86px;
-  flex: 0 0 86px;
-  text-align: right;
-  display: inline;
-}
-
-.mosh .sbt-deckplan{
-  width: 100%;
-  height: auto;
-  border: 0;
-  
-  transition: 2s;
-}
-
-.mosh .sbt-deckplan-parent{
-  height: 185px;
-  overflow: auto;
-  transition: 2s;
-  border-radius: 10px;
-}
-
-.mosh .sbt-deckplan-parent:hover {
-  z-index: 10000;
-  /* height: auto; */
-}
-
-.mosh .sbt-megadamage-menu {
-  padding: 15px;
-  /* font-size: 15px; */
-}
-
-.mosh .invert-title{
-  mix-blend-mode: difference;
 }
 
 .mosh .tab-select {
@@ -858,29 +570,6 @@ p {
   margin-left: -1rem;
   display: inline-block;
 } */
-
-.mosh .stresstext {
-  width: 100%;
-  padding: 0.1rem;
-  color: white;
-  font-family: "Chakra Petch", sans-serif;
-  font-size: 0.75rem;
-  font-weight: bold;
-  text-align: left;
-  text-transform: uppercase;
-}
-
-.mosh .smallcircle-input {
-  margin: -0.15em;
-  height: 40px;
-  width: 40px;
-  padding: 0;
-  border: 4px solid #111;
-  border-radius: 3em;
-  font-size: 1rem;
-  font-weight: bold;
-  text-align: center;
-}
 
 /* A two-digit bonus overflows the 28px pill under an ApplicationV2 window's input padding,
    which is wider than AppV1's. Every other input in this file already zeroes it. */
@@ -945,10 +634,6 @@ p {
   background: transparent;
 }
 
-.mosh .greyText{
-  color: grey;
-}
-
 .mosh .darkGreyText{
   color: rgb(56, 56, 56);
 }
@@ -959,10 +644,6 @@ p {
 
 .mosh .highlightText{
   color: orangered;
-}
-
-.mosh .sizelarge{
-  font-size: 1.1rem;
 }
 
 .mosh .valuewrapper{
@@ -996,18 +677,6 @@ p {
   background: transparent;
 }
 
-.mosh .armorWrapper{
-  grid-column: 1/-1;
-  display: grid;
-  align-items: start;
-  height: 40px;
-  padding: 0;
-  border: 2px solid #111;
-  border-radius: 0.3em;
-  background: black;
-  width: 100%;
-}
-
 .mosh .blankstat{
   grid-template-rows: 0.3fr 1.1fr 0.4fr;
   justify-self: center;
@@ -1035,19 +704,6 @@ p {
   background: white;
 }
 
-.mosh .minmaxwrapper-black{
-  grid-column: 1/-1;
-  display: grid;
-  grid-template-columns: 1fr 1px 1fr;
-  align-items: start;
-  height: 40px;
-  padding: 0;
-  border: 3px solid #111;
-  border-radius: 1.5em;
-  background: 0;
-  color: white;
-}
-
 .mosh .minmaxtext{
   font-family: "Chakra Petch", sans-serif;
   text-align: left;
@@ -1071,13 +727,6 @@ p {
   line-height: 1;
   text-align: center;
   margin-top: 3px;
-}
-
-.mosh .stresslabel {
-  border-top-left-radius: 2em;
-  border-bottom-left-radius: 2em;
-  background: #111;
-  padding: 0 0.5rem;
 }
 
 .mosh .mainstatwrapper {
@@ -1131,13 +780,6 @@ p {
   background: transparent;
 }
 
-.mosh .section-vertical-flex {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
 
 .mosh .circle-stat {
   margin-top: 10px;
@@ -1173,17 +815,6 @@ p {
 }
 
 
-.mosh .area-title {
-  width: 100%;
-  font-size: 1.0rem;
-  font-weight: bold;
-  text-align: center;
-  text-transform: uppercase;
-  /* margin-bottom: 7px; */
-  color: #363636;
-  font-family: "Barlow", sans-serif;
-}
-
 .mosh .circlestatlabel {
   padding: 6px;
   text-align: center;
@@ -1201,10 +832,6 @@ p {
 
 .mosh .black {
   color: black;
-}
-
-.mosh .grey {
-  color: grey;
 }
 
 .mosh .circlestattext {
@@ -1228,31 +855,6 @@ p {
   text-align: center;
   background: white;
   z-index: 5;
-}
-
-.mosh .box1 {
-  display: none;
-}
-
-.mosh .box2 {
-  color: green;
-  display: block;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.mosh .circle-input-swapper {
-  width: auto;
-  display: inline-block;
-}
-
-.mosh .circle-input-swapper:enabled .box1 {
-  display: block;
-}
-
-.mosh .circle-input-swapper:enabled .box2 {
-  display: none;
 }
 
 /* Foundry stretches a textarea to its container only inside an AppV1 window, so a converted
@@ -1301,23 +903,6 @@ p {
   text-align: center;
 }
 
-.mosh .armor-mod {
-  margin: 3px;
-  height: 24px;
-  width: 28px;
-  /* padding: 0; */
-  border: 3px solid #111;
-  background-color: #111;
-  border-radius: 0.6em;
-  font-size: 0.9rem;
-  font-weight: bold;
-  text-align: center;
-  position: relative;
-  color: white;
-  top: -2px;
-  right: -19px;
-}
-
 .mosh .savetext {
   font-family: "Chakra Petch", sans-serif;
   display: block;
@@ -1350,39 +935,6 @@ p {
   font-family: "Chakra Petch", sans-serif;
   font-weight: bold;
   border-radius: 15px;
-}
-
-.mosh .padding{
-  padding: 5px;
-}
-
-.mosh .actor-sidebar-tab{
-  border-radius: 0 10px 10px 0;
-  /* z-index: -1; */
-  box-shadow: 0 0 22px -6px;
-  border: 2px solid;
-  writing-mode: vertical-rl;
-  rotate: 180deg;
-  opacity: 0.5;
-}
-
-.mosh .actor-sidebar-tab:hover{
-  opacity: 1;
-}
-
-.mosh .actor-sidebar-row{
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  left: -20px;
-  top: 30px;
-  z-index: -1;
-  /* transition: 0.3s; */
-  padding-left: 10px;
-}
-
-.mosh .actor-sidebar-row:hover{
-  left: -48px;
 }
 
 .mosh .creature-header-grid {
@@ -1422,91 +974,6 @@ p {
   border-radius: 10px;
 }
 
-.mosh .ship-stats-grid{
-  display: grid;
-  grid-template-columns: 17em 1fr 18em;
-}
-
-.mosh .ship-sbt-stats-grid{
-  display: grid;
-  grid-template-columns: 10em 1fr 16em;
-  gap: 10px;
-}
-
-.mosh .sbt-crew-section{
-  margin: 0px;
-  border: 2px solid white;
-  outline: 3px solid rgb(22, 22, 22);
-  overflow: auto;
-  height: 400px;
-  border-radius: 10px;
-  padding: 4px 6px;
-}
-
-.mosh .sbt-text-area{
-  font-family: "Barlow", sans-serif;
-  margin: -0.15em;
-  border: 2px solid #c5c5c5;
-  border-radius: 15px;
-  font-size: 11pt;
-  font-weight: bold;
-  background: #fff;
-  resize: none;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.mosh .sbt-megadamage{
-  /* position: absolute; */
-  /* left: 0; */
-  /* background: white;
-  left: -300px;
-  width: 300px;
-  padding: 20px;
-  border-radius: 10px 0 0 10px;
-  height: 600px;
-  overflow-y: auto;
-  z-index: -1; */
-
-  position: absolute;
-  background: white;
-  left: -310px;
-  width: 300px;
-  padding: 20px;
-  border-radius: 10px;
-  z-index: -2;
-  transition: 1s;
-  height: auto;
-  overflow: hidden;
-}
-
-.mosh .sbt-megadamage-open{
-  left: -310px;
-  height: auto;
-}
-
-.mosh .sbt-megadamage-closed{
-  left: 0;
-  height: 0%;
-}
-
-.mosh .sbt-crew-name {
-  text-align: center;
-  font-size: 1rem;
-  /* text-transform: uppercase; */
-  color:black;
-  font-weight: bold;
-}
-
-.mosh .sbt-crew-job {
-  height: auto;
-  font-size: 0.9rem;
-  color:rgb(129, 129, 129);
-  font-weight: bold;
-  font-style: italic;
-  text-align: center;
-}
-
 .mosh .item-armor-grid {
   display: grid;
   grid-template-columns: 1fr 12em;
@@ -1520,15 +987,6 @@ p {
   margin-bottom: 10px;
   margin-left: 15px;
   margin-right: 15px;
-}
-
-.mosh .blackline {
-  border-top: 3px solid black;
-  grid-area: line;
-  margin-bottom: 5px;
-  margin-left: 15px;
-  margin-right: 15px;
-  margin-top: 5px;
 }
 
 .mosh .greyline {
@@ -1605,9 +1063,6 @@ p {
   color:white;
 }
 
-.mosh .tox.tox-tinymce {
-  min-height: 100%;
-}
 .mosh .editor {
   height: 100%;
 }
@@ -1638,11 +1093,6 @@ p {
 
 .mosh .headernamegrid {
   grid-column: 1/-2;
-}
-
-.mosh .headerrankgrid {
-  /* grid-column: span 3; */
-  display: inline-flex;
 }
 
 .mosh .circle{
@@ -1682,19 +1132,6 @@ p {
   font-family: "Chakra Petch", sans-serif;
 }
 
-.mosh .rollh1 {
-  width: 107%;
-  margin-top: 0;
-  margin-left: -9px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  background: #111;
-  color: white;
-  /* border-bottom-right-radius: 0.5em; */
-  padding: 5px;
-}
-
 .mosh .rollweaponh1 {
   height: 32px;
   margin-top: -15px;
@@ -1711,111 +1148,7 @@ p {
   width: 70%;
 }
 
-.mosh .rollh2 {
-  font-size: 1.1rem;
-  font-weight: normal;
-  text-transform: uppercase;
-  line-height: 1;
-  text-align: center;
-  margin-top: 4px;
-  padding: 5px;
-}
 
-.mosh .rollmods {
-  font-size: 0.8rem;
-  font-weight: normal;
-  text-transform: uppercase;
-  /* line-height: 1; */
-  text-align: center;
-  margin-top: -8px;
-  margin-bottom: 3px;
-  padding: 5px;
-  color: grey;
-}
-
-.mosh .rollattribute {
-  width: 100%;
-  padding: 0.5rem;
-  color: black;
-  font-size: 0.9rem;
-  text-align: center;
-}
-
-.mosh .roll-grid {
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  align-items: center;
-  width: 100%;
-}
-
-.mosh .roll-result {
-  padding: 8px;
-  border: 2px solid #111;
-  border-radius: 1em;
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
-  grid-column: 2/span 2;
-}
-
-
-.mosh .roll-target {
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: 1fr 6rem;
-  align-items: center;
-  gap: 2.5rem;
-  padding: 0.8rem;
-  font-size: 0.9rem;
-  background: white;
-  border-radius: 1.5rem;
-  color: #111;
-
-  font-family: "Chakra Petch", sans-serif;
-  font-weight: bold;
-  text-transform: uppercase;
-  text-align: right;
-}
-
-.mosh .roll-targetbox {
-  padding: 2px;
-  border: 2px solid #111;
-  border-radius: 0.3em;
-  font-size: 0.9rem;
-  font-weight: bold;
-  text-align: center;
-  margin-right: 0px;
-}
-
-.mosh .roll-damage {
-  font-size: 0.9rem;
-  line-height: 1;
-  text-align: center;
-  margin-top: 4px;
-  padding: 5px;
-  color: rgb(117, 0, 0);
-  font-weight: normal;
-  text-transform: uppercase;
-  font-family: "Chakra Petch", sans-serif;
-}
-
-.mosh .roll-damagebox {
-  padding: 4px;
-  border: 2px solid rgb(117, 0, 0);
-  border-radius: 1em;
-  font-size: 1.2rem;
-  font-weight: bold;
-  text-align: center;
-  grid-column: 2/span 2;
-  color: rgb(117, 0, 0);
-  width: 70px;
-  margin: auto;
-}
-
-.mosh .items-tab-grid{
-  grid-template-columns: 50% 50%;
-}
 .mosh form.actor-generator div.fulllabel {
   border-radius: 2em;
 }
@@ -2004,7 +1337,6 @@ p {
 
 /* Checked = show the dot */
 .macro-popup-dialog input[type="radio"]:checked::after {
-  color: none !important;
   width: 8px;
   height: 8px;
   border-radius: 50%;

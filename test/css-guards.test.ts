@@ -1,16 +1,17 @@
-// The two green numbers from the CSS audit — six `!important` and (for tokens.css) zero rules
-// outside `@layer` — rot silently: nothing else in any tier notices a seventh `!important` or a
-// stray unlayered rule, and both decide what beats Foundry core. The third guard is the price of
-// keeping live-tokens' shared vocabulary (decision 1): a Foundry upgrade that mints a token name
-// we already define would silently retheme either the VTT or our sheets, so the overlap is
-// asserted empty against the installed build rather than trusted.
+// The two green numbers from the CSS audit — five `!important` (six until DS5 deleted the
+// invalid `color: none !important`) and, for tokens.css, zero rules outside `@layer` — rot
+// silently: nothing else in any tier notices a sixth `!important` or a stray unlayered rule, and
+// both decide what beats Foundry core. The ceiling only ever ratchets down. The third guard is
+// the price of keeping live-tokens' shared vocabulary (decision 1): a Foundry upgrade that mints
+// a token name we already define would silently retheme either the VTT or our sheets, so the
+// overlap is asserted empty against the installed build rather than trusted.
 import { describe, it, expect } from 'vitest';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const REPO = join(import.meta.dirname, '..');
 const CSS_DIR = join(REPO, 'css');
-const IMPORTANT_CEILING = 6;
+const IMPORTANT_CEILING = 5;
 
 const stylesheets = readdirSync(CSS_DIR)
   .filter((file) => file.endsWith('.css'))
