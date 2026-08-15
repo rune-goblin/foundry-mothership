@@ -337,29 +337,19 @@
 
 
 
+  /* shared tier: CharacterSheet and Generator, which hand-writes `char-header` around a
+     `header-fields` of its own. The header grid the first one lays out inside them — with the
+     areas the two rules below place into — moved into CharacterSheet.svelte. */
   .mosh .char-header .header-fields {
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
   }
 
-  .mosh .char-header .header-grid {
-    display: grid;
-    grid-template-areas:
-    'header header header'
-    'abilities centercol saves '
-    'mobilehealth mobilehealth mobilehealth';
-    grid-gap: 10px;
-    /* background-color: rgb(226, 226, 226); */
-    padding: 2px;
-    grid-template-columns: 238px auto 100px;
-    container-type: inline-size;
-  }
-
-  .mosh .abilities {grid-area: abilities;}
-  .mosh .saves {grid-area: saves;}
-
+  /* No markup writes `stress` as a class, and the header grid declares no such area. */
   .mosh .stress {grid-area: stress;}
+  /* shared tier: CharacterSheet's centre column, and Cover's two readout captions — which sit
+     under a `mosh` ancestor of their own and so are reached by this rule too. */
   .mosh .health {grid-area: centercol;}
   @container (max-width: 610px) {
     .mosh .health {grid-area: mobilehealth;}
@@ -367,6 +357,8 @@
   /* shared tier: Field, CheckField, MinMaxField, ArmorBlock, CreatureSettings, Cover. */
   .mosh .healthspread {width:96%;}
 
+  /* No `<h1>` exists anywhere in module/, templates/, content/ or packs/_source/, so neither of
+     these two matches any element — structural deadness the class-level audit cannot see. */
   .mosh .char-header h1.charname {
     height: auto;
     padding: 0px;
@@ -503,25 +495,8 @@
     background: lightgrey;
   }
 
-  .mosh .mainsavemod-input {
-    font-family: "Chakra Petch", sans-serif;
-    height: 26px;
-    width: 28px;
-    padding: 0;
-    border: 0;
-    border-radius: 0.5em;
-    color: rgb(151, 100, 100);
-    font-size: 0.85rem;
-    font-weight: bold;
-    text-align: center;
-    margin-left: -22px;
-    z-index: 5;
-    background: white;
-    top: 7px;
-    left: 13px;
-    position: relative;
-    background: lightgrey;
-  }
+  /* The save's twin of the rule above moved into CharacterSheet.svelte, which is its only
+     writer. This one stays: RollBox writes it too. */
 
   /* shared tier: RollBox, CharacterSheet. */
   .mosh .mainstatmod-title {
@@ -777,20 +752,11 @@
   }
 
 
-  .mosh .square-input {
-    font-family: "Chakra Petch", sans-serif;
-    margin: -0.15em;
-    height: 42px;
-    width: 45px;
-    padding: 0;
-    border: 4px solid #111;
-    background-color: #fff;
-    border-radius: 0.5em;
-    font-size: 1.1rem;
-    font-weight: bold;
-    text-align: center;
-  }
-
+  /* CharacterSheet took `square-input` — the save's value box, which nothing else writes.
+     `savetext` below is the save's caption and cannot follow it: RollableStat renders the
+     element the class prop lands on. Its `color: white` also beats
+     `:where(.mothership) .rollable:hover` at equal specificity by sitting later in this file,
+     the same tie `mainstattext` carries, so it must stay below the hover group. */
   .mosh .savetext {
     font-family: "Chakra Petch", sans-serif;
     display: block;
@@ -802,14 +768,9 @@
     text-align: center;
   }
 
-  .mosh .savebackground {
-    border-radius: 10px;
-    background: #111;
-    padding-bottom: 0.3rem;
-    padding-top: 0.4rem;
-    height: 225px;
-  }
-
+  /* shared tier: CharacterSheet, Generator (its `generator-header-grid-1col`) and SheetHeader —
+     three writers of the black title bar. The panel behind the saves, which only this sheet
+     writes, moved into CharacterSheet.svelte. */
   .mosh .header {
     grid-area: header;
     background-color: #000;
@@ -971,17 +932,9 @@
     margin-top: 3px;
   }
 
-  .mosh .headergrid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 0.25rem;
-    padding: 1em;
-    /* margin-top: -11px; */
-  }
-
-  .mosh .headernamegrid {
-    grid-column: 1/-2;
-  }
+  /* The identity grid inside the header and the cell its name field spans — `headergrid` and
+     `headernamegrid`, written by CharacterSheet alone — moved into CharacterSheet.svelte.
+     The `headerinputtext` and `headerinputfield` rules above stay: three sheets write them. */
 
   /* The pip and its filled twin moved into PipTrack. Nothing else emits either name; the e2e
      specs count them, which is why both stay on that markup. */

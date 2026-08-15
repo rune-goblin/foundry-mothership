@@ -570,3 +570,155 @@
     />
   </ItemControls>
 {/snippet}
+
+<style>
+  /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
+     application; @layer system puts these in the slot the rest of the system occupies.
+     Only the eight names nothing else emits are here, and all eight sit inside the header --
+     which is why the slots are declared on it. The rest of this sheet's markup wears shared
+     vocabulary css/mothership.css keeps declaring: `char-header`, `header-fields` and `header`
+     (Generator hand-writes all three), `headerinputtext`/`headerinputfield`/`charname`/
+     `noborder` (Generator and SheetHeader), `profile` (CreatureSheet), `textarea-input`
+     (ClassSheet), `textarea-input-grey` and `skill_training_frame` (CreatureSheet),
+     `resource-label`, `sheet-body` (five sheets), the modifier pair `mainstatmod-input`/
+     `mainstatmod-title` (RollBox), the `.grid*`/`.flex*`/`widegap` set and the
+     `list-roll`/`rollable` hover group.
+     `savetext` stays there despite this sheet being its only writer: RollableStat renders the
+     element the class lands on, so a scoped block here can never reach it -- and its
+     `color: white` only beats the hover group because it sits later in that one file, the tie
+     `mainstattext` documents. Moving it would move it out of the order it wins on. */
+  @layer system {
+    .char-header {
+      --charactersheet-header-grid-gap: var(--space-10);
+      --charactersheet-header-grid-padding: var(--space-2);
+      /* Neither track is on the space scale (96 | 128 straddles both), and both set the width
+         of the whole header: a snap here is a reviewed pixel change, not this unit's. */
+      --charactersheet-header-grid-columns: 238px auto 100px;
+
+      /* rem against a px scale -- 0.25rem is 4px only while nothing sets a root font-size, and
+         1em is the identity field's own size. Both wait for the reviewed literal sweep. */
+      --charactersheet-identity-gap: 0.25rem;
+      --charactersheet-identity-padding: 1em;
+
+      --charactersheet-saves-surface: var(--surface-neutral-lowest);
+      --charactersheet-saves-radius: var(--radius-md);
+      /* 0.3rem and 0.4rem are 4.8px and 6.4px; 225 is off the scale outright. */
+      --charactersheet-saves-padding-block-start: 0.4rem;
+      --charactersheet-saves-padding-block-end: 0.3rem;
+      --charactersheet-saves-height: 225px;
+
+      --charactersheet-save-value-font-family: var(--font-display);
+      --charactersheet-save-value-font-size: var(--font-size-xl);
+      --charactersheet-save-value-font-weight: var(--font-weight-bold);
+      --charactersheet-save-value-surface: var(--color-white);
+      --charactersheet-save-value-border-width: var(--border-width-4);
+      /* Every border tier reads a step built for a dark ground (faint is #444), so none of them
+         holds this line -- DS6b's parked tier-inversion call. */
+      --charactersheet-save-value-border-color: var(--color-neutral-900);
+      /* em radius against a px scale, and the box's own -0.15em bleed: both off it. */
+      --charactersheet-save-value-radius: 0.5em;
+      --charactersheet-save-value-margin: -0.15em;
+      --charactersheet-save-value-height: 42px;
+      --charactersheet-save-value-width: 45px;
+      --charactersheet-save-value-padding: var(--space-0);
+
+      --charactersheet-save-modifier-font-family: var(--font-display);
+      --charactersheet-save-modifier-font-size: var(--font-size-sm);
+      --charactersheet-save-modifier-font-weight: var(--font-weight-bold);
+      --charactersheet-save-modifier-text: var(--color-danger-300);
+      /* lightgrey is #d3d3d3, between --color-neutral-200 (#e3e3e3) and -300 (#bbbbbb) and on
+         neither. It arrived as the second of two `background` declarations, the first of which
+         (white) never rendered; the dead one is gone. */
+      --charactersheet-save-modifier-surface: lightgrey;
+      --charactersheet-save-modifier-radius: 0.5em;
+      --charactersheet-save-modifier-border-width: var(--border-width-0);
+      --charactersheet-save-modifier-height: 26px;
+      --charactersheet-save-modifier-width: 28px;
+      --charactersheet-save-modifier-padding: var(--space-0);
+      --charactersheet-save-modifier-margin-inline-start: -22px;
+      --charactersheet-save-modifier-offset-block: 7px;
+      --charactersheet-save-modifier-offset-inline: 13px;
+    }
+
+    /* The header carries both classes, so this reaches the inner grid only -- keep the chain.
+       `centercol` and `mobilehealth` are claimed by `.mosh .health` in css/mothership.css,
+       which Cover also writes and this block therefore cannot take. */
+    .char-header .header-grid {
+      display: grid;
+      grid-template-areas:
+        'header header header'
+        'abilities centercol saves'
+        'mobilehealth mobilehealth mobilehealth';
+      grid-gap: var(--charactersheet-header-grid-gap);
+      padding: var(--charactersheet-header-grid-padding);
+      grid-template-columns: var(--charactersheet-header-grid-columns);
+      container-type: inline-size;
+    }
+
+    .abilities {
+      grid-area: abilities;
+    }
+
+    .saves {
+      grid-area: saves;
+    }
+
+    .headergrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: var(--charactersheet-identity-gap);
+      padding: var(--charactersheet-identity-padding);
+    }
+
+    .headernamegrid {
+      grid-column: 1/-2;
+    }
+
+    /* (0,2,0), the same weight `.mothership .grid` gives `padding: 0` on this element: the
+       component sheet loads after css/mothership.css, so these two paddings keep winning. */
+    .savebackground {
+      border-radius: var(--charactersheet-saves-radius);
+      background: var(--charactersheet-saves-surface);
+      padding-bottom: var(--charactersheet-saves-padding-block-end);
+      padding-top: var(--charactersheet-saves-padding-block-start);
+      height: var(--charactersheet-saves-height);
+    }
+
+    .square-input {
+      font-family: var(--charactersheet-save-value-font-family);
+      margin: var(--charactersheet-save-value-margin);
+      height: var(--charactersheet-save-value-height);
+      width: var(--charactersheet-save-value-width);
+      padding: var(--charactersheet-save-value-padding);
+      border: var(--charactersheet-save-value-border-width) solid
+        var(--charactersheet-save-value-border-color);
+      background-color: var(--charactersheet-save-value-surface);
+      border-radius: var(--charactersheet-save-value-radius);
+      font-size: var(--charactersheet-save-value-font-size);
+      font-weight: var(--charactersheet-save-value-font-weight);
+      text-align: center;
+    }
+
+    /* The padding is zeroed for the reason the stat modifier's twin still records in
+       css/mothership.css: a two-digit bonus overflows the 28px pill under an ApplicationV2
+       window's input padding, which is wider than AppV1's. */
+    .mainsavemod-input {
+      font-family: var(--charactersheet-save-modifier-font-family);
+      height: var(--charactersheet-save-modifier-height);
+      width: var(--charactersheet-save-modifier-width);
+      padding: var(--charactersheet-save-modifier-padding);
+      border: var(--charactersheet-save-modifier-border-width);
+      border-radius: var(--charactersheet-save-modifier-radius);
+      color: var(--charactersheet-save-modifier-text);
+      font-size: var(--charactersheet-save-modifier-font-size);
+      font-weight: var(--charactersheet-save-modifier-font-weight);
+      text-align: center;
+      margin-left: var(--charactersheet-save-modifier-margin-inline-start);
+      z-index: 5;
+      background: var(--charactersheet-save-modifier-surface);
+      top: var(--charactersheet-save-modifier-offset-block);
+      left: var(--charactersheet-save-modifier-offset-inline);
+      position: relative;
+    }
+  }
+</style>
