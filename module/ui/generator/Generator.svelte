@@ -282,16 +282,16 @@
     .actor-generator {
       --generator-group-margin-block-start: var(--space-10);
 
-      /* An em radius against a px scale; 150px is past the top of the space scale (128) and 30px
-         sits between 24 and 32. All three are the reserved literal sweep's, not this unit's. */
-      --generator-full-label-radius: 2em;
+      /* 2em is 32px, which --radius-2xl (28) and -3xl (36) straddle; the label is a rounded bar
+         and either reads as one, so it takes the tighter. */
+      --generator-full-label-radius: var(--radius-2xl);
+      /* The panel's own height — a measurement, not a step. */
       --generator-list-panel-min-height: 150px;
-      --generator-credit-image-height: 30px;
+      --generator-credit-image-height: var(--space-32);
       /* `0%` was the original; a zero percentage of any containing block is the same zero. */
       --generator-credit-image-margin-block-start: var(--space-0);
 
-      /* 0.7rem is 11.2px, below --font-size-xs (0.75rem) and on no step. */
-      --generator-action-label-font-size: 0.7rem;
+      --generator-action-label-font-size: var(--font-size-xs);
 
       /* `gray` is #808080 exactly, which is the step --surface-neutral-high reads. */
       --generator-checkbox-checked-surface: var(--surface-neutral-high);
