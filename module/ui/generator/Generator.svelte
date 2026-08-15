@@ -282,9 +282,10 @@
     .actor-generator {
       --generator-group-margin-block-start: var(--space-10);
 
-      /* 2em is 32px, which --radius-2xl (28) and -3xl (36) straddle; the label is a rounded bar
-         and either reads as one, so it takes the tighter. */
-      --generator-full-label-radius: var(--radius-2xl);
+      /* 2em is 32px, an exact tie between --radius-2xl (28) and -3xl (36). It takes the same
+         step as MainStat's `mainstatlabel`, which is the same 2em cap on the same kind of bar —
+         a tie is broken once for the system, not once per site. */
+      --generator-full-label-radius: var(--radius-3xl);
       /* The panel's own height — a measurement, not a step. */
       --generator-list-panel-min-height: 150px;
       --generator-credit-image-height: var(--space-32);
