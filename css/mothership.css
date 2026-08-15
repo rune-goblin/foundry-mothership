@@ -415,23 +415,9 @@
     text-align: center;
   }
 
-  .mosh .items-list {
-    list-style: none;
-    margin: 7px 0;
-    padding: 0;
-    /* overflow-y: auto; */
-  }
-
-  .mosh .items-list .item-header {
-    font-weight: bold;
-  }
-
-  .mosh .items-list .item {
-    height: 35px;
-    line-height: 24px;
-    padding: 3px 0;
-    border-bottom: 1px solid #BBB;
-  }
+  /* The list frame itself — `.items-list`, the row, its header variant, the control column and
+     the plain `.skill-stat` cell — moved into ItemList/ItemRow/ItemCell/ItemControls. What is
+     left below still keys off `.items-list .item`, so both classes stay on that markup. */
 
   .mosh .items-list .item .item-image {
     -webkit-box-flex: 0;
@@ -461,6 +447,11 @@
     border-radius: 2px;
   }
 
+  /* shared tier: ItemCell, and the black pill hand-written inside a list by SkillSheet,
+     ClassSheet (three sites) and OptionDraft. A Svelte <style> block only reaches its own
+     component's markup, so ItemCell cannot own this one the way it owns `.skill-stat`.
+     Converting those call sites to ItemCell is the S9 audit's work; tokenizing the literals
+     belongs to the reserved sweep. Neither happens here. */
   .mosh .items-list .skill-name {
     font-weight: bold;
     font-size: 14px;
@@ -474,25 +465,6 @@
     text-align: center;
     height: 27px;
     overflow: hidden;
-  }
-
-  .mosh .items-list .skill-stat {
-    font-size: medium;
-    color: #111;
-    margin-left: 0px;
-    /* background: black; */
-    padding: 2px;
-    padding-left: 8px;
-    border-radius: 21px;
-    text-align: center;
-    white-space: nowrap;
-  }
-
-  .mosh .items-list .item-controls {
-    -webkit-box-flex: 0;
-    -ms-flex: 0 0 86px;
-    flex: 0 0 86px;
-    text-align: right;
   }
 
   .mosh .button-white {

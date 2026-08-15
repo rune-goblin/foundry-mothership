@@ -39,3 +39,34 @@
 >
   {@render children()}
 </div>
+
+<style>
+  /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
+     application; @layer system puts these in the slot the rest of the system occupies.
+     Only the `stat` variant lands here. `.skill-name` is shared vocabulary — four sheets
+     hand-write the black pill inside a list, where a scoped block can never reach them — so
+     css/mothership.css keeps it as a declared tier. `.skill-stat` also stays on the markup:
+     creature-sheet.spec.ts locates the quantity cell by it. */
+  @layer system {
+    .skill-stat {
+      --itemcell-stat-text: var(--text-primary);
+      /* `medium` is the absolute keyword, 16px; no stylesheet in the app sets a root
+         font-size, so 1rem is the same 16px. */
+      --itemcell-stat-font-size: var(--font-size-lg);
+      --itemcell-stat-margin-inline-start: var(--space-0);
+      --itemcell-stat-padding-block: var(--space-2);
+      --itemcell-stat-padding-inline-start: var(--space-8);
+      --itemcell-stat-padding-inline-end: var(--space-2);
+      --itemcell-stat-radius: var(--radius-xl);
+
+      color: var(--itemcell-stat-text);
+      font-size: var(--itemcell-stat-font-size);
+      margin-left: var(--itemcell-stat-margin-inline-start);
+      padding: var(--itemcell-stat-padding-block) var(--itemcell-stat-padding-inline-end)
+        var(--itemcell-stat-padding-block) var(--itemcell-stat-padding-inline-start);
+      border-radius: var(--itemcell-stat-radius);
+      text-align: center;
+      white-space: nowrap;
+    }
+  }
+</style>

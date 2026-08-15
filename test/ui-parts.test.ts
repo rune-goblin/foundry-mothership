@@ -9,10 +9,13 @@
 // plus the behaviour of the interactive ones.
 //
 // A primitive that owns its styles in a scoped <style> block has no such contract, and its
-// class-name pin retires with the move (design-system.md decision 5) -- Tabs is the first.
-// The rest keep theirs: the stat vocabulary (.circle-input, .mainstat*, .circle-statwrapper*)
-// is read by six components, so no scoped block can reach it and css/mothership.css declares
-// it as a shared tier.
+// class-name pin retires with the move (design-system.md decision 5) -- Tabs is the first,
+// ItemControls the second. The rest keep theirs: the stat vocabulary (.circle-input,
+// .mainstat*, .circle-statwrapper*) is read by six components, so no scoped block can reach it
+// and css/mothership.css declares it as a shared tier. The list primitives keep theirs for a
+// second reason -- .items-list and .item still carry the thumbnail rules css/mothership.css
+// kept, .skill-name is shared with four sheets that hand-write it, and the e2e specs locate
+// rows, headers, controls and stat cells by name.
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { mount, unmount, flushSync, createRawSnippet, type Component } from 'svelte';
 
@@ -20,7 +23,6 @@ import ItemList from '../module/ui/parts/ItemList.svelte';
 import ItemRow from '../module/ui/parts/ItemRow.svelte';
 import ItemImage from '../module/ui/parts/ItemImage.svelte';
 import ItemCell from '../module/ui/parts/ItemCell.svelte';
-import ItemControls from '../module/ui/parts/ItemControls.svelte';
 import ItemControl from '../module/ui/parts/ItemControl.svelte';
 import Tabs from '../module/ui/parts/Tabs.svelte';
 import TabPanel from '../module/ui/parts/TabPanel.svelte';
@@ -61,12 +63,16 @@ const text = (content: string) =>
 const press = (node: Element, key: string) =>
   node.dispatchEvent(new window.KeyboardEvent('keydown', { key, bubbles: true }));
 
+// Svelte stamps a `svelte-<hash>` class on every element of a component that owns styles. It is
+// compiler output, not a contract, so the pins strip it and keep asserting the exact set.
+const classes = (node: Element) => [...node.classList].filter((c) => !c.startsWith('svelte-'));
+
 describe('ItemList', () => {
   it('is the ol the stylesheet targets', () => {
     const el = render(ItemList, { children: text('x'), style: 'margin-bottom: 10px;' })
       .firstElementChild!;
     expect(el.tagName).toBe('OL');
-    expect(el.className).toBe('items-list');
+    expect(classes(el)).toEqual(['items-list']);
     expect(el.getAttribute('style')).toBe('margin-bottom: 10px;');
   });
 });
@@ -75,14 +81,14 @@ describe('ItemRow', () => {
   it('a header row is not draggable and carries no item id', () => {
     const el = render(ItemRow, { children: text('x'), header: true }).firstElementChild!;
     expect(el.tagName).toBe('LI');
-    expect([...el.classList]).toEqual(['item', 'flexrow', 'item-header']);
+    expect(classes(el)).toEqual(['item', 'flexrow', 'item-header']);
     expect(el.hasAttribute('draggable')).toBe(false);
     expect(el.hasAttribute('data-item-id')).toBe(false);
   });
 
   it('an item row is draggable by the selector ActorSheetV2 drags from', () => {
     const el = render(ItemRow, { children: text('x'), itemId: 'abc123' }).firstElementChild!;
-    expect([...el.classList]).toEqual(['item', 'flexrow', 'draggable']);
+    expect(classes(el)).toEqual(['item', 'flexrow', 'draggable']);
     expect(el.getAttribute('draggable')).toBe('true');
     expect(el.getAttribute('data-item-id')).toBe('abc123');
   });
@@ -95,7 +101,7 @@ describe('ItemRow', () => {
       itemId: 'Item.abc',
       draggable: false,
     }).firstElementChild!;
-    expect([...el.classList]).toEqual(['item', 'flexrow']);
+    expect(classes(el)).toEqual(['item', 'flexrow']);
     expect(el.hasAttribute('draggable')).toBe(false);
     expect(el.getAttribute('data-item-id')).toBe('Item.abc');
   });
@@ -232,7 +238,7 @@ describe('ItemImage', () => {
 describe('ItemCell', () => {
   it('is a plain skill-stat with no tab stop when it has no handler', () => {
     const el = render(ItemCell, { children: text('9'), grow: 2.5 }).firstElementChild!;
-    expect([...el.classList]).toContain('skill-stat');
+    expect(classes(el)).toContain('skill-stat');
     expect(el.getAttribute('style')).toBe('flex-grow: 2.5;');
     expect(el.hasAttribute('role')).toBe(false);
     expect(el.hasAttribute('tabindex')).toBe(false);
@@ -242,7 +248,7 @@ describe('ItemCell', () => {
     const onclick = vi.fn();
     const el = render(ItemCell, { children: text('9'), class: 'armor-ap list-roll', onclick })
       .firstElementChild!;
-    expect([...el.classList]).toEqual(['skill-stat', 'armor-ap', 'list-roll']);
+    expect(classes(el)).toEqual(['skill-stat', 'armor-ap', 'list-roll']);
     expect(el.getAttribute('role')).toBe('button');
     expect(el.getAttribute('tabindex')).toBe('0');
 
@@ -255,7 +261,7 @@ describe('ItemCell', () => {
   it('is the black name pill on request, and wears the roll hover cue', () => {
     const el = render(ItemCell, { children: text('Wrench'), variant: 'name', roll: true })
       .firstElementChild!;
-    expect([...el.classList]).toEqual(['skill-name', 'list-roll']);
+    expect(classes(el)).toEqual(['skill-name', 'list-roll']);
   });
 
   // The +/- cells: left click adds, right click removes. Enter is the left click's twin; a
@@ -432,12 +438,7 @@ describe('PipTrack', () => {
   });
 });
 
-describe('ItemControls and ItemControl', () => {
-  it('the container is the flex-basis cell at the end of a row', () => {
-    const el = render(ItemControls, { children: text('x') }).firstElementChild!;
-    expect(el.className).toBe('item-controls');
-  });
-
+describe('ItemControl', () => {
   it('a control is an href-less anchor with a Font Awesome glyph', () => {
     const onclick = vi.fn();
     const el = render(ItemControl, {
@@ -572,11 +573,11 @@ describe('ItemPanel', () => {
 
   it('is a header row of captions plus one identified row per item', () => {
     const list = panel();
-    expect(list.className).toBe('items-list');
+    expect(classes(list)).toEqual(['items-list']);
     expect(list.getAttribute('style')).toBe('margin-bottom: 10px;');
 
     const [header, ...rows] = [...list.children];
-    expect([...header.classList]).toEqual(['item', 'flexrow', 'item-header']);
+    expect(classes(header)).toEqual(['item', 'flexrow', 'item-header']);
     expect([...header.querySelectorAll('.skill-stat')].map((n) => n.textContent!.trim())).toEqual([
       'Mothership.ItemName',
       'Mothership.Quantity',

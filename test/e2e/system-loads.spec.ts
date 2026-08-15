@@ -26,7 +26,9 @@ test.describe('system loads', () => {
   test('the built stylesheet is imported into the system layer and its rules are live', async ({ gmPage }) => {
     const css = await gmPage.evaluate(() => {
       const imports: string[] = [];
-      let moshRules = 0;
+      let scopedRules = 0;
+      // `.mothership` does not contain `.mosh` as a substring, so both are matched explicitly.
+      const scoped = (sel?: string) => !!sel && (sel.includes('.mosh') || sel.includes('.mothership'));
       const walk = (sheet: CSSStyleSheet) => {
         let rules: CSSRuleList;
         try { rules = sheet.cssRules; } catch { return; }
@@ -34,23 +36,24 @@ test.describe('system loads', () => {
           if (rule instanceof CSSImportRule) {
             imports.push(rule.href ?? '');
             if (rule.styleSheet) walk(rule.styleSheet);
-          } else if ((rule as CSSStyleRule).selectorText?.includes('.mosh')) {
-            moshRules += 1;
+          } else if (scoped((rule as CSSStyleRule).selectorText)) {
+            scopedRules += 1;
           } else if (rule instanceof CSSGroupingRule) {
             // DS7 wrapped the sheet in @layer system; the rules live one level down now.
             for (const nested of Array.from(rule.cssRules)) {
-              if ((nested as CSSStyleRule).selectorText?.includes('.mosh')) moshRules += 1;
+              if (scoped((nested as CSSStyleRule).selectorText)) scopedRules += 1;
             }
           }
         }
       };
       for (const sheet of Array.from(document.styleSheets)) walk(sheet as CSSStyleSheet);
-      return { imports, moshRules };
+      return { imports, scopedRules };
     });
 
     expect(css.imports.some((h) => h.includes(`systems/${SYSTEM_ID}/dist/mothershiprpg.css`))).toBe(true);
-    // The hand-authored stylesheet carries 247 selectors, most of them under `.mosh`.
-    expect(css.moshRules).toBeGreaterThan(100);
+    // DS8 drains `.mosh` rules into component styles by design, so this proves liveness, not
+    // size: the import resolved and a non-trivial scoped rule set is in force.
+    expect(css.scopedRules).toBeGreaterThan(30);
   });
 
   test('every declared document type has a registered DataModel', async ({ gmPage }) => {
