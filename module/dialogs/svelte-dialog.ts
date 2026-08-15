@@ -67,7 +67,7 @@ declare const foundry:
   | { readonly applications: { readonly api: { readonly DialogV2: { wait(options: DialogV2Options): Promise<unknown> } } } }
   | undefined;
 
-/** The class the legacy dialogs carry, so `css/mosh.css` styles these the same way. */
+/** The class the legacy dialogs carry, so `css/mothership.css` styles these the same way. */
 const CLASSES = ['mothership', 'macro-popup-dialog'] as const;
 
 const MOUNT_CLASS = 'mosh-dialog-root';

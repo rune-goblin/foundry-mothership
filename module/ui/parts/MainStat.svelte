@@ -3,7 +3,7 @@
 
   // The label-plus-circle pair the class sheet, the generator and both actor sheets use for a
   // stat. It is not CircleStat: that one stacks a circle over a caption, this one sets a black
-  // label bar beside it (.mainstatwrapper / .mainstat / .mainstatlabel in css/mosh.css).
+  // label bar beside it (.mainstatwrapper / .mainstat / .mainstatlabel in css/mothership.css).
   //
   // `control` replaces the plain input where the circle is something else — the generator swaps a
   // clickable die for the rolled value — and `after` holds what sits beside it inside the wrapper,

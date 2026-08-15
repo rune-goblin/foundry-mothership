@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 //
 // The shared primitives are hybrid by decision: they emit the *global*
-// class names from the hand-authored css/mosh.css rather than owning their styling. That makes
+// class names from the hand-authored css/mothership.css rather than owning their styling. That makes
 // every class name below a contract with a stylesheet the compiler never sees -- rename one in a
 // component and the sheet silently loses its styling with every tier still green.
 //

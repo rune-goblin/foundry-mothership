@@ -12,7 +12,7 @@ const { ApplicationV2 } = foundry.applications.api;
  */
 export class GeneratorApp extends ApplicationV2 {
   static DEFAULT_OPTIONS = {
-    // css/mosh.css paints the content white and has no dark variant, so pin the light theme.
+    // css/mothership.css paints the content white and has no dark variant, so pin the light theme.
     classes: ['mothership', 'mosh', 'sheet', 'actor', 'character', 'themed', 'theme-light'],
     position: { width: 800, height: 'auto' },
     window: { resizable: true },

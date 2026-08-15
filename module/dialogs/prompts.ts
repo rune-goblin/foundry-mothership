@@ -37,7 +37,7 @@ const LABELS: Readonly<Record<Advantage, string>> = {
 
 const ORDER: readonly Advantage[] = ['advantage', 'none', 'disadvantage'];
 
-/** The class `css/mosh.css` paints the preselected button with. */
+/** The class `css/mothership.css` paints the preselected button with. */
 const PRESELECT = 'condition-preselect';
 
 /**

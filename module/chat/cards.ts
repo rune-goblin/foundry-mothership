@@ -96,7 +96,7 @@ const COMPARE_WORDS: Readonly<Record<Comparison, string>> = {
 
 /**
  * The verdict line. A check with nothing to beat has no verdict, so it prints none. The inline
- * style is legacy's, kept to the pixel: `css/mosh.css` is outside this plan's scope, so these
+ * style is legacy's, kept to the pixel: `css/mothership.css` is outside this plan's scope, so these
  * cards may not depend on a class it does not already have.
  */
 export function outcomeHtml(outcome: Outcome): string {

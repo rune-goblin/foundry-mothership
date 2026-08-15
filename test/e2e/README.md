@@ -76,7 +76,7 @@ The flag is one-shot, so it is re-armed on every boot.
 
 ## Visual baselines
 
-`visual-baselines.spec.ts` captures every surface `css/mosh.css` paints — seven windows, the
+`visual-baselines.spec.ts` captures every surface `css/mothership.css` paints — seven windows, the
 check dialog, six chat cards — and compares them at **`maxDiffPixels: 0`**. The images live in
 `baselines/visual-baselines.spec/`, are named `<subject>-<platform>.png`, and **are committed**.
 

@@ -52,7 +52,7 @@ export class RolltableConfigApp extends ApplicationV2 {
     // A top-level <form> tag is what makes ApplicationV2 wire up the change/submit listeners
     // the `form` config below expects -- see DocumentSheetV2, which does the same.
     tag: 'form',
-    // css/mosh.css paints the content white with no dark variant, so pin the light theme (see
+    // css/mothership.css paints the content white with no dark variant, so pin the light theme (see
     // MothershipItemSheet) or the window renders dark text-on-dark against those light boxes.
     classes: ['mothership', 'mosh', 'themed', 'theme-light'],
     window: { title: 'Rolltable Configuration', icon: 'fa-solid fa-list', resizable: false },

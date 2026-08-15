@@ -22,7 +22,7 @@ const devEntry: Plugin = {
     server.middlewares.use((req, _res, next) => {
       if (req.url === `/systems/${id}/dist/${id}.js`) req.url = `/systems/${id}/dist/module/index.js`;
       // `?direct` returns real text/css; without it Vite serves a CSS file as a JS module.
-      else if (req.url === `/systems/${id}/dist/${id}.css`) req.url = `/systems/${id}/dist/css/mosh.css?direct`;
+      else if (req.url === `/systems/${id}/dist/${id}.css`) req.url = `/systems/${id}/dist/css/mothership.css?direct`;
       next();
     });
   },

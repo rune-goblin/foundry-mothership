@@ -1,5 +1,5 @@
 <script>
-  // The label/input pair every item sheet repeats. Class names match css/mosh.css, which is
+  // The label/input pair every item sheet repeats. Class names match css/mothership.css, which is
   // hand-authored and shared with the sheets still on Handlebars -- don't rename them here.
   //
   // `choices` turns the input into a select: a schema field with an enum should be picked from

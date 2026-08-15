@@ -1,5 +1,5 @@
 // The two green numbers from the CSS audit — five `!important` (six until DS5 deleted the
-// invalid `color: none !important`) and, for tokens.css, zero rules outside `@layer` — rot
+// invalid `color: none !important`) and zero rules outside `@layer` in either sheet — rot
 // silently: nothing else in any tier notices a sixth `!important` or a stray unlayered rule, and
 // both decide what beats Foundry core. The ceiling only ever ratchets down. The third guard is
 // the price of keeping live-tokens' shared vocabulary (decision 1): a Foundry upgrade that mints
@@ -86,11 +86,12 @@ describe('css guards', () => {
     expect(preludes.filter((prelude) => !layered(prelude))).toEqual([]);
   });
 
-  // DS7 wraps the sheet and renames the file; it flips this on by dropping the `.skip`.
-  it.skip('puts every top-level statement in mosh.css inside a layer', () => {
-    const sheet = stylesheets.find((s) => s.file === 'mosh.css')!.css;
+  it('puts every top-level statement in mothership.css inside a layer', () => {
+    const sheet = stylesheets.find((s) => s.file === 'mothership.css')!.css;
+    const preludes = topLevelPreludes(sheet);
 
-    expect(topLevelPreludes(sheet).filter((prelude) => !layered(prelude))).toEqual([]);
+    expect(preludes.length).toBeGreaterThan(0);
+    expect(preludes.filter((prelude) => !layered(prelude))).toEqual([]);
   });
 });
 

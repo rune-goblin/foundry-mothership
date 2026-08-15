@@ -36,6 +36,11 @@ test.describe('system loads', () => {
             if (rule.styleSheet) walk(rule.styleSheet);
           } else if ((rule as CSSStyleRule).selectorText?.includes('.mosh')) {
             moshRules += 1;
+          } else if (rule instanceof CSSGroupingRule) {
+            // DS7 wrapped the sheet in @layer system; the rules live one level down now.
+            for (const nested of Array.from(rule.cssRules)) {
+              if ((nested as CSSStyleRule).selectorText?.includes('.mosh')) moshRules += 1;
+            }
           }
         }
       };

@@ -4,7 +4,7 @@ import { test, expect, waitForGameReady } from './fixtures/foundry-clients.ts';
 /**
  * The visual baselines the CSS work is verified against (docs/plans/design-system.md, DS3).
  * Nothing here asserts behaviour — the per-window suites do that. What it captures is every
- * surface `css/mosh.css` paints: the seven windows, the dialog the checks open, and the six
+ * surface `css/mothership.css` paints: the seven windows, the dialog the checks open, and the six
  * chat card templates, each built from documents this file creates, so no pixel depends on what
  * the world happens to hold.
  *

@@ -6,7 +6,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const REPO = join(import.meta.dirname, '..');
-const css = readFileSync(join(REPO, 'css/mosh.css'), 'utf8');
+const css = readFileSync(join(REPO, 'css/mothership.css'), 'utf8');
 
 const referenced = [...css.matchAll(/url\('\/systems\/mothershiprpg\/fonts\/([^']+)'\)/g)].map(
   (m) => m[1],
