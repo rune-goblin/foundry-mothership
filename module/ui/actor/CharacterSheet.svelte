@@ -606,11 +606,9 @@
       --charactersheet-save-value-font-family: var(--font-display);
       --charactersheet-save-value-font-size: var(--font-size-xl);
       --charactersheet-save-value-font-weight: var(--font-weight-bold);
-      --charactersheet-save-value-surface: var(--color-white);
+      --charactersheet-save-value-surface: var(--surface-neutral-paper);
       --charactersheet-save-value-border-width: var(--border-width-4);
-      /* Every border tier reads a step built for a dark ground (faint is #444), so none of them
-         holds this line -- DS6b's parked tier-inversion call. */
-      --charactersheet-save-value-border-color: var(--color-neutral-900);
+      --charactersheet-save-value-border-color: var(--border-neutral-ink);
       /* em radius against a px scale, and the box's own -0.15em bleed: both off it. */
       --charactersheet-save-value-radius: 0.5em;
       --charactersheet-save-value-margin: -0.15em;

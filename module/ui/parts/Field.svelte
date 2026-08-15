@@ -57,11 +57,9 @@
     .resource {
       --field-wrapper-height: var(--space-40);
       --field-wrapper-padding: var(--space-0);
-      --field-wrapper-surface: var(--color-white);
+      --field-wrapper-surface: var(--surface-neutral-paper);
       --field-wrapper-border-width: var(--border-width-3);
-      /* Every border tier reads a step built for a dark ground (faint is #444), so none of them
-         holds this line -- DS6b's parked tier-inversion call. */
-      --field-wrapper-border-color: var(--color-neutral-900);
+      --field-wrapper-border-color: var(--border-neutral-ink);
       /* Both radii are em-based and off the scale, which is measured in px: §4.7 maps neither,
          so they wait for the reviewed literal sweep. */
       --field-value-wrapper-radius: 1.5em;

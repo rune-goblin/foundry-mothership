@@ -574,9 +574,7 @@
       --creaturesheet-stat-gap: var(--space-0);
 
       --creaturesheet-rule-border-width: var(--border-width-3);
-      /* Every border tier reads a step built for a dark ground (faint is #444), so none of them
-         holds a white line -- DS6b's parked tier-inversion call. */
-      --creaturesheet-rule-color: var(--color-white);
+      --creaturesheet-rule-color: var(--border-neutral-paper);
       /* §4.7 snaps 5 to 4 or 6 and 15 to 16; both move the line off its measured position, so
          they wait for the sweep. 10 is on the scale already. */
       --creaturesheet-rule-margin-block-start: 5px;
@@ -596,7 +594,7 @@
       --creaturesheet-abilities-outline-color: rgb(22, 22, 22);
       --creaturesheet-abilities-outline-width: var(--border-width-5);
       --creaturesheet-abilities-border-width: var(--border-width-2);
-      --creaturesheet-abilities-border-color: var(--color-white);
+      --creaturesheet-abilities-border-color: var(--border-neutral-paper);
       --creaturesheet-abilities-radius: var(--radius-md);
       --creaturesheet-abilities-margin: var(--space-12);
       /* The panel scrolls, so 375 is a layout decision as much as a measurement, and it is off

@@ -40,9 +40,7 @@
       --textarea-field-input-text: var(--text-inverted);
       --textarea-field-input-surface: var(--surface-neutral-lowest);
       --textarea-field-input-border-width: var(--border-width-2);
-      /* Every border tier reads a step built for a dark ground (faint is #444), so none of them
-         holds this line -- DS6b's parked tier-inversion call. */
-      --textarea-field-input-border-color: var(--color-neutral-900);
+      --textarea-field-input-border-color: var(--border-neutral-ink);
       --textarea-field-input-radius: var(--radius-lg);
       /* 50 sits between --space-48 and -56: the sweep's, not this unit's. */
       --textarea-field-input-height: 50px;

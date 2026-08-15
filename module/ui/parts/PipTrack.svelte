@@ -50,17 +50,17 @@
          moves a rendered value, so all three wait for the sweep that reviews the shift against
          the baselines. */
       --pip-track-pip-text: rgb(22, 22, 22);
-      --pip-track-pip-surface: var(--color-white);
+      --pip-track-pip-surface: var(--surface-neutral-paper);
       --pip-track-pip-filled-surface: rgb(100, 100, 100);
       --pip-track-pip-milestone-surface: rgb(200, 200, 200);
-      --pip-track-pip-milestone-filled-surface: var(--color-black);
+      --pip-track-pip-milestone-filled-surface: var(--surface-neutral-lowest);
 
       --pip-track-caption-font-family: var(--font-sans-mothership);
       /* 11pt is 14.67px, between --font-size-md (14.4) and --font-size-lg (16) and on neither. */
       --pip-track-caption-font-size: 11pt;
       --pip-track-caption-font-weight: var(--font-weight-medium);
       --pip-track-caption-text: var(--text-tertiary);
-      --pip-track-caption-filled-text: var(--color-black);
+      --pip-track-caption-filled-text: var(--text-primary);
       /* The caption hangs below the pip it names; 17 sits off the space scale (16 | 20). */
       --pip-track-caption-offset-block: 17px;
 

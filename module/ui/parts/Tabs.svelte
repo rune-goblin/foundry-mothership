@@ -37,7 +37,7 @@
      is why the class stays on the markup — only what css/mothership.css held is here. */
   @layer system {
     nav {
-      --tabs-bar-surface: var(--color-black);
+      --tabs-bar-surface: var(--surface-neutral-lowest);
       --tabs-bar-text: var(--text-inverted);
       --tabs-bar-height: var(--space-40);
       --tabs-bar-padding-block: var(--space-6);

@@ -24,9 +24,7 @@
          change, not this unit's. */
       --itemimage-margin-inline-end: 5px;
       --itemimage-border-width: var(--border-width-1);
-      /* Every border tier reads a step built for a dark ground (faint is #444), so none of them
-         holds this line -- DS6b's parked tier-inversion call. */
-      --itemimage-border-color: var(--color-black);
+      --itemimage-border-color: var(--border-neutral-ink);
       /* §4.7 folds the 2-4px tail onto --radius-sm, which is 3px. Also a reviewed change. */
       --itemimage-radius: 2px;
 

@@ -175,6 +175,11 @@
     --surface-neutral-high: var(--color-neutral-500);
     --surface-neutral-higher: var(--color-neutral-400);
     --surface-neutral-highest: var(--color-neutral-300);
+    /* The end the seven-step ladder never reaches. Elevation climbs toward light on a dark
+       ground, so `highest` stops at #bbb — but MoSh's ground is the page itself, and every white
+       box on it (a field, a pip, a save, a button) was reading --color-white raw for want of a
+       name. This is that name; it is not a rung on the ladder above. */
+    --surface-neutral-paper: var(--color-white);
 
     --surface-danger-lowest: var(--color-danger-900);
     --surface-danger-lower: var(--color-danger-800);
@@ -270,6 +275,12 @@
     --border-neutral: var(--color-neutral-500);
     --border-neutral-medium: var(--color-neutral-300);
     --border-neutral-strong: var(--color-neutral-200);
+    /* The two ends the five-step scale never reaches, and the reason DS6b parked a tier
+       inversion that would not have helped: emphasis climbs #444 → #e3e3e3, so reversing the
+       order still lands on neither #111 nor white. MoSh draws a black line on the page and a
+       white one on its black panels; both are edges of the ground, not steps of emphasis. */
+    --border-neutral-ink: var(--color-neutral-900);
+    --border-neutral-paper: var(--color-white);
 
     --border-danger-faint: var(--color-danger-800);
     --border-danger-subtle: var(--color-danger-600);

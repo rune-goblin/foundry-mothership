@@ -71,7 +71,7 @@
       --rolltableconfig-title-text: var(--text-tertiary);
       --rolltableconfig-title-font-size: var(--font-size-lg);
       --rolltableconfig-title-font-weight: var(--font-weight-bold);
-      --rolltableconfig-heading-text: var(--color-black);
+      --rolltableconfig-heading-text: var(--text-primary);
 
       --rolltableconfig-rule-border-width: var(--border-width-3);
       --rolltableconfig-rule-color: var(--border-neutral);
@@ -84,7 +84,7 @@
       --rolltableconfig-rule-margin-inline: 15px;
 
       --rolltableconfig-button-text: var(--text-primary);
-      --rolltableconfig-button-surface: var(--color-white);
+      --rolltableconfig-button-surface: var(--surface-neutral-paper);
       /* 16px against a rem scale: nothing in the application sets a root font-size -- neither
          foundry2.css nor any runtime setter in foundry.mjs -- so 1rem is the same 16px. The
          call ItemCell's `medium` took. */
@@ -94,10 +94,7 @@
       --rolltableconfig-button-padding: var(--space-10);
       --rolltableconfig-button-margin-inline-start: var(--space-0);
       --rolltableconfig-button-border-width: var(--border-width-3);
-      /* Every border tier reads a step built for a dark ground (faint is #444), so none of them
-         holds this edge -- DS6b's parked tier-inversion call. The rule above escapes it: its
-         `grey` is `--border-neutral` byte for byte. */
-      --rolltableconfig-button-border-color: var(--color-neutral-900);
+      --rolltableconfig-button-border-color: var(--border-neutral-ink);
     }
 
     .circlestattitle {
