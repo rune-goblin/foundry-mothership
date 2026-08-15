@@ -75,9 +75,8 @@
       --itemcell-name-text: var(--text-inverted);
       --itemcell-name-surface: var(--surface-neutral-lowest);
       --itemcell-name-font-weight: var(--font-weight-bold);
-      /* 14 falls between --font-size-sm (13.6) and -md (14.4), and 27 between --space-24 and
-         -28; both wait for the reviewed literal sweep. */
-      --itemcell-name-font-size: 14px;
+      --itemcell-name-font-size: var(--font-size-md);
+      /* The pill's own height, like the row's — a measurement, not a step. */
       --itemcell-name-height: 27px;
       --itemcell-name-margin-inline-start: var(--space-0);
       --itemcell-name-padding: var(--space-2);

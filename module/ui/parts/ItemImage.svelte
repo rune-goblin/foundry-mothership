@@ -20,13 +20,10 @@
   @layer system {
     .item-image {
       --itemimage-basis: var(--space-24);
-      /* No --space-5: §4.7 snaps 5 to 4 or 6, which moves every row's thumbnail. A reviewed
-         change, not this unit's. */
-      --itemimage-margin-inline-end: 5px;
+      --itemimage-margin-inline-end: var(--space-6);
       --itemimage-border-width: var(--border-width-1);
       --itemimage-border-color: var(--border-neutral-ink);
-      /* §4.7 folds the 2-4px tail onto --radius-sm, which is 3px. Also a reviewed change. */
-      --itemimage-radius: 2px;
+      --itemimage-radius: var(--radius-sm);
 
       flex: 0 0 var(--itemimage-basis);
       margin-right: var(--itemimage-margin-inline-end);

@@ -18,9 +18,7 @@
   @layer system {
     .characterGeneratorSkillPopup {
       --skillpopup-margin-block-end: var(--space-10);
-      /* 0.2em is off the space scale, which is measured in px, and §4.7 maps it nowhere: it
-         waits for the reviewed literal sweep. */
-      --skillpopup-description-padding-block-end: 0.2em;
+      --skillpopup-description-padding-block-end: var(--space-4);
       --skillpopup-description-font-weight: var(--font-weight-bold);
 
       margin-bottom: var(--skillpopup-margin-block-end);

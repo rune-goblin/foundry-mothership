@@ -75,13 +75,11 @@
 
       --rolltableconfig-rule-border-width: var(--border-width-3);
       --rolltableconfig-rule-color: var(--border-neutral);
-      /* §4.7 snaps 5 to 4 or 6 and 15 to 16; both move the line off its measured position, so
-         they wait for the reviewed sweep. 10 is on the scale already. CreatureSheet holds the
-         same three values for the same reason: this rule and its `whiteline` twin were
-         identical byte for byte apart from the colour. */
-      --rolltableconfig-rule-margin-block-start: 5px;
+      /* CreatureSheet's `whiteline` twin holds the same three values: the two rules were
+         identical byte for byte apart from the colour, and stay so through the scale. */
+      --rolltableconfig-rule-margin-block-start: var(--space-6);
       --rolltableconfig-rule-margin-block-end: var(--space-10);
-      --rolltableconfig-rule-margin-inline: 15px;
+      --rolltableconfig-rule-margin-inline: var(--space-16);
 
       --rolltableconfig-button-text: var(--text-primary);
       --rolltableconfig-button-surface: var(--surface-neutral-paper);

@@ -41,28 +41,20 @@
   @layer system {
     .circle,
     .circle-f {
-      /* DS6b cut live-tokens' dot-size scale, and 15 is off the space scale (§4.7 snaps it to
-         16), so the pip keeps its measured size until the reviewed literal sweep. */
-      --pip-track-pip-size: 15px;
+      --pip-track-pip-size: var(--space-16);
       --pip-track-pip-radius: var(--radius-md);
-      /* §4.7 maps rgb(22,22,22) onto --color-neutral-850 (#222), rgb(100,100,100) onto
-         --color-neutral-600 (#707070) and lists rgb(200,200,200) nowhere. Each of the first two
-         moves a rendered value, so all three wait for the sweep that reviews the shift against
-         the baselines. */
-      --pip-track-pip-text: rgb(22, 22, 22);
+      --pip-track-pip-text: var(--text-primary);
       --pip-track-pip-surface: var(--surface-neutral-paper);
-      --pip-track-pip-filled-surface: rgb(100, 100, 100);
-      --pip-track-pip-milestone-surface: rgb(200, 200, 200);
+      --pip-track-pip-filled-surface: var(--surface-neutral);
+      --pip-track-pip-milestone-surface: var(--surface-neutral-highest);
       --pip-track-pip-milestone-filled-surface: var(--surface-neutral-lowest);
 
       --pip-track-caption-font-family: var(--font-sans-mothership);
-      /* 11pt is 14.67px, between --font-size-md (14.4) and --font-size-lg (16) and on neither. */
-      --pip-track-caption-font-size: 11pt;
+      --pip-track-caption-font-size: var(--font-size-md);
       --pip-track-caption-font-weight: var(--font-weight-medium);
       --pip-track-caption-text: var(--text-tertiary);
       --pip-track-caption-filled-text: var(--text-primary);
-      /* The caption hangs below the pip it names; 17 sits off the space scale (16 | 20). */
-      --pip-track-caption-offset-block: 17px;
+      --pip-track-caption-offset-block: var(--space-16);
 
       width: var(--pip-track-pip-size);
       height: var(--pip-track-pip-size);

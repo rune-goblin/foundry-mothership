@@ -44,10 +44,8 @@
     .package {
       --bonusoption-package-border-width: var(--border-width-3);
       --bonusoption-package-border-color: var(--border-neutral-ink);
-      /* Both are ems against a px scale, which §4.7 maps nowhere: 1em is the card's own text
-         size and 0.5em half of it. */
-      --bonusoption-package-radius: 1em;
-      --bonusoption-package-padding: 0.5em;
+      --bonusoption-package-radius: var(--radius-lg);
+      --bonusoption-package-padding: var(--space-8);
 
       border: var(--bonusoption-package-border-width) solid var(--bonusoption-package-border-color);
       border-radius: var(--bonusoption-package-radius);

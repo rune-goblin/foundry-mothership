@@ -35,11 +35,11 @@
      selector in css/mothership.css keys off `.item` any more -- ItemImage took the last one. */
   @layer system {
     li {
-      /* 35, 24 and 3 are off every scale — §4.7 snaps 3 to 2 or 4, and the row is a fixed
-         height, so a pixel here resizes every list. A reviewed change, not this unit's. */
+      /* The row is a fixed box: its height and the leading inside it are measurements of this
+         component, which no spacing scale governs. The padding is spacing, and snaps. */
       --itemrow-height: 35px;
       --itemrow-line-height: 24px;
-      --itemrow-padding-block: 3px;
+      --itemrow-padding-block: var(--space-4);
       --itemrow-padding-inline: var(--space-0);
       --itemrow-border-width: var(--border-width-1);
       --itemrow-border-color: var(--border-neutral-medium);

@@ -60,10 +60,10 @@
       --field-wrapper-surface: var(--surface-neutral-paper);
       --field-wrapper-border-width: var(--border-width-3);
       --field-wrapper-border-color: var(--border-neutral-ink);
-      /* Both radii are em-based and off the scale, which is measured in px: §4.7 maps neither,
-         so they wait for the reviewed literal sweep. */
-      --field-value-wrapper-radius: 1.5em;
-      --field-text-wrapper-radius: 0.5em;
+      /* 1.5em and 0.5em against a 16px inherited size are 24 and 8; the radius scale holds
+         21 and 10 either side of them. */
+      --field-value-wrapper-radius: var(--radius-xl);
+      --field-text-wrapper-radius: var(--radius-md);
 
       --field-input-font-size: var(--font-size-lg);
       --field-input-font-weight: var(--font-weight-bold);

@@ -44,8 +44,7 @@
      one copy survives, here. */
   @layer system {
     header {
-      /* 100px sits off the space scale, between --space-96 and --space-128, and §4.7 maps
-         neither: it waits for the reviewed literal sweep. */
+      /* The portrait's own width — a measurement of this component, which no scale governs. */
       --sheet-header-profile-width: 100px;
       --sheet-header-profile-padding: var(--space-10);
       --sheet-header-profile-border-width: var(--border-width-0);

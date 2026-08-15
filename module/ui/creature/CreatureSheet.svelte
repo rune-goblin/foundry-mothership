@@ -563,42 +563,35 @@
       --creaturesheet-name-text: var(--text-inverted);
       --creaturesheet-name-font-family: var(--font-display);
       --creaturesheet-name-font-weight: var(--font-weight-bold);
-      /* 1.3rem falls between --font-size-2xl (1.25) and -3xl (1.5), and 13 between --space-12
-         and -16. Both wait for the reviewed literal sweep. */
-      --creaturesheet-name-font-size: 1.3rem;
-      --creaturesheet-name-padding-inline-start: 13px;
+      --creaturesheet-name-font-size: var(--font-size-2xl);
+      --creaturesheet-name-padding-inline-start: var(--space-12);
 
-      /* The creature's stat pair is narrower than MainStat's `1fr 5em`; em against a px scale is
-         off it either way. */
+      /* The creature's stat pair is narrower than MainStat's `1fr 5em`. A grid template, not a
+         spacing value: the scale governs neither side of it. */
       --creaturesheet-stat-columns: 1fr 3em;
       --creaturesheet-stat-gap: var(--space-0);
 
       --creaturesheet-rule-border-width: var(--border-width-3);
       --creaturesheet-rule-color: var(--border-neutral-paper);
-      /* §4.7 snaps 5 to 4 or 6 and 15 to 16; both move the line off its measured position, so
-         they wait for the sweep. 10 is on the scale already. */
-      --creaturesheet-rule-margin-block-start: 5px;
+      /* RolltableConfig's `greyline` twin holds the same three: the two rules were one. */
+      --creaturesheet-rule-margin-block-start: var(--space-6);
       --creaturesheet-rule-margin-block-end: var(--space-10);
-      --creaturesheet-rule-margin-inline: 15px;
+      --creaturesheet-rule-margin-inline: var(--space-16);
 
-      /* 15em against a px scale, and 400 off it outright: the description pane is a fixed box
-         the editor scrolls inside. */
+      /* A grid template and a fixed box the editor scrolls inside: both are measurements of
+         this sheet, which no scale governs. */
       --creaturesheet-body-columns: 1fr 15em;
       --creaturesheet-description-height: 400px;
       --creaturesheet-description-padding: var(--space-10);
 
-      /* §4.7 collapses rgb(22,22,22) onto --color-neutral-850 (#222222) -- a visible lift on a
-         panel this size, and again on the outline that doubles its edge. Both wait for the
-         sweep; PipTrack holds the same colour for the same reason. */
-      --creaturesheet-abilities-surface: rgb(22, 22, 22);
-      --creaturesheet-abilities-outline-color: rgb(22, 22, 22);
+      --creaturesheet-abilities-surface: var(--surface-neutral-lowest);
+      --creaturesheet-abilities-outline-color: var(--surface-neutral-lowest);
       --creaturesheet-abilities-outline-width: var(--border-width-5);
       --creaturesheet-abilities-border-width: var(--border-width-2);
       --creaturesheet-abilities-border-color: var(--border-neutral-paper);
       --creaturesheet-abilities-radius: var(--radius-md);
       --creaturesheet-abilities-margin: var(--space-12);
-      /* The panel scrolls, so 375 is a layout decision as much as a measurement, and it is off
-         every scale. */
+      /* The panel scrolls: 375 is a layout decision as much as a measurement. */
       --creaturesheet-abilities-height: 375px;
 
       --creaturesheet-ability-padding: var(--space-4);
@@ -608,8 +601,7 @@
       --creaturesheet-ability-title-font-weight: var(--font-weight-bold);
       --creaturesheet-ability-title-text: var(--text-inverted);
       --creaturesheet-ability-body-font-family: var(--font-display);
-      /* 0.8rem falls between --font-size-xs (0.75) and -sm (0.85). */
-      --creaturesheet-ability-body-font-size: 0.8rem;
+      --creaturesheet-ability-body-font-size: var(--font-size-sm);
       --creaturesheet-ability-body-text: var(--text-inverted);
     }
 

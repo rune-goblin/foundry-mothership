@@ -44,10 +44,7 @@
       --tabs-bar-padding-inline: var(--space-0);
       --tabs-bar-radius: var(--radius-md);
       --tabs-bar-border-width: var(--border-width-2);
-      /* No ramp step holds this grey: §4.7 collapses rgb(56,56,56) onto --color-neutral-800
-         (#444), a visible shift on a 2px line, so the collapse is a reviewed pixel change and
-         not this unit's to make. */
-      --tabs-bar-border-color: rgb(56, 56, 56);
+      --tabs-bar-border-color: var(--border-neutral-faint);
 
       --tabs-item-text: var(--text-inverted);
       --tabs-item-font-size: var(--font-size-lg);

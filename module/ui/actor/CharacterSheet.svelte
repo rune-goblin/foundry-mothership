@@ -587,20 +587,18 @@
     .char-header {
       --charactersheet-header-grid-gap: var(--space-10);
       --charactersheet-header-grid-padding: var(--space-2);
-      /* Neither track is on the space scale (96 | 128 straddles both), and both set the width
-         of the whole header: a snap here is a reviewed pixel change, not this unit's. */
+      /* A grid template: the two fixed tracks measure this header, and no spacing scale
+         governs the width of a column. */
       --charactersheet-header-grid-columns: 238px auto 100px;
 
-      /* rem against a px scale -- 0.25rem is 4px only while nothing sets a root font-size, and
-         1em is the identity field's own size. Both wait for the reviewed literal sweep. */
-      --charactersheet-identity-gap: 0.25rem;
-      --charactersheet-identity-padding: 1em;
+      --charactersheet-identity-gap: var(--space-4);
+      --charactersheet-identity-padding: var(--space-16);
 
       --charactersheet-saves-surface: var(--surface-neutral-lowest);
       --charactersheet-saves-radius: var(--radius-md);
-      /* 0.3rem and 0.4rem are 4.8px and 6.4px; 225 is off the scale outright. */
-      --charactersheet-saves-padding-block-start: 0.4rem;
-      --charactersheet-saves-padding-block-end: 0.3rem;
+      --charactersheet-saves-padding-block-start: var(--space-6);
+      --charactersheet-saves-padding-block-end: var(--space-4);
+      /* The panel's own height — a measurement, not a step. */
       --charactersheet-saves-height: 225px;
 
       --charactersheet-save-value-font-family: var(--font-display);
@@ -609,9 +607,9 @@
       --charactersheet-save-value-surface: var(--surface-neutral-paper);
       --charactersheet-save-value-border-width: var(--border-width-4);
       --charactersheet-save-value-border-color: var(--border-neutral-ink);
-      /* em radius against a px scale, and the box's own -0.15em bleed: both off it. */
-      --charactersheet-save-value-radius: 0.5em;
-      --charactersheet-save-value-margin: -0.15em;
+      --charactersheet-save-value-radius: var(--radius-md);
+      --charactersheet-save-value-margin: calc(var(--space-2) * -1);
+      /* The box's own size — measurements, not steps. */
       --charactersheet-save-value-height: 42px;
       --charactersheet-save-value-width: 45px;
       --charactersheet-save-value-padding: var(--space-0);
@@ -620,18 +618,19 @@
       --charactersheet-save-modifier-font-size: var(--font-size-sm);
       --charactersheet-save-modifier-font-weight: var(--font-weight-bold);
       --charactersheet-save-modifier-text: var(--color-danger-300);
-      /* lightgrey is #d3d3d3, between --color-neutral-200 (#e3e3e3) and -300 (#bbbbbb) and on
-         neither. It arrived as the second of two `background` declarations, the first of which
+      /* `lightgrey` was #d3d3d3, on no step; the highest surface tier is the nearest one that
+         exists. It arrived as the second of two `background` declarations, the first of which
          (white) never rendered; the dead one is gone. */
-      --charactersheet-save-modifier-surface: lightgrey;
-      --charactersheet-save-modifier-radius: 0.5em;
+      --charactersheet-save-modifier-surface: var(--surface-neutral-highest);
+      --charactersheet-save-modifier-radius: var(--radius-md);
       --charactersheet-save-modifier-border-width: var(--border-width-0);
+      /* The badge's own size — measurements, not steps. */
       --charactersheet-save-modifier-height: 26px;
       --charactersheet-save-modifier-width: 28px;
       --charactersheet-save-modifier-padding: var(--space-0);
-      --charactersheet-save-modifier-margin-inline-start: -22px;
-      --charactersheet-save-modifier-offset-block: 7px;
-      --charactersheet-save-modifier-offset-inline: 13px;
+      --charactersheet-save-modifier-margin-inline-start: calc(var(--space-24) * -1);
+      --charactersheet-save-modifier-offset-block: var(--space-8);
+      --charactersheet-save-modifier-offset-inline: var(--space-12);
     }
 
     /* The header carries both classes, so this reaches the inner grid only -- keep the chain.

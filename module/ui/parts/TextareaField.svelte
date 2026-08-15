@@ -17,8 +17,7 @@
      exactly two writers, the two boxes this component replaces, so it comes along. */
   @layer system {
     .textarea-field {
-      /* 6 is off the space scale -- 4 and 8 straddle it -- so it waits for the reviewed sweep. */
-      --textarea-field-margin-inline-start: 6px;
+      --textarea-field-margin-inline-start: var(--space-6);
 
       margin-left: var(--textarea-field-margin-inline-start);
       flex: 0;
@@ -32,17 +31,15 @@
        saw it. */
     .textarea-input {
       --textarea-field-input-font-family: var(--font-sans-mothership);
-      /* 11pt is 14.67px, between --font-size-md (14.4) and --font-size-lg (16) and on neither;
-         the -0.15em bleed is an em against a px scale. Both wait for the sweep. */
-      --textarea-field-input-font-size: 11pt;
-      --textarea-field-input-margin: -0.15em;
+      --textarea-field-input-font-size: var(--font-size-md);
+      --textarea-field-input-margin: calc(var(--space-2) * -1);
       --textarea-field-input-font-weight: var(--font-weight-medium);
       --textarea-field-input-text: var(--text-inverted);
       --textarea-field-input-surface: var(--surface-neutral-lowest);
       --textarea-field-input-border-width: var(--border-width-2);
       --textarea-field-input-border-color: var(--border-neutral-ink);
       --textarea-field-input-radius: var(--radius-lg);
-      /* 50 sits between --space-48 and -56: the sweep's, not this unit's. */
+      /* The box's own height — a measurement, not a step on any scale. */
       --textarea-field-input-height: 50px;
 
       width: 100%;

@@ -42,9 +42,7 @@
       --condition-modifiers-margin-block-start: var(--space-2);
       --condition-modifiers-margin-block-end: var(--space-0);
       --condition-modifiers-margin-inline: var(--space-0);
-      /* 18 is off the space scale -- 16 and 20 straddle it -- and it is the indent the markers
-         hang in, so a snap moves every bullet. It waits for the reviewed literal sweep. */
-      --condition-modifiers-padding-inline-start: 18px;
+      --condition-modifiers-padding-inline-start: var(--space-20);
 
       margin: var(--condition-modifiers-margin-block-start) var(--condition-modifiers-margin-inline)
         var(--condition-modifiers-margin-block-end);
