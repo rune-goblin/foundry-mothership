@@ -1,7 +1,7 @@
 ---
-name: foundry-mosh
+name: foundry-mothership
 description: >-
-  Authoring the MoSh Foundry VTT **system** (Mothership RPG) — targeting Foundry v14 APIs
+  Authoring the Mothership Foundry VTT **system** (Mothership RPG) — targeting Foundry v14 APIs
   only (ApplicationV2 / DialogV2 / DataModel — never the v1 namespace), with Vite, vitest
   and a Playwright harness. Use whenever working in this repo: system.json, the module/
   esmodule, sheets and windows, hooks, settings, DataModels, compendium packs, the Vite
@@ -9,9 +9,9 @@ description: >-
   compendium, ApplicationV2, Svelte, or system.json — don't wait to be named.
 ---
 
-# MoSh — Foundry system authoring
+# Mothership — Foundry system authoring
 
-Conventions and APIs for the MoSh Mothership system. Adapted from the runegoblin
+Conventions and APIs for the Mothership system. Adapted from the runegoblin
 `foundry-pf2e` skill; the differences are called out because they matter — **this is a
 system, not a module. The service core is TypeScript, remade whole (the legacy remake,
 R0–R7, complete); the UI layer above it (`module/ui/`) is still plain
@@ -88,7 +88,7 @@ call. The legacy names (`rollItemMacro`, `initRollTable`, `initRollCheck`, `init
 signature breaks something** — grep `packs/_source/` for the new verbs, `test/api-legacy.test.ts`
 pins the old ones.
 
-**Localization.** `lang/en.json` under `Mosh.*`, read with `game.i18n.localize/format`.
+**Localization.** `lang/en.json` under `Mothership.*`, read with `game.i18n.localize/format`.
 There is also a `pt-BR` translation; don't orphan keys.
 
 **Derived data.** `MothershipActor.prepareDerivedData()` (`module/documents/actor.ts`) dispatches
@@ -111,9 +111,9 @@ is the ground truth — grep it rather than guessing about an API.
 ## Gotchas that have already cost time
 
 - **Check whether a "source" is actually the source.** `scss/` was dead for 17 months while
-  `css/mosh.css` was hand-edited; `_macros/` duplicated the pack sources. Both were deleted.
+  `css/mothership.css` was hand-edited; `_macros/` duplicated the pack sources. Both were deleted.
   Before building from any input, verify it produces what ships.
-- **`css/mosh.css` is hand-authored, not compiled.** There is no SCSS step. As sheets become
+- **`css/mothership.css` is hand-authored, not compiled.** There is no SCSS step. As sheets become
   Svelte components their styles should migrate into scoped `<style>` blocks.
 - **`packs/` is build output** — never commit it. Sources are `packs/_source/**/*.json`.
 - **`template.json` is inert but kept deliberately** — it is the oracle the DataModel

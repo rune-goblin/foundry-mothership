@@ -127,11 +127,11 @@
     },
     {
       "type": "setup",
-      "url": "systems/mothershiprpg/images/icons/ui/system/mosh-repo.webp",
-      "thumbnail": "systems/mothershiprpg/images/icons/ui/system/mosh-thumbnail.webp"
+      "url": "systems/mothershiprpg/images/icons/ui/system/mothership-repo.webp",
+      "thumbnail": "systems/mothershiprpg/images/icons/ui/system/mothership-thumbnail.webp"
     }
   ],
-  "background": "systems/mothershiprpg/images/icons/ui/system/mosh-background.webp",
+  "background": "systems/mothershiprpg/images/icons/ui/system/mothership-background.webp",
   "languages": [
     {
       "lang": "en",

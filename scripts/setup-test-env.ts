@@ -19,7 +19,7 @@ import { homedir } from 'node:os';
 const repo = process.cwd();
 const TEST_DATA = join(repo, 'test', 'foundry-data');
 const PORT = Number(process.env.TEST_FOUNDRY_PORT ?? 30005);
-const TEST_WORLD = process.env.TEST_WORLD ?? 'mosh';
+const TEST_WORLD = process.env.TEST_WORLD ?? 'motherrpg';
 const RESET_WORLD = process.argv.includes('--reset-world');
 const SYSTEM_ID = 'mothershiprpg';
 

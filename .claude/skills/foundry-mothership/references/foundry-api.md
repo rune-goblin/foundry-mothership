@@ -43,7 +43,7 @@ Use `foundry.utils.*`, `foundry.applications.handlebars.renderTemplate`,
 ## `game.*`
 
 `game.user`/`game.user.isGM`, `game.users`, `game.actors`, `game.items`, `game.macros`,
-`game.settings`, `game.i18n`, `game.packs.get('mosh.<pack>')`, `game.system.id`/`.version`,
+`game.settings`, `game.i18n`, `game.packs.get('mothershiprpg.<pack>')`, `game.system.id`/`.version`,
 `game.world.id`, `game.ready`, and this system's `game.mothershiprpg` API object.
 
 ## Hooks
@@ -92,7 +92,7 @@ it for the rolltable config).
 ## Packs (runtime)
 
 ```js
-const pack = game.packs.get('mosh.rolltables_1e');
+const pack = game.packs.get('mothershiprpg.rolltables_1e');
 await pack.getIndex();      // .size is the document count
 await pack.getDocument(id);
 await pack.getDocuments();

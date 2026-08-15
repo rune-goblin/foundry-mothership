@@ -15,7 +15,7 @@ import { join, relative, resolve } from 'node:path';
 
 const REPO = resolve(import.meta.dirname, '..');
 
-// Foundry's own DOM wears these and our stylesheet targets them, so no MoSh source has to
+// Foundry's own DOM wears these and our stylesheet targets them, so no Mothership source has to
 // mention them. Verified against the installed v14 build's templates and client sources.
 const CORE_CLASSES = new Set([
   'application', // the ApplicationV2 frame

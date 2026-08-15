@@ -1,10 +1,10 @@
-# MoSh — project rules
+# Mothership — project rules
 
 The unofficial **Mothership** system for Foundry VTT. A Foundry **system** (not a module):
 `system.json` is the manifest, `module/index.js` the esmodule (css + `init.ts`), built by Vite to
 `dist/mothershiprpg.{js,css}`, plus compendium content built from JSON in `packs/_source/`.
 
-**Detailed conventions live in the `foundry-mosh` skill** (`.claude/skills/foundry-mosh/`) —
+**Detailed conventions live in the `foundry-mothership` skill** (`.claude/skills/foundry-mothership/`) —
 the v14 API surface, Svelte-in-ApplicationV2, the test tiers, packs, and the build. Consult
 it for any of those; it loads on demand so this file stays short. Here: only the hard rules
 and what is specific to this repo.
@@ -104,10 +104,15 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   (`mothershiprpg.<pack>`), the runtime path `systems/mothershiprpg/…`, **and the public API
   `game.mothershiprpg`**. One string identifies the package everywhere. **The `mosh` retirement
   is complete** (design-system DS1–DS9): the scope class is `.mothership`, the lang root is
-  `Mothership.*`, the classes are `Mothership*`, and `grep -w mosh` finds only justified
-  history — the local `TEST_WORLD` Foundry world folder, which is outside the repo, and comments
-  describing the past. The one content-baked survivor, `data-mosh-voice` in the Panic table, was
-  regenerated as `data-mothership-voice`. Never name anything new `mosh` or `ms`.
+  `Mothership.*`, the classes are `Mothership*`, and the prose, the skill directory
+  (`foundry-mothership`) and the three `system.json` art files all say Mothership too. `grep -w
+  mosh` now finds only justified history: the local `TEST_WORLD` Foundry world folder, which is
+  outside the repo; the deleted files `mosh.js`/`css/mosh.css` named in comments and in
+  `docs/audits/architecture-audit.md`, which records the pre-rename codebase and must not be
+  rewritten; the content-pipeline spec that asserts a link naming the pre-rename package is
+  rejected; and `LICENSE.txt`'s 2021 copyright line. The one content-baked survivor,
+  `data-mosh-voice` in the Panic table, was regenerated as `data-mothership-voice`. Never name
+  anything new `mosh` or `ms`.
 - **`game.mothershiprpg` is the public API.** The verb surface — `rollStat`, `rollSkill`,
   `rollWeapon`, `rollTable`, `modify`, `applyItem`, `promptStress`/`promptSave`/`promptWound`,
   `rollItem`, … (`module/api/api.ts`) — is what shipped macros and new content call.

@@ -1,4 +1,4 @@
-# MoSh — architecture audit
+# Mothership — architecture audit
 
 **Date:** 2026-08-13, after S8 (commit `2824634`).
 **Scope:** the whole shipping codebase — `module/` (runtime), `content/` + `scripts/` (pipeline and tooling), `test/` (both tiers) — ~19,800 lines across 130 files.
@@ -15,7 +15,7 @@ This document has three parts. **Part I** explains the architecture as it stands
 
 ## The one-screen version
 
-MoSh is a Foundry VTT **system** (id `mothershiprpg`): Foundry supplies the application, database, and document framework; this package supplies the Mothership rules, sheets, and content. Four layers, four flows:
+Mothership is a Foundry VTT **system** (id `mothershiprpg`): Foundry supplies the application, database, and document framework; this package supplies the Mothership rules, sheets, and content. Four layers, four flows:
 
 ```
 content/books/psg/*.ts        (the book, as typed TypeScript catalogs)

@@ -7,8 +7,9 @@ sourcemaps on. `system.json` loads `dist/`.
 
 ```js
 // module/index.js — the entry
-import '../css/mosh.css';   // hand-authored, NOT compiled from scss/
-import './init.ts';         // hooks/registration only (the R5 swap)
+import '../css/tokens.css';      // the Layer-1 design tokens
+import '../css/mothership.css';  // hand-authored, NOT compiled from scss/
+import './init.ts';              // hooks/registration only (the R5 swap)
 ```
 
 ```bash

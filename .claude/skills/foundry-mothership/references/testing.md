@@ -21,16 +21,16 @@ npm run check     # tsc over the .ts surface (tooling + tests), not module/*.js
 
 Specs are `test/**/*.test.ts`, `environment: 'node'`.
 
-**The trick that makes this work without Foundry:** `test/setup.ts` defines an empty
-`globalThis.Actor` so `module/actor/actor.js` can be imported (`extends Actor` is evaluated
-at import time), and specs call methods with a hand-built `this`:
+**The trick that makes this work without Foundry:** `test/setup.ts` defines empty
+`globalThis.Actor`/`globalThis.Item` so `module/documents/*.ts` can be imported (`extends Actor`
+is evaluated at import time). Specs construct a bare document and mock the services beneath it:
 
 ```ts
-MothershipActor.prototype.parseRollString.call({}, '1d100[+]', 'low');
+vi.mock('../module/checks/checks.ts', () => ({ runCheck: services.runCheck, /* … */ }));
+const { MothershipActor } = await import('../module/documents/actor.ts');
 ```
 
-No document is constructed. The single import that reaches the entry module is mocked:
-`vi.mock('../module/mosh.js', () => ({ fromIdUuid: () => undefined }))`.
+Each spec then asserts the *dispatch* — which `Check` a named roll method builds.
 
 **Schema tests use the same idea one level up.** `test/field-stubs.ts` stubs
 `foundry.data.fields` so each field class records the default it *would* produce, then walks

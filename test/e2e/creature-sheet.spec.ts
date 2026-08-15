@@ -132,7 +132,7 @@ test.describe('creature sheet', () => {
     const track = gmPage.locator(`#${appId} .skill_training_frame [role="button"]`);
 
     await expect(track.locator('.pip.filled')).toHaveCount(3);
-    await expect(track.locator('.circle')).toHaveCount(12);
+    await expect(track.locator('.pip:not(.filled)')).toHaveCount(12);
     await expect(track.locator('.pip-caption')).toHaveText([
       'Trained',
       'Expert',

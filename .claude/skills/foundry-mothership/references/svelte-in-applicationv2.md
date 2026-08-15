@@ -1,4 +1,4 @@
-# UI: Svelte 5 in ApplicationV2 — and converting MoSh's AppV1 sheets
+# UI: Svelte 5 in ApplicationV2 — and converting this system's AppV1 sheets
 
 Two halves: the generic Foundry↔Svelte glue, then **how to convert one of this system's
 existing sheets**, which is the actual phase 4 job.
@@ -20,9 +20,9 @@ const { ApplicationV2 } = foundry.applications.api;
 
 export class ShipMacrosApp extends ApplicationV2 {
   static DEFAULT_OPTIONS = {
-    id: 'mosh-ship-macros',
+    id: 'mothership-ship-macros',
     tag: 'section',
-    classes: ['mosh', 'sheet', 'ship'],
+    classes: ['mothership', 'sheet', 'ship'],
     window: { title: 'Ship Macros', resizable: false },
     position: { width: 320, height: 'auto' },
   };
@@ -73,7 +73,7 @@ Lifecycle mapping:
 (`new Component({target})`, `$destroy()`, `export let`, `$:`, `on:click`). Older
 Foundry-Svelte modules are often Svelte 4 — translate when copying.
 
-## Converting a MoSh AppV1 sheet
+## Converting an AppV1 sheet
 
 The existing sheets follow one shape. Map it piece by piece rather than rewriting blind:
 
@@ -123,13 +123,13 @@ emitted `dist/mothershiprpg.css`.
 `ItemRow`, `ItemCell`, `ItemControls`, `ItemControl`, `Tabs`, `TabPanel`, `CircleStats`,
 `Field`, `CheckField`, `Editor`, `SheetHeader`, and the `dropTarget` attachment.
 Assemble a conversion from these rather than writing bespoke markup, and don't rename the class
-names they emit: they are `css/mosh.css`'s, pinned by `test/ui-parts.test.ts`.
+names they emit: they are `css/mothership.css`'s, pinned by `test/ui-parts.test.ts`.
 
 `module/ui/item/` is the worked example and `module/ui/skill/` (§21) shows a sheet that needs
 more than the shared shell — it subclasses `MothershipItemSheet`, overriding `static COMPONENT` and
 `_context()`. Of the conventions these settled, the two that bite hardest:
 
-- **`css/mosh.css` targets the V1 frame.** A V2 window is `.application`, not `.window-app`,
+- **`css/mothership.css` targets the V1 frame.** A V2 window is `.application`, not `.window-app`,
   and carries the user's theme classes. Put `themed`, `theme-light` in `DEFAULT_OPTIONS.classes`
   (DocumentSheetV2 only appends its own when `themed` is absent), or the sheet renders with
   light theme text on the stylesheet's light boxes.

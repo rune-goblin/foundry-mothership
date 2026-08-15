@@ -34,7 +34,7 @@ function expectedPackSizes(): Record<string, number> {
 
 export default async function globalSetup(config: FullConfig): Promise<void> {
   const baseURL = config.projects[0]?.use?.baseURL ?? 'http://127.0.0.1:30005';
-  const expectedWorld = process.env.TEST_WORLD ?? 'mosh';
+  const expectedWorld = process.env.TEST_WORLD ?? 'motherrpg';
 
   // Everything knowable without a browser, first: a wrong or world-less server answers here in
   // milliseconds rather than as a 30-second timeout inside a login.

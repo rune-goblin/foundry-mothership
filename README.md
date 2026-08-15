@@ -1,4 +1,4 @@
-## MoSh | Unofficial Mothership RPG | 1e | FoundryVTT
+## Mothership | Unofficial Mothership RPG | 1e | FoundryVTT
 
 ![Screenshot](docs/screenshot.jpg)
 

@@ -39,7 +39,7 @@ npm run check:e2e         # type-check these specs (separate tsconfig + Playwrig
 
 - A **licensed** Foundry v14 installed locally (`start-test-env.sh` finds the app bundle;
   override with `FOUNDRY_APP`).
-- `TEST_WORLD` (default `mosh`) names a world **built on this system** (its `world.json` `system` is rewritten to `mothership` in the clone, so a world created before the rename still works) whose GM has **no password**, already
+- `TEST_WORLD` (default `motherrpg`) names a world **built on this system** (its `world.json` `system` is rewritten to `mothershiprpg` in the clone, so a world created before the rename still works) whose GM has **no password**, already
   migrated to the running core/system version. `--world` will not auto-launch a world needing
   migration; `global-setup` then reports `No active world at this port`. Fix by opening it once
   in desktop Foundry.

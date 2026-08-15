@@ -49,7 +49,7 @@ export default defineConfig({
     stdout: 'ignore',
     stderr: 'pipe',
     env: {
-      TEST_WORLD: process.env.TEST_WORLD ?? 'mosh',
+      TEST_WORLD: process.env.TEST_WORLD ?? 'motherrpg',
       TEST_FOUNDRY_PORT: String(PORT),
     },
   },
