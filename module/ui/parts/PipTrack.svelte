@@ -59,7 +59,26 @@
       gap: var(--pip-track-gap);
     }
 
+    /* A captioned track is a rank track: fifteen pips spanning a labelled row, not a small inline
+       meter. It distributes into its slot rather than measuring 15 pips plus 14 gaps, because that
+       intrinsic width (296px) is wider than the row the sheets give it (~278px) and the overflow
+       sliced the last pip and clipped "Master" to "Mas".
+
+       This is what the callers used to do: both sheets wrapped the track in `.flex`
+       (`justify-content: space-evenly`) and the old component emitted its pips as bare siblings, so
+       they were that wrapper's flex children. Moving layout in here was right; the fixed gap that
+       came with it swapped a row that fits any slot for one that fits only a slot 296px wide. */
     .pip-track.captioned {
+      /* The last caption is centred on the last pip, so it overhangs it by half its own width less
+         half a pip — about 20px for "Master". The old caption was pulled left instead (-52px), so
+         it hung back under earlier pips and never reached the edge; centred, it needs the room
+         reserving or it is clipped to "Maste". */
+      --pip-track-caption-overhang: var(--space-20);
+
+      display: flex;
+      justify-content: space-evenly;
+      gap: 0;
+      padding-inline: var(--pip-track-caption-overhang);
       padding-bottom: var(--pip-track-caption-clearance);
     }
 
