@@ -1,5 +1,5 @@
 import { mount, unmount } from 'svelte';
-import Generator from './Generator.svelte';
+import Wizard from './Wizard.svelte';
 import { CharacterDraft } from './draft.svelte.js';
 import { localize } from '../../i18n.ts';
 
@@ -8,13 +8,16 @@ const { ApplicationV2 } = foundry.applications.api;
 /**
  * The character generator's window. ApplicationV2 rather than DocumentSheetV2 on purpose: nothing
  * here is a field of the actor, so there is no form for Foundry to persist. The draft holds the
- * state and writes the actor once, when the player saves.
+ * state and writes the actor once, when the player finishes the last step.
+ *
+ * A fixed height, not `auto`: the wizard is a rail beside a scrolling pane, and both need a box to
+ * size against — an auto-height window would resize itself on every step and jump the rail.
  */
 export class GeneratorApp extends ApplicationV2 {
   static DEFAULT_OPTIONS = {
     // css/mothership.css paints the content white and has no dark variant, so pin the light theme.
     classes: ['mothership', 'sheet', 'actor', 'character', 'themed', 'theme-light'],
-    position: { width: 800, height: 'auto' },
+    position: { width: 960, height: 720 },
     window: { resizable: true },
   };
 
@@ -43,7 +46,7 @@ export class GeneratorApp extends ApplicationV2 {
     await this.#draft.load();
     this.#root = document.createElement('div');
     this.#root.className = 'mothership-sheet-root';
-    this.#component = mount(Generator, {
+    this.#component = mount(Wizard, {
       target: this.#root,
       props: { draft: this.#draft, close: () => this.close() },
     });

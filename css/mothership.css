@@ -337,9 +337,11 @@
 
 
 
-  /* shared tier: CharacterSheet and Generator, which hand-writes `char-header` around a
-     `header-fields` of its own. The header grid the first one lays out inside them — with the
-     areas the two rules below place into — moved into CharacterSheet.svelte. */
+  /* shared tier: CharacterSheet alone since the generator became the wizard, which writes neither
+     name. It stays declared here rather than moving: `header-fields` has a second writer in
+     CreatureSettings, which deliberately wears it without a `char-header` ancestor. The header
+     grid CharacterSheet lays out inside them — with the areas the two rules below place into —
+     moved into CharacterSheet.svelte. */
   .mothership .char-header .header-fields {
     -webkit-box-flex: 1;
     -ms-flex: 1;
@@ -413,7 +415,7 @@
   /* ==========================================================================================
      SHARED STAT VOCABULARY — every rule tagged `shared tier` below.
 
-     Six components read these names: MainStat, RollableStat, RollBox, CircleStats, Generator,
+     Six components read these names: MainStat, RollableStat, RollBox, CircleStats, Wizard,
      CreatureSheet. Several hand-write the class instead of mounting the component, and a Svelte
      <style> block only reaches its own component's markup — so none of these can dissolve into
      one (DS8's per-component model does not fit them). They stay here, declared as a tier.
@@ -647,7 +649,8 @@
      is the modifier that one heading wears over it. They travelled together, and they keep the
      order they had here: equal specificity, so `black` wins only by sitting later. */
 
-  /* shared tier: MainStat, RollBox, Generator. */
+  /* shared tier: MainStat, RollBox, Wizard — which writes the class on the readonly circles it
+     fills in itself. */
   .mothership .circle-input {
     font-family: "Chakra Petch", sans-serif;
     margin: calc(var(--space-2) * -1);
@@ -695,8 +698,8 @@
     text-align: center;
   }
 
-  /* shared tier: CharacterSheet, Generator (its `generator-header-grid-1col`) and SheetHeader —
-     three writers of the black title bar. The panel behind the saves, which only this sheet
+  /* shared tier: CharacterSheet and SheetHeader — the two writers of the black title bar left
+     once the generator became the wizard, which has no title bar. The panel behind the saves, which only this sheet
      writes, moved into CharacterSheet.svelte. */
   .mothership .header {
     grid-area: header;
@@ -830,15 +833,15 @@
   }
 
 
-  /* Every rule this file carried under `form.actor-generator` moved into Generator.svelte, which
-     is the only writer of the form and of all eight names — `fulllabel`, `ulinputfield`,
-     `smalltext`, `generator-header-grid-1col`, `element-group`, `credit-img`, `checkbox-round`,
-     `clicable-item`. Two of them land on markup the block cannot scope (MainStat renders the
-     `fulllabel` div from a class prop, RollBox writes `clicable-item`), so those two keep the
-     form as a `:global()` ancestor there. The generator's remaining vocabulary stays here and is
-     tagged where it is declared: the shared stat tier, `char-header`/`header-fields`/`header`,
-     `headerinputtext`/`headerinputfield`/`noborder`, `circle-input` and the
-     `.grid*`/`widegap` set. */
+  /* Every rule this file carried under `form.actor-generator` had already moved into the
+     generator's own <style> block, and went with it when the single page became Wizard.svelte.
+     Six of the eight names went too — `ulinputfield`, `smalltext`, `generator-header-grid-1col`,
+     `element-group`, `credit-img`, `checkbox-round` belonged to a layout that no longer exists,
+     and no rule anywhere declares them now. The two that land on markup a scoped block cannot
+     reach survive in the wizard as `:global()` escapes under its own form: MainStat renders the
+     `fulllabel` div from a class prop, and RollBox writes `clicable-item`. What the wizard
+     borrows from this file is the shared stat tier and `circle-input`, tagged where each is
+     declared. */
 
   /* Dialog V2 — the shell tier. Everything below is keyed on the class `svelte-dialog.ts` puts
      on the frame, and none of it is ownable by a component, for two separate reasons. The chrome

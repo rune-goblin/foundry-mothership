@@ -4,6 +4,7 @@ import { describe, it, expect } from 'vitest';
 
 import { parseResults, drawnRow } from '../module/ui/generator/table-result.js';
 import { candidates } from '../module/ui/generator/skills.js';
+import { PANES, paneTitle } from '../module/ui/generator/steps.js';
 import { CHARACTER_CREATION } from '../content/books/psg/character-creation.ts';
 
 const loadoutRow = {
@@ -86,6 +87,47 @@ describe('skill candidates', () => {
   it('gates a pick on an owned prerequisite when asked', () => {
     expect(named(candidates(catalog, 'Expert', ['a'], { requirePrerequisite: true }))).toEqual(['c']);
     expect(named(candidates(catalog, 'Expert', ['a']))).toEqual(['c', 'd']);
+  });
+});
+
+describe('the wizard spine', () => {
+  // The panes are the book's own steps, so an edition that renumbers or renames one must not be
+  // able to leave the wizard walking a list of its own.
+  it('is the intro plus the book\'s nine steps, in the book\'s order', () => {
+    expect(PANES.map((pane) => pane.step?.number ?? null)).toEqual([null, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    expect(PANES.slice(1).map(paneTitle)).toEqual(CHARACTER_CREATION.steps.map((step) => step.title));
+  });
+
+  // Everything from step 4 on reads the class, so step 3 is the one pane the rail gates on.
+  it('gates on the class and on nothing else', () => {
+    expect(PANES.filter((pane) => pane.required === true).map((pane) => pane.id)).toEqual(['class']);
+  });
+
+  const empty = {
+    rolled: Object.fromEntries(
+      ['strength', 'speed', 'intellect', 'combat', 'sanity', 'fear', 'body', 'health', 'credits'].map((key) => [key, null]),
+    ),
+    classUuid: '',
+    skills: [],
+    patch: null,
+    trinket: null,
+    loadout: null,
+    name: '',
+  };
+
+  it('ticks only the two steps the book states rather than asks for', () => {
+    expect(PANES.filter((pane) => pane.done(empty)).map((pane) => pane.id)).toEqual([
+      'intro',
+      'stress',
+      'trauma',
+    ]);
+  });
+
+  it('ticks a roll step only once every roll it covers is in', () => {
+    const stats = PANES.find((pane) => pane.id === 'stats')!;
+    const partly = { ...empty, rolled: { ...empty.rolled, strength: 30, speed: 30, intellect: 30 } };
+    expect(stats.done(partly)).toBe(false);
+    expect(stats.done({ ...partly, rolled: { ...partly.rolled, combat: 30 } })).toBe(true);
   });
 });
 

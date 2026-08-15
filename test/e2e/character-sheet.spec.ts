@@ -431,14 +431,16 @@ test.describe('character sheet', () => {
       .toEqual(['__e2e_smg']);
   });
 
-  test('the header control opens the character generator', async ({ gmPage }) => {
+  test('the header control opens the creation wizard', async ({ gmPage }) => {
     const { appId } = await open(gmPage);
     const sheet = gmPage.locator(`#${appId}`);
 
     // AppV1 put this in the title bar; ApplicationV2 files header controls under the ellipsis.
     await sheet.locator('.header-control[data-action="toggleControls"]').click();
-    await gmPage.locator('.context-item', { hasText: 'Character Generator' }).click();
+    await gmPage.locator('.context-item', { hasText: 'Character Creation Wizard' }).click();
 
+    // The window id is still the generator's: the draft store and its window kept their names
+    // when the single page became a wizard, and only the label the control reads changed.
     await expect(gmPage.locator('.application[id^="mothership-generator-"]')).toBeVisible();
   });
 });

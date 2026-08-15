@@ -1,6 +1,7 @@
 import { mount, unmount, flushSync } from 'svelte';
 import CharacterSheet from './CharacterSheet.svelte';
 import { GeneratorApp } from '../generator/GeneratorApp.js';
+import { chooseCreationMode } from './creation.js';
 import { createDocumentStore } from '../document-store.svelte.js';
 
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -39,12 +40,41 @@ export class MothershipCharacterSheet extends ActorSheetV2 {
     this.generateCharacter();
   }
 
+  /**
+   * Offer the wizard the moment a character is created. `createActor` is the render context
+   * Foundry stamps on the sheet it opens for a document that has just been made — from the
+   * sidebar's create dialog, and from any `Actor.create(…, {renderSheet: true})` behind it — so it
+   * is the one signal that says "this sheet is new" without a hook that fires for every actor.
+   *
+   * The empty-inventory guard is what keeps a compendium import, which arrives the same way but
+   * already carrying its class and gear, from being asked whether it wants to be rolled up.
+   *
+   * Not awaited: `_onFirstRender` is inside the render pipeline, and parking it on a dialog would
+   * hold the frame half-built until the player answered.
+   */
+  async _onFirstRender(context, options) {
+    await super._onFirstRender(context, options);
+    if (options.renderContext !== 'createActor') return;
+    if (this.document.items.size > 0) return;
+    void this.#offerWizard();
+  }
+
+  async #offerWizard() {
+    if ((await chooseCreationMode()) !== 'wizard') return;
+    // The sheet stays open behind the wizard: it is where the finished character lands, and
+    // Foundry re-renders it off the one update the draft writes.
+    this.generateCharacter();
+  }
+
   generateCharacter() {
+    // Centred on the sheet it was opened from, and never off the left edge: the wizard is wider
+    // than the sheet, so half the difference is negative.
+    const { width } = GeneratorApp.DEFAULT_OPTIONS.position;
     new GeneratorApp({
       actor: this.document,
       position: {
         top: this.position.top + 40,
-        left: this.position.left + (this.position.width - 400) / 2,
+        left: Math.max(0, this.position.left + (this.position.width - width) / 2),
       },
     }).render({ force: true });
   }

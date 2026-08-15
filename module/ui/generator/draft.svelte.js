@@ -48,8 +48,6 @@ const ROLLS = {
 
 export const ROLL_KEYS = Object.keys(ROLLS);
 
-const TABLES = ['patch', 'trinket', 'loadout'];
-
 /** What "remove previous items" removes. The class is replaced whether it is ticked or not. */
 const SHED = ['item', 'armor', 'weapon', 'skill', 'condition'];
 
@@ -58,6 +56,7 @@ const nulled = (keys) => Object.fromEntries(keys.map((key) => [key, null]));
 
 export class CharacterDraft {
   name = $state('');
+  pronouns = $state('');
   className = $state('');
   classUuid = $state('');
   traumaResponse = $state('');
@@ -77,6 +76,7 @@ export class CharacterDraft {
   constructor(actor) {
     this.#actor = actor;
     this.name = actor.name;
+    this.pronouns = actor.system?.pronouns?.value ?? '';
   }
 
   /** The compendium scans, run once when the window opens rather than per dialog. */
@@ -113,11 +113,6 @@ export class CharacterDraft {
     }
     const draw = await table.draw({ displayChat: true });
     this[kind] = { roll: drawnRow(draw), ...parseResults(draw.results) };
-  }
-
-  async rollEverything() {
-    for (const key of ROLL_KEYS) await this.roll(key);
-    for (const kind of TABLES) await this.rollTable(kind);
   }
 
   /**
@@ -237,6 +232,7 @@ export class CharacterDraft {
     }
     if (this.rolled.credits !== null) update['system.credits.value'] = String(this.rolled.credits);
     if (this.name) update.name = this.name;
+    if (this.pronouns) update['system.pronouns.value'] = this.pronouns;
     if (this.className) {
       update['system.class.value'] = this.className;
       update['system.other.stressdesc.value'] = this.traumaResponse;

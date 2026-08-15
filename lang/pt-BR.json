@@ -661,7 +661,7 @@
       }
     },
     "CharacterGenerator": {
-      "name": "Gerador de Personagem",
+      "name": "Assistente de Criação de Personagem",
       "StatOption": "Atributos & Salvaguardas",
       "StatOptionPopupTitle": "Opção de Atributos e Salvaguardas da Classe",
       "StatOptionPopupText": "Escolha onde aplicar o bônus de:",
@@ -680,7 +680,17 @@
       "Table.Loadout": "Tabela de Equipamento",
       "Table.Patch": "Tabela de Conserto",
       "Table.Trinket": "Tabela de Bijuteria",
-      "Error.NoClass": "Você precisa selecionar uma classe primeiro."
+      "Error.NoClass": "Você precisa selecionar uma classe primeiro.",
+      "NewCharacter.Title": "Novo Personagem",
+      "NewCharacter.Text": "Percorra os nove passos de criação do Player's Survival Guide, ou comece com uma ficha em branco e preencha você mesmo.",
+      "NewCharacter.Blank": "Ficha em Branco",
+      "Wizard.Steps": "Passos da criação",
+      "Wizard.Counter": "Passo {number} de {total}",
+      "Wizard.Back": "Voltar",
+      "Wizard.Create": "Criar Personagem",
+      "Wizard.RollRemaining": "Rolar o resto deste passo",
+      "Wizard.RepickSkills": "Escolher novamente as perícias desta classe",
+      "Wizard.RemovePrevious": "Remover os itens que este personagem já carrega"
     },
     "Add": "Adicionar",
     "AddOr": "Adicionar ou",

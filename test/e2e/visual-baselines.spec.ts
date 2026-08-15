@@ -426,18 +426,20 @@ test.describe('visual baselines', () => {
     await capture(gmPage, gmPage.locator('.application.creature-settings'), 'window-creature-settings');
   });
 
-  test('the character generator', async ({ gmPage }) => {
+  // The wizard's first pane, which is the one that holds still: every later pane shows rolled
+  // numbers or a compendium scan's results.
+  test('the character creation wizard', async ({ gmPage }) => {
     const { uuid } = await openActor(gmPage, 'character', '__e2e_recruit', CHARACTER);
-    // The sheet is only the way in; closing it leaves the generator alone on screen, so the
+    // The sheet is only the way in; closing it leaves the wizard alone on screen, so the
     // capture cannot depend on which window Foundry stacked on top.
     await gmPage.evaluate(async (u: string) => {
       const actor = await (window as any).fromUuid(u);
       actor.sheet.generateCharacter();
       await actor.sheet.close();
     }, uuid);
-    const generator = gmPage.locator('.application:has(form.actor-generator)');
-    await expect(generator).toHaveCount(1);
-    await capture(gmPage, generator, 'window-generator');
+    const wizard = gmPage.locator('.application:has(form.character-wizard)');
+    await expect(wizard).toHaveCount(1);
+    await capture(gmPage, wizard, 'window-generator');
   });
 
   test('the rolltable configuration window', async ({ gmPage }) => {

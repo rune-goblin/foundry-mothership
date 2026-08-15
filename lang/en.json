@@ -661,7 +661,7 @@
       }
     },
     "CharacterGenerator": {
-      "name": "Character Generator",
+      "name": "Character Creation Wizard",
       "StatOption": "Stats & Saves",
       "StatOptionPopupTitle": "Class Attribute and Saves option",
       "StatOptionPopupText": "Choose where to apply the bonus of:",
@@ -680,7 +680,17 @@
       "Table.Loadout": "Loadout Table",
       "Table.Patch": "Patch Table",
       "Table.Trinket": "Trinket Table",
-      "Error.NoClass": "You need to select a class first."
+      "Error.NoClass": "You need to select a class first.",
+      "NewCharacter.Title": "New Character",
+      "NewCharacter.Text": "Walk through the Player's Survival Guide's nine creation steps, or start on a blank sheet and fill it in yourself.",
+      "NewCharacter.Blank": "Blank Sheet",
+      "Wizard.Steps": "Creation steps",
+      "Wizard.Counter": "Step {number} of {total}",
+      "Wizard.Back": "Back",
+      "Wizard.Create": "Create Character",
+      "Wizard.RollRemaining": "Roll the rest of this step",
+      "Wizard.RepickSkills": "Choose this class's skills again",
+      "Wizard.RemovePrevious": "Remove the items this character already carries"
     },
     "Add": "Add",
     "AddOr": "Add Or",
