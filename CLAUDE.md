@@ -92,6 +92,7 @@ npm run content -- --allocate  # content/books/** -> packs/_source/** (--allocat
 npm test                 # 701 vitest specs — the CI tier
 npm run check            # tsc over the .ts surface, then svelte-check over module/ui
 npm run test:e2e         # 124 Playwright specs vs a real headless Foundry
+npm run design           # the design-system app on :30010 — tokens, and every component
 ```
 
 A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — both `dist/` and
@@ -136,6 +137,20 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   writing bespoke markup. Most own their styles in scoped `<style>` blocks; classes still
   served by `css/mothership.css`'s shared tier keep their pins in `test/ui-parts.test.ts`,
   because that half of the contract still has no compiler.
+- **`design/` is the design-system app** — `npm run design`, three pages: Layer 1 out of
+  `css/tokens.css` (colour regrouped by family, the way `PaletteEditor.svelte` groups it — ramp on
+  top, Surfaces/Borders/Text beneath), Layer 2 out of every scoped `<style>` block, and one
+  specimen per component, each staged at its window's real width.
+  It **imports the real components and the real stylesheets**, so an edit there is an edit to the
+  system; the only thing it owns is the sample props, its own chrome and the readers. It parses
+  rather than transcribes — a new token or component appears without editing the app — and it is
+  outside both `scripts/audit-css.ts`'s corpus and `test/css-guards.test.ts`'s directory on
+  purpose, so it can never keep a dead class alive. `test/design-gallery.test.ts` mounts every
+  specimen, holds the gallery to covering every component under `module/`, asserts no Layer 2
+  token sits under another component's prefix, and pins the chrome's own typography — a 14px
+  floor, no uppercase labels, and every ink measured at 4.5:1 or better on every ground it is
+  printed on. The shell is the Live Tokens editor panel's, in its `--ui-*` vocabulary.
+  `design/README.md` has the rest.
 - **Manifest URLs point at `rune-goblin`**. `manifest` must stay on
   `/releases/latest` or Foundry can never detect an update; `download` is version-specific and
   is stamped by `release.yml` from the tag — don't hardcode it.

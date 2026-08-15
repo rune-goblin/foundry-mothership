@@ -10,6 +10,9 @@ export default defineConfig({
     environment: 'node',
     include: ['test/**/*.test.ts'],
     setupFiles: ['test/setup.ts'],
+    // Vitest stubs CSS imports to an empty string by default, `?raw` included — and the design
+    // app's token reader parses css/tokens.css that way, so its spec would assert against nothing.
+    css: true,
     globals: false,
   },
 });

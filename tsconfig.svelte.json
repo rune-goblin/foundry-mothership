@@ -3,6 +3,6 @@
   "compilerOptions": {
     "types": ["node", "svelte"]
   },
-  "include": ["module/**/*.svelte", "module/**/*.js"],
+  "include": ["module/**/*.svelte", "module/**/*.js", "design/**/*.svelte", "design/**/*.js"],
   "exclude": ["node_modules", "dist"]
 }

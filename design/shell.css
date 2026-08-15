@@ -1,0 +1,1208 @@
+/* The companion app's own chrome — the Live Tokens editor panel's shell, in its own vocabulary.
+   The `--ui-*` names, the scales and the layout are that editor's (src/editor/styles/ui-editor.css
+   and src/editor/pages/EditorShell.svelte); what differs is spelled out where it differs.
+
+   Deliberately outside the system's world: these rules are unlayered so they outrank everything
+   foundry2.css brings, and they read no token the system declares. A tool that themed itself from
+   the thing it inspects could not show that thing changing. Only the preview surface wears
+   `.mothership`.
+
+   Foundry defines four `--ui-*` names of its own (--ui-scale, --ui-fade-*); none is redefined here,
+   and everything below is scoped to `.ds-app`, which no Foundry rule reaches. */
+
+.ds-app {
+  --ui-font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  --ui-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+
+  /* Grayscale ramp; lower number = darker. */
+  --ui-gray-50: #050505;
+  --ui-gray-100: #0a0a0a;
+  --ui-gray-150: #0f0f0f;
+  --ui-gray-200: #141414;
+  --ui-gray-250: #1a1a1a;
+  --ui-gray-300: #212121;
+  --ui-gray-350: #292929;
+  --ui-gray-400: #333333;
+  --ui-gray-500: #4d4d4d;
+  --ui-gray-600: #666666;
+  --ui-gray-700: #808080;
+  --ui-gray-750: #999999;
+  --ui-gray-800: #bfbfbf;
+  --ui-gray-850: #c7c7c7;
+  --ui-gray-950: #f2f2f2;
+
+  /* The text ramp is the one place this file departs from the editor's values, whose lowest rung
+     (#4d4d4d) sits at 2.3:1 on black and fails WCAG AA outright. Every rung here clears 4.5:1
+     against --ui-surface-highest (#292929), the lightest ground any of them is printed on —
+     measured, not estimated:
+       on #292929 / #212121 / #0f0f0f / #000000
+       primary   #ffffff   14.6  16.1  19.2  21.0
+       secondary #c9c9c9    8.8   9.7  11.6  12.7
+       tertiary  #9d9d9d    5.4   5.9   7.1   7.7
+       muted     #919191    4.6   5.1   6.1   6.7
+       highlight #ffac28    7.8   8.6  10.2  11.2
+     Nothing in this app is set below --ui-font-size-sm (14px), so the large-text exemption is
+     never leaned on. */
+  --ui-text-primary: #ffffff;
+  --ui-text-secondary: #c9c9c9;
+  --ui-text-tertiary: #9d9d9d;
+  --ui-text-muted: #919191;
+
+  /* Shared "this is live" amber: selection, focus, the literal flag. */
+  --ui-highlight: #ffac28;
+
+  --ui-border-low: var(--ui-gray-400);
+  --ui-border: var(--ui-gray-600);
+  --ui-border-high: var(--ui-gray-700);
+
+  --ui-surface-lowest: var(--ui-gray-50);
+  --ui-surface-lower: var(--ui-gray-100);
+  --ui-surface-low: var(--ui-gray-150);
+  --ui-surface: var(--ui-gray-200);
+  --ui-surface-high: var(--ui-gray-250);
+  --ui-surface-higher: var(--ui-gray-300);
+  --ui-surface-highest: var(--ui-gray-350);
+
+  --ui-hover: var(--ui-gray-150);
+
+  --ui-radius-sm: 0.125rem;
+  --ui-radius-md: 0.25rem;
+  --ui-radius-lg: 0.375rem;
+  --ui-radius-full: 9999px;
+
+  --ui-space-2: 0.125rem;
+  --ui-space-4: 0.25rem;
+  --ui-space-6: 0.375rem;
+  --ui-space-8: 0.5rem;
+  --ui-space-10: 0.625rem;
+  --ui-space-12: 0.75rem;
+  --ui-space-16: 1rem;
+  --ui-space-20: 1.25rem;
+  --ui-space-24: 1.5rem;
+  --ui-space-32: 2rem;
+  --ui-space-48: 3rem;
+
+  --ui-font-size-sm: 0.875rem; /* 14px — the floor */
+  --ui-font-size-md: 1rem; /* 16px — base */
+  --ui-font-size-lg: 1.125rem; /* 18px */
+  --ui-font-size-xl: 1.25rem; /* 20px */
+  --ui-font-size-2xl: 1.5rem; /* 24px */
+  --ui-font-size-3xl: 1.75rem; /* 28px */
+
+  --ui-font-weight-normal: 400;
+  --ui-font-weight-medium: 500;
+  --ui-font-weight-semibold: 600;
+  --ui-font-weight-bold: 700;
+
+  --ui-transition-fast: 120ms ease;
+
+  --ui-sidebar-w: 260px;
+}
+
+html,
+body {
+  height: auto;
+  margin: 0;
+  user-select: text;
+  background: #000;
+}
+
+.ds-app {
+  display: grid;
+  grid-template-columns: var(--ui-sidebar-w) minmax(0, 1fr);
+  min-height: 100vh;
+  width: 100%;
+  max-width: 1920px;
+  box-sizing: border-box;
+  color: var(--ui-text-secondary);
+  background: #000;
+  font-family: var(--ui-font-sans);
+  font-size: var(--ui-font-size-md);
+  line-height: 1.5;
+  transition: grid-template-columns 220ms ease;
+}
+
+.ds-app.condensed {
+  --ui-sidebar-w: 48px;
+}
+
+/* Foundry's reset gives every element its own font; the chrome takes one back. Kept inside
+   :where() so it computes to (0,1,0) — above core's zero-specificity baseline and below any
+   single-class rule, which is what leaves the preview surface alone. */
+.ds-app :where(*:not([class*="fa-"]):not(.mothership *)) {
+  font-family: inherit;
+}
+
+/* Sidebar ------------------------------------------------------------------------------- */
+
+.ds-rail {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #000;
+  border-right: 1px solid var(--ui-border-low);
+}
+
+.ds-rail-toggle-row {
+  display: flex;
+  justify-content: flex-end;
+  border-bottom: 1px solid var(--ui-border-low);
+}
+
+.ds-rail-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 36px;
+  background: none;
+  border: none;
+  color: var(--ui-text-primary);
+  cursor: pointer;
+  transition: background var(--ui-transition-fast);
+}
+
+.ds-rail-toggle:hover {
+  background: var(--ui-hover);
+}
+
+/* The view switcher — a radio group, one row per page. */
+
+.ds-seg-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-4);
+  margin: var(--ui-space-12) var(--ui-space-12) var(--ui-space-8);
+}
+
+.ds-seg-label {
+  padding-left: var(--ui-space-2);
+  font-size: var(--ui-font-size-sm);
+  font-weight: var(--ui-font-weight-semibold);
+  color: var(--ui-text-primary);
+}
+
+.ds-seg {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--ui-space-4);
+  background: var(--ui-surface-low);
+  border: 1px solid var(--ui-text-primary);
+  border-radius: var(--ui-radius-lg);
+}
+
+.ds-seg-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--ui-space-8);
+  width: 100%;
+  height: 30px;
+  box-sizing: border-box;
+  padding: 0 var(--ui-space-10);
+  background: none;
+  border: none;
+  border-radius: var(--ui-radius-md);
+  color: var(--ui-text-tertiary);
+  font-family: inherit;
+  font-size: var(--ui-font-size-sm);
+  font-weight: var(--ui-font-weight-medium);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--ui-transition-fast), color var(--ui-transition-fast);
+}
+
+.ds-seg-btn .ds-radio {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--ui-text-tertiary);
+  border-radius: var(--ui-radius-full);
+  background: transparent;
+  transition: border-color var(--ui-transition-fast), box-shadow var(--ui-transition-fast);
+}
+
+.ds-seg-btn:hover {
+  color: var(--ui-text-secondary);
+}
+
+.ds-seg-btn:hover:not(.active) .ds-radio {
+  border-color: var(--ui-text-secondary);
+}
+
+.ds-seg-btn.active {
+  color: var(--ui-text-primary);
+  background: var(--ui-surface-high);
+}
+
+/* The inner dot is an inset shadow so the ring's box model never shifts between states. */
+.ds-seg-btn.active .ds-radio {
+  border-color: var(--ui-text-primary);
+  box-shadow: inset 0 0 0 2.5px var(--ui-surface-high), inset 0 0 0 6px var(--ui-text-primary);
+}
+
+/* Section nav. */
+
+.ds-nav {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-4) 0 var(--ui-space-16);
+}
+
+.ds-nav-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  width: 100%;
+  height: 36px;
+  padding: 0 var(--ui-space-12) 0 0;
+  overflow: hidden;
+  background: none;
+  border: none;
+  color: var(--ui-text-tertiary);
+  font-family: inherit;
+  font-size: var(--ui-font-size-md);
+  text-align: left;
+  cursor: pointer;
+  transition: color 60ms ease, background 60ms ease;
+}
+
+.ds-nav-item i {
+  justify-self: center;
+  width: 1.25rem;
+  font-size: var(--ui-font-size-md);
+  text-align: center;
+  opacity: 0.85;
+}
+
+.ds-nav-item:hover {
+  color: var(--ui-text-secondary);
+  background: var(--ui-hover);
+}
+
+.ds-nav-item.active {
+  color: var(--ui-text-primary);
+  background: var(--ui-surface-high);
+}
+
+.ds-nav-label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  opacity: 1;
+  transition: opacity 180ms ease;
+}
+
+.ds-nav-count {
+  font-family: var(--ui-font-mono);
+  font-size: var(--ui-font-size-sm);
+  color: var(--ui-text-muted);
+  opacity: 1;
+  transition: opacity 180ms ease;
+}
+
+.ds-nav-divider {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  align-items: center;
+  height: 30px;
+  margin-top: var(--ui-space-8);
+  border-top: 1px solid var(--ui-border-low);
+}
+
+.ds-nav-divider span {
+  grid-column: 2;
+  font-size: var(--ui-font-size-sm);
+  font-weight: var(--ui-font-weight-semibold);
+  color: var(--ui-text-tertiary);
+  opacity: 1;
+  transition: opacity 180ms ease;
+}
+
+.ds-app.condensed .ds-nav-label,
+.ds-app.condensed .ds-nav-count,
+.ds-app.condensed .ds-nav-divider span,
+.ds-app.condensed .ds-seg-label {
+  opacity: 0;
+}
+
+.ds-rail-footer {
+  flex-shrink: 0;
+  margin-top: auto;
+  padding: var(--ui-space-12) var(--ui-space-12) var(--ui-space-16);
+  border-top: 1px solid var(--ui-border-low);
+  font-size: var(--ui-font-size-sm);
+  color: var(--ui-text-tertiary);
+}
+
+.ds-rail-footer strong {
+  display: block;
+  color: var(--ui-text-secondary);
+  font-weight: var(--ui-font-weight-semibold);
+}
+
+.ds-rail-hint {
+  position: fixed;
+  left: calc(var(--ui-sidebar-w) + var(--ui-space-6));
+  z-index: 50;
+  transform: translateY(-50%);
+  padding: var(--ui-space-4) var(--ui-space-8);
+  background: var(--ui-surface-low);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  color: var(--ui-text-primary);
+  font-size: var(--ui-font-size-sm);
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+/* Content ------------------------------------------------------------------------------- */
+
+.ds-content {
+  min-width: 0;
+  padding: var(--ui-space-24) var(--ui-space-32) var(--ui-space-48);
+  overflow-y: auto;
+  background: #000;
+  isolation: isolate;
+}
+
+@media (max-width: 1280px) {
+  .ds-content {
+    padding: var(--ui-space-20) var(--ui-space-20) var(--ui-space-48);
+  }
+}
+
+@media (max-width: 1024px) {
+  .ds-content {
+    padding: var(--ui-space-16) var(--ui-space-12) var(--ui-space-48);
+  }
+}
+
+.ds-page-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-8);
+  max-width: 78ch;
+  margin-bottom: var(--ui-space-32);
+}
+
+.ds-page-head h1 {
+  margin: 0;
+  font-size: var(--ui-font-size-3xl);
+  font-weight: var(--ui-font-weight-semibold);
+  color: var(--ui-text-primary);
+}
+
+.ds-page-head p {
+  margin: 0;
+  font-size: var(--ui-font-size-md);
+  color: var(--ui-text-tertiary);
+}
+
+.ds-page-head strong {
+  color: var(--ui-text-secondary);
+  font-weight: var(--ui-font-weight-semibold);
+}
+
+code {
+  font-family: var(--ui-font-mono);
+  font-size: 0.9375em;
+  color: var(--ui-text-secondary);
+}
+
+.ds-sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-48);
+}
+
+.ds-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-24);
+  scroll-margin-top: var(--ui-space-16);
+}
+
+.ds-section-title {
+  margin: 0;
+  padding-bottom: var(--ui-space-8);
+  border-bottom: 2px solid var(--ui-border-high);
+  font-size: var(--ui-font-size-2xl);
+  font-weight: var(--ui-font-weight-semibold);
+  color: var(--ui-text-primary);
+}
+
+.ds-intro {
+  max-width: 90ch;
+  margin: 0;
+  font-size: var(--ui-font-size-md);
+  color: var(--ui-text-tertiary);
+}
+
+.ds-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-12);
+  min-width: 0;
+}
+
+.ds-group-title {
+  margin: 0;
+  font-size: var(--ui-font-size-xl);
+  font-weight: var(--ui-font-weight-bold);
+  color: var(--ui-text-primary);
+}
+
+.ds-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-32);
+}
+
+.ds-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(22rem, 100%), 1fr));
+  gap: var(--ui-space-32) var(--ui-space-24);
+  align-items: start;
+}
+
+/* Token rows ---------------------------------------------------------------------------- */
+
+.ds-token-name {
+  all: unset;
+  font-family: var(--ui-font-mono);
+  font-size: var(--ui-font-size-md);
+  color: var(--ui-text-tertiary);
+  cursor: pointer;
+  transition: color var(--ui-transition-fast);
+}
+
+.ds-token-name:hover {
+  color: var(--ui-text-primary);
+}
+
+.ds-token-name.copied {
+  color: var(--ui-highlight);
+}
+
+.ds-token-value {
+  font-family: var(--ui-font-mono);
+  font-size: var(--ui-font-size-md);
+  color: var(--ui-text-muted);
+}
+
+.ds-token-note {
+  font-size: var(--ui-font-size-sm);
+  color: var(--ui-text-muted);
+}
+
+.ds-token-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--ui-space-8);
+  min-width: 0;
+}
+
+/* Colour families — the palette editor's own shape: a ramp, and the scales derived from it in a
+   row beneath, each its own grid of steps. */
+
+.ds-families {
+  display: flex;
+  flex-direction: column;
+}
+
+.ds-family {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-20);
+  min-width: 0;
+  padding: var(--ui-space-16) 0 var(--ui-space-24);
+  border-bottom: 1px solid var(--ui-border-low);
+  scroll-margin-top: var(--ui-space-16);
+}
+
+.ds-family:last-child {
+  border-bottom: none;
+}
+
+.ds-family-title {
+  margin: 0;
+  font-size: var(--ui-font-size-xl);
+  font-weight: var(--ui-font-weight-bold);
+  color: var(--ui-text-primary);
+}
+
+.ds-family .ds-intro {
+  margin-top: calc(var(--ui-space-20) * -1 + var(--ui-space-4));
+}
+
+.ds-scales-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-32) var(--ui-space-48);
+  min-width: 0;
+}
+
+.ds-scale {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-8);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ds-scale-title {
+  margin: 0;
+  font-size: var(--ui-font-size-lg);
+  font-weight: var(--ui-font-weight-semibold);
+  color: var(--ui-text-secondary);
+}
+
+/* Steps are equal columns, floored so a seven-character hex never crowds its neighbour and capped
+   so a five-step scale does not stretch to a ramp's width. */
+.ds-scale-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--ds-cols), minmax(4.5rem, 1fr));
+  gap: var(--ui-space-6);
+  align-items: start;
+  min-width: 0;
+  max-width: calc(var(--ds-cols) * 6rem + (var(--ds-cols) - 1) * var(--ui-space-6));
+}
+
+/* Swatch grid — any group of colour tokens the families do not claim. */
+
+.ds-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  gap: var(--ui-space-8) var(--ui-space-4);
+  align-items: start;
+  min-width: 0;
+}
+
+.ds-swatch-col {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--ui-space-4);
+  min-width: 0;
+}
+
+.ds-swatch-label {
+  all: unset;
+  font-size: var(--ui-font-size-sm);
+  color: var(--ui-text-secondary);
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: color var(--ui-transition-fast);
+}
+
+.ds-swatch-label:hover {
+  color: var(--ui-text-primary);
+}
+
+.ds-swatch-label.copied {
+  color: var(--ui-highlight);
+}
+
+.ds-swatch {
+  height: 2.5rem;
+  border: 1px solid var(--ui-border-low);
+  border-radius: var(--ui-radius-sm);
+  /* The checkerboard shows through anything translucent. */
+  background-image: linear-gradient(45deg, #2a2a2a 25%, transparent 25%),
+    linear-gradient(-45deg, #2a2a2a 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #2a2a2a 75%),
+    linear-gradient(-45deg, transparent 75%, #2a2a2a 75%);
+  background-size: 10px 10px;
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+}
+
+.ds-swatch::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--ds-fill);
+}
+
+.ds-swatch-value {
+  font-family: var(--ui-font-mono);
+  font-size: var(--ui-font-size-sm);
+  color: var(--ui-text-secondary);
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Metric bars — space, and border widths. */
+
+.ds-bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-6);
+}
+
+.ds-bar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-12);
+}
+
+.ds-bar {
+  flex-shrink: 0;
+  height: 1.25rem;
+  min-width: 2px;
+  max-width: 12rem;
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-gray-950);
+}
+
+.ds-bar.width {
+  width: 4rem;
+  height: auto;
+  min-height: 1px;
+  border-radius: 0;
+}
+
+/* Radius boxes. */
+
+.ds-radii {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  gap: var(--ui-space-16);
+}
+
+.ds-radius-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ui-space-8);
+}
+
+.ds-radius-box {
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 2px solid var(--ui-border-high);
+}
+
+/* Type specimens — sizes, weights, letter spacing. */
+
+.ds-specimens {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-4);
+}
+
+.ds-specimen-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--ui-space-12);
+}
+
+.ds-specimen-preview {
+  flex-shrink: 0;
+  min-width: 3.5rem;
+  color: var(--ui-text-primary);
+  line-height: 1;
+}
+
+/* Plain rows — line heights, and anything with nothing to show. */
+
+.ds-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.ds-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--ui-space-12);
+  padding: var(--ui-space-6) 0;
+  border-bottom: 1px solid var(--ui-border-low);
+}
+
+/* The preview column of a mixed group. Fixed so the names line up whatever each row shows. */
+.ds-row-preview {
+  display: inline-flex;
+  flex: 0 0 3.5rem;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 1.25rem;
+  color: var(--ui-text-primary);
+  overflow: hidden;
+}
+
+.ds-row-chip {
+  width: 2.5rem;
+  height: 1.25rem;
+  border-radius: var(--ui-radius-sm);
+  background: var(--ds-fill);
+}
+
+.ds-row-chip.radius {
+  background: none;
+  border: 2px solid var(--ui-border-high);
+}
+
+.ds-row-chip.shadow {
+  background: var(--ui-surface-lower);
+  box-shadow: var(--ds-fill);
+}
+
+.ds-row-bar {
+  height: 0.75rem;
+  min-width: 1px;
+  max-width: 3.5rem;
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-gray-950);
+}
+
+.ds-row:last-child {
+  border-bottom: none;
+}
+
+/* Gradients, and shadows. */
+
+.ds-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr));
+  gap: var(--ui-space-16);
+}
+
+.ds-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-8);
+}
+
+.ds-card-fill {
+  height: 4rem;
+  border-radius: var(--ui-radius-md);
+  background: var(--ds-fill);
+}
+
+.ds-shadow-well {
+  display: grid;
+  place-items: center;
+  height: 6rem;
+  border-radius: var(--ui-radius-md);
+  background: var(--ui-surface-highest);
+}
+
+.ds-shadow-chip {
+  width: 5rem;
+  height: 2.5rem;
+  border-radius: var(--ui-radius-md);
+  background: var(--ui-surface-lower);
+  box-shadow: var(--ds-fill);
+}
+
+/* Composite type styles. */
+
+.ds-typeset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-20);
+  padding: var(--ui-space-20);
+  background: var(--ui-surface-low);
+  border: 1px solid var(--ui-border-low);
+  border-radius: var(--ui-radius-md);
+}
+
+.ds-typeset-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-4);
+  min-width: 0;
+}
+
+.ds-typeset-item .ds-token-name {
+  align-self: flex-start;
+}
+
+.ds-typeset-line {
+  margin: 0;
+  color: var(--ui-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Component-token cards ------------------------------------------------------------------ */
+
+.ds-owner {
+  display: flex;
+  flex-direction: column;
+  padding: var(--ui-space-20);
+  background: var(--ui-surface-low);
+  border: 1px solid var(--ui-border-low);
+  border-radius: var(--ui-radius-md);
+  scroll-margin-top: var(--ui-space-16);
+}
+
+.ds-owner-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--ui-space-12);
+  padding-bottom: var(--ui-space-12);
+}
+
+.ds-owner-head h3 {
+  margin: 0;
+  font-size: var(--ui-font-size-xl);
+  font-weight: var(--ui-font-weight-semibold);
+  color: var(--ui-text-primary);
+}
+
+.ds-path {
+  font-family: var(--ui-font-mono);
+  font-size: var(--ui-font-size-sm);
+  color: var(--ui-text-muted);
+}
+
+.ds-tally {
+  margin-left: auto;
+  font-family: var(--ui-font-mono);
+  font-size: var(--ui-font-size-sm);
+  color: var(--ui-text-muted);
+}
+
+/* Info popover — a note long enough to swamp its card, moved behind a button. */
+
+.ds-info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--ui-text-tertiary);
+  font-size: var(--ui-font-size-md);
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--ui-transition-fast);
+}
+
+.ds-info-btn:hover,
+.ds-info-btn[aria-expanded="true"] {
+  color: var(--ui-text-primary);
+}
+
+/* Fixed, because the card clips its own overflow; the script anchors it to the button. */
+.ds-info-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 34rem;
+  max-width: calc(100vw - var(--ui-space-24));
+  overflow: hidden;
+  background: var(--ui-surface-higher);
+  border: 1px solid var(--ui-border-high);
+  border-radius: var(--ui-radius-lg);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+}
+
+.ds-info-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-8);
+  padding: var(--ui-space-8) var(--ui-space-8) var(--ui-space-8) var(--ui-space-16);
+  border-bottom: 1px solid var(--ui-border-low);
+}
+
+.ds-info-title {
+  color: var(--ui-text-primary);
+  font-size: var(--ui-font-size-md);
+  font-weight: var(--ui-font-weight-semibold);
+}
+
+.ds-info-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: 0;
+  border-radius: var(--ui-radius-md);
+  color: var(--ui-text-tertiary);
+  font-size: var(--ui-font-size-md);
+  cursor: pointer;
+}
+
+.ds-info-close:hover {
+  color: var(--ui-text-primary);
+  background: var(--ui-surface-highest);
+}
+
+/* Prose, so it is set at the base size rather than at a caption's. */
+.ds-info-body {
+  max-width: 68ch;
+  margin: 0;
+  padding: var(--ui-space-16);
+  color: var(--ui-text-secondary);
+  font-size: var(--ui-font-size-md);
+  line-height: 1.6;
+}
+
+.ds-alias {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 46ch) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--ui-space-12);
+  padding: var(--ui-space-6) 0;
+  border-bottom: 1px solid var(--ui-gray-250);
+}
+
+.ds-alias:last-child {
+  border-bottom: none;
+}
+
+.ds-alias-chip {
+  height: 1.5rem;
+  border: 1px solid var(--ui-border-low);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ds-fill);
+}
+
+.ds-alias-chip.empty {
+  border-style: dashed;
+  background: none;
+}
+
+.ds-alias .ds-token-name,
+.ds-alias .ds-token-value {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ds-alias.literal .ds-token-value {
+  color: var(--ui-highlight);
+}
+
+.ds-flag {
+  margin-left: var(--ui-space-8);
+  font-family: var(--ui-font-sans);
+  font-size: var(--ui-font-size-sm);
+  color: var(--ui-highlight);
+}
+
+/* Which selector a redeclared token sits under — the base and its state override read as one pair
+   only with this beside them. */
+.ds-flag.state {
+  font-family: var(--ui-font-mono);
+  color: var(--ui-text-muted);
+}
+
+/* Component gallery ---------------------------------------------------------------------- */
+
+.ds-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ui-space-16);
+  margin-bottom: var(--ui-space-24);
+}
+
+.ds-toolbar input[type="search"] {
+  flex: 0 1 22rem;
+  height: 36px;
+  box-sizing: border-box;
+  padding: 0 var(--ui-space-12);
+  background: var(--ui-surface-low);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-md);
+  color: var(--ui-text-primary);
+  font-family: var(--ui-font-mono);
+  font-size: var(--ui-font-size-md);
+}
+
+.ds-toolbar input[type="search"]::placeholder {
+  color: var(--ui-text-muted);
+}
+
+.ds-toolbar input[type="search"]:focus-visible {
+  outline: 2px solid var(--ui-highlight);
+  outline-offset: 1px;
+}
+
+.ds-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ui-space-8);
+  font-size: var(--ui-font-size-md);
+  color: var(--ui-text-tertiary);
+  cursor: pointer;
+}
+
+.ds-toggle input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--ui-highlight);
+}
+
+.ds-case {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--ui-surface-low);
+  border: 1px solid var(--ui-border-low);
+  border-radius: var(--ui-radius-md);
+  scroll-margin-top: var(--ui-space-16);
+}
+
+.ds-case-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--ui-space-12);
+  padding: var(--ui-space-16) var(--ui-space-20) var(--ui-space-8);
+}
+
+.ds-case-head h3 {
+  margin: 0;
+  font-size: var(--ui-font-size-xl);
+  font-weight: var(--ui-font-weight-semibold);
+  color: var(--ui-text-primary);
+}
+
+.ds-case-note {
+  max-width: 90ch;
+  margin: 0;
+  padding: 0 var(--ui-space-20) var(--ui-space-16);
+  font-size: var(--ui-font-size-md);
+  color: var(--ui-text-tertiary);
+}
+
+.ds-case-note.stand-in {
+  color: var(--ui-highlight);
+}
+
+/* The preview surface. Everything inside is the system's, in the DOM shape an ApplicationV2
+   window gives it, so its own cascade applies unaltered. */
+.ds-stage {
+  padding: var(--ui-space-24);
+  border-top: 1px solid var(--ui-border-low);
+  background: repeating-conic-gradient(var(--ui-gray-250) 0% 25%, var(--ui-gray-200) 0% 50%) 0 0 /
+    16px 16px;
+}
+
+/* `.application` carries Foundry's window-manager geometry — absolutely positioned at z-index 100,
+   sized by the drag handles, clipped to the viewport — because a real window floats over the board.
+   A specimen is a block in a page, so the geometry is reset and only the look kept. Without this
+   every stage collapses to 200px and the whole gallery stacks on one spot. */
+.ds-stage .application {
+  position: static;
+  z-index: auto;
+  width: auto;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+  margin: 0 auto;
+  border: 1px solid #000;
+  border-radius: var(--ui-radius-md);
+  background: #fff;
+}
+
+/* The frame scrolls its content inside a fixed-height window; the stage lets it be as tall as it is. */
+.ds-stage .window-content {
+  height: auto;
+  max-height: none;
+  overflow: visible;
+  padding: var(--ui-space-12);
+}
+
+.ds-empty {
+  padding: var(--ui-space-48);
+  color: var(--ui-text-tertiary);
+  text-align: center;
+  font-size: var(--ui-font-size-md);
+}
+
+/* Two controls that belong to the tool but render inside the preview surface, where the system's
+   own rules reach them. Doubled selectors so they win outright. */
+.ds-stage .ds-caption.ds-caption {
+  margin: var(--ui-space-16) 0 var(--ui-space-8);
+  color: #4a4a4a;
+  font-family: var(--ui-font-mono);
+  font-size: var(--ui-font-size-sm);
+}
+
+.ds-stage .ds-caption.ds-caption:first-child {
+  margin-top: 0;
+}
+
+/* A state chart inside a specimen: the state on the left, its name on the right. */
+.ds-stage .ds-states.ds-states {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: center;
+  gap: var(--ui-space-8) var(--ui-space-16);
+  margin: 0;
+}
+
+.ds-stage .ds-states.ds-states dt,
+.ds-stage .ds-states.ds-states dd {
+  margin: 0;
+  color: #333;
+  font-family: var(--ui-font-mono);
+  font-size: var(--ui-font-size-sm);
+}
+
+.ds-stage .ds-switch.ds-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-6);
+  margin: 0 0 var(--ui-space-12);
+}
+
+.ds-stage .ds-switch.ds-switch button {
+  flex: 0 0 auto;
+  width: auto;
+  height: auto;
+  padding: var(--ui-space-4) var(--ui-space-12);
+  border: 1px solid #9a9a9a;
+  border-radius: var(--ui-radius-md);
+  color: #333;
+  background: #f1f1f1;
+  font-family: var(--ui-font-mono);
+  font-size: var(--ui-font-size-sm);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.ds-stage .ds-switch.ds-switch button.active {
+  border-color: #000;
+  color: #fff;
+  background: #000;
+}

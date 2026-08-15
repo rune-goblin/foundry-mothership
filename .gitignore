@@ -1,5 +1,8 @@
-node_modules/
+# No trailing slash: a git worktree gets node_modules as a symlink to the main checkout's,
+# and `node_modules/` matches only a real directory.
+node_modules
 dist/
+dist-design/
 # build/content-manifest.json — where a content build records what each _id came from.
 # Provenance is kept out of the shipped packs, and regenerating it is one command.
 build/

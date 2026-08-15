@@ -11,6 +11,8 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
+    "design": "vite --config vite.design.config.ts",
+    "design:build": "vite build --config vite.design.config.ts",
     "watch": "vite build --watch",
     "clean": "rm -rf dist",
     "content": "node scripts/build-content.ts",
