@@ -3,6 +3,10 @@
   // Local to the generator by design — recurrence inside one window gets a local component,
   // not a shared primitive; the label and circle come from MainStat so
   // the css/mothership.css class names stay in one place.
+  //
+  // No <style> block: `circle-input` and the `mainstatmod-*` pair are shared tier there, and
+  // `clicable-item` moved into Generator.svelte, which scopes it by the form this always
+  // renders inside.
   import MainStat from '../parts/MainStat.svelte';
   import { onActivate } from '../parts/activate.js';
 

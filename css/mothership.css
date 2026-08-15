@@ -905,35 +905,20 @@
   }
 
 
-  .mosh form.actor-generator div.fulllabel {
-    border-radius: 2em;
-  }
-  .mosh form.actor-generator div.ulinputfield {
-    min-height: 150px;
-  }
-  .mosh form.actor-generator .smalltext {
-    font-size: 0.7rem;
-  }
-  .mosh form.actor-generator div#generator-header-grid-1col {
-    grid-column: span 1/span 1;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
-  .mosh form.actor-generator .element-group {
-    margin-top: 10px;
-  }
-  .mosh form.actor-generator .credit-img {
-    height: 30px;
-    margin-top: 0%;
-  }
-  .mosh form.actor-generator .checkbox-round {
-    appearance: none;
-  }
-  .mosh form.actor-generator .checkbox-round:checked {
-    background-color: gray;
-  }
-  .mosh form.actor-generator .clicable-item {
-    cursor: pointer;
-  }
+  /* Every rule this file carried under `form.actor-generator` moved into Generator.svelte, which
+     is the only writer of the form and of all eight names — `fulllabel`, `ulinputfield`,
+     `smalltext`, `generator-header-grid-1col`, `element-group`, `credit-img`, `checkbox-round`,
+     `clicable-item`. Two of them land on markup the block cannot scope (MainStat renders the
+     `fulllabel` div from a class prop, RollBox writes `clicable-item`), so those two keep the
+     form as a `:global()` ancestor there. The generator's remaining vocabulary stays here and is
+     tagged where it is declared: the shared stat tier, `char-header`/`header-fields`/`header`,
+     `headerinputtext`/`headerinputfield`/`charname`/`noborder`, `circle-input` and the
+     `.grid*`/`widegap` set. */
+
+  /* shared tier: SkillPicker and BonusOption — the two generator dialogs, which build the same
+     popup body from the same two class names on markup neither one renders for the other. A
+     scoped block in either file would reach only its own half, so unifying the two bodies is S9
+     call-site work, not a move. `center`, which SkillPicker alone writes, moved into it. */
   .mosh .characterGeneratorSkillPopup {
     margin-bottom: 10px;
   }
@@ -941,10 +926,6 @@
     text-align: center;
     font-weight: bold;
     padding-bottom: 0.2em;
-  }
-
-  .mosh .characterGeneratorSkillPopup .center {
-    text-align: center;
   }
 
   /* Dialog V2 - Macro Pop Ups */

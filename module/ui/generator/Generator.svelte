@@ -266,3 +266,84 @@
     </div>
   </div>
 </form>
+
+<style>
+  /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
+     application; @layer system puts these in the slot the rest of the system occupies.
+     These eight names are the whole of what only this window writes. Everything else its markup
+     wears stays declared in css/mothership.css: the shared stat vocabulary this form hand-writes
+     at lines 216-266 (`mainstatwrapper`/`resource`/`mainstat`/`mainstatlabel`/`mainstattext`,
+     plus `circle-input`, which the roll circles wear everywhere) -- converting those call sites
+     is the S9 audit's first work item -- and `char-header`/`header-fields`/`header`,
+     `headerinputtext`/`headerinputfield`/`charname`/`noborder` (CharacterSheet and SheetHeader
+     write all of those too) and the `.grid*`/`widegap` set. `actor-generator` itself now styles
+     nothing anywhere: it is the scope this block hangs off and the e2e suite's window locator. */
+  @layer system {
+    .actor-generator {
+      --generator-group-margin-block-start: var(--space-10);
+
+      /* An em radius against a px scale; 150px is past the top of the space scale (128) and 30px
+         sits between 24 and 32. All three are the reserved literal sweep's, not this unit's. */
+      --generator-full-label-radius: 2em;
+      --generator-list-panel-min-height: 150px;
+      --generator-credit-image-height: 30px;
+      /* `0%` was the original; a zero percentage of any containing block is the same zero. */
+      --generator-credit-image-margin-block-start: var(--space-0);
+
+      /* 0.7rem is 11.2px, below --font-size-xs (0.75rem) and on no step. */
+      --generator-action-label-font-size: 0.7rem;
+
+      /* `gray` is #808080 exactly, which is the step --surface-neutral-high reads. */
+      --generator-checkbox-checked-surface: var(--surface-neutral-high);
+    }
+
+    /* The identity block is a single column inside the black bar `.mosh .header` lays out in two.
+       Byte-identical to `.mothership .grid-1col`, which this element does not wear -- the id is
+       how the fork spelt the override, and (1,2,0) is what carries it. */
+    .actor-generator #generator-header-grid-1col {
+      grid-column: span 1 / span 1;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+
+    .actor-generator .element-group {
+      margin-top: var(--generator-group-margin-block-start);
+    }
+
+    /* (0,3,0) against `.mosh .circle-input`'s (0,2,0), as `form.actor-generator` was before it:
+       the credits die is smaller than a stat circle and drops its -0.15em top bleed. */
+    .actor-generator .credit-img {
+      height: var(--generator-credit-image-height);
+      margin-top: var(--generator-credit-image-margin-block-start);
+    }
+
+    .actor-generator .checkbox-round {
+      appearance: none;
+    }
+
+    /* (0,4,0) against `.mosh .circle-input`'s (0,2,0), which fills the same box white. */
+    .actor-generator .checkbox-round:checked {
+      background-color: var(--generator-checkbox-checked-surface);
+    }
+
+    /* Beats `.mosh .mainstattext`'s 1.3rem: these three captions are sentences, not stat names. */
+    .actor-generator .smalltext {
+      font-size: var(--generator-action-label-font-size);
+    }
+
+    .actor-generator .ulinputfield {
+      min-height: var(--generator-list-panel-min-height);
+    }
+
+    /* MainStat renders the skills label from a `labelClass` prop, so the class lands on markup a
+       scoped block here can never reach -- the `savetext` case. The form ancestor is what keeps
+       the escape inside this window. */
+    .actor-generator :global(div.fulllabel) {
+      border-radius: var(--generator-full-label-radius);
+    }
+
+    /* RollBox writes this class too, and only ever renders inside this form. */
+    .actor-generator :global(.clicable-item) {
+      cursor: pointer;
+    }
+  }
+</style>

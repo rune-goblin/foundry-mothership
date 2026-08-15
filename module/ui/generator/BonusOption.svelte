@@ -1,6 +1,11 @@
 <script>
   // The choice itself is the dialog's buttons -- one per package -- so this only shows what each
   // one contains.
+  //
+  // No <style> block: SkillPicker builds the same popup body from `characterGeneratorSkillPopup`
+  // and `skillpopupDescription`, so both stay shared vocabulary in css/mothership.css. The
+  // package card's border, radius and padding are inline below and duplicate nothing -- they
+  // join the S9 call-site list with the rest of the generator's hand-written markup.
   let { text, options } = $props();
 </script>
 
