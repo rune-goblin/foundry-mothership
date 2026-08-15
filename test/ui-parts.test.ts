@@ -25,10 +25,11 @@
 // PipTrack owns its three names and keeps its pin for both of Field's reasons at once: the
 // e2e specs count `.circle`/`.circle-f` and read `.skill_training_text`, and the pip's class is
 // the runtime `pip.filled ? 'circle-f' : 'circle'`. MinMaxField and RollableStat own nothing --
-// ArmorBlock and Cover hand-write the first's markup, and no rule anywhere keys off the
-// second's `ability-mod`/`stat-roll` -- so their pins are the whole contract. The three sections
-// own nothing either: HealthBlock and ItemPanel write no class at all, and every class ArmorBlock
-// writes is shared -- `whiteText`/`highlightText` with Cover, the rest with MinMaxField besides.
+// ArmorBlock hand-writes the first's wrapper, and no rule anywhere keys off the second's
+// `ability-mod`/`stat-roll` -- so their pins are the whole contract. The three sections own
+// nothing either: HealthBlock and ItemPanel write no class at all, and ArmorBlock's remaining
+// names are MinMaxField's. `whiteText`/`highlightText` and the black bar around them are
+// ArmorBar's now, shared by ArmorBlock and the Cover dialog.
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { mount, unmount, flushSync, createRawSnippet, type Component } from 'svelte';
 
@@ -45,6 +46,7 @@ import MainStat from '../module/ui/parts/MainStat.svelte';
 import MinMaxField from '../module/ui/parts/MinMaxField.svelte';
 import PipTrack from '../module/ui/parts/PipTrack.svelte';
 import RollableStat from '../module/ui/parts/RollableStat.svelte';
+import ArmorBar from '../module/ui/parts/ArmorBar.svelte';
 import ArmorBlock from '../module/ui/parts/sections/ArmorBlock.svelte';
 import HealthBlock from '../module/ui/parts/sections/HealthBlock.svelte';
 import ItemPanel from '../module/ui/parts/sections/ItemPanel.svelte';
@@ -661,6 +663,27 @@ describe('ArmorBlock', () => {
   ])('cover %s adds its bonuses beside the readouts', (cover, expected) => {
     const el = block({ mod: 0, damageReduction: 0, cover });
     expect([...el.querySelectorAll('.highlightText')].map((n) => n.textContent)).toEqual(expected);
+  });
+});
+
+describe('ArmorBar', () => {
+  const bar = (props: Record<string, unknown>) => render(ArmorBar, props).firstElementChild!;
+
+  it('is two values either side of the slant, each dropping an absent bonus', () => {
+    const el = bar({ left: 4, right: 2, leftBonus: 20 });
+
+    expect([...el.querySelectorAll('.whiteText')].map((n) => n.textContent)).toEqual(['4', '2']);
+    expect([...el.querySelectorAll('.highlightText')].map((n) => n.textContent)).toEqual([' 20']);
+    expect(el.querySelector('.slant')).not.toBeNull();
+  });
+
+  // `spread` is the difference between the two hand-written copies this component replaced: Cover
+  // put `maxhealth-input` on the value div too, and its `margin: auto` pushes the value and its
+  // bonus to opposite ends of the cell. Only the character sheet's form has a baseline, so the
+  // difference is pinned rather than resolved — dropping it is a reviewed pixel change.
+  it('spreads a value from its bonus only when asked', () => {
+    expect(bar({ left: 4, right: 2 }).querySelector('.whiteText.maxhealth-input')).toBeNull();
+    expect(bar({ left: 4, right: 2, spread: true }).querySelectorAll('.whiteText.maxhealth-input')).toHaveLength(2);
   });
 });
 

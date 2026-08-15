@@ -1,18 +1,13 @@
 <script>
+  import ArmorBar from '../ui/parts/ArmorBar.svelte';
   import { asset } from '../chat/cards.ts';
   import { localize } from '../i18n.ts';
   import { COVER_BONUS } from '../rules.ts';
 
   // The radio group holds the choice; `value` is the cover the actor is already behind.
   //
-  // No <style> block, and two reasons rather than one. The dialog vocabulary is the shell tier's
-  // (css/mothership.css). The armour readout below it is ArmorBlock's markup copied here by hand,
-  // inline overrides and all -- `minmaxwrapper`'s black bar, `slant`'s white edge,
-  // `highlightText`'s size and `maxhealth-input`'s flex are byte-identical in both files. They
-  // stay inline: keying them on a new wrapper class would put four rules back into
-  // css/mothership.css to serve two hand-writers that S9 is meant to collapse into one component,
-  // and that collapse would delete the class again. One duplication is cheaper than a class
-  // minted to outlive it.
+  // No <style> block: the dialog vocabulary is the shell tier's (css/mothership.css), and the
+  // armour readout is ArmorBar, which this file and ArmorBlock used to draw by hand apiece.
   let { options, armorPoints, damageReduction, value, onchange } = $props();
 </script>
 
@@ -52,22 +47,13 @@
           </span>
         </div>
         <div class="macro_desc health resource healthspread minmaxtopstat">
-          <div class="minmaxwrapper" style="width: 100%; background: black; border-radius: 0.3em;">
-            <div class="maxhealth-input" style="display: flex;">
-              <div class="maxhealth-input whiteText">{armorPoints}</div>
-              {#if COVER_BONUS[option.key].armorPoints > 0}
-                <!-- The gap is a non-breaking space in the text node, not a margin. -->
-                <div class="highlightText" style="font-size: 0.8rem;">&nbsp;{COVER_BONUS[option.key].armorPoints}</div>
-              {/if}
-            </div>
-            <div class="slant" style="border-right: 2px solid #ffffff; transform: skewX(0deg);"></div>
-            <div class="maxhealth-input" style="display: flex;">
-              <div class="maxhealth-input whiteText">{damageReduction}</div>
-              {#if COVER_BONUS[option.key].damageReduction > 0}
-                <div class="highlightText" style="font-size: 0.8rem;">&nbsp;{COVER_BONUS[option.key].damageReduction}</div>
-              {/if}
-            </div>
-          </div>
+          <ArmorBar
+            spread
+            left={armorPoints}
+            leftBonus={COVER_BONUS[option.key].armorPoints}
+            right={damageReduction}
+            rightBonus={COVER_BONUS[option.key].damageReduction}
+          />
           <div class="grid">
             <div class="healthmaxtext health resource">{localize('Mothership.ArmorPoints')}</div>
             <div class="healthmaxtext health resource">{localize('Mothership.DMGReduction')}</div>
