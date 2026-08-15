@@ -346,8 +346,6 @@
     flex: 1;
   }
 
-  /* No markup writes `stress` as a class, and the header grid declares no such area. */
-  .mothership .stress {grid-area: stress;}
   /* shared tier: CharacterSheet's centre column, and Cover's two readout captions — which sit
      under a `mothership` ancestor of their own and so are reached by this rule too. */
   .mothership .health {grid-area: centercol;}
@@ -356,29 +354,6 @@
   }
   /* shared tier: Field, CheckField, MinMaxField, ArmorBlock, CreatureSettings, Cover. */
   .mothership .healthspread {width:96%;}
-
-  /* No `<h1>` exists anywhere in module/, templates/, content/ or packs/_source/, so neither of
-     these two matches any element — structural deadness the class-level audit cannot see. */
-  .mothership .char-header h1.charname {
-    height: auto;
-    padding: 0px;
-    margin: 0px 0;
-    border-bottom: 0;
-  }
-
-  .mothership .char-header h1.charname input {
-    width: 100%;
-    height: auto;
-
-    background: #fff;
-
-    padding-left: 1em;
-    border: 4px solid #111;
-    border-radius: 3em;
-    font-size: 0.9rem;
-    font-weight: bold;
-    text-align: left;
-  }
 
   .mothership .sheet-body,
   .mothership .sheet-body .tab,
@@ -890,7 +865,7 @@
      `fulllabel` div from a class prop, RollBox writes `clicable-item`), so those two keep the
      form as a `:global()` ancestor there. The generator's remaining vocabulary stays here and is
      tagged where it is declared: the shared stat tier, `char-header`/`header-fields`/`header`,
-     `headerinputtext`/`headerinputfield`/`charname`/`noborder`, `circle-input` and the
+     `headerinputtext`/`headerinputfield`/`noborder`, `circle-input` and the
      `.grid*`/`widegap` set. */
 
   /* shared tier: SkillPicker and BonusOption — the two generator dialogs, which build the same
@@ -919,9 +894,9 @@
 
      `macro_img` and `macro_prompt` are absent below on purpose: both rules were empty declaration
      blocks, contributing nothing to any element's cascade, and were deleted. (The build kept
-     them; emptiness, not absence from the bundle, is the proof.) Both class names stay on the
-     markup — `macro_prompt` because test/dialogs.test.ts locates by it, `macro_img` as structure
-     with nothing left to style it. */
+     them; emptiness, not absence from the bundle, is the proof.) `macro_prompt` stays on the
+     markup because test/dialogs.test.ts locates by it; `macro_img` styled nothing and named
+     nothing, and is gone from the six wrappers that wore it. */
 
   /* Base dialog styling */
   .mothership.application.dialog.macro-popup-dialog {

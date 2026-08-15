@@ -43,14 +43,14 @@
     <div id="generator-header-grid-1col" class="header">
       <div>
         <div class="headerinputtext">{localize('Mothership.Name')}</div>
-        <div class="headerinputfield charname">
+        <div class="headerinputfield">
           <input class="noborder" type="text" name="name" bind:value={draft.name} placeholder="Name" />
         </div>
       </div>
 
       <div>
         <div class="headerinputtext">{localize('Mothership.CLASS')}</div>
-        <div class="headerinputfield charname">
+        <div class="headerinputfield">
           <input
             class="noborder"
             type="text"
@@ -69,7 +69,7 @@
 
       <div>
         <div class="headerinputtext">{localize('Mothership.Wounds')}</div>
-        <div class="headerinputfield charname">
+        <div class="headerinputfield">
           <input
             class="noborder"
             type="text"
@@ -82,7 +82,7 @@
 
       <div>
         <div class="headerinputtext">{localize('Mothership.Credits')}</div>
-        <div class="headerinputfield charname">
+        <div class="headerinputfield">
           {#if draft.rolled.credits === null}
             <!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
             <img
@@ -275,7 +275,7 @@
      at lines 216-266 (`mainstatwrapper`/`resource`/`mainstat`/`mainstatlabel`/`mainstattext`,
      plus `circle-input`, which the roll circles wear everywhere) -- converting those call sites
      is the S9 audit's first work item -- and `char-header`/`header-fields`/`header`,
-     `headerinputtext`/`headerinputfield`/`charname`/`noborder` (CharacterSheet and SheetHeader
+     `headerinputtext`/`headerinputfield`/`noborder` (CharacterSheet and SheetHeader
      write all of those too) and the `.grid*`/`widegap` set. `actor-generator` itself now styles
      nothing anywhere: it is the scope this block hangs off and the e2e suite's window locator. */
   @layer system {

@@ -10,7 +10,7 @@
 
 <div class="macro_window" style="margin-bottom: 7px;">
   <div class="grid grid-2col" style="grid-template-columns: 150px auto">
-    <div class="macro_img">
+    <div>
       <img src={image} alt={heading} style="border:none" />
     </div>
     <div class="macro_desc">
@@ -32,7 +32,7 @@
           checked={value === table.key}
           onchange={() => onchange(table.key)}
         />
-        <div class="macro_img" style="padding-top: 5px; padding-bottom: 5px;">
+        <div style="padding-top: 5px; padding-bottom: 5px;">
           <img src={table.img} alt={table.label} style="border:none" />
         </div>
         <div class="macro_desc" style="display: table;">

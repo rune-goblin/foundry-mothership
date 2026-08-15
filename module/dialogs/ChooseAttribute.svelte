@@ -27,7 +27,7 @@
           checked={value === stat.key}
           onchange={() => onchange(stat.key)}
         />
-        <div class="macro_img" style="padding-top: 5px; padding-bottom: 5px;">
+        <div style="padding-top: 5px; padding-bottom: 5px;">
           <img src={stat.img} alt={stat.label} style="border:none" />
         </div>
         <div class="macro_desc" style="display: table;">

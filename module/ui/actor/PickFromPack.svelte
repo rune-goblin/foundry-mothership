@@ -77,7 +77,7 @@
             checked={selected === row.id}
             onchange={pick(row)}
           />
-          <div class="macro_img" style="padding-top: 5px; padding-bottom: 5px;">
+          <div style="padding-top: 5px; padding-bottom: 5px;">
             <img src={row.img} alt={row.name} style="border: none; max-width: 30px; max-height: 30px;" />
           </div>
           <div class="macro_desc"><strong>{row.name}</strong></div>

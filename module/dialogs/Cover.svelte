@@ -18,7 +18,7 @@
 
 <div class="macro_window">
   <div class="grid grid-2col" style="grid-template-columns: 150px auto">
-    <div class="macro_img">
+    <div>
       <img src={asset('images/icons/ui/attributes/armor.png')} alt={localize('Mothership.Cover')} />
     </div>
     <div class="macro_desc">

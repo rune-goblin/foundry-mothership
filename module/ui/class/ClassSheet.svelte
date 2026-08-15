@@ -17,8 +17,7 @@
   import { localize } from '../../i18n.ts';
 
   // No <style> block: every name this sheet writes is shared vocabulary css/mothership.css keeps
-  // declaring — `header-fields`, whose one rule needs the `char-header` ancestor only Generator
-  // and CharacterSheet supply, so here it styles nothing; the `.grid*`/`widegap` set,
+  // declaring — the `.grid*`/`widegap` set,
   // `resource-label`, `textarea-input` (CharacterSheet), `skill-name` (SkillSheet, OptionDraft and
   // ItemCell's `name` variant) and the `list-roll` hover group. The six `skills-*`/`stat-option-*`
   // names are class props on ItemControl's anchor, where a scoped block here could not reach them
@@ -135,7 +134,7 @@
 <!-- The nine adjustments are written out rather than looped: an interpolated `name` is invisible
      to test/sheet-bindings.test.ts and to the field-usage ratchet, and the whole point of the
      SchemaField behind them is that a binding no schema declares fails a tier. -->
-<div class="header-fields grid">
+<div class="grid">
   <div class="grid grid-1col widegap">
     <MainStat
       name="system.base_adjustment.strength"

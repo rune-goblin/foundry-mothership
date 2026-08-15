@@ -18,7 +18,7 @@
 
     <div>
       <div class="headerinputtext">{localize('Mothership.Name')}</div>
-      <div class="headerinputfield charname">
+      <div class="headerinputfield">
         <input
           name="name"
           class="noborder"
@@ -37,8 +37,8 @@
      One class is here because one class is this component's own: `sheet-header-profile`,
      renamed off the Shipbreaker's-Toolkit prefix no other file ever wore. Everything else
      the markup wears is shared vocabulary css/mothership.css keeps declaring — Generator
-     and CharacterSheet hand-write `header`, `headerinputtext`, `headerinputfield` and
-     `charname`; those two and CreatureSheet write `noborder`; CreatureSettings writes
+     and CharacterSheet hand-write `header`, `headerinputtext` and `headerinputfield`;
+     those two and CreatureSheet write `noborder`; CreatureSettings writes
      `sheet-header`; forty sites write `grid`.
      The image also carried an inline `height: auto` saying what the rule already said;
      one copy survives, here. */

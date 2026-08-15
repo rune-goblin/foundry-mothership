@@ -53,7 +53,7 @@
           checked={value?.id === skill.id}
           onchange={() => onchange(skill)}
         />
-        <div class="macro_img" style="padding-top: 5px; padding-bottom: 5px;">
+        <div style="padding-top: 5px; padding-bottom: 5px;">
           <img src={skill.img} alt={skill.name} style="border:none" />
         </div>
         <div class="macro_desc" style="display: table;">

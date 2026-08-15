@@ -119,7 +119,7 @@
       <div class="headergrid">
         <div class="headernamegrid">
           <div class="headerinputtext">{localize('Mothership.Name')}</div>
-          <div class="headerinputfield charname">
+          <div class="headerinputfield">
             <input
               name="name"
               class="noborder"
@@ -133,7 +133,7 @@
         {#each IDENTITY as field (field.name)}
           <div>
             <div class="headerinputtext">{localize(field.label)}</div>
-            <div class="headerinputfield charname">
+            <div class="headerinputfield">
               <input
                 name={field.name}
                 class="noborder"
@@ -577,8 +577,8 @@
      Only the eight names nothing else emits are here, and all eight sit inside the header --
      which is why the slots are declared on it. The rest of this sheet's markup wears shared
      vocabulary css/mothership.css keeps declaring: `char-header`, `header-fields` and `header`
-     (Generator hand-writes all three), `headerinputtext`/`headerinputfield`/`charname`/
-     `noborder` (Generator and SheetHeader), `profile` (CreatureSheet), `textarea-input`
+     (Generator hand-writes all three), `headerinputtext`/`headerinputfield`/`noborder`
+     (Generator and SheetHeader), `profile` (CreatureSheet), `textarea-input`
      (ClassSheet), `textarea-input-grey` and `skill_training_frame` (CreatureSheet),
      `resource-label`, `sheet-body` (five sheets), the modifier pair `mainstatmod-input`/
      `mainstatmod-title` (RollBox), the `.grid*`/`.flex*`/`widegap` set and the
