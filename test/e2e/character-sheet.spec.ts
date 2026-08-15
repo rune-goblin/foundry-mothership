@@ -153,8 +153,9 @@ test.describe('character sheet', () => {
     await expect(gmPage.locator('dialog[open].macro-popup-dialog')).toContainText('Panic Check');
   });
 
-  // Two rules css/mothership.css only needed once the sheet left AppV1: Foundry stretched a textarea
-  // and padded an input differently inside a .window-app, and an .application never saw either.
+  // Two rules the system only needed once the sheet left AppV1: Foundry stretched a textarea and
+  // padded an input differently inside a .window-app, and an .application never saw either. The
+  // first lives in TextareaField now, the second in css/mothership.css.
   test('the trauma box fills its column and a two-digit bonus fits its pill', async ({ gmPage }) => {
     const { appId } = await open(gmPage, { stats: { combat: { mod: 10 } } });
     const sheet = gmPage.locator(`#${appId}`);

@@ -676,25 +676,9 @@
     z-index: 5;
   }
 
-  /* Foundry stretches a textarea to its container only inside an AppV1 window, so a converted
-     sheet's trauma-response box collapsed to the 20-column intrinsic default. Same class of bug as
-     the item thumbnails' border: the rule was never ours, and an .application window never saw it. */
-  .mothership .textarea-input {
-    width: 100%;
-    font-family: "Barlow", sans-serif;
-    margin: -0.15em;
-    /* padding: 9px; */
-    border: 2px solid #111;
-    border-radius: 15px;
-    font-size: 11pt;
-    color: white;
-    font-weight: 500;
-    background: #111;
-    resize: none;
-    min-height: 0;
-    overflow: hidden;
-  }
-
+  /* `textarea-input` is absent here on purpose: it had exactly two writers, the character sheet's
+     trauma response and the class sheet's, and both are TextareaField now — the rule went with it.
+     Its grey twin below keeps two writers of its own and stays. */
   .mothership .textarea-input-grey {
     font-family: "Barlow", sans-serif;
     border: 0;

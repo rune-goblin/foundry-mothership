@@ -11,15 +11,15 @@
   import ItemCell from '../parts/ItemCell.svelte';
   import ItemControls from '../parts/ItemControls.svelte';
   import ItemControl from '../parts/ItemControl.svelte';
+  import TextareaField from '../parts/TextareaField.svelte';
   import OptionDraft from './OptionDraft.svelte';
   import { dropTarget } from '../parts/drop-target.js';
   import { promptStatOption } from './stat-option.js';
   import { localize } from '../../i18n.ts';
 
   // No <style> block: every name this sheet writes is shared vocabulary css/mothership.css keeps
-  // declaring — the `.grid*`/`widegap` set,
-  // `resource-label`, `textarea-input` (CharacterSheet), `skill-name` (SkillSheet, OptionDraft and
-  // ItemCell's `name` variant) and the `list-roll` hover group. The six `skills-*`/`stat-option-*`
+  // declaring — the `.grid*`/`widegap` set, `resource-label`, `skill-name` (SkillSheet, OptionDraft
+  // and ItemCell's `name` variant) and the `list-roll` hover group. The six `skills-*`/`stat-option-*`
   // names are class props on ItemControl's anchor, where a scoped block here could not reach them
   // anyway, and no rule keys off any of them: they exist as e2e locators.
   let { store } = $props();
@@ -201,16 +201,11 @@
 
 <br />
 
-<div style="margin-left: 6px; flex: 0; grid-column-start: 1; grid-column-end: 3;">
-  <div class="resource-label">{localize('Mothership.TraumaResponse')}</div>
-  <textarea
-    name="system.trauma_response"
-    rows="2"
-    class="textarea-input"
-    style="height: 50px;"
-    value={doc.system.trauma_response}
-  ></textarea>
-</div>
+<TextareaField
+  name="system.trauma_response"
+  label={localize('Mothership.TraumaResponse')}
+  value={doc.system.trauma_response}
+/>
 
 <Tabs tabs={TABS} bind:active={tab} />
 

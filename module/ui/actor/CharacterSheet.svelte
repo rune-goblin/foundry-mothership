@@ -10,6 +10,7 @@
   import RollableStat from '../parts/RollableStat.svelte';
   import TabPanel from '../parts/TabPanel.svelte';
   import Tabs from '../parts/Tabs.svelte';
+  import TextareaField from '../parts/TextareaField.svelte';
   import ArmorBlock from '../parts/sections/ArmorBlock.svelte';
   import HealthBlock from '../parts/sections/HealthBlock.svelte';
   import ItemPanel from '../parts/sections/ItemPanel.svelte';
@@ -167,16 +168,11 @@
         style="grid-column-start: 2; grid-column-end: 3;"
       />
 
-      <div style="margin-left: 6px; margin-right: 0px; flex: 0; grid-column-start: 1; grid-column-end: 3;">
-        <div class="resource-label">{localize('Mothership.TraumaResponse')}</div>
-        <textarea
-          name="system.other.stressdesc.value"
-          rows="2"
-          class="textarea-input"
-          style="height: 50px;"
-          value={system.other.stressdesc.value}
-        ></textarea>
-      </div>
+      <TextareaField
+        name="system.other.stressdesc.value"
+        label={localize('Mothership.TraumaResponse')}
+        value={system.other.stressdesc.value}
+      />
     </div>
 
     <div class="abilities">
@@ -578,8 +574,8 @@
      which is why the slots are declared on it. The rest of this sheet's markup wears shared
      vocabulary css/mothership.css keeps declaring: `char-header`, `header-fields` and `header`
      (Generator hand-writes all three), `headerinputtext`/`headerinputfield`/`noborder`
-     (Generator and SheetHeader), `profile` (CreatureSheet), `textarea-input`
-     (ClassSheet), `textarea-input-grey` and `skill_training_frame` (CreatureSheet),
+     (Generator and SheetHeader), `profile` (CreatureSheet),
+     `textarea-input-grey` and `skill_training_frame` (CreatureSheet),
      `resource-label`, `sheet-body` (five sheets), the modifier pair `mainstatmod-input`/
      `mainstatmod-title` (RollBox), the `.grid*`/`.flex*`/`widegap` set and the
      `list-roll`/`rollable` hover group.
