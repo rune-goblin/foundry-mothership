@@ -364,6 +364,7 @@
   @container (max-width: 610px) {
     .mosh .health {grid-area: mobilehealth;}
   }
+  /* shared tier: Field, CheckField, MinMaxField, ArmorBlock, CreatureSettings, Cover. */
   .mosh .healthspread {width:96%;}
 
   .mosh .char-header h1.charname {
@@ -409,22 +410,19 @@
     color: grey;
   }
 
+  /* shared tier: Field, CheckField, MinMaxField, ArmorBlock, CreatureSettings, RolltableConfig,
+     Condition, Weapon, ArmorExtra, ClassSheet, CharacterSheet. */
   .mosh .resource-label {
     font-weight: bold;
     margin-bottom: 3px;
     text-align: center;
   }
 
-  /* The list frame itself — `.items-list`, the row, its header variant, the control column and
-     the plain `.skill-stat` cell — moved into ItemList/ItemRow/ItemCell/ItemControls. What is
-     left below still keys off `.items-list .item`, so both classes stay on that markup. */
-
-  .mosh .items-list .item .item-image {
-    -webkit-box-flex: 0;
-    -ms-flex: 0 0 24px;
-    flex: 0 0 24px;
-    margin-right: 5px;
-  }
+  /* The list frame — `.items-list`, the row, its header variant, the control column, the plain
+     `.skill-stat` cell — and the row thumbnail with its border moved into
+     ItemList/ItemRow/ItemCell/ItemControls/ItemImage. `.skill-name` below is the last rule here
+     that needs `.items-list`, which ItemControls also gates its width on; `.item` is now needed
+     by nothing in this file. */
 
   .mosh .roll-image {
     -webkit-box-flex: 0;
@@ -435,16 +433,6 @@
     width: 50px;
     border-radius: 0 0 0 16px;
     border: 1px solid #000;
-  }
-
-  /* Foundry frames every image in an AppV1 window through `body.game .app img`. An ApplicationV2
-     window is `.application`, so a converted sheet never sees that rule -- the row thumbnails kept
-     their border for twelve years and this is what keeps it. */
-  .mosh .items-list .item img {
-    display: block;
-    box-sizing: border-box;
-    border: 1px solid #000;
-    border-radius: 2px;
   }
 
   /* shared tier: ItemCell, and the black pill hand-written inside a list by SkillSheet,
@@ -558,6 +546,7 @@
     left: 12px;
   }
 
+  /* shared tier: Field (its numeric variant), MinMaxField, ArmorBlock, Cover. */
   .mosh .maxhealth-input {
     font-family: "Chakra Petch", sans-serif;
     margin: auto;
@@ -568,6 +557,7 @@
     background: transparent;
   }
 
+  /* shared tier: Field, MinMaxField. */
   .mosh .darkGreyText{
     color: rgb(56, 56, 56);
   }
@@ -580,37 +570,10 @@
     color: orangered;
   }
 
-  .mosh .valuewrapper{
-    grid-column: 1/-1;
-    display: grid;
-    align-items: start;
-    height: 40px;
-    padding: 0;
-    border: 3px solid #111;
-    border-radius: 1.5em;
-    background: 0;
-  }
+  /* Field's own wrappers and their input moved into Field.svelte; `.minmaxwrapper` below is the
+     twin MinMaxField, ArmorBlock and Cover share, so it stays. */
 
-  .mosh .textvaluewrapper{
-    grid-column: 1/-1;
-    display: grid;
-    align-items: start;
-    height: 40px;
-    padding: 0;
-    border: 3px solid #111;
-    border-radius: 0.5em;
-    background: 0;
-  }
-
-  .mosh .textvaluewrapper-input{
-    margin: auto;
-    border: 0px solid #111;
-    font-size: 1rem;
-    font-weight: bold;
-    text-align: center;
-    background: transparent;
-  }
-
+  /* shared tier: CheckField, CreatureSettings (the swarm toggle, hand-written for its onchange). */
   .mosh .blankstat{
     grid-template-rows: 0.3fr 1.1fr 0.4fr;
     justify-self: center;
@@ -618,6 +581,7 @@
     justify-items: center;
   }
 
+  /* shared tier: Field, MinMaxField, ArmorBlock, Cover. */
   .mosh .minmaxtopstat{
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 0.3fr 1.1fr 0.4fr;
@@ -638,6 +602,7 @@
     background: white;
   }
 
+  /* shared tier: Field, CheckField, MinMaxField, ArmorBlock, CreatureSettings. */
   .mosh .minmaxtext{
     font-family: "Chakra Petch", sans-serif;
     text-align: left;

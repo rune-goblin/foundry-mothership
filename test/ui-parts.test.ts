@@ -10,12 +10,17 @@
 //
 // A primitive that owns its styles in a scoped <style> block has no such contract, and its
 // class-name pin retires with the move (design-system.md decision 5) -- Tabs is the first,
-// ItemControls the second. The rest keep theirs: the stat vocabulary (.circle-input,
-// .mainstat*, .circle-statwrapper*) is read by six components, so no scoped block can reach it
-// and css/mothership.css declares it as a shared tier. The list primitives keep theirs for a
-// second reason -- .items-list and .item still carry the thumbnail rules css/mothership.css
-// kept, .skill-name is shared with four sheets that hand-write it, and the e2e specs locate
-// rows, headers, controls and stat cells by name.
+// ItemControls the second, ItemImage the third. The rest keep theirs: the stat vocabulary
+// (.circle-input, .mainstat*, .circle-statwrapper*) is read by six components, so no scoped
+// block can reach it and css/mothership.css declares it as a shared tier. The list primitives
+// keep theirs for a second reason -- .items-list still gates ItemControls' width, .skill-name
+// is shared with four sheets that hand-write it, and the e2e specs locate rows, headers,
+// controls and stat cells by name.
+//
+// Field keeps its pin for a third: half its names are shared vocabulary, and the two it now
+// owns are built at runtime (`class={inputClass}`), where the compiler cannot prune or warn.
+// Rename a static class and svelte-check reports an unused selector; rename a runtime-built
+// one and every tier stays silent, so the pin is the only check it has.
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { mount, unmount, flushSync, createRawSnippet, type Component } from 'svelte';
 
@@ -221,7 +226,6 @@ describe('ItemImage', () => {
   it('renders the 24px thumbnail when given a source', () => {
     const el = render(ItemImage, { src: 'icons/svg/item.svg', title: 'Wrench' })
       .firstElementChild!;
-    expect(el.className).toBe('item-image');
     const img = el.querySelector('img')!;
     expect(img.getAttribute('src')).toBe('icons/svg/item.svg');
     expect(img.getAttribute('alt')).toBe('Wrench');
@@ -230,7 +234,6 @@ describe('ItemImage', () => {
 
   it('stays an empty spacer cell without one', () => {
     const el = render(ItemImage, {}).firstElementChild!;
-    expect(el.className).toBe('item-image');
     expect(el.children).toHaveLength(0);
   });
 });
@@ -290,13 +293,13 @@ describe('Field', () => {
       width: '180px',
     }).firstElementChild!;
 
-    expect([...el.classList]).toEqual(['resource', 'healthspread', 'minmaxtopstat', 'flex-center']);
+    expect(classes(el)).toEqual(['resource', 'healthspread', 'minmaxtopstat', 'flex-center']);
     expect(el.querySelector('label')!.className).toBe('resource-label minmaxtext');
 
     const wrapper = el.querySelector('.textvaluewrapper')! as HTMLElement;
     expect(wrapper.style.width).toBe('180px');
     const input = wrapper.querySelector('input')!;
-    expect(input.className).toBe('textvaluewrapper-input darkGreyText');
+    expect(classes(input)).toEqual(['textvaluewrapper-input', 'darkGreyText']);
     expect([input.getAttribute('name'), input.value]).toEqual(['system.damage', '2d10']);
   });
 
@@ -316,7 +319,7 @@ describe('Field', () => {
 
     const select = el.querySelector('select')!;
     // The class is the input's, so the enum reads as the field it replaced.
-    expect(select.className).toBe('textvaluewrapper-input darkGreyText');
+    expect(classes(select)).toEqual(['textvaluewrapper-input', 'darkGreyText']);
     expect(select.getAttribute('name')).toBe('system.range');
     expect(el.querySelector('input')).toBeNull();
     expect([...select.options].map((o) => o.value)).toEqual(['', 'close', 'long']);

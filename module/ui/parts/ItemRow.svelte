@@ -31,8 +31,8 @@
   /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
      application; @layer system puts these in the slot the rest of the system occupies.
      `item` and `flexrow` stay on the markup: the flex row itself is core's `blocks.base`
-     contract, css/mothership.css still reaches the row's thumbnail through `.item img`, and
-     the e2e specs locate rows as `li.item[data-item-id]`. */
+     contract, and the e2e specs locate rows as `li.item[data-item-id]` in 29 places. No
+     selector in css/mothership.css keys off `.item` any more -- ItemImage took the last one. */
   @layer system {
     li {
       /* 35, 24 and 3 are off every scale — §4.7 snaps 3 to 2 or 4, and the row is a fixed
