@@ -21,6 +21,12 @@
 // owns are built at runtime (`class={inputClass}`), where the compiler cannot prune or warn.
 // Rename a static class and svelte-check reports an unused selector; rename a runtime-built
 // one and every tier stays silent, so the pin is the only check it has.
+//
+// PipTrack owns its three names and keeps its pin for both of Field's reasons at once: the
+// e2e specs count `.circle`/`.circle-f` and read `.skill_training_text`, and the pip's class is
+// the runtime `pip.filled ? 'circle-f' : 'circle'`. MinMaxField and RollableStat own nothing --
+// ArmorBlock and Cover hand-write the first's markup, and no rule anywhere keys off the
+// second's `ability-mod`/`stat-roll` -- so their pins are the whole contract.
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { mount, unmount, flushSync, createRawSnippet, type Component } from 'svelte';
 
@@ -407,7 +413,7 @@ describe('RollableStat', () => {
 describe('PipTrack', () => {
   it('fills the first `value` circles and leaves the rest empty', () => {
     const target = render(PipTrack, { count: 5, value: 2 });
-    expect([...target.children].map((n) => n.className)).toEqual([
+    expect([...target.children].map((n) => classes(n).join(' '))).toEqual([
       'circle-f',
       'circle-f',
       'circle',
@@ -416,7 +422,9 @@ describe('PipTrack', () => {
     ]);
   });
 
-  it('captions a milestone pip and darkens its text once filled', () => {
+  // The caption's nudge is per-milestone data, so it stays inline; the two colours a captioned
+  // pip used to carry inline are `milestone`'s job now.
+  it('captions a milestone pip and marks the pip that carries it', () => {
     const target = render(PipTrack, {
       count: 5,
       value: 5,
@@ -425,15 +433,14 @@ describe('PipTrack', () => {
     const caption = target.querySelector('.skill_training_text')! as HTMLElement;
 
     expect(caption.textContent!.trim()).toBe('Trained');
-    expect(caption.getAttribute('style')).toContain('left: -54px');
-    expect(caption.getAttribute('style')).toContain('color: black');
-    expect(caption.parentElement!.getAttribute('style')).toContain('background: black');
+    expect(caption.getAttribute('style')).toBe('left: -54px;');
+    expect(classes(caption.parentElement!)).toEqual(['circle-f', 'milestone']);
   });
 
   // The condition treatment track is three Font Awesome circles, not divs.
   it('renders the icon variant as solid and outline glyphs', () => {
     const target = render(PipTrack, { count: 3, value: 1, variant: 'icon' });
-    expect([...target.children].map((n) => n.className)).toEqual([
+    expect([...target.children].map((n) => classes(n).join(' '))).toEqual([
       'fas fa-circle',
       'far fa-circle',
       'far fa-circle',

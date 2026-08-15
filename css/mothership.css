@@ -403,12 +403,8 @@
     font-weight: 400;
     padding: 8px;
   }
-  .mosh .skill_training_text{
-    font-family: "Barlow", sans-serif;
-    font-size: 11pt;
-    font-weight: 500;
-    color: grey;
-  }
+  /* `.skill_training_text` moved into PipTrack, which is the only thing that ever wrote it. The
+     frame above stays: both actor sheets hand-write it around the track. */
 
   /* shared tier: Field, CheckField, MinMaxField, ArmorBlock, CreatureSettings, RolltableConfig,
      Condition, Weapon, ArmorExtra, ClassSheet, CharacterSheet. */
@@ -606,12 +602,15 @@
     text-align: center;
   }
 
+  /* shared tier: MinMaxField, ArmorBlock, Cover — the last two overturn the border and the skew
+     inline, so both still need the height from here. */
   .mosh .slant{
     border-right: 2px solid #111;
     height: 100%;
     transform: skewX(-15deg);
   }
 
+  /* shared tier: MinMaxField, ArmorBlock, Cover. */
   .mosh .healthmaxtext{
     grid-column: span 1;
     font-size: 0.7rem;
@@ -982,23 +981,8 @@
     grid-column: 1/-2;
   }
 
-  .mosh .circle{
-    color: rgb(22, 22, 22);
-    background: white;
-    border-radius: 10px;
-    /* border: 2px solid black; */
-    width: 15px;
-    height: 15px;
-  }
-
-  .mosh .circle-f{ /*Filled circle*/
-    color: rgb(22, 22, 22);
-    background: rgb(100, 100, 100);
-    border-radius: 10px;
-    /* border: 2px solid black; */
-    width: 15px;
-    height: 15px;
-  }
+  /* The pip and its filled twin moved into PipTrack. Nothing else emits either name; the e2e
+     specs count them, which is why both stay on that markup. */
 
   .mosh .profile {
     width: 140px;

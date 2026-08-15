@@ -5,6 +5,10 @@
   // caption under each. Health, wounds and the character's stress are all this shape -- the
   // right-hand field is a maximum on the first two and a minimum on stress, so it is named
   // rather than derived.
+  //
+  // No <style> block: ArmorBlock and Cover hand-write this same wrapper, slant and captions, so
+  // every class here is shared vocabulary css/mothership.css declares and a scoped block could
+  // only reach one of the three writers.
   let {
     label,
     labelClass = '',
