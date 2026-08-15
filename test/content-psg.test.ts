@@ -19,7 +19,7 @@ beforeAll(() => {
     root: ROOT,
     books: BOOKS,
     registryPath: join(ROOT, 'content/ids.json'),
-    outDir: mkdtempSync(join(tmpdir(), 'mosh-psg-')),
+    outDir: mkdtempSync(join(tmpdir(), 'mothership-psg-')),
   });
 });
 

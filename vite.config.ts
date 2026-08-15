@@ -16,7 +16,7 @@ const FOUNDRY = 'http://localhost:30000';
  * connection, silently, taking every sheet registration with it.
  */
 const devEntry: Plugin = {
-  name: 'mosh-dev-entry',
+  name: 'mothership-dev-entry',
   apply: 'serve',
   configureServer(server) {
     server.middlewares.use((req, _res, next) => {

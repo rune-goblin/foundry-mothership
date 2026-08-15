@@ -10,7 +10,7 @@ import { test, expect } from './fixtures/foundry-clients.ts';
 // evaluate() -- so it covers the schema, not this window. These drive the window itself.
 
 // The creature sheet underneath is now an ApplicationV2 too, carrying the same
-// mosh/sheet/actor/creature classes -- `creature-settings` is what tells the two apart.
+// mothership/sheet/actor/creature classes -- `creature-settings` is what tells the two apart.
 const SETTINGS = '.application.creature-settings';
 
 // Wait for the sheet to actually be on screen before opening the settings window over it, or the

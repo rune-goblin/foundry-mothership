@@ -27,8 +27,7 @@ test.describe('system loads', () => {
     const css = await gmPage.evaluate(() => {
       const imports: string[] = [];
       let scopedRules = 0;
-      // `.mothership` does not contain `.mosh` as a substring, so both are matched explicitly.
-      const scoped = (sel?: string) => !!sel && (sel.includes('.mosh') || sel.includes('.mothership'));
+      const scoped = (sel?: string) => !!sel && sel.includes('.mothership');
       const walk = (sheet: CSSStyleSheet) => {
         let rules: CSSRuleList;
         try { rules = sheet.cssRules; } catch { return; }
@@ -51,7 +50,7 @@ test.describe('system loads', () => {
     });
 
     expect(css.imports.some((h) => h.includes(`systems/${SYSTEM_ID}/dist/mothershiprpg.css`))).toBe(true);
-    // DS8 drains `.mosh` rules into component styles by design, so this proves liveness, not
+    // DS8 drains scoped rules into component styles by design, so this proves liveness, not
     // size: the import resolved and a non-trivial scoped rule set is in force.
     expect(css.scopedRules).toBeGreaterThan(30);
   });

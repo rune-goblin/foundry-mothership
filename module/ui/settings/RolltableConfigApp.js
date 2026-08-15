@@ -54,7 +54,7 @@ export class RolltableConfigApp extends ApplicationV2 {
     tag: 'form',
     // css/mothership.css paints the content white with no dark variant, so pin the light theme (see
     // MothershipItemSheet) or the window renders dark text-on-dark against those light boxes.
-    classes: ['mothership', 'mosh', 'themed', 'theme-light'],
+    classes: ['mothership', 'themed', 'theme-light'],
     window: { title: 'Rolltable Configuration', icon: 'fa-solid fa-list', resizable: false },
     position: { width: 800, height: 'auto' },
     form: { handler: RolltableConfigApp.#onSubmit, submitOnChange: true, closeOnSubmit: false },
@@ -75,7 +75,7 @@ export class RolltableConfigApp extends ApplicationV2 {
       ROLLTABLE_KEYS.map((key) => [key, game.settings.get('mothershiprpg', key)]),
     );
     this.#root = document.createElement('div');
-    this.#root.className = 'mosh-sheet-root';
+    this.#root.className = 'mothership-sheet-root';
     this.#component = mount(RolltableConfig, { target: this.#root, props: { app: this, values } });
     return this.#root;
   }

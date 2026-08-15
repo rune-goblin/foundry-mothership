@@ -176,10 +176,10 @@ describe('svelteDialog', () => {
     });
 
     const { element } = only();
-    const first = element.querySelector('.mosh-dialog-root')!;
+    const first = element.querySelector('.mothership-dialog-root')!;
     element.replaceChildren();
     const second = document.createElement('div');
-    second.className = 'mosh-dialog-root';
+    second.className = 'mothership-dialog-root';
     element.append(second);
     only().render();
 

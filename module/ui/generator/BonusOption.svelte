@@ -9,7 +9,7 @@
   let { text, options } = $props();
 </script>
 
-<div class="mothership mosh">
+<div class="mothership">
   <div class="characterGeneratorSkillPopup">
     <p class="skillpopupDescription">{text}</p>
     <div class="grid grid-2col widegap">

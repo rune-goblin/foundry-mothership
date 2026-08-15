@@ -71,7 +71,7 @@ declare const foundry:
 const CLASSES = ['mothership', 'macro-popup-dialog'] as const;
 
 /** A mount point, not a surface: no rule in either stylesheet selects it, so its rename is code. */
-const MOUNT_CLASS = 'mosh-dialog-root';
+const MOUNT_CLASS = 'mothership-dialog-root';
 
 export async function svelteDialog<V, T, P extends object>(
   options: SvelteDialogOptions<V, T, P>,

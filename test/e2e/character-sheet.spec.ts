@@ -438,6 +438,6 @@ test.describe('character sheet', () => {
     await sheet.locator('.header-control[data-action="toggleControls"]').click();
     await gmPage.locator('.context-item', { hasText: 'Character Generator' }).click();
 
-    await expect(gmPage.locator('.application[id^="mosh-generator-"]')).toBeVisible();
+    await expect(gmPage.locator('.application[id^="mothership-generator-"]')).toBeVisible();
   });
 });

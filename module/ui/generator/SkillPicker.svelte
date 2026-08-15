@@ -11,7 +11,7 @@
   };
 </script>
 
-<div class="mothership mosh">
+<div class="mothership">
   <div class="characterGeneratorSkillPopup">
     <p class="skillpopupDescription">{description}</p>
     <div class="grid grid-1col widegap center">

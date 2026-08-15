@@ -128,8 +128,8 @@ describe('the button', () => {
     expect(button.tagName).toBe('BUTTON');
     expect(button.type).toBe('button');
     expect(button.dataset.action).toBe(ACTION_ATTRIBUTE);
-    expect(button.dataset.moshAction).toBe('@Check[fear -]');
-    expect(parsed(button.dataset.moshAction ?? '')).toEqual(parsed('@Check[fear -]'));
+    expect(button.dataset.mothershipAction).toBe('@Check[fear -]');
+    expect(parsed(button.dataset.mothershipAction ?? '')).toEqual(parsed('@Check[fear -]'));
   });
 
   it('labels itself from the lang files, and yields to a label the content gives it', () => {

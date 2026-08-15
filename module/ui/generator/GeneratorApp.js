@@ -13,7 +13,7 @@ const { ApplicationV2 } = foundry.applications.api;
 export class GeneratorApp extends ApplicationV2 {
   static DEFAULT_OPTIONS = {
     // css/mothership.css paints the content white and has no dark variant, so pin the light theme.
-    classes: ['mothership', 'mosh', 'sheet', 'actor', 'character', 'themed', 'theme-light'],
+    classes: ['mothership', 'sheet', 'actor', 'character', 'themed', 'theme-light'],
     position: { width: 800, height: 'auto' },
     window: { resizable: true },
   };
@@ -24,7 +24,7 @@ export class GeneratorApp extends ApplicationV2 {
   #root;
 
   constructor({ actor, ...options } = {}) {
-    super({ id: `mosh-generator-${actor.id}`, ...options });
+    super({ id: `mothership-generator-${actor.id}`, ...options });
     this.#actor = actor;
     this.#draft = new CharacterDraft(actor);
   }
@@ -42,7 +42,7 @@ export class GeneratorApp extends ApplicationV2 {
     if (this.#component) return this.#root;
     await this.#draft.load();
     this.#root = document.createElement('div');
-    this.#root.className = 'mosh-sheet-root';
+    this.#root.className = 'mothership-sheet-root';
     this.#component = mount(Generator, {
       target: this.#root,
       props: { draft: this.#draft, close: () => this.close() },

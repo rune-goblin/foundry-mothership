@@ -60,7 +60,7 @@
      There is no single root to hang the slots off -- the heading, the rule and the three group
      panels are siblings under the mount div -- so they are declared on the elements that read
      them, the way CreatureSheet declares them on its pair of grids.
-     The tie to preserve is the FINISH bar's: `.mosh .button-white`'s `color` and
+     The tie to preserve is the FINISH bar's: `.mothership .button-white`'s `color` and
      `:where(.mothership) .list-roll:hover`'s both weigh (0,2,0), and the bar kept its dark
      label under the cursor only because it sat later in css/mothership.css. Scoped, it weighs
      the same (0,2,0) and the component sheet loads after that file, so the survival holds. */

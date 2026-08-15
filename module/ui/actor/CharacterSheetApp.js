@@ -13,7 +13,7 @@ const { ActorSheetV2 } = foundry.applications.sheets;
 export class MothershipCharacterSheet extends ActorSheetV2 {
   static DEFAULT_OPTIONS = {
     // css/mothership.css paints the content white and has no dark variant, so pin the light theme.
-    classes: ['mothership', 'mosh', 'sheet', 'actor', 'character', 'themed', 'theme-light'],
+    classes: ['mothership', 'sheet', 'actor', 'character', 'themed', 'theme-light'],
     position: { width: 820, height: 820 },
     window: {
       resizable: true,
@@ -90,7 +90,7 @@ export class MothershipCharacterSheet extends ActorSheetV2 {
     }
     this.#store = createDocumentStore(this.document, context);
     this.#root = document.createElement('div');
-    this.#root.className = 'mosh-sheet-root';
+    this.#root.className = 'mothership-sheet-root';
     this.#component = mount(CharacterSheet, { target: this.#root, props: { store: this.#store } });
     return this.#root;
   }

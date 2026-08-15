@@ -14,7 +14,8 @@
  *
  * Each renders as a button; `chat/actions.ts` routes the click. A trailing `{…}` overrides the
  * generated label, exactly as `@UUID[…]{…}` does. One parser reads both the text form and the
- * button's `data-mosh-action`, so what content writes and what a click executes cannot diverge.
+ * button's `data-mothership-action`, so what content writes and what a click executes cannot
+ * diverge.
  *
  * A Panic Check is a check, not a table: it is judged against Stress and it is spelled
  * `@Check[panicCheck]`. `@Table` takes the six tables that are pure lookups.
@@ -289,14 +290,14 @@ const ICONS: Readonly<Record<ActionVerb, string>> = {
 };
 
 /** The routing key the delegated listener matches, namespaced so no window claims it by accident. */
-export const ACTION_ATTRIBUTE = 'moshChatAction';
+export const ACTION_ATTRIBUTE = 'mothershipChatAction';
 
 export function actionButton(action: ChatAction, label: string | null = null): HTMLButtonElement {
   const button = document.createElement('button');
   button.type = 'button';
-  button.className = 'content-link mosh-action';
+  button.className = 'content-link mothership-action';
   button.dataset.action = ACTION_ATTRIBUTE;
-  button.dataset.moshAction = formatAction(action);
+  button.dataset.mothershipAction = formatAction(action);
 
   const icon = document.createElement('i');
   icon.className = ICONS[action.verb];
@@ -318,7 +319,7 @@ interface EnricherConfig {
 
 declare const CONFIG: { readonly TextEditor: { enrichers: EnricherConfig[] } } | undefined;
 
-const ENRICHER_ID = 'mosh-action';
+const ENRICHER_ID = 'mothership-action';
 
 /** Called once, by `init.ts`. Registering twice would render every action twice. */
 export function registerEnrichers(): void {

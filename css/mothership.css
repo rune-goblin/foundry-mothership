@@ -161,42 +161,42 @@
   }
 
   /* Global styles */
-  .mosh.application {
+  .mothership.application {
     font-family: "Barlow", sans-serif;
   }
 
-  .mosh.application .window-content {
+  .mothership.application .window-content {
     background: #fff;
   }
 
   /* AppV1 sheets sized .sheet-body from setPosition(); a V2 window has no such hook, so the
      Svelte root has to carry the column layout the height:100% rules below assume. */
-  .mosh.application .window-content > .mosh-sheet-root {
+  .mothership.application .window-content > .mothership-sheet-root {
     display: flex;
     flex-direction: column;
     height: 100%;
     min-height: 0;
   }
 
-  .mosh.application .mosh-sheet-root .sheet-body {
+  .mothership.application .mothership-sheet-root .sheet-body {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
   }
 
-  .mosh ::-webkit-scrollbar-thumb {
+  .mothership ::-webkit-scrollbar-thumb {
     outline: none;
     border-radius: 3px;
     background: black;
     border: 1px solid white;
   }
 
-  .mosh .window-content{
+  .mothership .window-content{
     scrollbar-width: thin;
     scrollbar-color: black #fff;
   }
 
-  .mosh .darkgrey{
+  .mothership .darkgrey{
     color:rgb(92, 92, 92);
   }
   /* .chat-message, #chat-form, .textarea{
@@ -212,7 +212,7 @@
     filter: sepia(0.5) hue-rotate(340deg);
   }
 
-  /* :where() keeps this at (0,2,0): with a plain prefix it outweighs the later `.mosh X`
+  /* :where() keeps this at (0,2,0): with a plain prefix it outweighs the later `.mothership X`
      colour rules and flips four hover labels from white to black on dark ground. */
   :where(.mothership) .list-roll:hover,
   :where(.mothership) .list-roll:focus,
@@ -294,14 +294,14 @@
   }
 
 
-  /* Styles limited to mosh sheets */
-  .mosh input {
+  /* Styles limited to mothership sheets */
+  .mothership input {
     font-weight: inherit;
     font-family: "Barlow", sans-serif;
   }
 
 
-  .mosh input[type="radio"]:checked {
+  .mothership input[type="radio"]:checked {
     background: white;
       border-radius: 100px;
       appearance: inherit;
@@ -316,7 +316,7 @@
     }
   }
 
-  .mosh .char-header {
+  .mothership .char-header {
     -webkit-box-flex: 0;
     /* -ms-flex: 0 0 610px;
     flex: 0 0 610px; */
@@ -340,33 +340,33 @@
   /* shared tier: CharacterSheet and Generator, which hand-writes `char-header` around a
      `header-fields` of its own. The header grid the first one lays out inside them — with the
      areas the two rules below place into — moved into CharacterSheet.svelte. */
-  .mosh .char-header .header-fields {
+  .mothership .char-header .header-fields {
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
   }
 
   /* No markup writes `stress` as a class, and the header grid declares no such area. */
-  .mosh .stress {grid-area: stress;}
+  .mothership .stress {grid-area: stress;}
   /* shared tier: CharacterSheet's centre column, and Cover's two readout captions — which sit
-     under a `mosh` ancestor of their own and so are reached by this rule too. */
-  .mosh .health {grid-area: centercol;}
+     under a `mothership` ancestor of their own and so are reached by this rule too. */
+  .mothership .health {grid-area: centercol;}
   @container (max-width: 610px) {
-    .mosh .health {grid-area: mobilehealth;}
+    .mothership .health {grid-area: mobilehealth;}
   }
   /* shared tier: Field, CheckField, MinMaxField, ArmorBlock, CreatureSettings, Cover. */
-  .mosh .healthspread {width:96%;}
+  .mothership .healthspread {width:96%;}
 
   /* No `<h1>` exists anywhere in module/, templates/, content/ or packs/_source/, so neither of
      these two matches any element — structural deadness the class-level audit cannot see. */
-  .mosh .char-header h1.charname {
+  .mothership .char-header h1.charname {
     height: auto;
     padding: 0px;
     margin: 0px 0;
     border-bottom: 0;
   }
 
-  .mosh .char-header h1.charname input {
+  .mothership .char-header h1.charname input {
     width: 100%;
     height: auto;
 
@@ -380,13 +380,13 @@
     text-align: left;
   }
 
-  .mosh .sheet-body,
-  .mosh .sheet-body .tab,
-  .mosh .sheet-body .tab .editor {
+  .mothership .sheet-body,
+  .mothership .sheet-body .tab,
+  .mothership .sheet-body .tab .editor {
     height: 100%;
   }
 
-  .mosh .skill_training_frame{
+  .mothership .skill_training_frame{
     height: 47px;
     background: rgb(230,230,230);
     border-radius: 9px;
@@ -400,7 +400,7 @@
 
   /* shared tier: Field, CheckField, MinMaxField, ArmorBlock, CreatureSettings, RolltableConfig,
      Condition, Weapon, ArmorExtra, ClassSheet, CharacterSheet. */
-  .mosh .resource-label {
+  .mothership .resource-label {
     font-weight: bold;
     margin-bottom: 3px;
     text-align: center;
@@ -412,7 +412,7 @@
      that needs `.items-list`, which ItemControls also gates its width on; `.item` is now needed
      by nothing in this file. */
 
-  .mosh .roll-image {
+  .mothership .roll-image {
     -webkit-box-flex: 0;
     flex: 0 24px;
     margin-top: -1px;
@@ -428,7 +428,7 @@
      component's markup, so ItemCell cannot own this one the way it owns `.skill-stat`.
      Converting those call sites to ItemCell is the S9 audit's work; tokenizing the literals
      belongs to the reserved sweep. Neither happens here. */
-  .mosh .items-list .skill-name {
+  .mothership .items-list .skill-name {
     font-weight: bold;
     font-size: 14px;
     color: white;
@@ -467,7 +467,7 @@
   /* shared tier: RollBox, CharacterSheet.
      A two-digit bonus overflows the 28px pill under an ApplicationV2 window's input padding,
      which is wider than AppV1's. Every other input in this file already zeroes it. */
-  .mosh .mainstatmod-input {
+  .mothership .mainstatmod-input {
     font-family: "Chakra Petch", sans-serif;
     height: 26px;
     width: 28px;
@@ -491,7 +491,7 @@
      writer. This one stays: RollBox writes it too. */
 
   /* shared tier: RollBox, CharacterSheet. */
-  .mosh .mainstatmod-title {
+  .mothership .mainstatmod-title {
     position: relative;
     color: lightgrey;
     font-size: 1rem;
@@ -503,7 +503,7 @@
   }
 
   /* shared tier: Field (its numeric variant), MinMaxField, ArmorBlock, Cover. */
-  .mosh .maxhealth-input {
+  .mothership .maxhealth-input {
     font-family: "Chakra Petch", sans-serif;
     margin: auto;
     border: 0px solid #111;
@@ -514,17 +514,17 @@
   }
 
   /* shared tier: Field, MinMaxField. */
-  .mosh .darkGreyText{
+  .mothership .darkGreyText{
     color: rgb(56, 56, 56);
   }
 
   /* shared tier: ArmorBlock, Cover — the two writers of the armour readout, which repeat each
      other's markup and inline overrides byte for byte. */
-  .mosh .whiteText{
+  .mothership .whiteText{
     color: white;
   }
 
-  .mosh .highlightText{
+  .mothership .highlightText{
     color: orangered;
   }
 
@@ -532,7 +532,7 @@
      twin MinMaxField, ArmorBlock and Cover share, so it stays. */
 
   /* shared tier: CheckField, CreatureSettings (the swarm toggle, hand-written for its onchange). */
-  .mosh .blankstat{
+  .mothership .blankstat{
     grid-template-rows: 0.3fr 1.1fr 0.4fr;
     justify-self: center;
     display: grid;
@@ -540,7 +540,7 @@
   }
 
   /* shared tier: Field, MinMaxField, ArmorBlock, Cover. */
-  .mosh .minmaxtopstat{
+  .mothership .minmaxtopstat{
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 0.3fr 1.1fr 0.4fr;
     justify-self: center;
@@ -548,7 +548,7 @@
     justify-items: center;
   }
 
-  .mosh .minmaxwrapper{
+  .mothership .minmaxwrapper{
     grid-column: 1/-1;
     display: grid;
     grid-template-columns: 1fr 1px 1fr;
@@ -561,7 +561,7 @@
   }
 
   /* shared tier: Field, CheckField, MinMaxField, ArmorBlock, CreatureSettings. */
-  .mosh .minmaxtext{
+  .mothership .minmaxtext{
     font-family: "Chakra Petch", sans-serif;
     text-align: left;
     grid-column: 1/-1;
@@ -573,14 +573,14 @@
 
   /* shared tier: MinMaxField, ArmorBlock, Cover — the last two overturn the border and the skew
      inline, so both still need the height from here. */
-  .mosh .slant{
+  .mothership .slant{
     border-right: 2px solid #111;
     height: 100%;
     transform: skewX(-15deg);
   }
 
   /* shared tier: MinMaxField, ArmorBlock, Cover. */
-  .mosh .healthmaxtext{
+  .mothership .healthmaxtext{
     grid-column: span 1;
     font-size: 0.7rem;
     font-weight: bold;
@@ -590,13 +590,13 @@
   }
 
   /* shared tier: MainStat, Generator, CreatureSheet. */
-  .mosh .mainstatwrapper {
+  .mothership .mainstatwrapper {
     display: flex;
     width: 95%;
   }
 
   /* shared tier: MainStat, Generator. */
-  .mosh .mainstat {
+  .mothership .mainstat {
     position: relative;
     display: grid;
     grid-template-columns: 1fr 5em;
@@ -606,7 +606,7 @@
   }
 
   /* shared tier: CircleStats (SkillSheet), RolltableConfig. */
-  .mosh .circle-statwrapper {
+  .mothership .circle-statwrapper {
     display: flex;
     width: 100%;
     align-items: center;
@@ -619,7 +619,7 @@
 
   /* shared tier: Item, Ability, Condition, Weapon, Armor. Its background is overridden by
      `.transparentBackground` below on source order alone — keep that rule after this one. */
-  .mosh .circle-statwrapper-horizontal {
+  .mothership .circle-statwrapper-horizontal {
     display: flex;
     width: 100%;
     align-items: center;
@@ -631,7 +631,7 @@
   }
 
   /* shared tier: Weapon, Armor. */
-  .mosh .circle-statwrapper-vertical {
+  .mothership .circle-statwrapper-vertical {
     display: flex;
     width: 100%;
     align-items: center;
@@ -644,7 +644,7 @@
 
   /* shared tier: Weapon, Armor. Must stay after `.circle-statwrapper-horizontal` — equal
      specificity, so it only wins because it is later. */
-  .mosh .transparentBackground {
+  .mothership .transparentBackground {
     background: transparent;
   }
 
@@ -653,7 +653,7 @@
      Its wrapper and its contents stay — `mainstatwrapper` and `mainstattext` are tier names, and
      `creaturestat` below is the class prop RollableStat renders. */
   /* shared tier: MainStat, Generator. */
-  .mosh .mainstatlabel {
+  .mothership .mainstatlabel {
     border-top-left-radius: 2em;
     border-bottom-left-radius: 2em;
     background: #111;
@@ -667,7 +667,7 @@
      renders through a class prop, so the name crosses a component boundary. Its `color: white`
      also beats `:where(.mothership) .rollable:hover` at equal specificity by sitting later;
      DS7 chose that, so this rule must stay below the hover group. */
-  .mosh .mainstattext {
+  .mothership .mainstattext {
     font-family: "Chakra Petch", sans-serif;
     width: 100%;
     padding: 0.5rem;
@@ -686,7 +686,7 @@
      order they had here: equal specificity, so `black` wins only by sitting later. */
 
   /* shared tier: MainStat, RollBox, Generator. */
-  .mosh .circle-input {
+  .mothership .circle-input {
     font-family: "Chakra Petch", sans-serif;
     margin: -0.15em;
     height: 50px;
@@ -704,7 +704,7 @@
   /* Foundry stretches a textarea to its container only inside an AppV1 window, so a converted
      sheet's trauma-response box collapsed to the 20-column intrinsic default. Same class of bug as
      the item thumbnails' border: the rule was never ours, and an .application window never saw it. */
-  .mosh .textarea-input {
+  .mothership .textarea-input {
     width: 100%;
     font-family: "Barlow", sans-serif;
     margin: -0.15em;
@@ -720,7 +720,7 @@
     overflow: hidden;
   }
 
-  .mosh .textarea-input-grey {
+  .mothership .textarea-input-grey {
     font-family: "Barlow", sans-serif;
     border: 0;
     border-radius: 0.8em;
@@ -738,7 +738,7 @@
      element the class prop lands on. Its `color: white` also beats
      `:where(.mothership) .rollable:hover` at equal specificity by sitting later in this file,
      the same tie `mainstattext` carries, so it must stay below the hover group. */
-  .mosh .savetext {
+  .mothership .savetext {
     font-family: "Chakra Petch", sans-serif;
     display: block;
     margin-bottom: .2em;
@@ -752,7 +752,7 @@
   /* shared tier: CharacterSheet, Generator (its `generator-header-grid-1col`) and SheetHeader —
      three writers of the black title bar. The panel behind the saves, which only this sheet
      writes, moved into CharacterSheet.svelte. */
-  .mosh .header {
+  .mothership .header {
     grid-area: header;
     background-color: #000;
     display: grid;
@@ -776,7 +776,7 @@
      block in either file reaches only its own half. The same pair shares
      `circle-statwrapper-vertical` and `transparentBackground` above for the same reason;
      unifying the two bodies is S9 call-site work. */
-  .mosh .item-armor-grid {
+  .mothership .item-armor-grid {
     display: grid;
     grid-template-columns: 1fr 12em;
     gap: 10px;
@@ -786,7 +786,7 @@
      to RolltableConfig.svelte, each to its only writer. The two rules were byte-identical apart
      from the border colour. */
 
-  .mosh .headerinputfield {
+  .mothership .headerinputfield {
     margin: -0.15em;
     height: auto;
     width: 100%;
@@ -805,7 +805,7 @@
      RollableStat as a class prop, and a scoped block only reaches its own component's markup —
      the `savetext` case. The plain input beside the label wears it too, so splitting the rule
      would split one look across two files. */
-  .mosh .creaturestat {
+  .mothership .creaturestat {
     margin-left: 4px;
     height: auto;
     font-size: 0.9rem;
@@ -820,7 +820,7 @@
      `:where(.mothership) .list-roll:hover` both weigh (0,2,0), and the component sheet loads
      after this file, so the title stays white on the dark panel exactly as DS7 left it. */
 
-  .mosh .editor {
+  .mothership .editor {
     height: 100%;
   }
 
@@ -829,7 +829,7 @@
     background: 0 !important;
   }
 
-  .mosh .headerinputtext {
+  .mothership .headerinputtext {
     padding: 0.1rem;
     color: white;
     font-family: "Barlow", sans-serif;
@@ -847,7 +847,7 @@
   /* The pip and its filled twin moved into PipTrack. Nothing else emits either name; the e2e
      specs count them, which is why both stay on that markup. */
 
-  .mosh .profile {
+  .mothership .profile {
     width: 140px;
     height: auto;
     padding: 6px;
@@ -855,7 +855,7 @@
     border: 0;
   }
 
-  .mosh .rollcontainer {
+  .mothership .rollcontainer {
     border-radius: 10em;
     background: #fff;
     padding: 0 0.5rem;
@@ -866,7 +866,7 @@
     font-family: "Chakra Petch", sans-serif;
   }
 
-  .mosh .rollweaponh1 {
+  .mothership .rollweaponh1 {
     height: 32px;
     margin-top: -15px;
     margin-left: -8px;
@@ -897,10 +897,10 @@
      popup body from the same two class names on markup neither one renders for the other. A
      scoped block in either file would reach only its own half, so unifying the two bodies is S9
      call-site work, not a move. `center`, which SkillPicker alone writes, moved into it. */
-  .mosh .characterGeneratorSkillPopup {
+  .mothership .characterGeneratorSkillPopup {
     margin-bottom: 10px;
   }
-  .mosh .characterGeneratorSkillPopup .skillpopupDescription {
+  .mothership .characterGeneratorSkillPopup .skillpopupDescription {
     text-align: center;
     font-weight: bold;
     padding-bottom: 0.2em;

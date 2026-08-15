@@ -12,7 +12,7 @@
   const select = (tab) => () => (active = tab.id);
 </script>
 
-<nav class="mothership mosh sheet-tabs tabs" {id} {style} data-group={group}>
+<nav class="mothership sheet-tabs tabs" {id} {style} data-group={group}>
   {#each tabs as tab (tab.id)}
     <a
       class="tab-select"

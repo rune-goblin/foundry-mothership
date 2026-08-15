@@ -21,7 +21,7 @@ const FIXTURE_REGISTRY = join(FIXTURE_ROOT, 'ids.json');
 const COMPENDIA = new Set(FIXTURE_BOOK.packs.map((p) => p.compendium));
 
 function temp(prefix: string): string {
-  return mkdtempSync(join(tmpdir(), `mosh-${prefix}-`));
+  return mkdtempSync(join(tmpdir(), `mothership-${prefix}-`));
 }
 
 function scratchRegistry(): string {

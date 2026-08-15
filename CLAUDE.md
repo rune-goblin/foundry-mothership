@@ -98,10 +98,12 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
 
 - **System id `mothershiprpg`** — keys settings, flags, pack names
   (`mothershiprpg.<pack>`), the runtime path `systems/mothershiprpg/…`, **and the public API
-  `game.mothershiprpg`**. One string identifies the package everywhere. The `.mosh` CSS classes
-  and `Mosh.*` lang keys are internal and **on their way out**: every `mosh` identifier
-  migrates to `mothership` (`docs/plans/design-system.md` §4.6 holds the inventory and unit
-  boundaries). Never name anything new `mosh` or `ms`.
+  `game.mothershiprpg`**. One string identifies the package everywhere. **The `mosh` retirement
+  is complete** (design-system DS1–DS9): the scope class is `.mothership`, the lang root is
+  `Mothership.*`, the classes are `Mothership*`, and `grep -w mosh` finds only justified
+  history (the DS9 ledger row lists each survivor — a content-baked `data-mosh-voice`, the
+  local `TEST_WORLD` folder name, and comments describing the past). Never name anything new
+  `mosh` or `ms`.
 - **`game.mothershiprpg` is the public API.** The verb surface — `rollStat`, `rollSkill`,
   `rollWeapon`, `rollTable`, `modify`, `applyItem`, `promptStress`/`promptSave`/`promptWound`,
   `rollItem`, … (`module/api/api.ts`) — is what shipped macros and new content call.
@@ -110,20 +112,27 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   for macros already imported into worlds. **Changing either surface's signature breaks something** —
   grep `packs/_source/` for the new verbs, `test/api-legacy.test.ts` pins the old ones.
 - **Strings** live in `lang/en.json` under `Mosh.*`; there is a `pt-BR` translation too.
-- **`css/mosh.css` is hand-authored, not compiled.** There is no SCSS step (the `scss/` tree
-  was 17 months stale and was deleted). As sheets become Svelte, styles move into scoped
-  `<style>` blocks.
+- **CSS is hand-authored, not compiled** — no SCSS step (the `scss/` tree was 17 months stale
+  and was deleted). `css/tokens.css` holds the Layer-1 design tokens (~400, adapted from
+  live-tokens, scoped to `.mothership` inside `@layer system`); `css/mothership.css` holds
+  `@font-face`, branding, the chat cards, and the declared **shared tier** (classes several
+  components hand-write — each rule is tagged with its readers). Component-owned styles live
+  in scoped `<style>` blocks that open with `@layer system` and read only their own
+  `--<componentId>-*` tokens. `test/css-guards.test.ts` enforces the `!important` ceiling,
+  zero unlayered rules (source and bundle), and zero token-name collisions with the installed
+  Foundry build; `scripts/audit-css.ts --assert-none` proves no stylesheet class is dead.
 - **`template.json` is inert but kept on purpose** — it is the oracle the DataModel
   equivalence tests compare against. Changing a schema means changing both, deliberately.
 - **New UI lives in `module/ui/`** — an ApplicationV2 shell per window plus Svelte 5
   components (runes mode is forced on). The conventions: the document stays the source of
   truth, Foundry persists the form, mount once.
 - **`module/ui/parts/` holds the shared primitives** — `ItemList`/`ItemRow`/`ItemCell`/
-  `ItemControls`/`ItemControl`, `Tabs`/`TabPanel`, `CircleStats`/`CircleStat`, `MainStat`,
-  `Field`, `CheckField`, `Editor`, `SheetHeader`, plus the `dropTarget` attachment. Build a conversion
-  out of these before writing bespoke markup. They emit the **global** class names from
-  `css/mosh.css` on purpose and carry no `<style>` blocks; `test/ui-parts.test.ts` pins every
-  one of those class names, because the stylesheet is a contract no compiler checks.
+  `ItemControls`/`ItemControl`, `Tabs`/`TabPanel`, `CircleStats`, `MainStat`, `Field`,
+  `CheckField`, `Editor`, `SheetHeader`, `MinMaxField`, `PipTrack`, `RollableStat`,
+  `ItemImage`, plus the `dropTarget` attachment. Build a conversion out of these before
+  writing bespoke markup. Most own their styles in scoped `<style>` blocks; classes still
+  served by `css/mothership.css`'s shared tier keep their pins in `test/ui-parts.test.ts`,
+  because that half of the contract still has no compiler.
 - **Manifest URLs point at `rune-goblin`**. `manifest` must stay on
   `/releases/latest` or Foundry can never detect an update; `download` is version-specific and
   is stamped by `release.yml` from the tag — don't hardcode it.

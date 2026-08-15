@@ -297,7 +297,7 @@
       --generator-checkbox-checked-surface: var(--surface-neutral-high);
     }
 
-    /* The identity block is a single column inside the black bar `.mosh .header` lays out in two.
+    /* The identity block is a single column inside the black bar `.mothership .header` lays out in two.
        Byte-identical to `.mothership .grid-1col`, which this element does not wear -- the id is
        how the fork spelt the override, and (1,2,0) is what carries it. */
     .actor-generator #generator-header-grid-1col {
@@ -309,7 +309,7 @@
       margin-top: var(--generator-group-margin-block-start);
     }
 
-    /* (0,3,0) against `.mosh .circle-input`'s (0,2,0), as `form.actor-generator` was before it:
+    /* (0,3,0) against `.mothership .circle-input`'s (0,2,0), as `form.actor-generator` was before it:
        the credits die is smaller than a stat circle and drops its -0.15em top bleed. */
     .actor-generator .credit-img {
       height: var(--generator-credit-image-height);
@@ -320,12 +320,12 @@
       appearance: none;
     }
 
-    /* (0,4,0) against `.mosh .circle-input`'s (0,2,0), which fills the same box white. */
+    /* (0,4,0) against `.mothership .circle-input`'s (0,2,0), which fills the same box white. */
     .actor-generator .checkbox-round:checked {
       background-color: var(--generator-checkbox-checked-surface);
     }
 
-    /* Beats `.mosh .mainstattext`'s 1.3rem: these three captions are sentences, not stat names. */
+    /* Beats `.mothership .mainstattext`'s 1.3rem: these three captions are sentences, not stat names. */
     .actor-generator .smalltext {
       font-size: var(--generator-action-label-font-size);
     }

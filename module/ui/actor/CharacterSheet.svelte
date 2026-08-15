@@ -641,7 +641,7 @@
     }
 
     /* The header carries both classes, so this reaches the inner grid only -- keep the chain.
-       `centercol` and `mobilehealth` are claimed by `.mosh .health` in css/mothership.css,
+       `centercol` and `mobilehealth` are claimed by `.mothership .health` in css/mothership.css,
        which Cover also writes and this block therefore cannot take. */
     .char-header .header-grid {
       display: grid;

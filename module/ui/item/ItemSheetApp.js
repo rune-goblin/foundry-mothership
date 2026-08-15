@@ -18,7 +18,7 @@ export class MothershipItemSheet extends DocumentSheetV2 {
   static DEFAULT_OPTIONS = {
     // css/mothership.css paints the content white and has no dark variant, so pin the light theme.
     // DocumentSheetV2 only appends the user's theme classes when "themed" is not already here.
-    classes: ['mothership', 'mosh', 'sheet', 'item', 'themed', 'theme-light'],
+    classes: ['mothership', 'sheet', 'item', 'themed', 'theme-light'],
     position: { width: 600, height: 500 },
     window: { resizable: true },
     form: { submitOnChange: true, closeOnSubmit: false },
@@ -57,7 +57,7 @@ export class MothershipItemSheet extends DocumentSheetV2 {
     }
     this.#store = createDocumentStore(this.document, context);
     this.#root = document.createElement('div');
-    this.#root.className = 'mosh-sheet-root';
+    this.#root.className = 'mothership-sheet-root';
     this.#component = mount(this.constructor.COMPONENT, {
       target: this.#root,
       props: { store: this.#store, app: this },

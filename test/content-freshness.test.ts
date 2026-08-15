@@ -25,7 +25,7 @@ it('packs/_source is exactly what a fresh build emits, byte for byte', () => {
     root: ROOT,
     books: BOOKS,
     registryPath: join(ROOT, 'content/ids.json'),
-    outDir: mkdtempSync(join(tmpdir(), 'mosh-freshness-')),
+    outDir: mkdtempSync(join(tmpdir(), 'mothership-freshness-')),
   });
 
   const committed = walk(SOURCE).sort();

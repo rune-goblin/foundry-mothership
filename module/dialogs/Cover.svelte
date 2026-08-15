@@ -51,7 +51,7 @@
             <strong>{option.label}</strong><br />{option.examples}
           </span>
         </div>
-        <div class="macro_desc mosh health resource healthspread minmaxtopstat">
+        <div class="macro_desc health resource healthspread minmaxtopstat">
           <div class="minmaxwrapper" style="width: 100%; background: black; border-radius: 0.3em;">
             <div class="maxhealth-input" style="display: flex;">
               <div class="maxhealth-input whiteText">{armorPoints}</div>
@@ -69,8 +69,8 @@
             </div>
           </div>
           <div class="grid">
-            <div class="healthmaxtext mosh health resource">{localize('Mothership.ArmorPoints')}</div>
-            <div class="healthmaxtext mosh health resource">{localize('Mothership.DMGReduction')}</div>
+            <div class="healthmaxtext health resource">{localize('Mothership.ArmorPoints')}</div>
+            <div class="healthmaxtext health resource">{localize('Mothership.DMGReduction')}</div>
           </div>
         </div>
       </div>

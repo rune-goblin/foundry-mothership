@@ -14,8 +14,8 @@ export class CreatureSettingsApp extends DocumentSheetV2 {
     // css/mothership.css paints the content white with no dark variant, so pin the light theme (see
     // MothershipItemSheet) or the window renders dark text on those light boxes.
     // `creature-settings` is what tells this window apart from the creature sheet underneath,
-    // which is an ApplicationV2 carrying the same mosh/sheet/actor/creature classes.
-    classes: ['mothership', 'mosh', 'sheet', 'actor', 'creature', 'creature-settings', 'themed', 'theme-light'],
+    // which is an ApplicationV2 carrying the same mothership/sheet/actor/creature classes.
+    classes: ['mothership', 'sheet', 'actor', 'creature', 'creature-settings', 'themed', 'theme-light'],
     position: { width: 320, height: 150 },
     window: { resizable: false },
     form: { submitOnChange: true, closeOnSubmit: false },
@@ -36,7 +36,7 @@ export class CreatureSettingsApp extends DocumentSheetV2 {
     }
     this.#store = createDocumentStore(this.document);
     this.#root = document.createElement('div');
-    this.#root.className = 'mosh-sheet-root';
+    this.#root.className = 'mothership-sheet-root';
     this.#component = mount(CreatureSettings, { target: this.#root, props: { store: this.#store } });
     return this.#root;
   }

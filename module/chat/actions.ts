@@ -61,7 +61,7 @@ function onClick(event: MouseEvent): void {
   const button = target.closest<HTMLElement>(`[data-action="${ACTION_ATTRIBUTE}"]`);
   if (button === null) return;
 
-  const parsed = parseAction(button.dataset.moshAction ?? '');
+  const parsed = parseAction(button.dataset.mothershipAction ?? '');
   if (!parsed.ok) return;
 
   event.preventDefault();
