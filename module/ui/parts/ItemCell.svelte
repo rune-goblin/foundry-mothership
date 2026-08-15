@@ -43,10 +43,12 @@
 <style>
   /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
      application; @layer system puts these in the slot the rest of the system occupies.
-     Only the `stat` variant lands here. `.skill-name` is shared vocabulary — four sheets
-     hand-write the black pill inside a list, where a scoped block can never reach them — so
-     css/mothership.css keeps it as a declared tier. `.skill-stat` also stays on the markup:
-     creature-sheet.spec.ts locates the quantity cell by it. */
+     Both variants land here now that the four sheets that hand-wrote the black pill mount this
+     component instead. `.skill-name` keeps its `.items-list` ancestor through `:global()`: the
+     rule weighs (0,3,0) in css/mothership.css and the pill's `color: white` beats the
+     `list-roll:hover` group on that weight alone — the ancestor is what holds the tie, not the
+     scope hash. Both names stay on the markup: creature-sheet.spec.ts locates the quantity cell
+     by `.skill-stat`, and the class sheet's inert wrapper is not ours to rename. */
   @layer system {
     .skill-stat {
       --itemcell-stat-text: var(--text-primary);
@@ -67,6 +69,30 @@
       border-radius: var(--itemcell-stat-radius);
       text-align: center;
       white-space: nowrap;
+    }
+
+    :global(.items-list) .skill-name {
+      --itemcell-name-text: var(--text-inverted);
+      --itemcell-name-surface: var(--surface-neutral-lowest);
+      --itemcell-name-font-weight: var(--font-weight-bold);
+      /* 14 falls between --font-size-sm (13.6) and -md (14.4), and 27 between --space-24 and
+         -28; both wait for the reviewed literal sweep. */
+      --itemcell-name-font-size: 14px;
+      --itemcell-name-height: 27px;
+      --itemcell-name-margin-inline-start: var(--space-0);
+      --itemcell-name-padding: var(--space-2);
+      --itemcell-name-radius: var(--radius-xl);
+
+      color: var(--itemcell-name-text);
+      background: var(--itemcell-name-surface);
+      font-weight: var(--itemcell-name-font-weight);
+      font-size: var(--itemcell-name-font-size);
+      height: var(--itemcell-name-height);
+      margin-left: var(--itemcell-name-margin-inline-start);
+      padding: var(--itemcell-name-padding);
+      border-radius: var(--itemcell-name-radius);
+      text-align: center;
+      overflow: hidden;
     }
   }
 </style>

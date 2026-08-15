@@ -237,7 +237,7 @@
 
       {#each doc.system.selected_adjustment.choose_stat as option, index (index)}
         <ItemRow itemId={index} draggable={false}>
-          <div class="skill-name skill-roll list-roll">{option.modification}</div>
+          <ItemCell variant="name" roll class="skill-roll">{option.modification}</ItemCell>
           <ItemCell>{option.stats.join(', ')}</ItemCell>
           <ItemControls>
             <ItemControl
@@ -267,7 +267,7 @@
           <ItemImage src={item?.img} title={item?.name} />
           <!-- A granted skill that has been deleted keeps its row so it can still be removed. The
                raw UUID identifies it, and .skill-name clips it without the title. -->
-          <div class="skill-name" title={item?.name ?? uuid}>{item?.name ?? uuid}</div>
+          <ItemCell variant="name" title={item?.name ?? uuid}>{item?.name ?? uuid}</ItemCell>
           <ItemCell>{item?.system.rank ?? ''}</ItemCell>
           <ItemCell>{item?.system.bonus ?? ''}</ItemCell>
           <ItemControls>
@@ -334,7 +334,9 @@
   </TabPanel>
 
   <TabPanel tab="skills.selected.or" active={tab} class="items">
-    <div class="skill-name">
+    <!-- No `skill-name` here: the pill's rule needs an `.items-list` ancestor this wrapper has
+         never had, so the class styled nothing. -->
+    <div>
       <ItemControl
         icon="plus"
         class="skills-group-add"
@@ -368,7 +370,7 @@
             draggable={false}
             attach={dropTarget(addOptionSkill(group.index, index))}
           >
-            <div class="skill-name">{option.name}</div>
+            <ItemCell variant="name">{option.name}</ItemCell>
             {#each PICKS as [pick] (pick)}
               <ItemCell>{option[pick]}</ItemCell>
             {/each}

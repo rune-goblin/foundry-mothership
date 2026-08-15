@@ -383,9 +383,10 @@
 
   /* The list frame — `.items-list`, the row, its header variant, the control column, the plain
      `.skill-stat` cell — and the row thumbnail with its border moved into
-     ItemList/ItemRow/ItemCell/ItemControls/ItemImage. `.skill-name` below is the last rule here
-     that needs `.items-list`, which ItemControls also gates its width on; `.item` is now needed
-     by nothing in this file. */
+     ItemList/ItemRow/ItemCell/ItemControls/ItemImage — the black `.skill-name` pill with them,
+     once the five sites that hand-wrote it started mounting ItemCell. No rule here needs
+     `.items-list` any more, though ItemControls still gates its width on it; `.item` is now
+     needed by nothing in this file. */
 
   .mothership .roll-image {
     -webkit-box-flex: 0;
@@ -398,25 +399,10 @@
     border: 1px solid #000;
   }
 
-  /* shared tier: ItemCell, and the black pill hand-written inside a list by SkillSheet,
-     ClassSheet (three sites) and OptionDraft. A Svelte <style> block only reaches its own
-     component's markup, so ItemCell cannot own this one the way it owns `.skill-stat`.
-     Converting those call sites to ItemCell is the S9 audit's work; tokenizing the literals
-     belongs to the reserved sweep. Neither happens here. */
-  .mothership .items-list .skill-name {
-    font-weight: bold;
-    font-size: 14px;
-    color: white;
-    /* text-transform: uppercase; */
-    margin-left: 0px;
-    background: #111;
-    padding: 2px;
-    /* padding-left: 8px; */
-    border-radius: 21px;
-    text-align: center;
-    height: 27px;
-    overflow: hidden;
-  }
+  /* `skill-name` is absent here on purpose: SkillSheet, ClassSheet (three) and OptionDraft
+     hand-wrote the black pill inside a list, and all five of those sites mount ItemCell now, so
+     the rule went with it. The class sheet's sixth `skill-name`, the wrapper around its Add Group
+     button, sits outside any `.items-list` and this rule never reached it — dropped there. */
 
   /* `button-white` — the FINISH bar — moved into RolltableConfig.svelte, the only window that
      ever drew a button out of this file. It sat here below the hover group on purpose: its

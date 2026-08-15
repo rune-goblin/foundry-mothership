@@ -21,7 +21,7 @@
 </script>
 
 <ItemRow>
-  <div class="skill-name"><input type="text" bind:value={draft.name} /></div>
+  <ItemCell variant="name"><input type="text" bind:value={draft.name} /></ItemCell>
   {#each picks as [key] (key)}
     <ItemCell><input type="text" bind:value={draft[key]} /></ItemCell>
   {/each}

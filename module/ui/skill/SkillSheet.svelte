@@ -102,7 +102,7 @@
           <!-- A prerequisite whose skill has been deleted still has to be removable, so it shows
                its raw UUID rather than being dropped from the list behind the user's back. The
                title is what makes that legible: .skill-name clips, and a UUID does not fit. -->
-          <div class="skill-name" title={item?.name ?? uuid}>{item?.name ?? uuid}</div>
+          <ItemCell variant="name" title={item?.name ?? uuid}>{item?.name ?? uuid}</ItemCell>
           <ItemCell>{item?.system.rank ?? ''}</ItemCell>
           <ItemCell>{item?.system.bonus ?? ''}</ItemCell>
           <ItemControls>
