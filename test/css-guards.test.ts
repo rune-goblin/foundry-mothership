@@ -134,6 +134,12 @@ describe('token collisions with Foundry', () => {
   it.skipIf(noFoundry)(spec, () => {
     const theirs = definedCustomProperties(readFileSync(foundryCss, 'utf8'));
     const ours = new Set(stylesheets.flatMap(({ css }) => [...definedCustomProperties(css)]));
+    // The component tokens (--tabs-*, --charactersheet-*, …) exist only in Svelte <style>
+    // blocks, which never pass through css/. The bundle is the one place they all land.
+    const bundle = join(REPO, 'dist/mothershiprpg.css');
+    if (existsSync(bundle)) {
+      for (const name of definedCustomProperties(readFileSync(bundle, 'utf8'))) ours.add(name);
+    }
 
     // A parser that returns nothing would pass an intersection test in silence.
     expect(ours.size).toBeGreaterThan(350);
