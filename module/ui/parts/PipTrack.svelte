@@ -3,8 +3,13 @@
   // result on the document (`xp.html`, `condition.treatment.html`). They are two renderings of
   // one shape: N pips, the first `value` of them filled.
   //
-  // `milestones` is the XP track's only extra -- the 5th, 10th and 15th pip carry a rank caption,
-  // each with its own nudge because the caption is wider than the pip it sits under.
+  // A pip is one element in one of four states. It used to be two class names -- `circle` and
+  // `circle-f` -- each drawing its own circle, which meant the empty and filled pips shared no
+  // geometry and drifted apart. `filled` and `milestone` are states on one `.pip` now, and each
+  // state says only what it changes: the fill, and the stroke.
+  //
+  // The track lays itself out. Both sheets used to wrap it in `.flex` and nudge the result up by
+  // seven pixels; a row of pips is this component's business, not every caller's.
   let { count, value, variant = 'circle', milestones = {} } = $props();
 
   const pips = $derived(
@@ -14,83 +19,112 @@
       milestone: milestones[index + 1],
     }))
   );
+
+  // The clearance below the row exists for the captions; a milestone carrying no label needs none.
+  const captioned = $derived(Object.values(milestones).some((label) => label));
 </script>
 
-{#each pips as pip (pip.key)}
-  {#if variant === 'icon'}
-    <i class="{pip.filled ? 'fas' : 'far'} fa-circle"></i>
-  {:else if pip.milestone}
-    <div class="{pip.filled ? 'circle-f' : 'circle'} milestone">
-      <div class="skill_training_text" style="left: {pip.milestone.left}px;">
-        {pip.milestone.label}
-      </div>
-    </div>
-  {:else}
-    <div class={pip.filled ? 'circle-f' : 'circle'}></div>
-  {/if}
-{/each}
+<span class="pip-track" class:captioned>
+  {#each pips as pip (pip.key)}
+    {#if variant === 'icon'}
+      <i class="{pip.filled ? 'fas' : 'far'} fa-circle"></i>
+    {:else}
+      <span class="pip" class:filled={pip.filled} class:milestone={pip.milestone !== undefined}>
+        {#if pip.milestone !== undefined}
+          <span class="pip-caption">{pip.milestone}</span>
+        {/if}
+      </span>
+    {/if}
+  {/each}
+</span>
 
 <style>
   /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
      application; @layer system puts these in the slot the rest of the system occupies.
-     All three names are this component's own -- nothing else writes `circle`, `circle-f` or
-     `skill_training_text` -- and the component has no root element, so the slots are declared
-     on the pip itself and the caption inherits them.
-     A captioned pip is darker than a plain one whether it is filled or empty, and used to say
-     so inline, where no token reaches; `milestone` names that state instead. */
-  @layer system {
-    .circle,
-    .circle-f {
-      --pip-track-pip-size: var(--space-16);
-      --pip-track-pip-radius: var(--radius-md);
-      --pip-track-pip-text: var(--text-primary);
-      --pip-track-pip-surface: var(--surface-neutral-paper);
-      --pip-track-pip-filled-surface: var(--surface-neutral);
-      --pip-track-pip-milestone-surface: var(--surface-neutral-highest);
-      --pip-track-pip-milestone-filled-surface: var(--surface-neutral-lowest);
+     Every name here is this component's own -- nothing else writes `pip-track`, `pip` or
+     `pip-caption`.
 
+     The caption is centred under its pip by transform rather than by measurement. It used to be
+     relatively positioned and pulled left by a number measured per rank (-54, -50, -52), because
+     the label is wider than the 16px pip it hangs under; those three numbers were the only reason
+     `milestones` carried anything but a label. */
+  @layer system {
+    .pip-track {
+      --pip-track-gap: var(--space-4);
+      /* Room for the captions, which hang out of flow below the row. */
+      --pip-track-caption-clearance: var(--space-20);
+
+      display: inline-flex;
+      align-items: center;
+      gap: var(--pip-track-gap);
+    }
+
+    .pip-track.captioned {
+      padding-bottom: var(--pip-track-caption-clearance);
+    }
+
+    .pip {
+      --pip-track-pip-size: var(--space-16);
+      --pip-track-pip-radius: var(--radius-full);
+      --pip-track-pip-border-width: var(--border-width-1);
+
+      /* Empty is the page showing through a drawn edge; filled is ink. The milestone pair is the
+         same two states one step darker, because a captioned pip marks a rank. */
+      --pip-track-pip-surface: var(--surface-neutral-paper);
+      --pip-track-pip-border-color: var(--border-neutral-medium);
+      --pip-track-pip-filled-surface: var(--surface-neutral);
+      --pip-track-pip-filled-border-color: var(--surface-neutral);
+      --pip-track-pip-milestone-surface: var(--surface-neutral-paper);
+      --pip-track-pip-milestone-border-color: var(--border-neutral-ink);
+      --pip-track-pip-milestone-filled-surface: var(--surface-neutral-lowest);
+      --pip-track-pip-milestone-filled-border-color: var(--surface-neutral-lowest);
+
+      position: relative;
+      flex: 0 0 auto;
+      box-sizing: border-box;
+      width: var(--pip-track-pip-size);
+      height: var(--pip-track-pip-size);
+      border: var(--pip-track-pip-border-width) solid var(--pip-track-pip-border-color);
+      border-radius: var(--pip-track-pip-radius);
+      background: var(--pip-track-pip-surface);
+    }
+
+    .pip.filled {
+      border-color: var(--pip-track-pip-filled-border-color);
+      background: var(--pip-track-pip-filled-surface);
+    }
+
+    .pip.milestone {
+      border-color: var(--pip-track-pip-milestone-border-color);
+      background: var(--pip-track-pip-milestone-surface);
+    }
+
+    .pip.milestone.filled {
+      border-color: var(--pip-track-pip-milestone-filled-border-color);
+      background: var(--pip-track-pip-milestone-filled-surface);
+    }
+
+    .pip-caption {
       --pip-track-caption-font-family: var(--font-sans-mothership);
       --pip-track-caption-font-size: var(--font-size-md);
       --pip-track-caption-font-weight: var(--font-weight-medium);
       --pip-track-caption-text: var(--text-tertiary);
-      --pip-track-caption-filled-text: var(--text-primary);
-      --pip-track-caption-offset-block: var(--space-16);
+      --pip-track-caption-offset-block: var(--space-4);
 
-      width: var(--pip-track-pip-size);
-      height: var(--pip-track-pip-size);
-      border-radius: var(--pip-track-pip-radius);
-      color: var(--pip-track-pip-text);
-    }
-
-    .circle {
-      background: var(--pip-track-pip-surface);
-
-      &.milestone {
-        background: var(--pip-track-pip-milestone-surface);
-      }
-    }
-
-    .circle-f {
-      background: var(--pip-track-pip-filled-surface);
-
-      &.milestone {
-        background: var(--pip-track-pip-milestone-filled-surface);
-      }
-    }
-
-    .skill_training_text {
-      position: relative;
-      top: var(--pip-track-caption-offset-block);
+      position: absolute;
+      top: calc(100% + var(--pip-track-caption-offset-block));
+      left: 50%;
+      transform: translateX(-50%);
       font-family: var(--pip-track-caption-font-family);
       font-size: var(--pip-track-caption-font-size);
       font-weight: var(--pip-track-caption-font-weight);
       color: var(--pip-track-caption-text);
-      text-align: center;
+      white-space: nowrap;
     }
 
     /* (0,3,0) over the caption's (0,2,0): the pair reads in either order. */
-    .circle-f .skill_training_text {
-      color: var(--pip-track-caption-filled-text);
+    .pip.filled .pip-caption {
+      --pip-track-caption-text: var(--text-primary);
     }
   }
 </style>

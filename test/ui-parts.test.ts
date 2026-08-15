@@ -23,8 +23,8 @@
 // one and every tier stays silent, so the pin is the only check it has.
 //
 // PipTrack owns its three names and keeps its pin for both of Field's reasons at once: the
-// e2e specs count `.circle`/`.circle-f` and read `.skill_training_text`, and the pip's class is
-// the runtime `pip.filled ? 'circle-f' : 'circle'`. MinMaxField and RollableStat own nothing --
+// e2e specs count `.pip.filled` and read `.pip-caption`, and a pip's state classes are built at
+// runtime from `filled` and `milestone`. MinMaxField and RollableStat own nothing --
 // ArmorBlock hand-writes the first's wrapper, and no rule anywhere keys off the second's
 // `ability-mod`/`stat-roll` -- so their pins are the whole contract. The three sections own
 // nothing either: HealthBlock and ItemPanel write no class at all, and ArmorBlock's remaining
@@ -415,36 +415,38 @@ describe('RollableStat', () => {
 });
 
 describe('PipTrack', () => {
-  it('fills the first `value` circles and leaves the rest empty', () => {
+  // A pip is one element in states, not two elements drawing a circle each: `filled` and
+  // `milestone` say only what they change. The track carries its own row, so the pips are its
+  // children rather than the caller's.
+  it('fills the first `value` pips and leaves the rest empty', () => {
     const target = render(PipTrack, { count: 5, value: 2 });
-    expect([...target.children].map((n) => classes(n).join(' '))).toEqual([
-      'circle-f',
-      'circle-f',
-      'circle',
-      'circle',
-      'circle',
+    const track = target.querySelector('.pip-track')!;
+
+    expect([...track.children].map((n) => classes(n).join(' '))).toEqual([
+      'pip filled',
+      'pip filled',
+      'pip',
+      'pip',
+      'pip',
     ]);
   });
 
-  // The caption's nudge is per-milestone data, so it stays inline; the two colours a captioned
-  // pip used to carry inline are `milestone`'s job now.
+  // The caption is centred by transform, so a milestone is a label and nothing else — the three
+  // hand-measured `left` nudges the map used to carry are gone.
   it('captions a milestone pip and marks the pip that carries it', () => {
-    const target = render(PipTrack, {
-      count: 5,
-      value: 5,
-      milestones: { 5: { label: 'Trained', left: -54 } },
-    });
-    const caption = target.querySelector('.skill_training_text')! as HTMLElement;
+    const target = render(PipTrack, { count: 5, value: 5, milestones: { 5: 'Trained' } });
+    const caption = target.querySelector('.pip-caption')! as HTMLElement;
 
     expect(caption.textContent!.trim()).toBe('Trained');
-    expect(caption.getAttribute('style')).toBe('left: -54px;');
-    expect(classes(caption.parentElement!)).toEqual(['circle-f', 'milestone']);
+    expect(caption.getAttribute('style')).toBeNull();
+    expect(classes(caption.parentElement!)).toEqual(['pip', 'filled', 'milestone']);
+    expect(classes(target.querySelector('.pip-track')!)).toContain('captioned');
   });
 
   // The condition treatment track is three Font Awesome circles, not divs.
   it('renders the icon variant as solid and outline glyphs', () => {
     const target = render(PipTrack, { count: 3, value: 1, variant: 'icon' });
-    expect([...target.children].map((n) => classes(n).join(' '))).toEqual([
+    expect([...target.querySelector('.pip-track')!.children].map((n) => classes(n).join(' '))).toEqual([
       'fas fa-circle',
       'far fa-circle',
       'far fa-circle',

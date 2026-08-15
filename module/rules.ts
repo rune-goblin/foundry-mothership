@@ -34,6 +34,17 @@ export const WOUND_ROLLOVER = 1;
 /** The XP track's length. The clamp and the pip count are the same number (audit U14). */
 export const XP_PIPS = 15;
 
+/**
+ * PSG 22 — the pip each rank is reached on, and the string that captions it. Both actor sheets
+ * hand-wrote this map, each with its own hand-measured nudge per label; the pips are the rule and
+ * belong here once. The values are lang keys because the caption is user-visible text.
+ */
+export const XP_MILESTONES: Readonly<Record<number, string>> = {
+  5: 'Mothership.SkillRankTrained',
+  10: 'Mothership.SkillRankExpert',
+  15: 'Mothership.SkillRankMaster',
+};
+
 export type SkillRank = 'trained' | 'expert' | 'master';
 
 /** PSG 22 — what a skill of each rank adds to the check. Skill items store the rank capitalized. */

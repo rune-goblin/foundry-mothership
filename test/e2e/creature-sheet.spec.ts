@@ -131,9 +131,9 @@ test.describe('creature sheet', () => {
     const { appId, uuid } = await open(gmPage, { xp: { value: 3 } });
     const track = gmPage.locator(`#${appId} .skill_training_frame [role="button"]`);
 
-    await expect(track.locator('.circle-f')).toHaveCount(3);
+    await expect(track.locator('.pip.filled')).toHaveCount(3);
     await expect(track.locator('.circle')).toHaveCount(12);
-    await expect(track.locator('.skill_training_text')).toHaveText([
+    await expect(track.locator('.pip-caption')).toHaveText([
       'Trained',
       'Expert',
       'Master',

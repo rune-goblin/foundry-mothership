@@ -218,9 +218,9 @@ test.describe('character sheet', () => {
     const { appId, uuid } = await open(gmPage, { xp: { value: 7 } });
     const track = gmPage.locator(`#${appId} .skill_training_frame [role="button"]`);
 
-    await expect(track.locator('.circle-f')).toHaveCount(7);
+    await expect(track.locator('.pip.filled')).toHaveCount(7);
     await expect(track.locator('.circle')).toHaveCount(8);
-    await expect(track.locator('.skill_training_text')).toHaveText(['Trained', 'Expert', 'Master']);
+    await expect(track.locator('.pip-caption')).toHaveText(['Trained', 'Expert', 'Master']);
 
     await track.click({ position: { x: 5, y: 5 } });
     await expect.poll(() => stored(gmPage, uuid, 'system.xp.value')).toBe(8);

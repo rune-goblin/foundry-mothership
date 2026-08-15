@@ -16,7 +16,7 @@
   import ItemPanel from '../parts/sections/ItemPanel.svelte';
   import { onActivate } from '../parts/activate.js';
   import { localize } from '../../i18n.ts';
-  import { XP_PIPS } from '../../rules.ts';
+  import { XP_PIPS, XP_MILESTONES } from '../../rules.ts';
   import {
     adjust,
     deleteItem,
@@ -76,11 +76,10 @@
     { key: 'body', label: 'Mothership.Body' },
   ];
 
-  const XP_MILESTONES = {
-    5: { label: 'Trained', left: -54 },
-    10: { label: 'Expert', left: -50 },
-    15: { label: 'Master', left: -52 },
-  };
+  // The pips are XP_MILESTONES' — this only turns its lang keys into the captions.
+  const xpMilestones = Object.fromEntries(
+    Object.entries(XP_MILESTONES).map(([pip, key]) => [pip, localize(key)]),
+  );
 
   const at = (path) => path.split('.').reduce((node, key) => node?.[key], doc);
 
@@ -328,15 +327,14 @@
           value={system.xp.selectedSkill}
         ></textarea>
         <div
-          class="list-roll flex"
-          style="position: relative; top: -7px;"
+          class="list-roll"
           role="button"
           tabindex="0"
           onclick={stepXp}
           oncontextmenu={stepXp}
           onkeydown={onActivate(stepXp)}
         >
-          <PipTrack count={XP_PIPS} value={system.xp.value} milestones={XP_MILESTONES} />
+          <PipTrack count={XP_PIPS} value={system.xp.value} milestones={xpMilestones} />
         </div>
       </div>
     </div>
