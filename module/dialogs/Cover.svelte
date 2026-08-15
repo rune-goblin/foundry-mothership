@@ -4,6 +4,15 @@
   import { COVER_BONUS } from '../rules.ts';
 
   // The radio group holds the choice; `value` is the cover the actor is already behind.
+  //
+  // No <style> block, and two reasons rather than one. The dialog vocabulary is the shell tier's
+  // (css/mothership.css). The armour readout below it is ArmorBlock's markup copied here by hand,
+  // inline overrides and all -- `minmaxwrapper`'s black bar, `slant`'s white edge,
+  // `highlightText`'s size and `maxhealth-input`'s flex are byte-identical in both files. They
+  // stay inline: keying them on a new wrapper class would put four rules back into
+  // css/mothership.css to serve two hand-writers that S9 is meant to collapse into one component,
+  // and that collapse would delete the class again. One duplication is cheaper than a class
+  // minted to outlive it.
   let { options, armorPoints, damageReduction, value, onchange } = $props();
 </script>
 

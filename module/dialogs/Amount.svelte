@@ -1,6 +1,9 @@
 <script>
   // The amount is the button, so this window is only the briefing that explains the choice.
   // `body` is our own lang string and carries the book's emphasis as markup.
+  //
+  // No <style> block: every class here is the dialog shell's vocabulary — fourteen components
+  // write it, and css/mothership.css declares the tier.
   let { image, heading, body, prompt } = $props();
 </script>
 

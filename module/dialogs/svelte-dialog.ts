@@ -70,6 +70,7 @@ declare const foundry:
 /** The class the legacy dialogs carry, so `css/mothership.css` styles these the same way. */
 const CLASSES = ['mothership', 'macro-popup-dialog'] as const;
 
+/** A mount point, not a surface: no rule in either stylesheet selects it, so its rename is code. */
 const MOUNT_CLASS = 'mosh-dialog-root';
 
 export async function svelteDialog<V, T, P extends object>(

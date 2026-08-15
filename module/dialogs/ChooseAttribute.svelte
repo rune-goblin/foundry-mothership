@@ -2,6 +2,9 @@
   // The radio group is its own state: `value` is what it opens on, and the browser moves the
   // selection from there. Mirroring it into a rune would only be a second copy to keep in step.
   // `intro` is our own lang string and carries the book's emphasis as markup.
+  //
+  // No <style> block: every class here belongs to the dialog shell tier, and the radio styling
+  // that makes these rows readable is keyed on `input[type="radio"]` across five writers.
   let { stats, heading, intro, value, onchange } = $props();
 </script>
 

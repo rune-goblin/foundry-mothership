@@ -4,6 +4,10 @@
   // The rows are data. Legacy cloned an HTML string per skill and filled it in with chained
   // `replace` calls, injecting the skill's name as a DOM id and its stored description unescaped
   // (audit F23). Descriptions arrive enriched, so links in them resolve here as they do anywhere.
+  //
+  // No <style> block: every class here belongs to the dialog shell tier, `condition-modifier`
+  // shared with ChooseAdvantage besides. This is the body the `dialog-skill-check` baseline
+  // renders, so the shell tier's rules are the ones under that baseline's protection.
   let { skills, note = '', prompt = false, value, onchange } = $props();
 </script>
 

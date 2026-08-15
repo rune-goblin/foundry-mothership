@@ -3,6 +3,9 @@
 
   // What to do about it depends on where macros are pointed, so the caller passes the setting's
   // current value rather than this window reading it.
+  //
+  // No <style> block: `macro_prompt` carries no rule at all — it is structure the shell tier
+  // leaves alone and test/dialogs.test.ts locates by.
   let { target } = $props();
 
   const EXPLANATION = {

@@ -906,7 +906,22 @@
     padding-bottom: 0.2em;
   }
 
-  /* Dialog V2 - Macro Pop Ups */
+  /* Dialog V2 — the shell tier. Everything below is keyed on the class `svelte-dialog.ts` puts
+     on the frame, and none of it is ownable by a component, for two separate reasons. The chrome
+     selectors — the frame itself, `.window-header`, `.window-content`, the two `standard-form`
+     gaps, `.form-footer button` — match elements Foundry renders, which no <style> block can
+     reach. The body vocabulary — `macro_window`, `macro_desc`, the radios and their labels,
+     `condition-modifier` — is hand-written by fourteen components mounted into this one shell:
+     the eight in module/dialogs plus SkillPicker, BonusOption, StatChoice, StatOption, NewSkill
+     and PickFromPack. A scoped block in any one of them would reach a fraction of the writers.
+     This is what §4.1's "they stay until dialogs are restyled" resolves to: the bodies unify at
+     the call site (S9) or not at all.
+
+     `macro_img` and `macro_prompt` are absent below on purpose: both rules were empty declaration
+     blocks, contributing nothing to any element's cascade, and were deleted. (The build kept
+     them; emptiness, not absence from the bundle, is the proof.) Both class names stay on the
+     markup — `macro_prompt` because test/dialogs.test.ts locates by it, `macro_img` as structure
+     with nothing left to style it. */
 
   /* Base dialog styling */
   .mothership.application.dialog.macro-popup-dialog {
@@ -941,11 +956,6 @@
     border-radius: 9px;
   }
 
-  /* MPD macro image */
-  .mothership.macro-popup-dialog .macro_img {
-
-  }
-
   /* MPD macro desc */
   .mothership.macro-popup-dialog .macro_desc {
     font-family: "Barlow", sans-serif;
@@ -967,28 +977,18 @@
     margin-bottom: 8px;
   }
 
-  /* MPD macro prompt */
-  .mothership.macro-popup-dialog .macro_prompt {
-
-  }
-
-  /* MPD grid layouts */
-  .mothership.macro-popup-dialog .grid-1col {
-    grid-column: span 1 / span 1;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
-
+  /* The last of the dialog's grid copies. It declares exactly what `.mothership .grid-2col`
+     above declares, so on specificity alone it would be redundant — but `.mothership .widegap`
+     follows that rule at equal specificity, so 16px beats its 2px everywhere the two meet. The
+     extra `.macro-popup-dialog` here wins that tie back for BonusOption's `grid grid-2col
+     widegap` row, the one element wearing both inside a dialog. The `grid-1col` and `grid-3col`
+     copies had no such tie to settle and were deleted. */
   .mothership.macro-popup-dialog .grid-2col {
     display: grid;
     grid-column: span 2 / span 2;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 2px;
     padding: 0;
-  }
-
-  .mothership.macro-popup-dialog .grid-3col {
-    grid-column: span 3 / span 3;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   /* update buttons to look more old school */
