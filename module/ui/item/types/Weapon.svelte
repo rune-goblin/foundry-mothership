@@ -12,6 +12,9 @@
     'Gunshot', 'Gunshot [-]', 'Gunshot [+]',
   ];
 
+  // No <style> block: Armor.svelte hand-writes `item-armor-grid` and both `circle-statwrapper-*`
+  // wrappers exactly as this file does, so a scoped block here would reach only half of each look.
+  // All three stay declared in css/mothership.css as a shared tier.
   let { system } = $props();
 
   const RANGE_CHOICES = WEAPON_RANGES.map((range) => ({

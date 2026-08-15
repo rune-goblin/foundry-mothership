@@ -2,6 +2,7 @@
   import Field from '../../parts/Field.svelte';
   import { localize } from '../../../i18n.ts';
 
+  // No <style> block: the `.grid*` set is the Boilerplate layout every sheet reads.
   let { system } = $props();
 </script>
 

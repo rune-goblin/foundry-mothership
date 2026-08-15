@@ -1,6 +1,8 @@
 <script>
   import { localize } from '../../../i18n.ts';
 
+  // No <style> block: the `.grid*` set is the Boilerplate layout every sheet reads, and
+  // `resource-label` has eleven writers.
   let { system } = $props();
 </script>
 

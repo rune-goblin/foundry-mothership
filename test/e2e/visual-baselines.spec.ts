@@ -188,6 +188,36 @@ const ITEM_SHEETS = [
       description: '<p>Standard issue, and it jams.</p>',
     },
   },
+  {
+    name: 'item-sheet-armor',
+    type: 'armor',
+    system: {
+      armorPoints: 3,
+      damageReduction: 1,
+      equipped: true,
+      weight: 2,
+      cost: 300,
+      description: '<p>Scuffed, resealed twice.</p>',
+    },
+  },
+  {
+    name: 'item-sheet-ability',
+    type: 'ability',
+    system: { roll: '1d10', description: '<p>Hold your breath and count.</p>' },
+  },
+  {
+    name: 'item-sheet-condition',
+    type: 'condition',
+    system: {
+      severity: 2,
+      treatment: { value: 1 },
+      modifiers: [
+        { scope: 'strength', modifier: 'disadvantage' },
+        { scope: 'fear', modifier: 'disadvantage' },
+      ],
+      description: '<p>Bleeding through the bandage, and getting worse.</p>',
+    },
+  },
 ] as const;
 
 /* -------------------------------------------- */

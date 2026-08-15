@@ -14,6 +14,9 @@
   import { dropTarget } from '../parts/drop-target.js';
   import { localize } from '../../i18n.ts';
 
+  // No <style> block: `skill-name` is the black pill this file, ClassSheet and OptionDraft
+  // hand-write inside a list, and ItemCell's `name` variant builds — shared tier. `sheet-body`
+  // belongs to five sheets, and `items` carries no rule at all.
   let { store } = $props();
 
   const doc = $derived(store.current);

@@ -787,6 +787,10 @@
      `creature-description-grid` and `creature-abilities`, written by CreatureSheet alone — moved
      into CreatureSheet.svelte. */
 
+  /* shared tier: Weapon, Armor — both hand-write this grid as their body's root, so a scoped
+     block in either file reaches only its own half. The same pair shares
+     `circle-statwrapper-vertical` and `transparentBackground` above for the same reason;
+     unifying the two bodies is S9 call-site work. */
   .mosh .item-armor-grid {
     display: grid;
     grid-template-columns: 1fr 12em;
@@ -1121,8 +1125,7 @@
     margin-bottom: 6px;
   }
 
-  .mothership .condition-modifiers {
-    margin: 2px 0 0;
-    padding-left: 18px;
-  }
+  /* The condition sheet's modifier list moved into Condition.svelte, the only thing that ever
+     writes it. `condition-modifier` above is the dialog's single line and stays with the dialog
+     it is drawn in. */
 }

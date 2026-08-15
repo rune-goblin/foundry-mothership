@@ -16,6 +16,13 @@
   import { promptStatOption } from './stat-option.js';
   import { localize } from '../../i18n.ts';
 
+  // No <style> block: every name this sheet writes is shared vocabulary css/mothership.css keeps
+  // declaring — `header-fields`, whose one rule needs the `char-header` ancestor only Generator
+  // and CharacterSheet supply, so here it styles nothing; the `.grid*`/`widegap` set,
+  // `resource-label`, `textarea-input` (CharacterSheet), `skill-name` (SkillSheet, OptionDraft and
+  // ItemCell's `name` variant) and the `list-roll` hover group. The six `skills-*`/`stat-option-*`
+  // names are class props on ItemControl's anchor, where a scoped block here could not reach them
+  // anyway, and no rule keys off any of them: they exist as e2e locators.
   let { store } = $props();
 
   const doc = $derived(store.current);
