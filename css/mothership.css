@@ -825,8 +825,8 @@
   }
 
   .mothership .noborder {
-    border: 0 !important;
-    background: 0 !important;
+    border: 0;
+    background: 0;
   }
 
   .mothership .headerinputtext {

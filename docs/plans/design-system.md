@@ -619,3 +619,9 @@ the **deletion candidates** (`dropdownSkill`, `header-fields` on the class sheet
 `macro_img`, `.mothership .stress`, the `h1.charname` pair); the `data-mosh-voice` content
 regeneration; the **BonusOption `widegap` denial** (probable bug, wants a popup baseline);
 and the parked **DS6b tier-inversion** design call.
+
+**Post-ledger hardening (2026-08-15):** the `!important` census settled at Mark's prompting —
+the two `noborder` flags were pre-layer-era debt (proven removable: baselines byte-exact
+without them) and are gone; the three surviving uses are the dialog radios' theme defence,
+where module CSS outranks `layer(system)` in normal order and `!important` is the inversion.
+The guard ceiling is ratcheted to exactly 3, with the reasoning at the constant.

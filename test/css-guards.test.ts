@@ -11,7 +11,10 @@ import { join } from 'node:path';
 
 const REPO = join(import.meta.dirname, '..');
 const CSS_DIR = join(REPO, 'css');
-const IMPORTANT_CEILING = 5;
+// Exactly the three theme-defence declarations on the dialog radios: module CSS ranks above
+// layer(system) in normal order, and !important is what inverts it. Everything else was
+// proven removable against the baselines (the noborder pair, 2026-08-15).
+const IMPORTANT_CEILING = 3;
 
 const stylesheets = readdirSync(CSS_DIR)
   .filter((file) => file.endsWith('.css'))
