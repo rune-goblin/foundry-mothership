@@ -1,13 +1,13 @@
 /* Layer 1 — theme tokens. Vendored and adapted from @motion-proto/live-tokens v0.47.1
    (src/system/styles/tokens.css + CONVENTIONS.md): its category-first naming law, its scale
-   shapes, and — where MoSh has no colour of its own yet — its values.
+   shapes, and — where Mothership has no colour of its own yet — its values.
 
    Two layers: these theme tokens hold the palette and the scales; Layer 2 component tokens
    (--<componentId>-<part>[-<state>][-<element>]-<property>) alias them, and a component's
    styles read only its own tokens. A component that reads a ramp step directly forfeits the
    point: the stark look is expressed in these values, so re-theming is an edit here.
 
-   Scope: everything is declared on .mothership, the class every MoSh window, chat card and
+   Scope: everything is declared on .mothership, the class every Mothership window, chat card and
    dialog root carries. Never :root — Foundry is one document and :root is everyone's.
    Layer 2 tokens follow the same rule: they land on .mothership too.
 
@@ -16,7 +16,7 @@
    Every other name here is disjoint from Foundry's 398; test/css-guards.test.ts re-proves
    that against the installed build rather than trusting it.
 
-   Colour provenance: neutral, danger, success and warning carry MoSh's measured values
+   Colour provenance: neutral, danger, success and warning carry Mothership's measured values
    (§4.7 of docs/plans/design-system.md). alternate, canvas, brand, accent, special and info
    are live-tokens' swatches, kept so a re-theme is an edit and not a build-out — nothing
    aliases into them until a design decision names them. */
@@ -84,7 +84,7 @@
     --color-warning-900: #341e00;
     --color-warning-950: #1c0e00;
 
-    /* MoSh's own. The cover bonus the Cover dialog names in prose ("displayed in Orange") is
+    /* Mothership's own. The cover bonus the Cover dialog names in prose ("displayed in Orange") is
        #ff4500, and the warning ramp above is amber from end to end — nothing on it is this hue,
        so a snap would recolour the readout rather than collapse it onto a step. */
     --color-highlight: #ff4500;
@@ -168,9 +168,9 @@
     --color-info-950: #000413;
 
     /* Surfaces — 7-step elevation, lowest → highest.
-       Each tier reads the ramp step live-tokens chose for it, so MoSh's measured greys and
+       Each tier reads the ramp step live-tokens chose for it, so Mothership's measured greys and
        reds arrive here with no second set of values to keep in step. Those choices were made
-       against live-tokens' dark ground: elevation climbs toward light. MoSh's ground is white
+       against live-tokens' dark ground: elevation climbs toward light. Mothership's ground is white
        paper with black chrome, so DS8 aliases deliberately rather than assuming the direction. */
 
     --surface-neutral-lowest: var(--color-neutral-900);
@@ -181,7 +181,7 @@
     --surface-neutral-higher: var(--color-neutral-400);
     --surface-neutral-highest: var(--color-neutral-300);
     /* The end the seven-step ladder never reaches. Elevation climbs toward light on a dark
-       ground, so `highest` stops at #bbb — but MoSh's ground is the page itself, and every white
+       ground, so `highest` stops at #bbb — but Mothership's ground is the page itself, and every white
        box on it (a field, a pip, a save, a button) was reading --color-white raw for want of a
        name. This is that name; it is not a rung on the ladder above. */
     --surface-neutral-paper: var(--color-white);
@@ -282,7 +282,7 @@
     --border-neutral-strong: var(--color-neutral-200);
     /* The two ends the five-step scale never reaches, and the reason DS6b parked a tier
        inversion that would not have helped: emphasis climbs #444 → #e3e3e3, so reversing the
-       order still lands on neither #111 nor white. MoSh draws a black line on the page and a
+       order still lands on neither #111 nor white. Mothership draws a black line on the page and a
        white one on its black panels; both are edges of the ground, not steps of emphasis. */
     --border-neutral-ink: var(--color-neutral-900);
     --border-neutral-paper: var(--color-white);
@@ -341,7 +341,7 @@
     --border-info-medium: var(--color-info-300);
     --border-info-strong: var(--color-info-200);
 
-    /* Text colours — the neutral hierarchy carries MoSh's ink on paper (dark → pale); the
+    /* Text colours — the neutral hierarchy carries Mothership's ink on paper (dark → pale); the
        family tiers keep live-tokens' step choices, which read the other way. */
     --text-primary: var(--color-neutral-900);
     --text-secondary: var(--color-neutral-600);
@@ -407,7 +407,7 @@
     /* Typography — families.
        Chakra Petch and Barlow are self-hosted (fonts/, SIL OFL 1.1); Font Awesome 6 Pro ships
        with Foundry under its own name (--font-awesome), so --font-icon is free. The serif and
-       mono stacks are vendored swatches — MoSh hosts neither face. */
+       mono stacks are vendored swatches — Mothership hosts neither face. */
     --font-display: "Chakra Petch", sans-serif;
     --font-sans-mothership: "Barlow", sans-serif;
     --font-serif-mothership: "GFS Didot", serif;
@@ -454,7 +454,7 @@
     --letter-spacing-wider: 0.08em;
 
     /* Typography — composite styles */
-    /* The sizes are MoSh's measured headings (42/24/20/17.6px); the weight is the sheet's today. */
+    /* The sizes are Mothership's measured headings (42/24/20/17.6px); the weight is the sheet's today. */
 
     --heading-xl-font-family: var(--font-display);
     --heading-xl-font-size: var(--font-size-7xl);
@@ -511,7 +511,7 @@
     --space-128: 128px;
     --space-full: 100%;
 
-    /* Radius — MoSh's three focal sizes at sm/md/lg, the tail extrapolated */
+    /* Radius — Mothership's three focal sizes at sm/md/lg, the tail extrapolated */
     --radius-none: 0;
     --radius-sm: 3px;
     --radius-md: 10px;
@@ -534,7 +534,7 @@
     --gradient-stop-mid: 50%;
     --gradient-stop-end: 100%;
 
-    /* Effects — MoSh's own, measured from the sheet */
+    /* Effects — Mothership's own, measured from the sheet */
     --shadow-glow: 0 0 15px var(--color-white);
     --shadow-glow-soft: 0 0 10px 0 var(--color-neutral-400);
     --ring-danger: 0 0 0 2px rgba(139, 0, 0, 0.35);
