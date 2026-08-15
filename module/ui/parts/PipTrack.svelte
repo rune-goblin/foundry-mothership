@@ -69,16 +69,9 @@
        they were that wrapper's flex children. Moving layout in here was right; the fixed gap that
        came with it swapped a row that fits any slot for one that fits only a slot 296px wide. */
     .pip-track.captioned {
-      /* The last caption is centred on the last pip, so it overhangs it by half its own width less
-         half a pip — about 20px for "Master". The old caption was pulled left instead (-52px), so
-         it hung back under earlier pips and never reached the edge; centred, it needs the room
-         reserving or it is clipped to "Maste". */
-      --pip-track-caption-overhang: var(--space-20);
-
       display: flex;
       justify-content: space-evenly;
       gap: 0;
-      padding-inline: var(--pip-track-caption-overhang);
       padding-bottom: var(--pip-track-caption-clearance);
     }
 
@@ -99,10 +92,15 @@
       --pip-track-pip-milestone-filled-border-color: var(--surface-neutral-lowest);
 
       position: relative;
-      flex: 0 0 auto;
+      /* Shrinks rather than overflows. A pip that cannot give way turns a row one pixel too narrow
+         into a sliced pip and a broken panel edge, which is the failure this component already had
+         once; `aspect-ratio` keeps it round on the way down instead of squashing it to an ellipse. */
+      flex: 0 1 var(--pip-track-pip-size);
+      min-width: 0;
       box-sizing: border-box;
       width: var(--pip-track-pip-size);
-      height: var(--pip-track-pip-size);
+      height: auto;
+      aspect-ratio: 1;
       border: var(--pip-track-pip-border-width) solid var(--pip-track-pip-border-color);
       border-radius: var(--pip-track-pip-radius);
       background: var(--pip-track-pip-surface);
@@ -139,6 +137,22 @@
       font-weight: var(--pip-track-caption-font-weight);
       color: var(--pip-track-caption-text);
       white-space: nowrap;
+    }
+
+    /* The captions at the two ends anchor to their pip's outer edge instead of centring on it, so
+       no label can bleed past the row however long it grows. A centred end caption reaches half its
+       own width beyond the last pip, which is what clipped "Master" to "Maste"; reserving that
+       overhang as padding only works for the label you measured, and the same row reads
+       "Especializado" in pt-BR. An anchor needs no measurement. */
+    .pip:first-child .pip-caption {
+      left: 0;
+      transform: none;
+    }
+
+    .pip:last-child .pip-caption {
+      left: auto;
+      right: 0;
+      transform: none;
     }
 
     /* (0,3,0) over the caption's (0,2,0): the pair reads in either order. */
