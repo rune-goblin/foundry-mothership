@@ -23,7 +23,11 @@
 <div class="editor-host" {@attach proseMirror}></div>
 
 <style>
-  .editor-host {
-    display: contents;
+  /* Unlayered component CSS outranks every layered rule in the application; @layer system puts
+     this in the slot the rest of the system occupies. */
+  @layer system {
+    .editor-host {
+      display: contents;
+    }
   }
 </style>

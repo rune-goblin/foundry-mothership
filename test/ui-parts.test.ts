@@ -8,6 +8,9 @@
 // These specs mount each primitive and assert the selector the stylesheet actually keys off,
 // plus the behaviour of the interactive ones. CircleStat has no converted consumer until
 // ship-sheet-sbt, so this is the only thing holding it to its shape.
+//
+// A primitive that owns its styles in a scoped <style> block has no such contract, and its
+// class-name pin retires with the move (design-system.md decision 5) -- Tabs is the first.
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { mount, unmount, flushSync, createRawSnippet, type Component } from 'svelte';
 
@@ -476,7 +479,6 @@ describe('Tabs', () => {
   it('renders the nav and the a.tab-select[data-tab] the e2e specs click', () => {
     const el = render(Tabs, { tabs, active: 'description' }).firstElementChild!;
     expect(el.tagName).toBe('NAV');
-    expect([...el.classList]).toEqual(['mothership', 'mosh', 'sheet-tabs', 'tabs']);
     expect(el.getAttribute('data-group')).toBe('primary');
 
     const links = [...el.querySelectorAll('a.tab-select')];

@@ -387,25 +387,10 @@
     text-align: left;
   }
 
-  .mosh .sheet-tabs {
-    -webkit-box-flex: 0;
-    -ms-flex: 0;
-    flex: 0;
-  }
-
   .mosh .sheet-body,
   .mosh .sheet-body .tab,
   .mosh .sheet-body .tab .editor {
     height: 100%;
-  }
-
-  .mothership.sheet nav.sheet-tabs {
-    /* border-top: 2px solid black;
-    border-bottom: 2px solid black; */
-    background: black;
-    color: white;
-    padding: 6px 0;
-    border-radius: 10px;
   }
 
   .mosh .skill_training_frame{
@@ -428,32 +413,6 @@
     font-weight: bold;
     margin-bottom: 3px;
     text-align: center;
-  }
-
-  .mosh .tabs {
-    height: 40px;
-    border-top: 2px solid rgb(56, 56, 56);
-    border-bottom: 2px solid rgb(56, 56, 56);
-  }
-
-  .mosh .tabs .item {
-    /* line-height: 40px; */
-    font-weight: bold;
-  }
-
-  .mosh .tabs .item.active {
-    text-decoration: underline;
-    text-shadow: none;
-  }
-
-  .mosh .tabs .item.active::before {
-    font-family: "Font Awesome 6 Pro";
-    content: "\f0da";
-    color:white;
-    position: relative;
-    right: 6px;
-    margin-left: -1rem;
-    display: inline-block;
   }
 
   .mosh .items-list {
@@ -556,28 +515,6 @@
     border: 0;
     padding: 10px;
   }
-
-  .mosh .tab-select {
-    font-size: medium;
-    font-weight: bold;
-    color: white;
-    text-align: center;
-  }
-
-  .mosh .tab-select.active {
-    text-decoration: underline;
-    text-shadow: 0 0 10px white;
-  }
-
-  /* .mosh .tab-select.active::before {
-    font-family: "Font Awesome 6 Pro";
-    content: "\f0da";
-    color:rgb(255, 113, 113);
-    position: relative;
-    right: 6px;
-    margin-left: -1rem;
-    display: inline-block;
-  } */
 
   /* A two-digit bonus overflows the 28px pill under an ApplicationV2 window's input padding,
      which is wider than AppV1's. Every other input in this file already zeroes it. */

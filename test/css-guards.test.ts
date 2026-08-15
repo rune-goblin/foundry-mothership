@@ -95,6 +95,26 @@ describe('css guards', () => {
   });
 });
 
+// The bundle is where the guard can be evaded: Svelte emits a component's <style> block
+// unlayered, so a scoped block that forgets its `@layer system` wrapper leaves css/ green and
+// still outranks every layered rule in the application. Skipped without a build so CI stays
+// green; `npm run build` arms it.
+const distCss = join(REPO, 'dist', 'mothershiprpg.css');
+const noDist = !existsSync(distCss);
+
+describe('the built stylesheet', () => {
+  const spec = noDist
+    ? 'skipped: no dist/mothershiprpg.css to read — run npm run build'
+    : 'puts every top-level statement in dist/mothershiprpg.css inside a layer';
+
+  it.skipIf(noDist)(spec, () => {
+    const preludes = topLevelPreludes(readFileSync(distCss, 'utf8'));
+
+    expect(preludes.length).toBeGreaterThan(0);
+    expect(preludes.filter((prelude) => !layered(prelude))).toEqual([]);
+  });
+});
+
 // Resolved the way scripts/start-test-env.sh resolves it, so the guard reads the same build the
 // e2e tier boots.
 const foundryApp =
