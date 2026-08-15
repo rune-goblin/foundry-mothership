@@ -868,19 +868,6 @@
      `headerinputtext`/`headerinputfield`/`noborder`, `circle-input` and the
      `.grid*`/`widegap` set. */
 
-  /* shared tier: SkillPicker and BonusOption — the two generator dialogs, which build the same
-     popup body from the same two class names on markup neither one renders for the other. A
-     scoped block in either file would reach only its own half, so unifying the two bodies is S9
-     call-site work, not a move. `center`, which SkillPicker alone writes, moved into it. */
-  .mothership .characterGeneratorSkillPopup {
-    margin-bottom: 10px;
-  }
-  .mothership .characterGeneratorSkillPopup .skillpopupDescription {
-    text-align: center;
-    font-weight: bold;
-    padding-bottom: 0.2em;
-  }
-
   /* Dialog V2 — the shell tier. Everything below is keyed on the class `svelte-dialog.ts` puts
      on the frame, and none of it is ownable by a component, for two separate reasons. The chrome
      selectors — the frame itself, `.window-header`, `.window-content`, the two `standard-form`
