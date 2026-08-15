@@ -252,7 +252,7 @@
     {
       "_id": "zJkYrssfrdWBSeRm",
       "_key": "!tables.results!ypcoikqHLhnc9tNs.zJkYrssfrdWBSeRm",
-      "description": "<strong><span data-mosh-voice=\"human\">HEART ATTACK</span><span data-mosh-voice=\"android\">SHORT CIRCUIT</span>.</strong> Reduce Maximum Wounds by 1. Gain [-] on all rolls for 1d10 hours. Increase Minimum Stress by 1.",
+      "description": "<strong><span data-mothership-voice=\"human\">HEART ATTACK</span><span data-mothership-voice=\"android\">SHORT CIRCUIT</span>.</strong> Reduce Maximum Wounds by 1. Gain [-] on all rolls for 1d10 hours. Increase Minimum Stress by 1.",
       "img": "systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png",
       "name": "",
       "range": [

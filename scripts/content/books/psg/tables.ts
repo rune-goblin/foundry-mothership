@@ -81,7 +81,7 @@ const CONDITION_BY_PANIC = new Map(CONDITIONS.map((c) => [c.name.toLowerCase(), 
 
 /** A result whose text differs by whether the roller is a machine — only Panic 19 (PSG 21.1). */
 function voiceSpan(voice: 'human' | 'android', text: string): string {
-  return `<span data-mosh-voice="${voice}">${text}</span>`;
+  return `<span data-mothership-voice="${voice}">${text}</span>`;
 }
 
 function panicHeading(result: PanicResult): string {

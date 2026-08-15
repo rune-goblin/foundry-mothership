@@ -82,7 +82,7 @@ const rows = [
     type: 'text',
     img: 'row.png',
     description:
-      '<span data-mosh-voice="human">HEART ATTACK</span><span data-mosh-voice="android">SHORT CIRCUIT</span>. Ouch.',
+      '<span data-mothership-voice="human">HEART ATTACK</span><span data-mothership-voice="android">SHORT CIRCUIT</span>. Ouch.',
     range: [19, 19],
   },
 ];
@@ -186,10 +186,29 @@ describe('rollOnTable', () => {
   // translated world's Panic 19 never substituted (it only ever worked by English coincidence).
   it('substitutes by the voice marker, not by matching English text — a translated row still works', () => {
     const translated =
-      '<span data-mosh-voice="human">ATAQUE CARDÍACO</span><span data-mosh-voice="android">CURTO-CIRCUITO</span>. Ai.';
+      '<span data-mothership-voice="human">ATAQUE CARDÍACO</span><span data-mothership-voice="android">CURTO-CIRCUITO</span>. Ai.';
 
     expect(androidSubstitution(translated, true, ANDROID_PANIC_RESULT)).toBe('CURTO-CIRCUITO. Ai.');
     expect(androidSubstitution(translated, false, ANDROID_PANIC_RESULT)).toBe('ATAQUE CARDÍACO. Ai.');
+  });
+
+  // Every other spec here writes the marker into its own fixture, so the emitter and the reader
+  // could drift to two different attribute names and stay green together. This one reads the
+  // shipped row, which is the only thing that proves they still agree.
+  it('reads the marker the content pipeline actually emitted', () => {
+    const panic = JSON.parse(
+      readFileSync(fileURLToPath(new URL('../packs/_source/rolltables/Panic_Check.json', import.meta.url)), 'utf8'),
+    ) as { results: { range: number[]; description: string }[] };
+    const row = panic.results.find((result) => result.range[0] === ANDROID_PANIC_RESULT);
+    if (row === undefined) throw new Error(`Panic ${ANDROID_PANIC_RESULT} is missing from the emitted table`);
+
+    const android = androidSubstitution(row.description, true, ANDROID_PANIC_RESULT);
+    const human = androidSubstitution(row.description, false, ANDROID_PANIC_RESULT);
+
+    expect(android).toContain('SHORT CIRCUIT');
+    expect(android).not.toContain('HEART ATTACK');
+    expect(human).toContain('HEART ATTACK');
+    expect(human).not.toContain('SHORT CIRCUIT');
   });
 });
 

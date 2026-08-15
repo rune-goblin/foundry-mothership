@@ -160,12 +160,12 @@ declare const Roll: new (formula: string) => { evaluate(): Promise<RollDocument>
 
 /**
  * PSG 21.1 — result 19 names both outcomes in one row, and only one of them happened. The content
- * pipeline wraps each half in a `data-mosh-voice` span (`scripts/content/books/psg/tables.ts`); a
+ * pipeline wraps each half in a `data-mothership-voice` span (`scripts/content/books/psg/tables.ts`); a
  * translated row carries the same markers, so this selects by structure rather than by matching
  * the current locale's English against baked-in text (audit-adjacent — the old version only ever
  * matched a world running in English).
  */
-const VOICE = /<span data-mosh-voice="(human|android)">(.*?)<\/span>/g;
+const VOICE = /<span data-mothership-voice="(human|android)">(.*?)<\/span>/g;
 
 export function androidSubstitution(description: string, robotic: boolean, roll: number): string {
   if (roll !== ANDROID_PANIC_RESULT) return description;
