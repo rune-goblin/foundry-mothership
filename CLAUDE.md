@@ -17,18 +17,20 @@ Code style: global `~/.claude/CLAUDE.md` — comment only the non-obvious *why*.
 Survival Guide, containing nothing else — then extend one book at a time.** The Warden's
 Operations Manual is next; the Shipbreaker's Toolkit brings ships back.
 
-**The plan is `docs/plans/design-system.md`** — the token-based design system and the CSS
-dissolution; its §8 ledger is the authoritative state and its §8 protocol governs execution.
-It is the only plan file: the finished plans were deleted 2026-08-15 — the PSG core (S1–S8
-landed), the legacy remake (R0–R7 landed; the runtime core is typed services), the architecture
-review, its evidence file, and the run-to-the-end protocol (written for that one plan).
-**Git history is the record of what happened** — `git log -S"<symbol>"` finds the commit that
-introduced or removed anything, with the diff and the reasoning attached, and
-`git show <commit>:docs/plans/<file>` recovers any deleted plan. Still open beyond the design
-system, recorded here so it keeps a home: `checkJs` over `module/ui/**`; `template.json`'s
-retirement once a generated type snapshot is mutation-proven (v16 removes support regardless);
-and the open U-series findings in `docs/audits/architecture-audit.md`. Durable knowledge
-belongs in a test, in a comment at the site, or in the Gotchas below; not in a prose log.
+**There is no plan file.** `docs/plans/` is empty: the design system finished on 2026-08-15 and
+its plan was deleted with the rest — the PSG core (S1–S8), the legacy remake (R0–R7; the runtime
+core is typed services), the architecture review, its evidence file, and the run-to-the-end
+protocol. **Git history is the record of what happened** — `git log -S"<symbol>"` finds the
+commit that introduced or removed anything, with the diff and the reasoning attached, and
+`git show <commit>:docs/plans/<file>` recovers any deleted plan (the design system's is at
+`24fe460`, and its §4.7 literal→token map is the reference for anything the sweep did not
+reach). Still open, recorded here so it keeps a home: the **last S9 call site** — the shared
+stat vocabulary in `css/mothership.css`, which six components hand-write and no scoped block can
+reach, and which needs MainStat/CircleStats to grow variants before it can move; `checkJs` over
+`module/ui/**`; `template.json`'s retirement once a generated type snapshot is mutation-proven
+(v16 removes support regardless); and the open U-series findings in
+`docs/audits/architecture-audit.md`. Durable knowledge belongs in a test, in a comment at the
+site, or in the Gotchas below; not in a prose log.
 
 **Ships, the Calm/android panic variants and all unsourced content were cut** and live on
 master's own history at ancestor `11eee67` (the archive refs were trimmed 2026-08-13 — a label
@@ -36,13 +38,14 @@ on an ancestor preserves nothing history doesn't; `git show 11eee67:<path>` reco
 file). Nothing was destroyed; ships return as an
 additive book tier. **Do not re-add content without a book behind it.**
 
-**Port, verify, ship, and record the compromise.** Conversions deliberately keep AppV1-era
-shapes so each carries no visual risk; a Svelte best-practices audit is queued as S9.
-Don't fix component architecture piecemeal mid-phase — note it there instead.
+**Port, verify, ship, and record the compromise.** Conversions deliberately kept AppV1-era
+shapes so each carried no visual risk; the S9 audit has since collapsed the duplications those
+left — CheckField's swarm twin, the two popup bodies, the trauma box, the armour bar, the black
+pill — leaving one call site, the shared stat vocabulary.
 
 | Done | Not done |
 |---|---|
-| Vite build, TS tooling, CI | the Svelte best-practices audit — S9 |
+| Vite build, TS tooling, CI | S9's last call site — the shared stat vocabulary |
 | DataModels for the 9 surviving types | |
 | Packs generated from the book, 0e removed | |
 | Svelte 5 wired into build, check, vitest | |
@@ -101,9 +104,9 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   `game.mothershiprpg`**. One string identifies the package everywhere. **The `mosh` retirement
   is complete** (design-system DS1–DS9): the scope class is `.mothership`, the lang root is
   `Mothership.*`, the classes are `Mothership*`, and `grep -w mosh` finds only justified
-  history (the DS9 ledger row lists each survivor — a content-baked `data-mosh-voice`, the
-  local `TEST_WORLD` folder name, and comments describing the past). Never name anything new
-  `mosh` or `ms`.
+  history — the local `TEST_WORLD` Foundry world folder, which is outside the repo, and comments
+  describing the past. The one content-baked survivor, `data-mosh-voice` in the Panic table, was
+  regenerated as `data-mothership-voice`. Never name anything new `mosh` or `ms`.
 - **`game.mothershiprpg` is the public API.** The verb surface — `rollStat`, `rollSkill`,
   `rollWeapon`, `rollTable`, `modify`, `applyItem`, `promptStress`/`promptSave`/`promptWound`,
   `rollItem`, … (`module/api/api.ts`) — is what shipped macros and new content call.
@@ -111,7 +114,7 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   `noCharSelected` and the legacy actor methods survive as a deprecated shim (`module/api/legacy.ts`)
   for macros already imported into worlds. **Changing either surface's signature breaks something** —
   grep `packs/_source/` for the new verbs, `test/api-legacy.test.ts` pins the old ones.
-- **Strings** live in `lang/en.json` under `Mosh.*`; there is a `pt-BR` translation too.
+- **Strings** live in `lang/en.json` under `Mothership.*`; there is a `pt-BR` translation too.
 - **CSS is hand-authored, not compiled** — no SCSS step (the `scss/` tree was 17 months stale
   and was deleted). `css/tokens.css` holds the Layer-1 design tokens (~400, adapted from
   live-tokens, scoped to `.mothership` inside `@layer system`); `css/mothership.css` holds

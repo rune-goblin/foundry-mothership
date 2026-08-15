@@ -53,8 +53,8 @@ scripts run under plain `node` with no `tsx`.
 deleted at the R5 swap and replaced by `documents/`, `checks/`, `mutation/`, `rolls/`,
 `tables/`, `chat/`, `api/` and their neighbours. Nothing was translated file-by-file; there is
 no per-file `// @ts-check` migration. `module/ui/**` stays `.js`/`.svelte` — the sheets adopted
-the services at R7; the remaining UI work is the design system (`docs/plans/design-system.md`),
-not a JS→TS pass.
+the services at R7. The design system landed on top of that, so the remaining UI work is the
+last shared tier in `css/mothership.css`, not a JS→TS pass.
 
 ## Reference files — read the one that fits
 
@@ -76,8 +76,8 @@ not a JS→TS pass.
 settings (`game.settings.get('mothershiprpg', …)`), flags, and pack names
 (`mothershiprpg.<pack>`). Foundry serves the system at `systems/mothershiprpg/…` — that is the
 path templates and art use at runtime. The `.mosh` CSS classes and `Mosh.*` lang keys are
-internal and **migrating to `mothership`** (`docs/plans/design-system.md` §4.6) — never name
-anything new `mosh` or `ms`.
+gone: the scope class is `.mothership` and the lang root `Mothership.*`. Never name anything
+new `mosh` or `ms`.
 
 **Public API.** `game.mothershiprpg` is the verb surface (`module/api/api.ts`) — `rollStat`,
 `rollSkill`, `rollWeapon`, `rollPanic`, `rollRestSave`, `rollTable`, `modify`, `applyItem`,
