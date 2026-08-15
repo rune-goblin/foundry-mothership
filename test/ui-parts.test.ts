@@ -6,11 +6,13 @@
 // component and the sheet silently loses its styling with every tier still green.
 //
 // These specs mount each primitive and assert the selector the stylesheet actually keys off,
-// plus the behaviour of the interactive ones. CircleStat has no converted consumer until
-// ship-sheet-sbt, so this is the only thing holding it to its shape.
+// plus the behaviour of the interactive ones.
 //
 // A primitive that owns its styles in a scoped <style> block has no such contract, and its
 // class-name pin retires with the move (design-system.md decision 5) -- Tabs is the first.
+// The rest keep theirs: the stat vocabulary (.circle-input, .mainstat*, .circle-statwrapper*)
+// is read by six components, so no scoped block can reach it and css/mothership.css declares
+// it as a shared tier.
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { mount, unmount, flushSync, createRawSnippet, type Component } from 'svelte';
 
@@ -23,7 +25,6 @@ import ItemControl from '../module/ui/parts/ItemControl.svelte';
 import Tabs from '../module/ui/parts/Tabs.svelte';
 import TabPanel from '../module/ui/parts/TabPanel.svelte';
 import CircleStats from '../module/ui/parts/CircleStats.svelte';
-import CircleStat from '../module/ui/parts/CircleStat.svelte';
 import Field from '../module/ui/parts/Field.svelte';
 import MainStat from '../module/ui/parts/MainStat.svelte';
 import MinMaxField from '../module/ui/parts/MinMaxField.svelte';
@@ -545,62 +546,6 @@ describe('CircleStats', () => {
   ])('variant %o selects .%s', (variant, expected) => {
     const el = render(CircleStats, { children: text('x'), variant }).firstElementChild!;
     expect([...el.classList]).toContain(expected);
-  });
-});
-
-describe('CircleStat', () => {
-  it('is a circle input plus a sibling label, not a nested pair', () => {
-    const target = render(CircleStat, {
-      name: 'system.stats.battle.value',
-      value: 35,
-      label: 'Battle',
-    });
-
-    const [stat, label] = [...target.children];
-    expect([...stat.classList]).toEqual(['resource', 'circle-stat']);
-    expect([...label.classList]).toEqual(['circlestatlabel']);
-
-    const input = stat.querySelector('input')!;
-    expect(input.className).toBe('circle-input');
-    expect(input.getAttribute('name')).toBe('system.stats.battle.value');
-    expect(input.getAttribute('data-dtype')).toBe('Number');
-    expect(input.value).toBe('35');
-
-    const span = label.querySelector('span')!;
-    expect([...span.classList]).toEqual(['circlestattext']);
-    expect(span.hasAttribute('role')).toBe(false);
-  });
-
-  it('a rollable label carries the roll dataset and activates', () => {
-    const onroll = vi.fn();
-    const target = render(CircleStat, {
-      name: 'system.stats.battle.value',
-      value: 35,
-      label: 'Battle',
-      key: 'battle',
-      roll: 'd100',
-      onroll,
-    });
-
-    const span = target.querySelector('.circlestatlabel span')! as HTMLElement;
-    expect([...span.classList]).toEqual([
-      'circlestattext',
-      'ability-mod',
-      'stat-roll',
-      'rollable',
-    ]);
-    expect(span.dataset).toMatchObject({ key: 'battle', roll: 'd100', label: 'Battle' });
-    expect(span.getAttribute('role')).toBe('button');
-
-    span.click();
-    press(span, 'Enter');
-    expect(onroll).toHaveBeenCalledTimes(2);
-  });
-
-  it('renders no label block at all when unlabelled', () => {
-    const target = render(CircleStat, { name: 'system.supplies.oxygen.value', value: 4 });
-    expect(target.children).toHaveLength(1);
-    expect(target.querySelector('.circlestatlabel')).toBeNull();
   });
 });
 

@@ -516,7 +516,23 @@
     padding: 10px;
   }
 
-  /* A two-digit bonus overflows the 28px pill under an ApplicationV2 window's input padding,
+  /* ==========================================================================================
+     SHARED STAT VOCABULARY — every rule tagged `shared tier` below.
+
+     Six components read these names: MainStat, RollableStat, RollBox, CircleStats, Generator,
+     CreatureSheet. Several hand-write the class instead of mounting the component, and a Svelte
+     <style> block only reaches its own component's markup — so none of these can dissolve into
+     one (DS8's per-component model does not fit them). They stay here, declared as a tier.
+     Converting the hand-written call sites is the S9 audit's first work item; tokenizing these
+     literals belongs to the reserved literal sweep. Neither happens here.
+
+     They are deliberately NOT gathered into one block: `.circle-statwrapper-horizontal`'s
+     background and `.transparentBackground`'s both weigh (0,2,0) in the same layer, so the
+     transparent variant wins on source order alone. Reordering these changes what renders.
+     ========================================================================================== */
+
+  /* shared tier: RollBox, CharacterSheet.
+     A two-digit bonus overflows the 28px pill under an ApplicationV2 window's input padding,
      which is wider than AppV1's. Every other input in this file already zeroes it. */
   .mosh .mainstatmod-input {
     font-family: "Chakra Petch", sans-serif;
@@ -558,6 +574,7 @@
     background: lightgrey;
   }
 
+  /* shared tier: RollBox, CharacterSheet. */
   .mosh .mainstatmod-title {
     position: relative;
     color: lightgrey;
@@ -674,11 +691,13 @@
     margin-top: 3px;
   }
 
+  /* shared tier: MainStat, Generator, CreatureSheet. */
   .mosh .mainstatwrapper {
     display: flex;
     width: 95%;
   }
 
+  /* shared tier: MainStat, Generator. */
   .mosh .mainstat {
     position: relative;
     display: grid;
@@ -688,6 +707,7 @@
     width: 98%;
   }
 
+  /* shared tier: CircleStats (SkillSheet), RolltableConfig. */
   .mosh .circle-statwrapper {
     display: flex;
     width: 100%;
@@ -699,6 +719,8 @@
     flex-direction: column;
   }
 
+  /* shared tier: Item, Ability, Condition, Weapon, Armor. Its background is overridden by
+     `.transparentBackground` below on source order alone — keep that rule after this one. */
   .mosh .circle-statwrapper-horizontal {
     display: flex;
     width: 100%;
@@ -710,6 +732,7 @@
     flex-direction:row;
   }
 
+  /* shared tier: Weapon, Armor. */
   .mosh .circle-statwrapper-vertical {
     display: flex;
     width: 100%;
@@ -721,14 +744,10 @@
     flex-direction: column;
   }
 
+  /* shared tier: Weapon, Armor. Must stay after `.circle-statwrapper-horizontal` — equal
+     specificity, so it only wins because it is later. */
   .mosh .transparentBackground {
     background: transparent;
-  }
-
-
-  .mosh .circle-stat {
-    margin-top: 10px;
-    /* width: 98%; */
   }
 
   .mosh .creature-mainstat {
@@ -739,6 +758,7 @@
     gap: 0;
     width: 100%;
   }
+  /* shared tier: MainStat, Generator. */
   .mosh .mainstatlabel {
     border-top-left-radius: 2em;
     border-bottom-left-radius: 2em;
@@ -749,6 +769,10 @@
     height: 35px;
   }
 
+  /* shared tier: MainStat's plain caption, Generator, and RollableStat's span — which MainStat
+     renders through a class prop, so the name crosses a component boundary. Its `color: white`
+     also beats `:where(.mothership) .rollable:hover` at equal specificity by sitting later;
+     DS7 chose that, so this rule must stay below the hover group. */
   .mosh .mainstattext {
     font-family: "Chakra Petch", sans-serif;
     width: 100%;
@@ -759,11 +783,6 @@
     text-align: left;
   }
 
-
-  .mosh .circlestatlabel {
-    padding: 6px;
-    text-align: center;
-  }
 
   .mosh .circlestattitle {
     width: 100%;
@@ -779,14 +798,7 @@
     color: black;
   }
 
-  .mosh .circlestattext {
-    width: 100%;
-    font-size: 0.9rem;
-    font-weight: bold;
-    text-align: center;
-    text-transform: uppercase;
-  }
-
+  /* shared tier: MainStat, RollBox, Generator. */
   .mosh .circle-input {
     font-family: "Chakra Petch", sans-serif;
     margin: -0.15em;

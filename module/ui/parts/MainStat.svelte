@@ -2,8 +2,10 @@
   import RollableStat from './RollableStat.svelte';
 
   // The label-plus-circle pair the class sheet, the generator and both actor sheets use for a
-  // stat. It is not CircleStat: that one stacks a circle over a caption, this one sets a black
-  // label bar beside it (.mainstatwrapper / .mainstat / .mainstatlabel in css/mothership.css).
+  // stat: a black label bar beside the circle. Its class names (.mainstatwrapper / .mainstat /
+  // .mainstatlabel / .mainstattext / .circle-input) are the shared stat tier in
+  // css/mothership.css, hand-written by call sites this component never renders, which is why
+  // they cannot move into a scoped <style> block here.
   //
   // `control` replaces the plain input where the circle is something else — the generator swaps a
   // clickable die for the rolled value — and `after` holds what sits beside it inside the wrapper,

@@ -505,10 +505,12 @@ Every entry above also appears as a full finding below, in its subsystem.
 - **What:** `values` is read from `game.settings` once at mount; an external settings change never reaches the open window — a quiet exception to the layer's own refresh-on-render convention.
 - **Direction:** Pass values through a refreshable store as the document sheets do, or note the exception where the pattern is defined.
 
-#### U20. `CircleStat` ships with no consumer — Speculative Generality — Nit `[local]`
+#### U20. `CircleStat` ships with no consumer — Speculative Generality — Nit `[local] [done]` ✓ closed
 - **Where:** `parts/CircleStat.svelte`, kept alive only by `test/ui-parts.test.ts:23`
 - **What:** The primitive is imported by nothing but its own test.
 - **Direction:** Delete it and its spec, or annotate which queued conversion claims it.
+- **Closed 2026-08-15, first branch:** deleted with its three specs in the DS8 stat-display
+  unit at Mark's direction; git history recovers it if the Shipbreaker tier returns.
 
 ## The content pipeline and tooling (`content/`, `scripts/`)
 

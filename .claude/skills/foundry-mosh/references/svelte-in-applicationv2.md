@@ -121,12 +121,12 @@ emitted `dist/mothershiprpg.css`.
 
 **`module/ui/parts/` holds the shared primitives** — `ItemList`,
 `ItemRow`, `ItemCell`, `ItemControls`, `ItemControl`, `Tabs`, `TabPanel`, `CircleStats`,
-`CircleStat`, `Field`, `CheckField`, `Editor`, `SheetHeader`, and the `dropTarget` attachment.
+`Field`, `CheckField`, `Editor`, `SheetHeader`, and the `dropTarget` attachment.
 Assemble a conversion from these rather than writing bespoke markup, and don't rename the class
 names they emit: they are `css/mosh.css`'s, pinned by `test/ui-parts.test.ts`.
 
 `module/ui/item/` is the worked example and `module/ui/skill/` (§21) shows a sheet that needs
-more than the shared shell — it subclasses `MoshItemSheet`, overriding `static COMPONENT` and
+more than the shared shell — it subclasses `MothershipItemSheet`, overriding `static COMPONENT` and
 `_context()`. Of the conventions these settled, the two that bite hardest:
 
 - **`css/mosh.css` targets the V1 frame.** A V2 window is `.application`, not `.window-app`,
