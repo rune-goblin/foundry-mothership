@@ -4,6 +4,12 @@
 
   // The armour readout: derived armour points and damage reduction, each showing the bonus the
   // chosen cover adds beside it. Both are read-only -- `prepareDerivedData` owns the arithmetic.
+  //
+  // No <style> block: every class here is shared vocabulary. `resource` carries no rule at all
+  // and `rollable` is the hover group css/mothership.css scopes with `:where()`. Everything else
+  // Cover.svelte hand-writes -- markup and inline overrides alike, byte for byte -- and
+  // MinMaxField writes the wrapper, slant and captions besides, so a scoped block would reach
+  // one writer of two, or of three.
   let { armor, onroll, style } = $props();
 
   const COVER_ARMOR_POINTS = { insignificant: 5, light: 10, heavy: 20 };

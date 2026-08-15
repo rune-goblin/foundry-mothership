@@ -2,6 +2,9 @@
   import MinMaxField from '../MinMaxField.svelte';
   import { localize } from '../../../i18n.ts';
 
+  // No <style> block: the section writes no class of its own. Every name in the rendered markup
+  // is MinMaxField's, and that component owns nothing either -- ArmorBlock and Cover hand-write
+  // the same wrapper.
   let { health, hits } = $props();
 </script>
 

@@ -551,6 +551,8 @@
     color: rgb(56, 56, 56);
   }
 
+  /* shared tier: ArmorBlock, Cover — the two writers of the armour readout, which repeat each
+     other's markup and inline overrides byte for byte. */
   .mosh .whiteText{
     color: white;
   }

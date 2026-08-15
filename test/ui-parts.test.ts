@@ -26,7 +26,9 @@
 // e2e specs count `.circle`/`.circle-f` and read `.skill_training_text`, and the pip's class is
 // the runtime `pip.filled ? 'circle-f' : 'circle'`. MinMaxField and RollableStat own nothing --
 // ArmorBlock and Cover hand-write the first's markup, and no rule anywhere keys off the
-// second's `ability-mod`/`stat-roll` -- so their pins are the whole contract.
+// second's `ability-mod`/`stat-roll` -- so their pins are the whole contract. The three sections
+// own nothing either: HealthBlock and ItemPanel write no class at all, and every class ArmorBlock
+// writes is shared -- `whiteText`/`highlightText` with Cover, the rest with MinMaxField besides.
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { mount, unmount, flushSync, createRawSnippet, type Component } from 'svelte';
 
