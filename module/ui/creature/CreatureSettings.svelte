@@ -2,11 +2,7 @@
   // No <style> block: this window owns no class. `creature-settings`, which tells it apart from
   // the creature sheet underneath, styles nothing and is the e2e locator; `sheet-header` is
   // core's; `header-fields` needs a `char-header` ancestor only CharacterSheet and Generator
-  // provide, so the one rule it has is inert here; the `.grid*`/`.flex*` set is shared. The
-  // swarm toggle below hand-writes CheckField's markup byte for byte -- `resource healthspread
-  // blankstat flex-center` and `resource-label minmaxtext` -- because its onchange is not a form
-  // field, so a scoped block in either file would reach only its own half. Unifying the two is
-  // S9 call-site work.
+  // provide, so the one rule it has is inert here; the `.grid*`/`.flex*` set is shared.
   import CheckField from '../parts/CheckField.svelte';
   import { localize } from '../../i18n.ts';
 
@@ -36,16 +32,12 @@
           checked={store.current.system.stats[toggle.key].enabled}
         />
       {/each}
-      <div class="resource healthspread blankstat flex-center" style="grid-template-rows: max-content;">
-        <label for="swarm-enabled" class="resource-label minmaxtext">Swarm</label>
-        <input
-          type="checkbox"
-          id="swarm-enabled"
-          data-dtype="Boolean"
-          checked={store.current.system.swarm.enabled}
-          onchange={onSwarmChange}
-        />
-      </div>
+      <CheckField
+        id="swarm-enabled"
+        label="Swarm"
+        checked={store.current.system.swarm.enabled}
+        onchange={onSwarmChange}
+      />
     </div>
   </div>
 </header>
