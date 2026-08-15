@@ -84,6 +84,11 @@
     --color-warning-900: #341e00;
     --color-warning-950: #1c0e00;
 
+    /* MoSh's own. The cover bonus the Cover dialog names in prose ("displayed in Orange") is
+       #ff4500, and the warning ramp above is amber from end to end — nothing on it is this hue,
+       so a snap would recolour the readout rather than collapse it onto a step. */
+    --color-highlight: #ff4500;
+
     /* Alternate — vendored swatch, replaceable. */
     --color-alternate-100: #e9e3e0;
     --color-alternate-200: #d2ccc8;

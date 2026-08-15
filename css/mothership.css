@@ -150,14 +150,14 @@
 
   #pause figcaption {
     font-family: "Barlow", sans-serif;
-    color: #ffffff;
+    color: var(--text-inverted);
     opacity: .3;
-    padding-left: 6px;
+    padding-left: var(--space-6);
   }
 
   /* Paragraph */
   .mothership p {
-    margin: 0em 0;
+    margin: var(--space-0);
   }
 
   /* Global styles */
@@ -166,7 +166,7 @@
   }
 
   .mothership.application .window-content {
-    background: #fff;
+    background: var(--surface-neutral-paper);
   }
 
   /* AppV1 sheets sized .sheet-body from setPosition(); a V2 window has no such hook, so the
@@ -186,29 +186,29 @@
 
   .mothership ::-webkit-scrollbar-thumb {
     outline: none;
-    border-radius: 3px;
-    background: black;
-    border: 1px solid white;
+    border-radius: var(--radius-sm);
+    background: var(--surface-neutral-lowest);
+    border: var(--border-width-1) solid var(--border-neutral-paper);
   }
 
   .mothership .window-content{
     scrollbar-width: thin;
-    scrollbar-color: black #fff;
+    scrollbar-color: var(--surface-neutral-lowest) var(--surface-neutral-paper);
   }
 
   .mothership .darkgrey{
-    color:rgb(92, 92, 92);
+    color: var(--color-neutral-700);
   }
   /* .chat-message, #chat-form, .textarea{
     background: white;
   } */
 
   .mothership .dice-tooltip .dice-rolls .roll.max {
-    color: #18520b;
+    color: var(--color-success-500);
     filter: sepia(0.5) hue-rotate(60deg);
   }
   .mothership .dice-tooltip .dice-rolls .roll.min {
-    color: #aa0200;
+    color: var(--color-danger-400);
     filter: sepia(0.5) hue-rotate(340deg);
   }
 
@@ -218,8 +218,8 @@
   :where(.mothership) .list-roll:focus,
   :where(.mothership) .rollable:hover,
   :where(.mothership) .rollable:focus {
-    color: #000;
-    text-shadow: 0 0 10px rgb(112, 112, 112);
+    color: var(--text-primary);
+    text-shadow: 0 0 10px var(--color-neutral-600);
     cursor: pointer;
   }
 
@@ -228,7 +228,7 @@
     display: grid;
     grid-column: span 2 / span 2;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2px;
+    gap: var(--space-2);
     /* margin: 10px 0; */
     padding: 0;
   }
@@ -238,7 +238,7 @@
   }
 
   .mothership .widegap {
-    gap: 16px;
+    gap: var(--space-16);
   }
 
   .mothership .grid-3col {
@@ -265,7 +265,7 @@
     -ms-flex-align: center;
     align-items: center;
     text-align: center;
-    padding: 3px;
+    padding: var(--space-4);
     /* border: 1px solid #999; */
   }
 
@@ -302,17 +302,17 @@
 
 
   .mothership input[type="radio"]:checked {
-    background: white;
-      border-radius: 100px;
+    background: var(--surface-neutral-paper);
+      border-radius: var(--radius-full);
       appearance: inherit;
       animation: transponderblink 0.5s alternate infinite;
-      box-shadow: 0 0 15px white;
+      box-shadow: var(--shadow-glow);
   }
 
   @keyframes transponderblink {
     from {background-color: black;}
     to {
-      background-color: white;
+      background-color: var(--surface-neutral-paper);
     }
   }
 
@@ -363,12 +363,12 @@
 
   .mothership .skill_training_frame{
     height: 47px;
-    background: rgb(230,230,230);
-    border-radius: 9px;
+    background: var(--color-neutral-200);
+    border-radius: var(--radius-md);
     font-family: "Barlow", sans-serif;
-    font-size: 11pt;
+    font-size: var(--font-size-md);
     font-weight: 400;
-    padding: 8px;
+    padding: var(--space-8);
   }
   /* `.skill_training_text` moved into PipTrack, which is the only thing that ever wrote it. The
      frame above stays: both actor sheets hand-write it around the track. */
@@ -377,7 +377,7 @@
      Condition, Weapon, ArmorExtra, ClassSheet, CharacterSheet. */
   .mothership .resource-label {
     font-weight: bold;
-    margin-bottom: 3px;
+    margin-bottom: var(--space-4);
     text-align: center;
   }
 
@@ -391,12 +391,12 @@
   .mothership .roll-image {
     -webkit-box-flex: 0;
     flex: 0 24px;
-    margin-top: -1px;
-    margin-left: 11px;
-    margin-right: 0px;
+    margin-top: calc(var(--space-2) * -1);
+    margin-left: var(--space-12);
+    margin-right: var(--space-0);
     width: 50px;
-    border-radius: 0 0 0 16px;
-    border: 1px solid #000;
+    border-radius: 0 0 0 var(--radius-lg);
+    border: var(--border-width-1) solid var(--border-neutral-ink);
   }
 
   /* `skill-name` is absent here on purpose: SkillSheet, ClassSheet (three) and OptionDraft
@@ -434,18 +434,18 @@
     width: 28px;
     padding: 0;
     border: 0;
-    border-radius: 7.7em;
-    color: rgb(151, 100, 100);
-    font-size: 0.85rem;
+    border-radius: var(--radius-full);
+    color: var(--color-danger-300);
+    font-size: var(--font-size-sm);
     font-weight: bold;
     text-align: center;
-    margin-left: -22px;
+    margin-left: calc(var(--space-24) * -1);
     z-index: 5;
-    background: white;
-    top: 8px;
-    left: 13px;
+    background: var(--surface-neutral-paper);
+    top: var(--space-8);
+    left: var(--space-12);
     position: relative;
-    background: lightgrey;
+    background: var(--surface-neutral-highest);
   }
 
   /* The save's twin of the rule above moved into CharacterSheet.svelte, which is its only
@@ -454,21 +454,21 @@
   /* shared tier: RollBox, CharacterSheet. */
   .mothership .mainstatmod-title {
     position: relative;
-    color: lightgrey;
-    font-size: 1rem;
+    color: var(--text-disabled);
+    font-size: var(--font-size-lg);
     line-height: 1;
-    margin-left: -38px;
+    margin-left: calc(var(--space-40) * -1);
     pointer-events: none;
-    top: 13px;
-    left: 12px;
+    top: var(--space-12);
+    left: var(--space-12);
   }
 
   /* shared tier: Field (its numeric variant), MinMaxField, ArmorBlock, Cover. */
   .mothership .maxhealth-input {
     font-family: "Chakra Petch", sans-serif;
     margin: auto;
-    border: 0px solid #111;
-    font-size: 1.5rem;
+    border: var(--border-width-0) solid var(--border-neutral-ink);
+    font-size: var(--font-size-3xl);
     font-weight: bold;
     text-align: center;
     background: transparent;
@@ -476,17 +476,17 @@
 
   /* shared tier: Field, MinMaxField. */
   .mothership .darkGreyText{
-    color: rgb(56, 56, 56);
+    color: var(--color-neutral-800);
   }
 
   /* shared tier: ArmorBlock, Cover — the two writers of the armour readout, which repeat each
      other's markup and inline overrides byte for byte. */
   .mothership .whiteText{
-    color: white;
+    color: var(--text-inverted);
   }
 
   .mothership .highlightText{
-    color: orangered;
+    color: var(--color-highlight);
   }
 
   /* Field's own wrappers and their input moved into Field.svelte; `.minmaxwrapper` below is the
@@ -516,9 +516,9 @@
     align-items: start;
     height: 40px;
     padding: 0;
-    border: 3px solid #111;
-    border-radius: 1.5em;
-    background: white;
+    border: var(--border-width-3) solid var(--border-neutral-ink);
+    border-radius: var(--radius-xl);
+    background: var(--surface-neutral-paper);
   }
 
   /* shared tier: Field, CheckField, MinMaxField, ArmorBlock, CreatureSettings. */
@@ -526,7 +526,7 @@
     font-family: "Chakra Petch", sans-serif;
     text-align: left;
     grid-column: 1/-1;
-    font-size: 1rem;
+    font-size: var(--font-size-lg);
     font-weight: bold;
     line-height: 1;
     text-align: center;
@@ -535,7 +535,7 @@
   /* shared tier: MinMaxField, ArmorBlock, Cover — the last two overturn the border and the skew
      inline, so both still need the height from here. */
   .mothership .slant{
-    border-right: 2px solid #111;
+    border-right: var(--border-width-2) solid var(--border-neutral-ink);
     height: 100%;
     transform: skewX(-15deg);
   }
@@ -543,20 +543,20 @@
   /* shared tier: MinMaxField, ArmorBlock, Cover. */
   .mothership .healthmaxtext{
     grid-column: span 1;
-    font-size: 0.7rem;
+    font-size: var(--font-size-xs);
     font-weight: bold;
     line-height: 1;
     text-align: center;
-    margin-top: 3px;
+    margin-top: var(--space-4);
   }
 
-  /* shared tier: MainStat, Generator, CreatureSheet. */
+  /* shared tier: MainStat, CreatureSheet. */
   .mothership .mainstatwrapper {
     display: flex;
     width: 95%;
   }
 
-  /* shared tier: MainStat, Generator. */
+  /* shared tier: MainStat. */
   .mothership .mainstat {
     position: relative;
     display: grid;
@@ -572,9 +572,9 @@
     width: 100%;
     align-items: center;
     justify-content: center;
-    background: #e3e3e3;
-    border-radius: 15px;
-    padding: 9px 0px;
+    background: var(--color-neutral-200);
+    border-radius: var(--radius-lg);
+    padding: var(--space-10) var(--space-0);
     flex-direction: column;
   }
 
@@ -585,9 +585,9 @@
     width: 100%;
     align-items: center;
     justify-content: center;
-    background: #e3e3e3;
-    border-radius: 15px;
-    padding: 9px 0px;
+    background: var(--color-neutral-200);
+    border-radius: var(--radius-lg);
+    padding: var(--space-10) var(--space-0);
     flex-direction:row;
   }
 
@@ -597,9 +597,9 @@
     width: 100%;
     align-items: center;
     justify-content: center;
-    background: #e3e3e3;
-    border-radius: 15px;
-    padding: 9px 0px;
+    background: var(--color-neutral-200);
+    border-radius: var(--radius-lg);
+    padding: var(--space-10) var(--space-0);
     flex-direction: column;
   }
 
@@ -613,27 +613,27 @@
      writes the narrower stat grid on a div of its own, so it moved into CreatureSheet.svelte.
      Its wrapper and its contents stay — `mainstatwrapper` and `mainstattext` are tier names, and
      `creaturestat` below is the class prop RollableStat renders. */
-  /* shared tier: MainStat, Generator. */
+  /* shared tier: MainStat. */
   .mothership .mainstatlabel {
-    border-top-left-radius: 2em;
-    border-bottom-left-radius: 2em;
-    background: #111;
-    padding: 5px 0.5rem;
-    left: 5px;
+    border-top-left-radius: var(--radius-3xl);
+    border-bottom-left-radius: var(--radius-3xl);
+    background: var(--surface-neutral-lowest);
+    padding: var(--space-6) var(--space-8);
+    left: var(--space-6);
     position: relative;
     height: 35px;
   }
 
-  /* shared tier: MainStat's plain caption, Generator, and RollableStat's span — which MainStat
+  /* shared tier: MainStat's plain caption and RollableStat's span — which MainStat
      renders through a class prop, so the name crosses a component boundary. Its `color: white`
      also beats `:where(.mothership) .rollable:hover` at equal specificity by sitting later;
      DS7 chose that, so this rule must stay below the hover group. */
   .mothership .mainstattext {
     font-family: "Chakra Petch", sans-serif;
     width: 100%;
-    padding: 0.5rem;
-    color: white;
-    font-size: 1.3rem;
+    padding: var(--space-8);
+    color: var(--text-inverted);
+    font-size: var(--font-size-2xl);
     font-weight: bold;
     text-align: left;
   }
@@ -668,8 +668,8 @@
   .mothership .textarea-input-grey {
     font-family: "Barlow", sans-serif;
     border: 0;
-    border-radius: 0.8em;
-    font-size: 11pt;
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-md);
     font-weight: 500;
     resize: none;
     min-height: 0;
@@ -724,7 +724,7 @@
   .mothership .item-armor-grid {
     display: grid;
     grid-template-columns: 1fr 12em;
-    gap: 10px;
+    gap: var(--space-10);
   }
 
   /* `greyline` followed its twin `whiteline` out: that one went to CreatureSheet.svelte, this one
@@ -732,28 +732,28 @@
      from the border colour. */
 
   .mothership .headerinputfield {
-    margin: -0.15em;
+    margin: calc(var(--space-2) * -1);
     height: auto;
     width: 100%;
-    padding-left: 13px;
-    border: 2px solid #111;
-    background-color: #fff;
-    border-radius: 3em;
-    font-size: 1rem;
-    margin-right: 1em;
+    padding-left: var(--space-12);
+    border: var(--border-width-2) solid var(--border-neutral-ink);
+    background-color: var(--surface-neutral-paper);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-lg);
+    margin-right: var(--space-16);
   }
 
   /* `creaturename` moved into CreatureSheet.svelte. The `headerinputfield` above stays: it is the
-     name field every other sheet wears, written by Generator, SheetHeader and CharacterSheet. */
+     name field every other sheet wears, written by SheetHeader and CharacterSheet. */
 
   /* CreatureSheet is this class's only writer and still cannot own it: it hands it to
      RollableStat as a class prop, and a scoped block only reaches its own component's markup —
      the `savetext` case. The plain input beside the label wears it too, so splitting the rule
      would split one look across two files. */
   .mothership .creaturestat {
-    margin-left: 4px;
+    margin-left: var(--space-4);
     height: auto;
-    font-size: 0.9rem;
+    font-size: var(--font-size-md);
     text-transform: uppercase;
     font-family: "Chakra Petch", sans-serif;
     color:white;
@@ -775,14 +775,14 @@
   }
 
   .mothership .headerinputtext {
-    padding: 0.1rem;
-    color: white;
+    padding: var(--space-2);
+    color: var(--text-inverted);
     font-family: "Barlow", sans-serif;
-    font-size: 0.9rem;
+    font-size: var(--font-size-md);
     font-weight: bold;
     text-align: left;
-    margin-right: 10px;
-    margin-top: 3px;
+    margin-right: var(--space-10);
+    margin-top: var(--space-4);
   }
 
   /* The identity grid inside the header and the cell its name field spans — `headergrid` and
@@ -857,56 +857,56 @@
 
   /* Base dialog styling */
   .mothership.application.dialog.macro-popup-dialog {
-  	background: rgb(255,255,255);
+  	background: var(--surface-neutral-paper);
   	font-family: "Barlow", sans-serif;
-  	color: #1A1915;
+  	color: var(--color-neutral-850);
   }
 
   /* Adjust dialog content gap */
   .mothership.macro-popup-dialog .dialog-content.standard-form {
-    gap: .5rem;
+    gap: var(--space-8);
   }
 
   /* Adjust dialog form gap */
   .mothership.macro-popup-dialog .dialog-form.standard-form {
-    gap: .5rem;
+    gap: var(--space-8);
   }
 
   /* MPD window header */
   .mothership.macro-popup-dialog .window-header {
-    background: rgb(25,25,25);
+    background: var(--color-neutral-850);
   }
 
   /* MPD window content */
   .mothership.macro-popup-dialog .window-content {
-    padding: 10px;
+    padding: var(--space-10);
   }
 
   /* MPD macro window */
   .mothership.macro-popup-dialog .macro_window {
-    background: rgb(230,230,230);
-    border-radius: 9px;
+    background: var(--color-neutral-200);
+    border-radius: var(--radius-md);
   }
 
   /* MPD macro desc */
   .mothership.macro-popup-dialog .macro_desc {
     font-family: "Barlow", sans-serif;
-    font-size: 10.5pt;
+    font-size: var(--font-size-md);
     font-weight: 400;
-    padding-top: 8px;
-    padding-left: 0px;
-    padding-right: 8px;
-    padding-bottom: 8px;
+    padding-top: var(--space-8);
+    padding-left: var(--space-0);
+    padding-right: var(--space-8);
+    padding-bottom: var(--space-8);
   }
 
   /* MPD macro desc — title styling */
   .mothership.macro-popup-dialog .macro_desc h4 {
     font-family: "Barlow", sans-serif;
-    font-size: 14pt;
+    font-size: var(--font-size-xl);
     font-weight: 400;
-    color: #1A1915;
-    border-bottom: 1px solid darkred;
-    margin-bottom: 8px;
+    color: var(--color-neutral-850);
+    border-bottom: var(--border-width-1) solid var(--color-danger-500);
+    margin-bottom: var(--space-8);
   }
 
   /* The dialog's three `grid-*col` copies are all gone now. Each declared exactly what its
@@ -917,22 +917,22 @@
 
   /* update buttons to look more old school */
   .mothership.macro-popup-dialog .form-footer button {
-    background: rgb(230,230,230);
-    color: #1A1915;
-    border: 1px solid #222;
-    border-radius: 4px;
-    padding: 4px 10px;
-    font-size: 11pt;
+    background: var(--color-neutral-200);
+    color: var(--color-neutral-850);
+    border: var(--border-width-1) solid var(--color-neutral-850);
+    border-radius: var(--radius-sm);
+    padding: var(--space-4) var(--space-10);
+    font-size: var(--font-size-md);
     font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--space-6);
   }
 
   .mothership.macro-popup-dialog .form-footer button:hover {
-    background: #444;
-    color: #fff;
-    border-color: #111;
+    background: var(--surface-neutral-lower);
+    color: var(--text-inverted);
+    border-color: var(--border-neutral-ink);
   }
 
   /* Custom radio: kill native + theme accents */
@@ -943,14 +943,14 @@
     box-sizing: border-box;
     width: 16px;
     height: 16px;
-    border: 2px solid #777;            /* medium grey ring */
+    border: var(--border-width-2) solid var(--color-neutral-600);            /* medium grey ring */
     border-radius: 50%;
-    background: #fff;                  /* white center when unchecked */
+    background: var(--surface-neutral-paper);                  /* white center when unchecked */
     display: inline-flex;              /* center the pseudo-dot */
     align-items: center;
     justify-content: center;
     line-height: 0;
-    margin: 0 8px 0 2px;
+    margin: var(--space-0) var(--space-8) var(--space-0) var(--space-2);
     vertical-align: middle;
 
     /* nuke any theme glow/orange */
@@ -964,7 +964,7 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #111;                  /* dot color */
+    background: var(--surface-neutral-lowest);                  /* dot color */
     transform: scale(0);
     transition: transform 120ms ease-in-out;
   }
@@ -980,14 +980,14 @@
     height: 8px;
     border-radius: 50%;
     transform: scale(0);
-    background: #ffffff;    
+    background: var(--surface-neutral-paper);    
   }
 
   /* Hover/focus states (accessible, non-orange) */
   .mothership.macro-popup-dialog input[type="radio"]:hover { border-color: #5c5c5c; }
   .mothership.macro-popup-dialog input[type="radio"]:focus-visible {
-    outline: 2px solid #9a9a9a;
-    outline-offset: 2px;
+    outline: var(--border-width-2) solid var(--color-neutral-400);
+    outline-offset: var(--space-2);
   }
 
   /* If your theme highlights the whole row via :has(input:checked), strip it here */
@@ -998,14 +998,14 @@
   /* A condition is preselecting this roll type: the button DialogV2 autofocused, and the line
      naming the conditions responsible. */
   .mothership.macro-popup-dialog .form-footer button.condition-preselect {
-    border-color: darkred;
-    box-shadow: 0 0 0 2px rgba(139, 0, 0, 0.35);
+    border-color: var(--color-danger-500);
+    box-shadow: var(--ring-danger);
   }
 
   .mothership.macro-popup-dialog .condition-modifier {
-    color: darkred;
+    color: var(--color-danger-500);
     font-style: italic;
-    margin-bottom: 6px;
+    margin-bottom: var(--space-6);
   }
 
   /* The condition sheet's modifier list moved into Condition.svelte, the only thing that ever
