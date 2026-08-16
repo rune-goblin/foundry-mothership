@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "img": "icons/svg/mystery-man.svg",
+  "img": "icons/svg/pill.svg",
   "name": "Scientist",
   "ownership": {
     "default": 0

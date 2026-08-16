@@ -1,7 +1,7 @@
 import { CHARACTER_CREATION } from '../../../content/books/psg/character-creation.ts';
 import { parseResults, drawnRow } from './table-result.js';
-import { loadSkills, loadClasses } from './skills.js';
-import { pickSkills, pickBonusOption, pickStat, PICK_KINDS } from './dialogs.js';
+import { loadSkills, loadClasses, candidates } from './skills.js';
+import { expandSlots, packageCounts, PICK_KINDS } from './picks.js';
 import { localize, format } from '../../i18n.ts';
 
 /**
@@ -48,7 +48,7 @@ const ROLLS = {
 
 export const ROLL_KEYS = Object.keys(ROLLS);
 
-/** What "remove previous items" removes. The class is replaced whether it is ticked or not. */
+/** What a regenerated character sheds. The class is replaced separately, by `#grantClass`. */
 const SHED = ['item', 'armor', 'weapon', 'skill', 'condition'];
 
 const zeroed = (keys) => Object.fromEntries(keys.map((key) => [key, 0]));
@@ -62,15 +62,25 @@ export class CharacterDraft {
   traumaResponse = $state('');
   rolled = $state(nulled(ROLL_KEYS));
   bonus = $state(zeroed(BONUSES));
-  skills = $state([]);
   patch = $state(null);
   trinket = $state(null);
   loadout = $state(null);
-  removePreviousItems = $state(true);
   classOptions = $state([]);
 
+  // The three questions a class asks. Each is state the panes fill in place: the wizard opens no
+  // window over itself, so an unanswered question is a control waiting rather than a modal.
+
+  /** `choose_stat`: a modification, the stats it may be spent on, and where it went. */
+  statChoices = $state([]);
+  /** `choose_skill_or`: the bonus packages a class offers, and which one was taken. */
+  skillGroups = $state([]);
+  /** One slot per skill the class's picks promise: a rank, whether it is gated, and the pick. */
+  skillSlots = $state([]);
+
   #actor;
-  #catalog = [];
+  #catalog = $state([]);
+  #granted = $state([]);
+  #classPicks = $state({});
   #tables = { patch: '', trinket: '', loadout: '' };
 
   constructor(actor) {
@@ -116,9 +126,9 @@ export class CharacterDraft {
   }
 
   /**
-   * Apply a class: its flat adjustments, then the choices it leaves to the player. The bonuses go
-   * on first so that closing a dialog leaves the class half-applied rather than not applied at all
-   * — the AppV1 ordering, kept deliberately.
+   * Apply a class: its flat adjustments, then the questions it leaves to the player. Nothing is
+   * asked here — the adjustments it lets the player place and the skills it lets them pick become
+   * state the class and skills panes fill in, so choosing a class opens no window over the wizard.
    */
   async chooseClass(uuid) {
     const klass = await fromUuid(uuid);
@@ -132,7 +142,6 @@ export class CharacterDraft {
     // A second class replaces the first rather than stacking on it. The loadout goes with it
     // because that table is the class's own; trinkets and patches are one table for everyone. The
     // health bonus is the player's own number and no class sets it, so it stays.
-    this.skills = [];
     this.loadout = null;
 
     // base_adjustment declares all eight keys, so assigning them is the replacement -- there is
@@ -142,70 +151,150 @@ export class CharacterDraft {
       if (key !== 'skills_granted') this.bonus[key] = value;
     }
 
-    for (const entry of selected_adjustment.choose_stat) {
-      if (!entry.modification) continue;
-      const stat = await pickStat(entry);
-      if (stat) this.bonus[stat] += entry.modification;
-    }
+    this.statChoices = selected_adjustment.choose_stat
+      .filter((entry) => entry.modification)
+      .map((entry) => ({ modification: entry.modification, stats: [...entry.stats], chosen: null }));
 
-    await this.applyClassSkills();
+    this.#granted = this.#known(base_adjustment.skills_granted);
+    this.#classPicks = { ...selected_adjustment.choose_skill_and };
+    // A group offering one package is not a question, so it is taken as read.
+    this.skillGroups = selected_adjustment.choose_skill_or
+      .filter((group) => group.length > 0)
+      .map((group) => ({
+        chosen: group.length === 1 ? 0 : null,
+        options: group.map((option) => ({
+          name: option.name,
+          counts: packageCounts(option),
+          granted: this.#known(option.from_list),
+          picks: Object.fromEntries(PICK_KINDS.map((kind) => [kind, option[kind] ?? 0])),
+        })),
+      }));
+    this.skillSlots = [];
+    this.#rebuildSlots();
   }
 
-  async applyClassSkills() {
-    if (!this.classUuid) {
-      ui.notifications.error(localize('Mothership.CharacterGenerator.SkillOption.Classerror'));
-      return;
-    }
-    const klass = await fromUuid(this.classUuid);
-    if (!klass) return;
-
-    this.skills = [];
-    await this.#grant(klass.system.base_adjustment.skills_granted);
-    await this.#pick(klass.system.selected_adjustment.choose_skill_and);
-
-    for (const group of klass.system.selected_adjustment.choose_skill_or) {
-      if (!group.length) continue;
-      const option = group.length > 1 ? await pickBonusOption(await this.#describe(group)) : group[0];
-      if (!option) continue;
-      // Its fixed skills first, so the picks below already see them as owned.
-      await this.#grant(option.from_list);
-      await this.#pick(option);
-    }
+  /**
+   * Spend one `choose_stat` entry on a stat, or take it back by naming the stat it already sits
+   * on. The bonus moves with the pick, so a player who changes their mind does not pay twice.
+   */
+  chooseStat(index, stat) {
+    const choice = this.statChoices[index];
+    if (!choice || !choice.stats.includes(stat)) return;
+    if (choice.chosen !== null) this.bonus[choice.chosen] -= choice.modification;
+    choice.chosen = choice.chosen === stat ? null : stat;
+    if (choice.chosen !== null) this.bonus[choice.chosen] += choice.modification;
   }
 
-  /** The picks a class hands out, in the order the prerequisite chain needs: broadest first. */
-  async #pick(picks) {
-    for (const kind of PICK_KINDS) {
-      for (let i = 0; i < (picks[kind] ?? 0); i += 1) {
-        await this.#grant(await pickSkills(kind, this.#catalog, this.skills.map((s) => s.uuid)));
-      }
-    }
+  get statChoicesSpent() {
+    return this.statChoices.every((choice) => choice.chosen !== null);
   }
 
-  async #grant(uuids) {
-    for (const uuid of uuids) {
-      if (this.skills.some((skill) => skill.uuid === uuid)) continue;
-      // A class can outlive a skill it grants. The class sheet keeps such a row so it can be
-      // deleted; here there is nothing to hand out, so say so and carry on.
-      const skill = await fromUuid(uuid);
-      if (!skill) {
-        ui.notifications.warn(`Skill not found: ${uuid}`);
-        continue;
-      }
-      this.skills.push({ uuid, name: skill.name });
-    }
+  /** Take one of a group's bonus packages. Its slots replace the ones the last package left. */
+  chooseSkillOption(group, option) {
+    const entry = this.skillGroups[group];
+    if (!entry || !entry.options[option]) return;
+    entry.chosen = option;
+    this.#rebuildSlots();
   }
 
-  /** A choose_skill_or option's from_list is UUIDs; the choice dialog shows names. */
-  async #describe(group) {
-    return Promise.all(
-      group.map(async (option) => ({
-        ...option,
-        fromListNames: await Promise.all(
-          option.from_list.map(async (uuid) => (await fromUuid(uuid))?.name ?? uuid),
-        ),
-      })),
+  /** Fill one pick slot, or empty it with a falsy uuid. */
+  chooseSkill(key, uuid) {
+    const slot = this.skillSlots.find((entry) => entry.key === key);
+    if (!slot) return;
+    slot.chosen = uuid || null;
+    this.#prune();
+  }
+
+  /**
+   * What one slot may offer: its rank, minus what the rest of the draft already owns, and — for a
+   * bare Expert or Master pick — only what a skill already picked is a prerequisite for. The slot
+   * excludes itself from that, or its own answer would come back disabled.
+   */
+  skillCandidates(key) {
+    const slot = this.skillSlots.find((entry) => entry.key === key);
+    if (!slot) return [];
+    return candidates(this.#catalog, slot.rank, this.#owned(key), { requirePrerequisite: slot.gated });
+  }
+
+  get skillsPicked() {
+    return (
+      this.skillGroups.every((group) => group.chosen !== null) &&
+      this.skillSlots.every((slot) => slot.chosen !== null)
     );
+  }
+
+  /** The skills the draft would hand out: granted, then taken with a package, then picked. */
+  get skills() {
+    const uuids = [
+      ...this.#granted,
+      ...this.skillGroups.flatMap((group) => (group.chosen === null ? [] : group.options[group.chosen].granted)),
+      ...this.skillSlots.map((slot) => slot.chosen).filter(Boolean),
+    ];
+    return [...new Set(uuids)].map((uuid) => {
+      const skill = this.#skill(uuid);
+      return { uuid, name: skill?.name ?? uuid };
+    });
+  }
+
+  /**
+   * The slots the class and its taken packages promise. Picks survive a rebuild by their slot key,
+   * so swapping one package for another drops that package's answers and keeps the rest.
+   */
+  #rebuildSlots() {
+    const kept = new Map(this.skillSlots.map((slot) => [slot.key, slot.chosen]));
+    const slots = [
+      ...expandSlots(this.#classPicks, 'class'),
+      ...this.skillGroups.flatMap((group, index) =>
+        group.chosen === null ? [] : expandSlots(group.options[group.chosen].picks, `group-${index}`),
+      ),
+    ];
+    this.skillSlots = slots.map((slot) => ({ ...slot, chosen: kept.get(slot.key) ?? null }));
+    this.#prune();
+  }
+
+  /**
+   * A gated pick stands on a prerequisite another slot chose, so changing that slot can leave it
+   * standing on nothing; those picks are emptied rather than saved illegally. Clearing one can
+   * strand the next, so this runs until nothing more falls.
+   */
+  #prune() {
+    for (let pass = 0; pass < this.skillSlots.length; pass += 1) {
+      const stranded = this.skillSlots.find((slot) => {
+        if (!slot.gated || slot.chosen === null) return false;
+        const owned = this.#owned(slot.key);
+        return !(this.#skill(slot.chosen)?.prerequisites ?? []).some((id) => owned.includes(id));
+      });
+      if (!stranded) return;
+      stranded.chosen = null;
+    }
+  }
+
+  /** Every skill the draft holds bar one slot's own answer. */
+  #owned(exceptKey) {
+    return this.skills
+      .map((skill) => skill.uuid)
+      .filter((uuid) => uuid !== this.skillSlots.find((slot) => slot.key === exceptKey)?.chosen);
+  }
+
+  #skill(uuid) {
+    return this.#catalog.find((skill) => skill.uuid === uuid);
+  }
+
+  /** What a package's fixed skills are called, for the pane that offers the package. */
+  skillName(uuid) {
+    return this.#skill(uuid)?.name ?? uuid;
+  }
+
+  /**
+   * A class can outlive a skill it grants. The class sheet keeps such a row so it can be deleted;
+   * here there is nothing to hand out, so say so and carry on.
+   */
+  #known(uuids) {
+    return uuids.filter((uuid) => {
+      if (this.#skill(uuid)) return true;
+      ui.notifications.warn(`Skill not found: ${uuid}`);
+      return false;
+    });
   }
 
   /**
@@ -238,10 +327,10 @@ export class CharacterDraft {
       update['system.other.stressdesc.value'] = this.traumaResponse;
     }
 
-    if (this.removePreviousItems) {
-      const ids = actor.items.filter((item) => SHED.includes(item.type)).map((item) => item.id);
-      if (ids.length) await actor.deleteEmbeddedDocuments('Item', ids);
-    }
+    // Generating a character replaces one; there is no reading of "roll me a new Teamster" that
+    // keeps the last one's kit, so the window no longer asks.
+    const shed = actor.items.filter((item) => SHED.includes(item.type)).map((item) => item.id);
+    if (shed.length) await actor.deleteEmbeddedDocuments('Item', shed);
 
     // The grants are silent: creation hands out a class, a loadout, two table results and a skill
     // list at once, and a card apiece would bury the rolls that produced them. `applyItemRef`

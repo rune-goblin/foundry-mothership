@@ -848,9 +848,9 @@
      selectors — the frame itself, `.window-header`, `.window-content`, the two `standard-form`
      gaps, `.form-footer button` — match elements Foundry renders, which no <style> block can
      reach. The body vocabulary — `macro_window`, `macro_desc`, the radios and their labels,
-     `condition-modifier` — is hand-written by fourteen components mounted into this one shell:
-     the eight in module/dialogs plus SkillPicker, BonusOption, StatChoice, StatOption, NewSkill
-     and PickFromPack. A scoped block in any one of them would reach a fraction of the writers.
+     `condition-modifier` — is hand-written by eleven components mounted into this one shell: the
+     eight in module/dialogs plus StatOption, NewSkill and PickFromPack. A scoped block in any one
+     of them would reach a fraction of the writers.
      This is what §4.1's "they stay until dialogs are restyled" resolves to: the bodies unify at
      the call site (S9) or not at all.
 

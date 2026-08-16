@@ -4,8 +4,9 @@ import { test, expect } from './fixtures/foundry-clients.ts';
 // S5's capstone, walked one step at a time. The character generator has never had data to work
 // with: it scans compendia for class and skill documents, and until S3 no pack shipped either.
 // This drives the wizard end to end against the real Foundry -- reach it from the create dialog,
-// choose a Marine, answer its skill dialogs, roll each step, finish -- and asserts what landed on
-// the actor.
+// choose a Marine, answer inline everything the class leaves open, roll each step, finish -- and
+// asserts what landed on the actor. The wizard opens no window over itself: a spec that has to
+// click `dialog[open]` to get through a step is a spec catching a regression.
 //
 // The loadout is the part that matters most. The emitted rows link several gear documents each
 // and the AppV1 generator kept only the last link, so a three-item row
@@ -72,6 +73,23 @@ const chooseClass = async (page: Page, name: string) => {
   await page.click(`button.wizard-class[data-class="${name}"]`);
 };
 
+/**
+ * Fill every skill slot the class left open, each with the first skill it still offers. A slot is
+ * a list to browse: it opens onto its candidates, and a skill the draft already holds stays
+ * listed but cannot be taken again, so the pick is the first one not marked held.
+ */
+const pickEverySkill = async (page: Page) => {
+  await goTo(page, 'skills');
+  const keys = await page.$$eval('[data-pick]', (nodes) =>
+    nodes.map((node) => (node as HTMLElement).dataset.pick as string),
+  );
+  for (const key of keys) {
+    const slot = `[data-pick="${key}"]`;
+    if (!(await page.$(`${slot} [data-skill]`))) await page.click(`${slot} button[data-slot="open"]`);
+    await page.click(`${slot} [data-skill][aria-disabled="false"] >> nth=0`);
+  }
+};
+
 const stored = (page: Page, uuid: string, path: string): Promise<any> =>
   page.evaluate(
     async ({ u, p }: { u: string; p: string }) =>
@@ -121,8 +139,11 @@ test.describe('character generator', () => {
     const rail = await gmPage.$$eval('button.wizard-rail-step', (nodes) =>
       nodes.map((n) => (n as HTMLElement).dataset.pane),
     );
+    // Steps 5 and 6 ask the player nothing -- Stress starts at 2 and the Trauma Response is the
+    // class's -- so the wizard shows both where they land and stops on neither. Step 3 asks two
+    // things, so it is two panes: which class, and where its free adjustment goes.
     expect(rail).toEqual([
-      'intro', 'stats', 'saves', 'class', 'health', 'stress', 'trauma', 'skills', 'gear', 'finish',
+      'intro', 'stats', 'saves', 'class', 'adjustments', 'health', 'skills', 'gear', 'finish',
     ]);
 
     await goTo(gmPage, 'class');
@@ -141,12 +162,10 @@ test.describe('character generator', () => {
 
     await freezeDice(gmPage, LOWEST_FACE);
     await chooseClass(gmPage, 'Teamster');
-    for (const rank of ['Trained', 'Expert']) {
-      await gmPage.waitForSelector(`dialog[open] select#skill-${rank}`);
-      await gmPage.selectOption(`dialog[open] select#skill-${rank}`, { index: 1 });
-      await gmPage.click('dialog[open] button[data-action="save"]');
-    }
 
+    // The Teamster leaves no adjustment to place, so the class alone lifts the gate -- and it
+    // lifts without a dialog having opened.
+    await expect(gmPage.locator('dialog[open]')).toHaveCount(0);
     await expect(gmPage.locator('button.wizard-rail-step[data-pane="health"]')).toBeEnabled();
   });
 
@@ -159,17 +178,12 @@ test.describe('character generator', () => {
 
     await chooseClass(gmPage, 'Marine');
 
-    // The Marine's bonus skills are a choice of two packages; take the two Trained skills, then
-    // pick one in each dialog the choice opens.
-    await gmPage.click('dialog[open] button[data-action="option-1"]');
-    for (let i = 0; i < 2; i += 1) {
-      await gmPage.waitForSelector('dialog[open] select#skill-Trained');
-      await gmPage.selectOption('dialog[open] select#skill-Trained', { index: i + 1 });
-      await gmPage.click('dialog[open] button[data-action="save"]');
-    }
-
+    // The Marine's bonus skills are a choice of two packages, taken on the skills pane itself.
     await goTo(gmPage, 'skills');
+    await gmPage.click('button.wizard-package >> nth=1');
+    await pickEverySkill(gmPage);
     await expect(gmPage.locator('ul[data-list="skills"] li')).toHaveCount(4);
+    await expect(gmPage.locator('dialog[open]')).toHaveCount(0);
 
     for (const pane of ['stats', 'saves']) {
       await goTo(gmPage, pane);
@@ -229,27 +243,31 @@ test.describe('character generator', () => {
     const uuid = await openGenerator(gmPage);
     await freezeDice(gmPage, LOWEST_FACE);
 
-    // The Teamster grants its bonus skills outright: 1 Trained and 1 Expert, no choice dialog.
-    // The Trained pick comes first, which is what makes an Expert available to pick at all.
+    // The Teamster grants its bonus skills outright: 1 Trained and 1 Expert, no package to take.
+    // The Trained slot is filled first, which is what makes an Expert available to pick at all.
     await chooseClass(gmPage, 'Teamster');
-    for (const rank of ['Trained', 'Expert']) {
-      await gmPage.waitForSelector(`dialog[open] select#skill-${rank}`);
-      await gmPage.selectOption(`dialog[open] select#skill-${rank}`, { index: 1 });
-      await gmPage.click('dialog[open] button[data-action="save"]');
-    }
+    await pickEverySkill(gmPage);
     // +5 to all stats and saves, so every bonus box reads 5.
     await goTo(gmPage, 'stats');
     await expect(gmPage.locator('input[data-bonus="combat"]')).toHaveValue('5');
 
     await chooseClass(gmPage, 'Android');
-    // The Android's "-10 to 1 stat" is a choice; spend it on Speed.
-    await gmPage.click('dialog[open] button[data-action="speed"]');
-    await gmPage.click('dialog[open] button[data-action="option-1"]');
-    for (let i = 0; i < 2; i += 1) {
-      await gmPage.waitForSelector('dialog[open] select#skill-Trained');
-      await gmPage.selectOption('dialog[open] select#skill-Trained', { index: i + 1 });
-      await gmPage.click('dialog[open] button[data-action="save"]');
-    }
+
+    // The Android's "-10 to 1 stat" is a choice, and it is asked on the pane after the cards:
+    // picking a class and spending what it hands you are two questions. Until it is spent the rail
+    // will not walk on, and spending it twice moves it rather than paying it twice — park it on
+    // Strength, then move it to Speed.
+    await expect(gmPage.locator('button.wizard-rail-step[data-pane="health"]')).toBeDisabled();
+    await goTo(gmPage, 'adjustments');
+    await gmPage.selectOption('[data-choice="0"] select', 'strength');
+    await expect(gmPage.locator('[data-modifier="strength"]')).toHaveText('-10');
+    await gmPage.selectOption('[data-choice="0"] select', 'speed');
+    await expect(gmPage.locator('[data-modifier="strength"]')).toHaveText('—');
+    await expect(gmPage.locator('button.wizard-rail-step[data-pane="health"]')).toBeEnabled();
+
+    await goTo(gmPage, 'skills');
+    await gmPage.click('button.wizard-package >> nth=1');
+    await pickEverySkill(gmPage);
 
     // The Teamster's +5 is gone rather than added to: Android is +20 INTELLECT, +60 FEAR.
     await goTo(gmPage, 'stats');
@@ -282,11 +300,6 @@ test.describe('character generator', () => {
     await freezeDice(gmPage, LOWEST_FACE);
 
     await chooseClass(gmPage, 'Teamster');
-    for (const rank of ['Trained', 'Expert']) {
-      await gmPage.waitForSelector(`dialog[open] select#skill-${rank}`);
-      await gmPage.selectOption(`dialog[open] select#skill-${rank}`, { index: 1 });
-      await gmPage.click('dialog[open] button[data-action="save"]');
-    }
 
     await goTo(gmPage, 'gear');
     await gmPage.click('img[data-roll="patch"]');

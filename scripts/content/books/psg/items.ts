@@ -5,7 +5,7 @@
 // `rank`, a wound reference against the `woundEffect` string actor.js parses — the book form is
 // translated here and the DataModel guard checks the result.
 import { ARMOR } from '../../../../content/books/psg/armor.ts';
-import { CLASSES } from '../../../../content/books/psg/classes.ts';
+import { CLASSES, type ClassId } from '../../../../content/books/psg/classes.ts';
 import { EQUIPMENT } from '../../../../content/books/psg/equipment.ts';
 import {
   EQUIPMENT_COVERED_BY_WEAPON,
@@ -27,6 +27,18 @@ const ICON = {
   armor: 'icons/svg/shield.svg',
   item: 'icons/svg/item-bag.svg',
 } as const;
+
+/**
+ * The generator's class pane is four cards side by side, and four copies of the same silhouette
+ * tell a player nothing. Foundry core ships no class art, so each takes the core icon nearest its
+ * trade: the Marine's rifle, the Android's clockwork, the Scientist's pill, the Teamster's cargo.
+ */
+const CLASS_ICON: Record<ClassId, string> = {
+  marine: 'icons/svg/sword.svg',
+  android: 'icons/svg/clockwork.svg',
+  scientist: 'icons/svg/pill.svg',
+  teamster: 'icons/svg/barrel.svg',
+};
 
 const RANK = { trained: 'Trained', expert: 'Expert', master: 'Master' } as const;
 const STATS = ['strength', 'speed', 'intellect', 'combat'] as const;
@@ -153,7 +165,7 @@ const classes: PackDefinition = {
       return {
         contentId: klass.id,
         name: klass.name,
-        img: ICON.class,
+        img: CLASS_ICON[klass.id] ?? ICON.class,
         body: {
           kind: 'Item',
           type: 'class',

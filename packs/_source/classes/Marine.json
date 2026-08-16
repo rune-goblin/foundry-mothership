@@ -5,7 +5,7 @@
     "systemId": "mothershiprpg",
     "systemVersion": "0.0.0"
   },
-  "img": "icons/svg/mystery-man.svg",
+  "img": "icons/svg/sword.svg",
   "name": "Marine",
   "ownership": {
     "default": 0

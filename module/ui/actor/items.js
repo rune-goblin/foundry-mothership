@@ -4,7 +4,8 @@
 
 import { svelteDialog } from '../../dialogs/svelte-dialog.ts';
 import { localize } from '../../i18n.ts';
-import { rankBonus, SKILL_RANKS } from '../../rules.ts';
+import { rankBonus, SKILL_RANKS, storedRank } from '../../rules.ts';
+import { rankChoices } from '../skill/ranks.js';
 import NewSkill from './NewSkill.svelte';
 import PickFromPack from './PickFromPack.svelte';
 
@@ -100,7 +101,7 @@ const byName = (a, b) => a.name.localeCompare(b.name);
 
 /** PSG 22's tree runs weakest to strongest; an unknown rank sorts last rather than first. */
 const rankIndex = (doc) => {
-  const index = SKILL_RANKS.findIndex((rank) => stored(rank) === doc.system.rank);
+  const index = SKILL_RANKS.findIndex((rank) => storedRank(rank) === doc.system.rank);
   return index === -1 ? SKILL_RANKS.length : index;
 };
 
@@ -175,9 +176,6 @@ export async function promptAddItem(actor, type) {
   return actor.createEmbeddedDocuments('Item', [doc.toObject()]);
 }
 
-/** Skill items store the rank capitalized, and `Mothership.SkillRank<Rank>` names it the same way. */
-const stored = (rank) => `${rank[0].toUpperCase()}${rank.slice(1)}`;
-
 /**
  * A skill is created through a dialog because its rank sets its bonus — and the bonus is
  * `rules.ts`'s, not a second table kept here (audit U5).
@@ -188,13 +186,10 @@ export async function promptNewSkill(actor) {
     props: {
       nameLabel: localize('Mothership.Name'),
       rankLabel: localize('Mothership.SkillRank'),
-      ranks: SKILL_RANKS.map((rank) => ({
-        value: stored(rank),
-        label: localize(`Mothership.SkillRank${stored(rank)}`),
-      })),
+      ranks: rankChoices(),
     },
     title: localize('Mothership.CreateSkill'),
-    initial: { name: localize('Mothership.NewSkill'), rank: stored(SKILL_RANKS[0]) },
+    initial: { name: localize('Mothership.NewSkill'), rank: storedRank(SKILL_RANKS[0]) },
     buttons: [
       {
         action: 'create',

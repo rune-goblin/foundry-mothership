@@ -69,6 +69,11 @@ export function skillRank(stored: string): SkillRank {
   return key as SkillRank;
 }
 
+/** The other direction: the capitalized word skill items store, which is also the lang-key suffix. */
+export function storedRank(rank: SkillRank): string {
+  return `${rank[0].toUpperCase()}${rank.slice(1)}`;
+}
+
 export function rankBonus(stored: string): number {
   return RANK_BONUS[skillRank(stored)];
 }

@@ -13,6 +13,7 @@
   import ItemControl from '../parts/ItemControl.svelte';
   import { dropTarget } from '../parts/drop-target.js';
   import { localize } from '../../i18n.ts';
+  import { rankChoices } from './ranks.js';
 
   // No <style> block: `skill-name` is the black pill this file, ClassSheet and OptionDraft
   // hand-write inside a list, and ItemCell's `name` variant builds — shared tier. `sheet-body`
@@ -27,6 +28,8 @@
   ];
 
   let tab = $state('description');
+
+  const RANKS = rankChoices();
 
   // Read the stored list off the document rather than the render snapshot, so a second update in
   // the same tick still sees what the first one wrote.
@@ -67,6 +70,7 @@
     value={doc.system.rank}
     wrapper="text"
     width="180px"
+    choices={RANKS}
   />
 </CircleStats>
 

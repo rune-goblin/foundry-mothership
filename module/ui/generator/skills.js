@@ -4,6 +4,17 @@
  * which is what makes them testable outside Foundry.
  */
 
+/**
+ * The book prints a sentence under every skill and the wizard asks the player to pick one, so the
+ * sentence travels with it. Descriptions are stored as HTML; the picker prints them as a line of
+ * text beside the name, which is what the tags come off for.
+ */
+const sentence = (html) =>
+  (html ?? '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
 export async function loadSkills() {
   const documents = game.items.filter((item) => item.type === 'skill');
   for (const pack of game.packs) {
@@ -13,19 +24,46 @@ export async function loadSkills() {
     uuid: skill.uuid,
     name: skill.name,
     rank: skill.system.rank,
+    bonus: skill.system.bonus,
+    summary: sentence(skill.system.description),
     prerequisites: skill.system.prerequisite_ids ?? [],
   }));
 }
 
-/** Every class document in the world and in the compendia, for the name field's datalist. */
+/**
+ * What each class brings, so the pane can be read before one is pressed rather than after: the
+ * adjustments it applies outright, and the ones it hands the player to place.
+ */
+const brings = (klass) => ({
+  adjustments: Object.entries(klass.system.base_adjustment)
+    .filter(([key, value]) => key !== 'skills_granted' && value !== 0)
+    .map(([key, value]) => ({ key, value })),
+  choices: klass.system.selected_adjustment.choose_stat
+    .filter((entry) => entry.modification)
+    .map((entry) => ({ modification: entry.modification, stats: [...entry.stats] })),
+});
+
+/** Every class document in the world and in the compendia, as the class pane's options. */
 export async function loadClasses() {
   const options = game.items
     .filter((item) => item.type === 'class')
-    .map((klass) => ({ uuid: klass.uuid, name: klass.name, source: 'world.Item' }));
+    .map((klass) => ({
+      uuid: klass.uuid,
+      name: klass.name,
+      img: klass.img,
+      source: 'world.Item',
+      ...brings(klass),
+    }));
 
   for (const pack of game.packs) {
     for (const klass of await pack.getDocuments({ type: 'class' })) {
-      options.push({ uuid: klass.uuid, name: klass.name, source: klass.pack.replace(/\..*$/, '') });
+      options.push({
+        uuid: klass.uuid,
+        name: klass.name,
+        img: klass.img,
+        source: klass.pack.replace(/\..*$/, ''),
+        ...brings(klass),
+      });
     }
   }
   return options;

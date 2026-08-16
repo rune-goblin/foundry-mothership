@@ -1,14 +1,14 @@
 // @vitest-environment jsdom
 //
-// The last three modules that built dialog markup by concatenating HTML strings (audit U10):
-// the generator's three pickers, the actor sheet's new-skill prompt, and the class sheet's
-// stat-option prompt. They are Svelte components in `DialogV2.wait` now, so what each one answers
-// is testable outside Foundry — none of it was before.
+// The modules that built dialog markup by concatenating HTML strings (audit U10): the actor
+// sheet's new-skill prompt and the class sheet's stat-option prompt. They are Svelte components
+// in `DialogV2.wait` now, so what each one answers is testable outside Foundry — none of it was
+// before. The generator's own pickers used to be here; the wizard asks inline and opens no
+// dialog at all, so `test/generator.test.ts` covers what they answered.
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { promptAddItem, promptNewSkill } from '../module/ui/actor/items.js';
 import { promptStatOption } from '../module/ui/class/stat-option.js';
-import { pickBonusOption, pickSkills, pickStat } from '../module/ui/generator/dialogs.js';
 import {
   clearFoundryStubs,
   installDialogV2,
@@ -60,122 +60,6 @@ const type = (id: string, value: string): void => {
 const check = (id: string): void => {
   only().element.querySelector<HTMLInputElement>(`#${id}`)!.click();
 };
-
-const CATALOG = [
-  { uuid: 'sk-linguistics', name: 'Linguistics', rank: 'Trained', prerequisites: [] },
-  { uuid: 'sk-mathematics', name: 'Mathematics', rank: 'Trained', prerequisites: [] },
-  { uuid: 'sk-xenobiology', name: 'Xenobiology', rank: 'Expert', prerequisites: ['sk-linguistics'] },
-];
-
-describe('pickSkills', () => {
-  it('offers one dropdown per rank the pick draws from, broadest first', async () => {
-    const answer = pickSkills('expert_full_set', CATALOG, []);
-
-    expect([...only().element.querySelectorAll('select')].map((node) => node.id)).toEqual([
-      'skill-Expert',
-      'skill-Trained',
-    ]);
-    expect(
-      [...only().element.querySelectorAll('#skill-Trained option')].map((node) => node.textContent),
-    ).toEqual(['---', 'Linguistics', 'Mathematics']);
-
-    only().dismiss();
-    await answer;
-  });
-
-  it('answers with the chosen uuids, in the order the dropdowns are stacked', async () => {
-    const answer = pickSkills('expert_full_set', CATALOG, []);
-
-    select('skill-Trained', 'sk-mathematics');
-    select('skill-Expert', 'sk-xenobiology');
-    await only().press('save');
-
-    await expect(answer).resolves.toEqual(['sk-xenobiology', 'sk-mathematics']);
-  });
-
-  it('answers with nothing when every dropdown is left on ---', async () => {
-    const answer = pickSkills('trained', CATALOG, []);
-
-    await only().press('save');
-
-    await expect(answer).resolves.toEqual([]);
-  });
-
-  // Legacy's version never resolved at all on a closed dialog, so the generator's await parked.
-  it('answers with nothing when the dialog is dismissed', async () => {
-    const answer = pickSkills('trained', CATALOG, []);
-
-    only().dismiss();
-
-    await expect(answer).resolves.toEqual([]);
-  });
-
-  it('lists an owned skill disabled rather than dropping it', async () => {
-    const answer = pickSkills('trained', CATALOG, ['sk-linguistics']);
-
-    const options = [...only().element.querySelectorAll<HTMLOptionElement>('#skill-Trained option')];
-    expect(options.filter((option) => option.disabled).map((option) => option.value)).toEqual([
-      'sk-linguistics',
-    ]);
-
-    only().dismiss();
-    await answer;
-  });
-});
-
-describe('pickBonusOption', () => {
-  const packages = [
-    { name: 'Marine A', master: 0, expert: 0, trained: 2, fromListNames: [] },
-    { name: 'Marine B', master: 0, expert: 1, trained: 0, fromListNames: ['Rimwise'] },
-  ];
-
-  it('shows what each package contains and answers with the one pressed', async () => {
-    const answer = pickBonusOption(packages);
-
-    expect([...only().element.querySelectorAll('li')].map((node) => node.textContent)).toEqual([
-      'Trained: 2',
-      'Expert: 1',
-      'Rimwise',
-    ]);
-    expect(only().buttons.map((button) => button.action)).toEqual(['option-0', 'option-1']);
-
-    await only().press('option-1');
-
-    await expect(answer).resolves.toBe(packages[1]);
-  });
-
-  it('answers null when the dialog is dismissed', async () => {
-    const answer = pickBonusOption(packages);
-
-    only().dismiss();
-
-    await expect(answer).resolves.toBeNull();
-  });
-});
-
-describe('pickStat', () => {
-  it('names each stat the adjustment may be spent on, in the player’s language', async () => {
-    const answer = pickStat({ modification: -10, stats: ['strength', 'speed'] });
-
-    expect(only().element.textContent).toContain('(-10)');
-    expect(only().buttons.map((button) => [button.action, button.label])).toEqual([
-      ['strength', 'Strength'],
-      ['speed', 'Speed'],
-    ]);
-
-    await only().press('speed');
-
-    await expect(answer).resolves.toBe('speed');
-  });
-
-  it('answers null when the dialog is dismissed', async () => {
-    const answer = pickStat({ modification: 5, stats: ['strength', 'speed'] });
-
-    only().dismiss();
-
-    await expect(answer).resolves.toBeNull();
-  });
-});
 
 describe('promptNewSkill', () => {
   interface Created {
