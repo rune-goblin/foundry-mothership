@@ -1,6 +1,6 @@
 import { CHARACTER_CREATION } from '../../../content/books/psg/character-creation.ts';
 import { parseResults, drawnRow } from './table-result.js';
-import { loadSkills, loadClasses, candidates } from './skills.js';
+import { loadSkills, loadClasses } from './skills.js';
 import { expandSlots, packageCounts, PICK_KINDS } from './picks.js';
 import { localize, format } from '../../i18n.ts';
 
@@ -197,48 +197,95 @@ export class CharacterDraft {
     this.#rebuildSlots();
   }
 
-  /** Fill one pick slot, or empty it with a falsy uuid. */
-  chooseSkill(key, uuid) {
-    const slot = this.skillSlots.find((entry) => entry.key === key);
+  /**
+   * Toggle one skill on or off this session's picks. Picking finds whichever open slot of the
+   * skill's rank fits it: a gated slot when the prerequisite is already held elsewhere, or an
+   * ungated one otherwise — spending the pickier slot first keeps an ungated `*_full_set` slot free
+   * for a skill that still needs one. Does nothing for a skill the class already granted outright,
+   * or one no open slot can currently take; the picker only offers a toggle where one is legal.
+   */
+  toggleSkill(uuid) {
+    if (this.#grantedUuids().has(uuid)) return;
+    const held = this.skillSlots.find((slot) => slot.chosen === uuid);
+    if (held) {
+      held.chosen = null;
+      this.#prune();
+      return;
+    }
+    const skill = this.#skill(uuid);
+    if (!skill) return;
+    const heldUuids = this.skills.map((entry) => entry.uuid);
+    const open = this.skillSlots.filter((slot) => slot.chosen === null && slot.rank === skill.rank);
+    const slot = open.find((slot) => slot.gated && skill.prerequisites.some((id) => heldUuids.includes(id)))
+      ?? open.find((slot) => !slot.gated);
     if (!slot) return;
-    slot.chosen = uuid || null;
+    slot.chosen = uuid;
     this.#prune();
   }
 
-  /**
-   * What one slot may offer: its rank, minus what the rest of the draft already owns, and — for a
-   * bare Expert or Master pick — only what a skill already picked is a prerequisite for. The slot
-   * excludes itself from that, or its own answer would come back disabled.
-   */
-  skillCandidates(key) {
-    const slot = this.skillSlots.find((entry) => entry.key === key);
-    if (!slot) return [];
-    return candidates(this.#catalog, slot.rank, this.#owned(key), { requirePrerequisite: slot.gated });
+  /** Unfilled slots per rank — the picker's live remaining-pick budget. */
+  get skillBudget() {
+    const remaining = { Trained: 0, Expert: 0, Master: 0 };
+    for (const slot of this.skillSlots) if (slot.chosen === null) remaining[slot.rank] += 1;
+    return remaining;
   }
 
   /**
-   * The whole prerequisite graph for one open pick. A tree keeps every branch visible; state says
-   * which nodes this slot may take, which the draft already owns, and which are still locked.
+   * The whole catalog, each skill flagged with where it stands this session: `granted` (the class
+   * or a chosen package handed it out outright, nothing to pick), `picked` (this session's answer
+   * to one of the slots above), `available` (an unfilled slot of its rank can still take it), or
+   * `unavailable` (no slot can — every slot of its rank is spent, or the only ones left are gated
+   * on a prerequisite nothing held yet satisfies). An unavailable skill carries which of those two
+   * it is as `reason`, because the picker has to say so: a Trained skill greyed out for want of a
+   * pick reads as a rule about the skill unless the pane names the budget.
    */
-  skillTree(key) {
-    const available = new Set(
-      this.skillCandidates(key)
-        .filter((skill) => !skill.disabled)
-        .map((skill) => skill.uuid),
-    );
-    const selected = new Set(this.skills.map((skill) => skill.uuid));
+  get skillTree() {
+    const grantedUuids = this.#grantedUuids();
+    const pickedUuids = new Set(this.skillSlots.map((slot) => slot.chosen).filter(Boolean));
+    return this.#catalog.map((skill) => {
+      const state = grantedUuids.has(skill.uuid) ? 'granted'
+        : pickedUuids.has(skill.uuid) ? 'picked'
+        : this.#openSlotFor(skill) ? 'available'
+        : 'unavailable';
+      return {
+        ...skill,
+        state,
+        reason: state !== 'unavailable' ? null
+          : this.skillSlots.some((slot) => slot.chosen === null && slot.rank === skill.rank) ? 'gated'
+          : 'spent',
+      };
+    });
+  }
 
-    return this.#catalog.map((skill) => ({
-      ...skill,
-      state: selected.has(skill.uuid) ? 'selected' : available.has(skill.uuid) ? 'available' : 'unavailable',
-    }));
+  /** What the class, or a package already taken, hands out with no choice involved. */
+  #grantedUuids() {
+    return new Set([
+      ...this.#granted,
+      ...this.skillGroups.flatMap((group) => (group.chosen === null ? [] : group.options[group.chosen].granted)),
+    ]);
+  }
+
+  /** An unfilled slot of this skill's rank that could take it right now, ungated or otherwise. */
+  #openSlotFor(skill) {
+    const heldUuids = this.skills.map((entry) => entry.uuid);
+    return this.skillSlots.some((slot) =>
+      slot.chosen === null
+      && slot.rank === skill.rank
+      && (!slot.gated || skill.prerequisites.some((id) => heldUuids.includes(id))),
+    );
+  }
+
+  /**
+   * Whether every either/or package the class offers has been taken. It is asked with the rest of
+   * what the class hands out, a pane before the skills themselves: the packages are the class's
+   * benefit, and the picker cannot say how many picks a rank has left until one is chosen.
+   */
+  get skillGroupsChosen() {
+    return this.skillGroups.every((group) => group.chosen !== null);
   }
 
   get skillsPicked() {
-    return (
-      this.skillGroups.every((group) => group.chosen !== null) &&
-      this.skillSlots.every((slot) => slot.chosen !== null)
-    );
+    return this.skillGroupsChosen && this.skillSlots.every((slot) => slot.chosen !== null);
   }
 
   /** The skills the draft would hand out: granted, then taken with a package, then picked. */

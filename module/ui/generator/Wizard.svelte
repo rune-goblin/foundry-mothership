@@ -5,12 +5,11 @@
   // once when the last pane's button is pressed. Only the presentation moved.
   import MainStat from '../parts/MainStat.svelte';
   import RollBox from './RollBox.svelte';
-  import SkillSlot from './SkillSlot.svelte';
+  import SkillSelector from './SkillSelector.svelte';
   import { dropTarget } from '../parts/drop-target.js';
   import { onActivate } from '../parts/activate.js';
   import { localize, format } from '../../i18n.ts';
   import { statLabel, offerLabel } from '../class/choosable-stats.js';
-  import { RANK_LABEL } from './picks.js';
   import { PANES, NUMBERED, firstIncomplete, paneTitle } from './steps.js';
 
   let { draft, close } = $props();
@@ -80,7 +79,12 @@
 
   const gateMessage = (entry) => {
     if (entry.id === 'class') return 'Mothership.CharacterGenerator.Error.NoClass';
-    if (entry.id === 'adjustments') return 'Mothership.CharacterGenerator.Error.UnspentAdjustment';
+    // The pane asks two things now, so it names whichever is still open.
+    if (entry.id === 'adjustments') {
+      return draft.statChoicesSpent
+        ? 'Mothership.CharacterGenerator.Error.UnpickedSkillBonus'
+        : 'Mothership.CharacterGenerator.Error.UnspentAdjustment';
+    }
     return 'Mothership.CharacterGenerator.Wizard.CompleteStep';
   };
 
@@ -126,20 +130,6 @@
     if (draft.rolled[stat] === null) return name;
     const base = draft.total(stat) - (choice.chosen === stat ? choice.modification : 0);
     return `${name} ${base} → ${base + choice.modification}`;
-  }
-
-  // Which slot is being browsed. A pick opens the next slot still empty, so filling a class's
-  // skills is one list after another rather than a row of dropdowns to hunt through.
-  let browsing = $state(null);
-  const openSlot = $derived(browsing ?? draft.skillSlots.find((slot) => slot.chosen === null)?.key ?? null);
-
-  const toggleSlot = (key) => {
-    browsing = openSlot === key ? '' : key;
-  };
-
-  function pickSkill(key, uuid) {
-    draft.chooseSkill(key, uuid);
-    browsing = null;
   }
 
   async function finish() {
@@ -363,25 +353,11 @@
             </div>
           </div>
         {/each}
-      {:else if pane.id === 'health'}
-        <div class="wizard-rolls">
-          <RollBox
-            key="health"
-            label={localize('Mothership.Health')}
-            value={draft.rolled.health}
-            bind:bonus={draft.bonus.health}
-            onroll={() => draft.roll('health')}
-          />
-          <MainStat key="wounds" label={localize('Mothership.Wounds')}>
-            {#snippet control()}
-              <input class="circle-input" type="text" readonly data-value="wounds" value={draft.wounds} />
-            {/snippet}
-          </MainStat>
-        </div>
-      {:else if pane.id === 'skills'}
-        <!-- Every skill the class hands out, asked for here: the packages it offers one of, and a
-             dropdown per skill it lets the player pick. A gated pick offers only what a skill
-             already picked unlocks, so changing an earlier answer can empty a later one. -->
+
+        <!-- The other half of what a class hands out: the skill bonus it offers one of. It is a
+             benefit of the class, not a skill choice — which is why it is asked here and not on the
+             skills pane, where it used to leave the picker counting picks the player had not been
+             given yet. A group offering one package is not a question and prints nothing. -->
         {#each draft.skillGroups as group, groupIndex (groupIndex)}
           {#if group.options.length > 1}
             <div class="wizard-choice" role="group" aria-label={localize('Mothership.CharacterGenerator.SkillOption.ChoiceText')}>
@@ -411,20 +387,31 @@
             </div>
           {/if}
         {/each}
-
-        {#each draft.skillSlots as slot (slot.key)}
-          <SkillSlot
-            pick={slot.key}
-            rank={slot.rank}
-            label={localize(RANK_LABEL[slot.rank])}
-            skills={draft.skillTree(slot.key)}
-            chosen={slot.chosen}
-            chosenName={slot.chosen === null ? '' : draft.skillName(slot.chosen)}
-            open={openSlot === slot.key}
-            ontoggle={() => toggleSlot(slot.key)}
-            onchoose={(uuid) => pickSkill(slot.key, uuid)}
+      {:else if pane.id === 'health'}
+        <div class="wizard-rolls">
+          <RollBox
+            key="health"
+            label={localize('Mothership.Health')}
+            value={draft.rolled.health}
+            bind:bonus={draft.bonus.health}
+            onroll={() => draft.roll('health')}
           />
-        {/each}
+          <MainStat key="wounds" label={localize('Mothership.Wounds')}>
+            {#snippet control()}
+              <input class="circle-input" type="text" readonly data-value="wounds" value={draft.wounds} />
+            {/snippet}
+          </MainStat>
+        </div>
+      {:else if pane.id === 'skills'}
+        <!-- The whole tree at once: every rank's remaining picks live in one place, so taking a
+             Trained skill can open an Expert one in the same glance rather than behind a slot the
+             player has to think to reopen. Which bonus package those picks come from was settled a
+             pane earlier, with the rest of what the class hands out. -->
+        <SkillSelector
+          skills={draft.skillTree}
+          budget={draft.skillBudget}
+          onchoose={(uuid) => draft.toggleSkill(uuid)}
+        />
 
         <MainStat key="skills" label={localize('Mothership.Skills')} labelClass="fulllabel" wrapper={false}>
           {#snippet control()}

@@ -95,8 +95,17 @@ const chooseClass = async (page: Page, name: string) => {
 };
 
 /**
- * Fill every skill slot the class left open, each with the first available node in its tree. A
- * selected skill stays in the graph but cannot be taken twice.
+ * Take one of the class's either/or skill bonuses. It is a benefit of the class, so it is asked on
+ * the adjustments pane, with the rest of what the class hands over — a pane before the skills the
+ * picks it funds are spent on.
+ */
+const takeSkillBonus = async (page: Page, position: number) => {
+  await goTo(page, 'adjustments');
+  await page.click(`button.wizard-package >> nth=${position}`);
+};
+
+/**
+ * Reach the skills pane, rolling ahead of it if the rail still has it gated.
  */
 const reachSkills = async (page: Page) => {
   if (await page.locator('button.wizard-rail-step[data-pane="skills"]').isDisabled()) {
@@ -106,15 +115,15 @@ const reachSkills = async (page: Page) => {
   await goTo(page, 'skills');
 };
 
+/**
+ * Every skill the class still owes is one flat tree, not a slot opened one at a time — picking one
+ * available skill can make the next tier's picks available in the same glance, so this just keeps
+ * taking the first available skill until none are left, rather than walking a fixed slot list.
+ */
 const pickEverySkill = async (page: Page) => {
   await reachSkills(page);
-  const keys = await page.$$eval('[data-pick]', (nodes) =>
-    nodes.map((node) => (node as HTMLElement).dataset.pick as string),
-  );
-  for (const key of keys) {
-    const slot = `[data-pick="${key}"]`;
-    if (!(await page.$(`${slot} [data-skill]`))) await page.click(`${slot} button[data-slot="open"]`);
-    await page.click(`${slot} [data-skill][data-state="available"] >> nth=0`);
+  while (await page.locator('[data-skill][data-state="available"]').count() > 0) {
+    await page.click('[data-skill][data-state="available"] >> nth=0');
   }
 };
 
@@ -322,37 +331,34 @@ test.describe('character generator', () => {
 
     await chooseClass(gmPage, 'Marine');
 
-    // The Marine's bonus skills are a choice of two packages, taken on the skills pane itself.
+    // The Marine's bonus skills are a choice of two packages. It is one of the class's benefits, so
+    // it is taken with them, and the wizard will not walk on to the skills until it is answered —
+    // the picker would otherwise be counting picks the class had not handed out yet.
+    await expect(gmPage.locator('button.wizard-rail-step[data-pane="skills"]')).toBeDisabled();
+    await takeSkillBonus(gmPage, 1);
+    await expect(gmPage.locator('section.wizard-pane[data-pane="adjustments"] button.wizard-package')).toHaveCount(2);
+
     await reachSkills(gmPage);
-    await gmPage.click('button.wizard-package >> nth=1');
+    await expect(gmPage.locator('section.wizard-pane[data-pane="skills"] button.wizard-package')).toHaveCount(0);
 
-    const tree = gmPage.locator('[data-pick] .skill-tree').first();
-    await expect(tree).toHaveAttribute('data-target-rank', 'Trained');
-    await expect(tree.locator('[data-state="selected"]')).not.toHaveCount(0);
-    await expect(tree.locator('[data-state="available"]')).not.toHaveCount(0);
-    // A Trained choice is a starting point, so every unowned target is available. Locked targets
-    // appear only in the higher-rank path view where prerequisites apply.
-    await expect(tree.locator('[data-state="unavailable"]')).toHaveCount(0);
-    await expect(tree.locator('svg')).toHaveCount(0);
+    const picker = gmPage.locator('.skill-selector');
+    const trainedColumn = picker.locator('.skill-selector-column[data-rank="Trained"]');
+    await expect(trainedColumn.locator('[data-state="granted"]')).not.toHaveCount(0);
+    await expect(trainedColumn.locator('[data-state="available"]')).not.toHaveCount(0);
+    // Trained is never gated on a prerequisite, so every unowned skill in that column is
+    // available — nothing in it is ever locked.
+    await expect(trainedColumn.locator('[data-state="unavailable"]')).toHaveCount(0);
+    await expect(picker.locator('svg')).toHaveCount(0);
 
-    // Starting skills need no graph at all: they are a compact grid of choices. Higher-ranked
-    // slots render one self-contained path card per target instead of sharing connector lines.
-    const treeLayout = await tree.evaluate((element) => {
-      const first = element.querySelector<HTMLElement>('[data-skill]')!;
-      const node = first.getBoundingClientRect();
-      return {
-        nodeWidth: node.width,
-        radius: Number.parseFloat(getComputedStyle(first).borderRadius),
-        height: node.height,
-      };
-    });
-    expect(treeLayout.nodeWidth).toBeGreaterThanOrEqual(160);
-    expect(treeLayout.height).toBeLessThan(40);
-    expect(treeLayout.radius).toBeGreaterThanOrEqual(treeLayout.height / 2);
+    // The whole catalog stands in three columns at once, not one slot opened at a time.
+    const columnCount = await picker.locator('.skill-selector-columns').evaluate(
+      (element) => getComputedStyle(element).gridTemplateColumns.split(' ').length,
+    );
+    expect(columnCount).toBe(3);
 
     // Every state keeps normal-size text at WCAG AA contrast; shape, border style and symbols also
     // distinguish them, so color is not the only signal.
-    const contrast = await tree.locator('[data-skill]').evaluateAll((nodes) => {
+    const contrast = await picker.locator('[data-skill]').evaluateAll((nodes) => {
       const channel = (value: number) => {
         const normalized = value / 255;
         return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
@@ -372,6 +378,17 @@ test.describe('character generator', () => {
 
     await pickEverySkill(gmPage);
     await expect(gmPage.locator('ul[data-list="skills"] li')).toHaveCount(4);
+
+    // With the last Trained pick spent the whole column locks, and it says which of the two reasons
+    // that is. Clicking one of those rows has to change nothing at all — `force` because the row
+    // reports itself disabled, which is the point: the click still lands, and leaves no focus ring
+    // sitting on a skill the player never took.
+    await expect(trainedColumn.locator('.skill-selector-bonus.is-spent')).toHaveCount(1);
+    const locked = trainedColumn.locator('[data-state="unavailable"][data-reason="spent"]').first();
+    await locked.click({ force: true });
+    await expect(locked).not.toBeFocused();
+    await expect(gmPage.locator('ul[data-list="skills"] li')).toHaveCount(4);
+
     await expect(gmPage.locator('dialog[open]')).toHaveCount(0);
 
     await rollStatsAndSaves(gmPage);
@@ -459,10 +476,13 @@ test.describe('character generator', () => {
     await gmPage.selectOption('[data-choice="0"] select', 'speed');
     await expect(gmPage.locator('[data-modifier="strength"]')).toHaveText('0');
     await expect(gmPage.locator('[data-value="strength"]')).toHaveText('27');
+
+    // The pane asks both of the class's questions, so placing the adjustment is not enough on its
+    // own: the either/or bonus holds the rail too.
+    await expect(gmPage.locator('button.wizard-rail-step[data-pane="health"]')).toBeDisabled();
+    await gmPage.click('button.wizard-package >> nth=1');
     await expect(gmPage.locator('button.wizard-rail-step[data-pane="health"]')).toBeEnabled();
 
-    await goTo(gmPage, 'skills');
-    await gmPage.click('button.wizard-package >> nth=1');
     await pickEverySkill(gmPage);
 
     // The Teamster's +5 is gone rather than added to: Android is +20 INTELLECT, +60 FEAR.

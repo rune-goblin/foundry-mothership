@@ -138,6 +138,7 @@ describe('the wizard spine', () => {
     loadout: null,
     name: '',
     statChoicesSpent: true,
+    skillGroupsChosen: true,
     skillsPicked: false,
   };
 
@@ -166,10 +167,12 @@ describe('the wizard spine', () => {
     })).toBe(-1);
   });
 
-  // Step 3 is two questions on two panes: the class is chosen on one, and what it leaves the
-  // player to place is placed on the next. An unspent -10 walked past would be dropped from every
-  // pane that reads the stats, so the second gates as hard as the first.
-  it('holds step 3 open until the class is chosen and then spent', () => {
+  // Step 3 is two questions on two panes: the class is chosen on one, and everything it leaves the
+  // player is settled on the next — where its free adjustment goes, and which of the skill bonuses
+  // it offers one of. An unspent -10 walked past would be dropped from every pane that reads the
+  // stats, and an unchosen bonus leaves the skills pane counting picks the class has not handed
+  // out, so the second pane gates as hard as the first.
+  it('holds step 3 open until the class is chosen and everything it hands over is settled', () => {
     const klass = PANES.find((pane) => pane.id === 'class')!;
     const spend = PANES.find((pane) => pane.id === 'adjustments')!;
     const chosen = { ...empty, classUuid: 'Compendium.mothershiprpg.classes_1e.Item.android' };
@@ -178,6 +181,7 @@ describe('the wizard spine', () => {
     expect(klass.done({ ...chosen, statChoicesSpent: false })).toBe(true);
     expect(spend.done(empty)).toBe(false);
     expect(spend.done({ ...chosen, statChoicesSpent: false })).toBe(false);
+    expect(spend.done({ ...chosen, skillGroupsChosen: false })).toBe(false);
     expect(spend.done(chosen)).toBe(true);
   });
 
@@ -255,6 +259,7 @@ describe('the skills a class hands out', () => {
     skill('sk-linguistics', 'Linguistics', 'Trained'),
     skill('sk-mathematics', 'Mathematics', 'Trained'),
     skill('sk-rimwise', 'Rimwise', 'Trained'),
+    skill('sk-zero-g', 'Zero-G', 'Trained'),
     skill('sk-xenobiology', 'Xenobiology', 'Expert', ['sk-linguistics']),
     skill('sk-cybernetics', 'Cybernetics', 'Expert', ['sk-mathematics']),
   ];
@@ -321,6 +326,16 @@ describe('the skills a class hands out', () => {
     expect(draft.skillsPicked).toBe(false);
   });
 
+  // The either/or is a benefit of the class, answered on the adjustments pane, so the draft reports
+  // it apart from the picks it eventually funds.
+  it('holds the class\u2019s either/or bonus open until a package is taken', async () => {
+    const draft = await drafted();
+    expect(draft.skillGroupsChosen).toBe(false);
+
+    draft.chooseSkillOption(0, 0);
+    expect(draft.skillGroupsChosen).toBe(true);
+  });
+
   it('replaces one package\u2019s slots with the next when the package changes', async () => {
     const draft = await drafted();
 
@@ -347,44 +362,67 @@ describe('the skills a class hands out', () => {
     const draft = await drafted();
     draft.chooseSkillOption(0, 0);
 
-    const offered = () =>
-      draft.skillCandidates('class:expert:0:Expert').map((option: { name: string }) => option.name);
-    expect(offered()).toEqual(['Xenobiology']);
+    const experts = () => Object.fromEntries(
+      draft.skillTree.filter((skill: { rank: string }) => skill.rank === 'Expert')
+        .map((skill: { name: string; state: string }) => [skill.name, skill.state]),
+    );
+    expect(experts()).toEqual({ Xenobiology: 'available', Cybernetics: 'unavailable' });
 
-    draft.chooseSkill('group-0:trained:0:Trained', 'sk-mathematics');
-    expect(offered()).toEqual(['Xenobiology', 'Cybernetics']);
+    draft.toggleSkill('sk-mathematics');
+    expect(experts()).toEqual({ Xenobiology: 'available', Cybernetics: 'available' });
   });
 
-  it('marks the full tree as selected, available, or unavailable for one pick', async () => {
+  it('marks the full tree as granted, picked, available, or unavailable', async () => {
     const draft = await drafted();
     draft.chooseSkillOption(0, 0);
 
     const states = () => Object.fromEntries(
-      draft.skillTree('class:expert:0:Expert').map((skill: { name: string; state: string }) => [skill.name, skill.state]),
+      draft.skillTree.map((skill: { name: string; state: string }) => [skill.name, skill.state]),
     );
     expect(states()).toMatchObject({
-      Linguistics: 'selected',
-      Mathematics: 'unavailable',
+      Linguistics: 'granted',
+      Mathematics: 'available',
+      Rimwise: 'available',
       Xenobiology: 'available',
       Cybernetics: 'unavailable',
     });
 
-    draft.chooseSkill('group-0:trained:0:Trained', 'sk-mathematics');
-    expect(states()).toMatchObject({ Mathematics: 'selected', Cybernetics: 'available' });
+    draft.toggleSkill('sk-mathematics');
+    expect(states()).toMatchObject({ Mathematics: 'picked', Cybernetics: 'available' });
+  });
+
+  // The picker prints the two apart, because they read as the same grey row and only one of them is
+  // a rule about the skill: a spent rank is answered by taking a pick back, a gate by taking its
+  // prerequisite.
+  it('says whether an unavailable skill wants a prerequisite or a free pick', async () => {
+    const draft = await drafted();
+    draft.chooseSkillOption(0, 0);
+
+    const reason = (uuid: string) =>
+      draft.skillTree.find((skill: { uuid: string }) => skill.uuid === uuid)?.reason;
+
+    expect(reason('sk-cybernetics')).toBe('gated');
+    expect(reason('sk-zero-g')).toBe(null);
+
+    draft.toggleSkill('sk-mathematics');
+    draft.toggleSkill('sk-rimwise');
+
+    expect(draft.skillBudget.Trained).toBe(0);
+    expect(reason('sk-zero-g')).toBe('spent');
   });
 
   it('empties a gated pick when the pick it stood on changes', async () => {
     const draft = await drafted();
     draft.chooseSkillOption(0, 0);
-    draft.chooseSkill('group-0:trained:0:Trained', 'sk-mathematics');
-    draft.chooseSkill('class:expert:0:Expert', 'sk-cybernetics');
-    draft.chooseSkill('group-0:trained:1:Trained', 'sk-rimwise');
+    draft.toggleSkill('sk-mathematics');
+    draft.toggleSkill('sk-cybernetics');
+    draft.toggleSkill('sk-rimwise');
     // Granted first, then the slots in the order the pane shows them: the class's own pick, then
     // the package's.
     expect(named(draft)).toEqual(['Linguistics', 'Cybernetics', 'Mathematics', 'Rimwise']);
     expect(draft.skillsPicked).toBe(true);
 
-    draft.chooseSkill('group-0:trained:0:Trained', '');
+    draft.toggleSkill('sk-mathematics');
 
     expect(named(draft)).toEqual(['Linguistics', 'Rimwise']);
     expect(draft.skillsPicked).toBe(false);
@@ -396,8 +434,7 @@ describe('the skills a class hands out', () => {
     const draft = await drafted();
     draft.chooseSkillOption(0, 0);
 
-    expect(draft.skillCandidates('group-0:trained:0:Trained')[0]).toMatchObject({
-      name: 'Linguistics',
+    expect(draft.skillTree.find((skill: { name: string }) => skill.name === 'Linguistics')).toMatchObject({
       bonus: 10,
       summary: 'What Linguistics is for.',
     });
@@ -426,7 +463,7 @@ describe('the skills a class hands out', () => {
     const draft = await drafted();
     draft.chooseSkillOption(0, 0);
 
-    const offered = draft.skillCandidates('group-0:trained:1:Trained');
-    expect(offered.find((option: { uuid: string }) => option.uuid === 'sk-linguistics')?.disabled).toBe(true);
+    const linguistics = draft.skillTree.find((skill: { uuid: string }) => skill.uuid === 'sk-linguistics');
+    expect(linguistics?.state).toBe('granted');
   });
 });

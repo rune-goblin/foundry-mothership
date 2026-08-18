@@ -12,9 +12,10 @@ import { CHARACTER_CREATION } from '../../../content/books/psg/character-creatio
  *
  * Two panes are the wizard's own rather than the book's, and say so with `step: null`: the front
  * matter, which asks nothing and so is the one pane the rail stars instead of numbering, and the
- * adjustments pane, which places what a class leaves to the player. Step 3 is two questions —
- * which class, then where its free adjustment goes — and asking both on one pane meant answering
- * the second against cards that had already stopped being the subject. A pane of the wizard's own
+ * adjustments pane, which places everything a class leaves to the player — where its free
+ * adjustment goes, and which of the skill bonuses it offers one of. Step 3 is those questions on
+ * two panes — which class, then what the class hands you — and asking them together meant
+ * answering against cards that had already stopped being the subject. A pane of the wizard's own
  * prints its own copy, so it carries `titleKey`/`introKeys` where a book pane carries the step.
  *
  * `done` both ticks the rail and gates the pane after it. Every question must be answered before
@@ -51,7 +52,7 @@ export const PANES = [
     step: null,
     // A draft with no class has no choices to spend, and `every` over nothing is true — so this
     // reads the class too, or the rail would tick a pane the player has not reached.
-    done: (draft) => draft.classUuid !== '' && draft.statChoicesSpent,
+    done: (draft) => draft.classUuid !== '' && draft.statChoicesSpent && draft.skillGroupsChosen,
   },
   { id: 'health', step: byId('step-4-roll-health'), done: rolled(['health']) },
   { id: 'skills', step: byId('step-7-choose-skills'), done: (draft) => draft.skillsPicked },

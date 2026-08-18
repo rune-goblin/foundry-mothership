@@ -63,19 +63,57 @@ describe('every specimen mounts', () => {
   }
 });
 
-describe('the skill progression specimen', () => {
-  it('renders isolated prerequisite routes rather than a shared connector graph', () => {
-    const entry = cases.find((candidate) => candidate.title === 'SkillTree')!;
+describe('the skill selector specimen', () => {
+  it('flags granted, picked, available and unavailable skills distinctly', () => {
+    const entry = cases.find((candidate) => candidate.title === 'SkillSelector')!;
     const target = render(entry.component as Component);
-    const tree = target.querySelector<HTMLElement>('.skill-tree')!;
+    const stateOf = (uuid: string) => target.querySelector<HTMLElement>(`[data-skill="${uuid}"]`)?.dataset.state;
 
-    expect(tree.dataset.targetRank).toBe('Master');
-    expect(tree.querySelector('svg')).toBeNull();
-    expect(tree.querySelectorAll('[data-skill-path]')).toHaveLength(2);
-    expect(tree.querySelector('[data-skill-path="master-sophontology"]')?.textContent)
-      .toMatch(/Linguistics.*Psychology.*Sophontology/);
-    expect(tree.querySelector('[data-skill-path="master-exobiology"]')?.textContent)
-      .toMatch(/Zoology.*Pathology.*Exobiology/);
+    expect(stateOf('sk-linguistics')).toBe('granted');
+    expect(stateOf('sk-mathematics')).toBe('picked');
+    expect(stateOf('sk-zoology')).toBe('available');
+    expect(stateOf('sk-pathology')).toBe('unavailable');
+  });
+
+  it('separates a skill blocked by its prerequisite from one blocked by a spent rank', () => {
+    const entry = cases.find((candidate) => candidate.title === 'SkillSelector')!;
+    const target = render(entry.component as Component);
+    const reasonOf = (uuid: string) => target.querySelector<HTMLElement>(`[data-skill="${uuid}"]`)?.dataset.reason;
+
+    expect(reasonOf('sk-pathology')).toBe('gated');
+    expect(reasonOf('sk-sophontology')).toBe('spent');
+    expect(reasonOf('sk-zoology')).toBe(undefined);
+  });
+
+  // Clicking a row that cannot be taken has to leave the page as it found it — a focus ring left
+  // sitting on the row reads as a selection that was never made.
+  it('refuses the press that would focus a skill it will not let you choose', () => {
+    const entry = cases.find((candidate) => candidate.title === 'SkillSelector')!;
+    const target = render(entry.component as Component);
+    const press = (uuid: string) => {
+      const event = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
+      target.querySelector(`[data-skill="${uuid}"]`)!.dispatchEvent(event);
+      return event.defaultPrevented;
+    };
+
+    expect(press('sk-pathology')).toBe(true);
+    expect(press('sk-linguistics')).toBe(true);
+    expect(press('sk-zoology')).toBe(false);
+    expect(press('sk-mathematics')).toBe(false);
+  });
+
+  // The prerequisite graph is walked transitively, not one hop at a time: hovering a Master skill
+  // should light the Trained skill two tiers beneath it, not only its direct Expert prerequisite.
+  it('lights a hovered skill’s whole route, not just its direct neighbour', () => {
+    const entry = cases.find((candidate) => candidate.title === 'SkillSelector')!;
+    const target = render(entry.component as Component);
+
+    target.querySelector<HTMLElement>('[data-skill="sk-sophontology"]')!.dispatchEvent(new Event('mouseenter'));
+    flushSync();
+
+    for (const uuid of ['sk-psychology', 'sk-linguistics', 'sk-zoology']) {
+      expect(target.querySelector(`[data-skill="${uuid}"]`)?.classList.contains('is-hover-lit')).toBe(true);
+    }
   });
 });
 
