@@ -41,41 +41,65 @@ export class MothershipCharacterSheet extends ActorSheetV2 {
   }
 
   /**
-   * Offer the wizard the moment a character is created. `createActor` is the render context
-   * Foundry stamps on the sheet it opens for a document that has just been made — from the
-   * sidebar's create dialog, and from any `Actor.create(…, {renderSheet: true})` behind it — so it
-   * is the one signal that says "this sheet is new" without a hook that fires for every actor.
+   * Stop a newly created character before Foundry builds its first sheet frame. `createActor` is
+   * the render context stamped by both the sidebar create dialog and
+   * `Actor.create(…, {renderSheet: true})`; creature creation resolves to MothershipCreatureSheet
+   * instead, so it never enters this branch.
    *
    * The empty-inventory guard is what keeps a compendium import, which arrives the same way but
    * already carrying its class and gear, from being asked whether it wants to be rolled up.
    *
-   * Not awaited: `_onFirstRender` is inside the render pipeline, and parking it on a dialog would
-   * hold the frame half-built until the player answered.
+   * `_canRender` is synchronous and Foundry honors `false` before preparing or inserting any DOM.
+   * The dialog therefore runs beside the aborted render. A later render uses a private context so
+   * choosing a blank sheet (or dismissing the choice, as before) cannot ask the question twice.
    */
-  async _onFirstRender(context, options) {
-    await super._onFirstRender(context, options);
-    if (options.renderContext !== 'createActor') return;
-    if (this.document.items.size > 0) return;
-    void this.#offerWizard();
+  _canRender(options) {
+    const allowed = super._canRender(options);
+    if (allowed === false) return false;
+    if (options.renderContext !== 'createActor') return allowed;
+    if (this.document.items.size > 0) return allowed;
+    if (!this.#choosingCreationMode) void this.#chooseInitialView();
+    return false;
   }
 
-  async #offerWizard() {
-    if ((await chooseCreationMode()) !== 'wizard') return;
-    // The sheet stays open behind the wizard: it is where the finished character lands, and
-    // Foundry re-renders it off the one update the draft writes.
-    this.generateCharacter();
+  #choosingCreationMode = false;
+
+  async #chooseInitialView() {
+    this.#choosingCreationMode = true;
+    try {
+      if ((await chooseCreationMode()) === 'wizard') {
+        this.#openGenerator({
+          centreOnSheet: false,
+          onComplete: () => this.render({ force: true }),
+        });
+        return;
+      }
+      await this.render({ force: true, renderContext: 'mothershipCreationChoice' });
+    } finally {
+      this.#choosingCreationMode = false;
+    }
   }
 
   generateCharacter() {
+    this.#openGenerator();
+  }
+
+  #openGenerator({ centreOnSheet = true, onComplete } = {}) {
     // Centred on the sheet it was opened from, and never off the left edge: the wizard is wider
-    // than the sheet, so half the difference is negative.
+    // than the sheet, so half the difference is negative. On initial creation the sheet has no
+    // position yet, and ApplicationV2 centres the generator from its own default position.
     const { width } = GeneratorApp.DEFAULT_OPTIONS.position;
     new GeneratorApp({
       actor: this.document,
-      position: {
-        top: this.position.top + 40,
-        left: Math.max(0, this.position.left + (this.position.width - width) / 2),
-      },
+      onComplete,
+      ...(centreOnSheet
+        ? {
+            position: {
+              top: this.position.top + 40,
+              left: Math.max(0, this.position.left + (this.position.width - width) / 2),
+            },
+          }
+        : {}),
     }).render({ force: true });
   }
 

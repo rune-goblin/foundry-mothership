@@ -3,7 +3,7 @@
     group: 'Dialog bodies',
     title: 'NewCharacter',
     path: 'module/dialogs/NewCharacter.svelte',
-    note: 'The fork in the road a new character reaches: walk the PSG’s nine steps, or start on a blank sheet. The buttons are the answer, so this component holds no state — it explains the two.',
+    note: 'The fork in the road a new character reaches. The dialog buttons are the answer, so this component only supplies its heading.',
   };
 </script>
 

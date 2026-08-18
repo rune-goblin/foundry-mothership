@@ -63,6 +63,22 @@ describe('every specimen mounts', () => {
   }
 });
 
+describe('the skill progression specimen', () => {
+  it('renders isolated prerequisite routes rather than a shared connector graph', () => {
+    const entry = cases.find((candidate) => candidate.title === 'SkillTree')!;
+    const target = render(entry.component as Component);
+    const tree = target.querySelector<HTMLElement>('.skill-tree')!;
+
+    expect(tree.dataset.targetRank).toBe('Master');
+    expect(tree.querySelector('svg')).toBeNull();
+    expect(tree.querySelectorAll('[data-skill-path]')).toHaveLength(2);
+    expect(tree.querySelector('[data-skill-path="master-sophontology"]')?.textContent)
+      .toMatch(/Linguistics.*Psychology.*Sophontology/);
+    expect(tree.querySelector('[data-skill-path="master-exobiology"]')?.textContent)
+      .toMatch(/Zoology.*Pathology.*Exobiology/);
+  });
+});
+
 describe('the three pages render', () => {
   // The scope is the node whose computed values the token pages read. jsdom computes nothing from
   // a stylesheet it never loaded, so what this proves is that the pages survive empty values --

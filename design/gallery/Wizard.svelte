@@ -19,14 +19,15 @@
   const draft = new CharacterDraft({ name: 'Rook Vance', items: [] });
 
   // The class pane only draws once a scan has run, and the gallery has no compendium to scan. These
-  // are the four PSG classes as `loadClasses` flattens them, so the cards and the choice beneath
-  // them are the real markup over stand-in rows.
+  // are the four PSG classes as `loadClasses` flattens them, so the chooser and selected detail
+  // panel are the real markup over stand-in rows.
   draft.classOptions = [
     {
       uuid: 'Design.android',
       name: 'Android',
-      img: 'icons/svg/clockwork.svg',
+      img: '/systems/mothershiprpg/images/class_icons/android.png',
       source: 'mothershiprpg',
+      description: 'Androids are a terrifying and exciting addition to any crew. They tend to unnerve other crewmembers with their cold inhumanity.',
       adjustments: [
         { key: 'intellect', value: 20 },
         { key: 'fear', value: 60 },
@@ -37,8 +38,9 @@
     {
       uuid: 'Design.marine',
       name: 'Marine',
-      img: 'icons/svg/sword.svg',
+      img: '/systems/mothershiprpg/images/class_icons/marine.png',
       source: 'mothershiprpg',
+      description: 'Marines are handy in a fight, but whenever they Panic it may cause problems for the rest of the crew.',
       adjustments: [
         { key: 'combat', value: 10 },
         { key: 'fear', value: 20 },
@@ -50,8 +52,9 @@
     {
       uuid: 'Design.scientist',
       name: 'Scientist',
-      img: 'icons/svg/pill.svg',
+      img: '/systems/mothershiprpg/images/class_icons/scientist.png',
       source: 'mothershiprpg',
+      description: 'Scientists are doctors, researchers, or anyone who wants to slice open creatures (or infected crewmembers) with a scalpel.',
       adjustments: [
         { key: 'intellect', value: 10 },
         { key: 'sanity', value: 30 },
@@ -61,8 +64,9 @@
     {
       uuid: 'Design.teamster',
       name: 'Teamster',
-      img: 'icons/svg/barrel.svg',
+      img: '/systems/mothershiprpg/images/class_icons/teamster.png',
       source: 'mothershiprpg',
+      description: 'Teamsters are rough and tumble blue-collar space workers, mechanics, engineers, miners, and pilots.',
       adjustments: [
         { key: 'strength', value: 5 },
         { key: 'speed', value: 5 },

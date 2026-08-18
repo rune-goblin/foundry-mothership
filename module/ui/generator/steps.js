@@ -17,10 +17,9 @@ import { CHARACTER_CREATION } from '../../../content/books/psg/character-creatio
  * the second against cards that had already stopped being the subject. A pane of the wizard's own
  * prints its own copy, so it carries `titleKey`/`introKeys` where a book pane carries the step.
  *
- * `done` is what the rail ticks. `required` marks the panes the wizard will not walk past
- * unfinished: everything after them reads the class — its wound bonus, its trauma response, its
- * skills, its loadout table — so a wizard that let you skip one would spend four panes reporting
- * the same missing class, or quietly drop an adjustment from every stat those panes read.
+ * `done` both ticks the rail and gates the pane after it. Every question must be answered before
+ * the wizard walks forward, so the same predicate is the single source of truth for progress and
+ * navigation.
  */
 
 const byId = (id) => {
@@ -45,13 +44,11 @@ export const PANES = [
   },
   { id: 'stats', step: byId('step-1-roll-stats'), done: rolled(['strength', 'speed', 'intellect', 'combat']) },
   { id: 'saves', step: byId('step-2-roll-saves'), done: rolled(['sanity', 'fear', 'body']) },
-  { id: 'class', step: byId('step-3-choose-your-class'), required: true, done: (draft) => draft.classUuid !== '' },
+  { id: 'class', step: byId('step-3-choose-your-class'), done: (draft) => draft.classUuid !== '' },
   {
     id: 'adjustments',
     titleKey: 'Mothership.CharacterGenerator.Wizard.Adjustments',
-    introKeys: ['Mothership.CharacterGenerator.Wizard.AdjustmentsText'],
     step: null,
-    required: true,
     // A draft with no class has no choices to spend, and `every` over nothing is true — so this
     // reads the class too, or the rail would tick a pane the player has not reached.
     done: (draft) => draft.classUuid !== '' && draft.statChoicesSpent,
@@ -73,7 +70,12 @@ export const paneTitle = (pane) => pane.title ?? pane.step.title;
 export const NUMBERED = PANES.filter((pane) => pane.numbered !== false);
 
 /** The pane a wizard opening on an untouched draft should land on: the first one left to do. */
+export function firstIncomplete(draft) {
+  return PANES.findIndex((pane) => !pane.done(draft));
+}
+
+/** Where to open: the first incomplete pane, or Finish when a complete draft is reopened. */
 export function firstUnfinished(draft) {
-  const index = PANES.findIndex((pane) => !pane.done(draft));
+  const index = firstIncomplete(draft);
   return index === -1 ? PANES.length - 1 : index;
 }

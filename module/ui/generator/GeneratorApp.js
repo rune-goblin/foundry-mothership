@@ -23,13 +23,15 @@ export class GeneratorApp extends ApplicationV2 {
 
   #actor;
   #draft;
+  #onComplete;
   #component;
   #root;
 
-  constructor({ actor, ...options } = {}) {
+  constructor({ actor, onComplete, ...options } = {}) {
     super({ id: `mothership-generator-${actor.id}`, ...options });
     this.#actor = actor;
     this.#draft = new CharacterDraft(actor);
+    this.#onComplete = onComplete;
   }
 
   get title() {
@@ -48,7 +50,13 @@ export class GeneratorApp extends ApplicationV2 {
     this.#root.className = 'mothership-sheet-root';
     this.#component = mount(Wizard, {
       target: this.#root,
-      props: { draft: this.#draft, close: () => this.close() },
+      props: {
+        draft: this.#draft,
+        close: async () => {
+          await this.close();
+          await this.#onComplete?.();
+        },
+      },
     });
     return this.#root;
   }

@@ -3,10 +3,9 @@ import { localize } from '../../i18n.ts';
 import NewCharacter from '../../dialogs/NewCharacter.svelte';
 
 /**
- * The question a freshly created character raises. Foundry's create dialog builds the actor and
- * renders its sheet before it hands control back, so the choice is offered over that sheet rather
- * than instead of it: "blank sheet" is then the sheet already in front of you and costs nothing,
- * and dismissing the dialog means the same thing.
+ * The question a freshly created character raises. The character sheet stops its first render
+ * before Foundry builds a frame, then uses this answer to open either the wizard or the blank
+ * sheet. Dismissing the dialog retains the old meaning of choosing the blank sheet.
  *
  * Resolves `'wizard'` only when the player asked for it.
  */

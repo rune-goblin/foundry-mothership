@@ -216,6 +216,24 @@ export class CharacterDraft {
     return candidates(this.#catalog, slot.rank, this.#owned(key), { requirePrerequisite: slot.gated });
   }
 
+  /**
+   * The whole prerequisite graph for one open pick. A tree keeps every branch visible; state says
+   * which nodes this slot may take, which the draft already owns, and which are still locked.
+   */
+  skillTree(key) {
+    const available = new Set(
+      this.skillCandidates(key)
+        .filter((skill) => !skill.disabled)
+        .map((skill) => skill.uuid),
+    );
+    const selected = new Set(this.skills.map((skill) => skill.uuid));
+
+    return this.#catalog.map((skill) => ({
+      ...skill,
+      state: selected.has(skill.uuid) ? 'selected' : available.has(skill.uuid) ? 'available' : 'unavailable',
+    }));
+  }
+
   get skillsPicked() {
     return (
       this.skillGroups.every((group) => group.chosen !== null) &&

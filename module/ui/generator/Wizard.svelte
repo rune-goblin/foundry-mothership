@@ -11,7 +11,7 @@
   import { localize, format } from '../../i18n.ts';
   import { statLabel, offerLabel } from '../class/choosable-stats.js';
   import { RANK_LABEL } from './picks.js';
-  import { PANES, NUMBERED, paneTitle } from './steps.js';
+  import { PANES, NUMBERED, firstIncomplete, paneTitle } from './steps.js';
 
   let { draft, close } = $props();
 
@@ -34,6 +34,13 @@
     ['patch', 'Mothership.CharacterGenerator.Table.Patch'],
   ];
 
+  const CLASS_ICONS = {
+    Android: '/systems/mothershiprpg/images/class_icons/android.png',
+    Marine: '/systems/mothershiprpg/images/class_icons/marine.png',
+    Scientist: '/systems/mothershiprpg/images/class_icons/scientist.png',
+    Teamster: '/systems/mothershiprpg/images/class_icons/teamster.png',
+  };
+
   /** What a class adjustment can name, in the order the class card lists them. */
   const BONUS_LABELS = [
     ...STATS,
@@ -54,18 +61,28 @@
   const numberOf = (entry) => NUMBERED.indexOf(entry) + 1;
 
   // A pane prints the book's step, or — where the wizard interposes one of its own — its own copy.
-  const titleOf = (entry) => (entry.titleKey ? localize(entry.titleKey) : paneTitle(entry));
-  const proseOf = (entry) => entry.introKeys?.map(localize) ?? entry.intro ?? entry.step.text;
+  const titleOf = (entry) => {
+    if (entry.id === 'adjustments' && draft.className) {
+      return format('Mothership.CharacterGenerator.Wizard.ClassAdjustments', { class: draft.className });
+    }
+    return entry.titleKey ? localize(entry.titleKey) : paneTitle(entry);
+  };
+  const proseOf = (entry) => entry.introKeys?.map(localize) ?? entry.intro ?? entry.step?.text ?? [];
 
   let index = $state(0);
   const pane = $derived(PANES[index]);
+  const selectedClass = $derived(draft.classOptions.find((option) => option.uuid === draft.classUuid) ?? null);
 
-  // The rail's ceiling. The class and its adjustments are what the wizard will not walk past
-  // unfinished, because every pane after them reads the class: its wound bonus, its trauma
-  // response, its skills, its loadout table. Walking on without one would report the same missing
-  // class four times, or drop an unplaced adjustment from every stat those panes read.
-  const gate = $derived(PANES.findIndex((entry) => entry.required === true && !entry.done(draft)));
+  // The first unfinished pane is the rail's ceiling. The same `done` predicate that fills a rail
+  // marker therefore also unlocks the next pane; no task can be bypassed with either navigation.
+  const gate = $derived(firstIncomplete(draft));
   const reachable = (target) => target <= (gate === -1 ? LAST : gate);
+
+  const gateMessage = (entry) => {
+    if (entry.id === 'class') return 'Mothership.CharacterGenerator.Error.NoClass';
+    if (entry.id === 'adjustments') return 'Mothership.CharacterGenerator.Error.UnspentAdjustment';
+    return 'Mothership.CharacterGenerator.Wizard.CompleteStep';
+  };
 
   function go(target) {
     if (target < 0 || target > LAST || !reachable(target)) return;
@@ -125,16 +142,9 @@
     browsing = null;
   }
 
-  /** A candidate as the slot prints it: the catalog's entry, plus what its prerequisites are called. */
-  const offered = (key) =>
-    draft.skillCandidates(key).map((option) => ({
-      ...option,
-      prerequisiteNames: option.prerequisites.map((uuid) => draft.skillName(uuid)),
-    }));
-
   async function finish() {
     await draft.apply();
-    close();
+    await close();
   }
 </script>
 
@@ -182,30 +192,52 @@
         </p>
       {/if}
       <h2>{titleOf(pane)}</h2>
-      {#if pane.step?.instruction}
+      {#if pane.id === 'adjustments' && selectedClass}
+        <img
+          class="wizard-adjustments-class-art"
+          src={CLASS_ICONS[selectedClass.name] ?? selectedClass.img}
+          alt=""
+        />
+      {/if}
+      {#if pane.step?.instruction && pane.id !== 'class'}
         <p class="wizard-instruction">{pane.step.instruction}</p>
       {/if}
     </header>
 
-    <div class="wizard-prose">
-      {#each proseOf(pane) as line, position (position)}
-        <p>{line}</p>
-      {/each}
-      {#if pane.step && pane.step.bullets.length > 0}
-        <ul class="wizard-bullets">
-          {#each pane.step.bullets as bullet (bullet)}
-            <li>{bullet}</li>
+    {#if pane.id === 'intro'}
+      <div class="wizard-intro">
+        <div class="wizard-prose">
+          {#each proseOf(pane).slice(0, 2) as line, position (position)}
+            <p>{line}</p>
           {/each}
-        </ul>
-      {/if}
-      {#if pane.step && pane.step.references.length > 0}
-        <p class="wizard-references">
-          {#each pane.step.references as reference (reference.text)}
-            <span>{reference.text}</span>
-          {/each}
-        </p>
-      {/if}
-    </div>
+        </div>
+        <img
+          class="wizard-intro-cover"
+          src="/systems/mothershiprpg/images/mothership-cover.webp"
+          alt=""
+        />
+      </div>
+    {:else if pane.id !== 'class' && proseOf(pane).length > 0}
+      <div class="wizard-prose">
+        {#each proseOf(pane) as line, position (position)}
+          <p>{line}</p>
+        {/each}
+        {#if pane.step && pane.step.bullets.length > 0}
+          <ul class="wizard-bullets">
+            {#each pane.step.bullets as bullet (bullet)}
+              <li>{bullet}</li>
+            {/each}
+          </ul>
+        {/if}
+        {#if pane.step && pane.step.references.length > 0}
+          <p class="wizard-references">
+            {#each pane.step.references as reference (reference.text)}
+              <span>{reference.text}</span>
+            {/each}
+          </p>
+        {/if}
+      </div>
+    {/if}
 
     <div class="wizard-controls">
       {#if pane.id === 'stats' || pane.id === 'saves'}
@@ -234,56 +266,62 @@
               data-class={option.name}
               onclick={() => draft.chooseClass(option.uuid)}
             >
-              <img class="wizard-class-art" src={option.img} alt="" />
+              <img class="wizard-class-art" src={CLASS_ICONS[option.name] ?? option.img} alt="" />
               <span class="wizard-class-name">{option.name}</span>
-              <!-- What the class does to the character, on the card: the pane is a choice between
-                   four of these, and a name alone is not something to choose between. -->
-              <span class="wizard-class-brings">
-                {#each option.adjustments as adjustment (adjustment.key)}
-                  <span>{signed(adjustment.value)} {localize(BONUS_LABEL[adjustment.key])}</span>
-                {/each}
-                {#each option.choices as choice, position (position)}
-                  <span>{signed(choice.modification)} {localize(offerLabel(choice.stats))}</span>
-                {/each}
-              </span>
-              <span class="wizard-class-source">{option.source}</span>
             </button>
           {/each}
         </div>
-        {#if draft.className}
-          <dl class="wizard-adjustments" data-list="adjustments">
-            {#each BONUS_LABELS as [key, label] (key)}
-              {#if draft.bonus[key] !== 0}
+        {#if selectedClass}
+          <section class="wizard-class-detail" data-class-detail={selectedClass.name} aria-live="polite">
+            <p class="wizard-class-description" data-class-description>{selectedClass.description}</p>
+            <dl class="wizard-adjustments" data-list="adjustments">
+              {#each selectedClass.adjustments as adjustment (adjustment.key)}
                 <div>
-                  <dt>{localize(label)}</dt>
-                  <dd data-bonus={key}>{signed(draft.bonus[key])}</dd>
+                  <dt>{localize(BONUS_LABEL[adjustment.key])}</dt>
+                  <dd data-bonus={adjustment.key}>{signed(adjustment.value)}</dd>
                 </div>
-              {/if}
-            {/each}
-            <!-- PSG step 6 asks nothing: the Trauma Response is whatever the class prints, so it
-                 is shown with the rest of what the class brings rather than on a pane of its own. -->
-            <div class="wizard-trauma">
-              <dt>{localize('Mothership.TraumaResponse')}</dt>
-              <dd data-value="trauma">{draft.traumaResponse}</dd>
-            </div>
-          </dl>
+              {/each}
+              {#each selectedClass.choices as choice, position (position)}
+                <div data-choice-detail={position}>
+                  <dt>{localize(offerLabel(choice.stats))}</dt>
+                  <dd>{signed(choice.modification)}</dd>
+                </div>
+              {/each}
+              <!-- PSG step 6 asks nothing: the Trauma Response is whatever the class prints, so it
+                   is shown with the rest of what the class brings rather than on a pane of its own. -->
+              <div class="wizard-trauma">
+                <dt>{localize('Mothership.TraumaResponse')}</dt>
+                <dd data-value="trauma">{draft.traumaResponse}</dd>
+              </div>
+            </dl>
+          </section>
         {/if}
       {:else if pane.id === 'adjustments'}
-        <!-- The class in figures: every stat and save it moved, beside the value it now stands at.
-             Two columns filled downward, so the stats read as a block and the saves as another —
-             and a dash wherever the class left a line alone, because a blank column would read as
-             a rendering fault rather than as nothing happening. -->
-        <dl class="wizard-ledger" data-list="ledger">
-          {#each LEDGER as [key, label] (key)}
+        <!-- One arithmetic table: what was rolled, what the class changes, and where that leaves
+             the character. Wounds use the same equation, beginning at the system's base of two. -->
+        <table class="wizard-adjustment-table" data-list="ledger">
+          <thead>
+            <tr>
+              <th aria-label={localize('Mothership.StatsAndSaves')}></th>
+              <th scope="col">{localize('Mothership.Base')}</th>
+              <th scope="col">{localize('Mothership.Adjustment')}</th>
+              <th scope="col">{localize('Mothership.Total')}</th>
+            </tr>
+          </thead>
+          <tbody>
+          {#each LEDGER as [key, label], position (key)}
             {@const modifier = draft.bonus[key]}
-            {@const value = key === 'max_wounds' ? draft.wounds : draft.rolled[key] === null ? null : draft.total(key)}
-            <div class="wizard-ledger-row" class:raised={modifier !== 0}>
-              <dt>{localize(label)}</dt>
-              <dd class="wizard-ledger-value" data-value={key}>{value ?? DASH}</dd>
-              <dd class="wizard-ledger-modifier" data-modifier={key}>{modifier === 0 ? DASH : signed(modifier)}</dd>
-            </div>
+            {@const total = key === 'max_wounds' ? draft.wounds : draft.rolled[key] === null ? null : draft.total(key)}
+            {@const base = total === null ? null : total - modifier}
+            <tr class:raised={modifier !== 0} class:group-start={position === STATS.length}>
+              <th scope="row">{localize(label)}</th>
+              <td data-base={key}>{base ?? DASH}</td>
+              <td data-modifier={key}>{total === null ? DASH : signed(modifier)}</td>
+              <td data-value={key}>{total ?? DASH}</td>
+            </tr>
           {/each}
-        </dl>
+          </tbody>
+        </table>
 
         <!-- The class's `choose_stat` entries, asked on their own pane rather than under the cards
              that answered the question before it: picking a class and spending what it hands you
@@ -377,8 +415,9 @@
         {#each draft.skillSlots as slot (slot.key)}
           <SkillSlot
             pick={slot.key}
+            rank={slot.rank}
             label={localize(RANK_LABEL[slot.rank])}
-            options={offered(slot.key)}
+            skills={draft.skillTree(slot.key)}
             chosen={slot.chosen}
             chosenName={slot.chosen === null ? '' : draft.skillName(slot.chosen)}
             open={openSlot === slot.key}
@@ -464,16 +503,18 @@
 
     <p class="wizard-gate">
       {#if index === gate}
-        {localize(
-          draft.classUuid === ''
-            ? 'Mothership.CharacterGenerator.Error.NoClass'
-            : 'Mothership.CharacterGenerator.Error.UnspentAdjustment',
-        )}
+        {localize(gateMessage(pane))}
       {/if}
     </p>
 
     {#if index === LAST}
-      <button type="button" class="wizard-step-button primary" data-action="save" onclick={finish}>
+      <button
+        type="button"
+        class="wizard-step-button primary"
+        data-action="save"
+        disabled={draft.name.trim() === ''}
+        onclick={finish}
+      >
         {localize('Mothership.CharacterGenerator.Wizard.Create')}
       </button>
     {:else}
@@ -523,10 +564,9 @@
       --wizard-marker-size: 1.6rem;
       --wizard-list-min-height: 6rem;
       --wizard-readout-min-height: 2.5rem;
-      --wizard-class-art-size: 2.5rem;
+      --wizard-class-art-size: 6rem;
       --wizard-choice-select-width: 15rem;
       --wizard-choice-readout-width: 4rem;
-      --wizard-ledger-modifier-width: 2.75rem;
 
       display: grid;
       grid-template-columns: var(--wizard-rail-width) minmax(0, 1fr);
@@ -538,6 +578,15 @@
       min-height: 0;
       font-family: var(--font-sans-mothership);
       color: var(--wizard-ink);
+      text-shadow: none;
+    }
+
+    /* Foundry and system typography can add shadows at the individual element level. Keep every
+       word on the wizard's paper face crisp and naturally cased, including labels rendered
+       inside buttons. */
+    .character-wizard.character-wizard * {
+      text-shadow: none;
+      text-transform: none;
     }
 
     .character-wizard .wizard-rail {
@@ -627,11 +676,28 @@
     .character-wizard .wizard-counter {
       margin: 0;
       font-family: var(--font-display);
-      font-size: var(--font-size-xs);
+      font-size: var(--font-size-sm);
       font-weight: var(--font-weight-bold);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
       color: var(--wizard-ink-muted);
+    }
+
+    .character-wizard .wizard-pane-header {
+      position: relative;
+    }
+
+    .character-wizard .wizard-pane[data-pane='adjustments'] .wizard-pane-header {
+      min-height: var(--wizard-class-art-size);
+      padding-right: calc(var(--wizard-class-art-size) + var(--space-16));
+    }
+
+    .character-wizard .wizard-adjustments-class-art {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: var(--wizard-class-art-size);
+      height: var(--wizard-class-art-size);
+      border: 0;
+      object-fit: contain;
     }
 
     .character-wizard .wizard-pane-header h2 {
@@ -640,7 +706,6 @@
       font-family: var(--heading-lg-font-family);
       font-size: var(--font-size-2xl);
       font-weight: var(--font-weight-bold);
-      text-transform: uppercase;
     }
 
     .character-wizard .wizard-instruction {
@@ -650,6 +715,36 @@
 
     .character-wizard .wizard-prose p {
       margin: 0 0 var(--space-8);
+    }
+
+    .character-wizard .wizard-intro {
+      position: relative;
+      flex: 1;
+      min-height: 28rem;
+    }
+
+    .character-wizard .wizard-pane[data-pane='intro'] .wizard-controls {
+      display: none;
+    }
+
+    .character-wizard .wizard-intro .wizard-prose {
+      position: relative;
+      z-index: 1;
+      width: 72%;
+      font-size: var(--font-size-lg);
+      line-height: var(--body-md-line-height);
+    }
+
+    .character-wizard .wizard-intro-cover {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+      display: block;
+      width: min(77%, 28rem);
+      max-height: 28rem;
+      border: 0;
+      object-fit: contain;
     }
 
     .character-wizard .wizard-bullets {
@@ -685,15 +780,15 @@
 
     .character-wizard .wizard-classes {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: var(--space-8);
     }
 
     .character-wizard .wizard-class {
-      display: grid;
-      grid-template-columns: var(--wizard-class-art-size) minmax(0, 1fr);
-      align-content: start;
-      gap: var(--space-2) var(--space-10);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-8);
       padding: var(--space-10);
       border: var(--border-width-2) solid var(--wizard-edge);
       border-radius: var(--radius-md);
@@ -701,7 +796,7 @@
       color: inherit;
       height: auto;
       min-height: 0;
-      text-align: left;
+      text-align: center;
       cursor: pointer;
     }
 
@@ -711,8 +806,6 @@
     }
 
     .character-wizard .wizard-class-art {
-      grid-row: 1 / -1;
-      align-self: center;
       width: var(--wizard-class-art-size);
       height: var(--wizard-class-art-size);
       border: 0;
@@ -729,20 +822,18 @@
       font-family: var(--font-display);
       font-size: var(--font-size-lg);
       font-weight: var(--font-weight-bold);
-      text-transform: uppercase;
     }
 
-    .character-wizard .wizard-class-source {
-      font-size: var(--font-size-xs);
-      opacity: 0.7;
+    .character-wizard .wizard-class-detail {
+      padding-top: var(--space-12);
+      border-top: var(--border-width-2) solid var(--wizard-edge);
     }
 
-    .character-wizard .wizard-class-brings {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0 var(--space-8);
-      margin: var(--space-4) 0;
-      font-size: var(--font-size-sm);
+    .character-wizard .wizard-class-description {
+      margin-bottom: var(--space-8);
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      line-height: var(--body-md-line-height);
     }
 
     /* Every question the panes ask inline wears this: a label over the answers, which the pane
@@ -750,66 +841,61 @@
     .character-wizard .wizard-choice-label {
       display: block;
       margin: 0 0 var(--space-6);
-      font-size: var(--font-size-xs);
+      font-size: var(--font-size-sm);
       font-weight: var(--font-weight-bold);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
       color: var(--wizard-ink-muted);
     }
 
-    /* The class in figures. Two columns filled downward — `grid-auto-flow: column` over four rows
-       puts the four stats under one another and the saves and wounds beside them — and a rule under
-       every line, because the column that has to be legible is the modifier and a ledger is what
-       makes a column of numbers scannable. */
-    .character-wizard .wizard-ledger {
-      display: grid;
-      grid-auto-flow: column;
-      grid-template-rows: repeat(4, auto);
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0 var(--space-24);
-      margin: 0;
+    .character-wizard .wizard-adjustment-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
     }
 
-    .character-wizard .wizard-ledger-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto var(--wizard-ledger-modifier-width);
-      align-items: baseline;
-      gap: var(--space-12);
-      padding: var(--space-6) 0;
+    .character-wizard .wizard-adjustment-table th,
+    .character-wizard .wizard-adjustment-table td {
+      padding: var(--space-6) var(--space-10);
       border-bottom: var(--border-width-1) solid var(--wizard-rule);
     }
 
-    .character-wizard .wizard-ledger-row dt {
-      font-size: var(--font-size-xs);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+    .character-wizard .wizard-adjustment-table thead th {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-bold);
+      text-align: right;
       color: var(--wizard-ink-muted);
     }
 
-    .character-wizard .wizard-ledger-row dd {
-      margin: 0;
+    .character-wizard .wizard-adjustment-table thead th:first-child,
+    .character-wizard .wizard-adjustment-table tbody th {
+      width: 46%;
+      text-align: left;
+    }
+
+    .character-wizard .wizard-adjustment-table tbody th {
+      font-size: var(--font-size-sm);
+      color: var(--wizard-ink-muted);
+    }
+
+    .character-wizard .wizard-adjustment-table tbody td {
       font-family: var(--font-display);
+      font-size: var(--font-size-lg);
       font-weight: var(--font-weight-bold);
       text-align: right;
     }
 
-    .character-wizard .wizard-ledger-value {
-      font-size: var(--font-size-lg);
-    }
-
-    .character-wizard .wizard-ledger-modifier {
-      font-size: var(--font-size-lg);
-      color: var(--wizard-ink-muted);
-    }
-
-    /* A line the class moved is the whole point of the page, so it is the one that carries ink. */
-    .character-wizard .wizard-ledger-row.raised {
+    .character-wizard .wizard-adjustment-table tr.raised th,
+    .character-wizard .wizard-adjustment-table tr.raised td {
       border-bottom-color: var(--wizard-edge);
     }
 
-    .character-wizard .wizard-ledger-row.raised dt,
-    .character-wizard .wizard-ledger-row.raised .wizard-ledger-modifier {
+    .character-wizard .wizard-adjustment-table tr.raised th,
+    .character-wizard .wizard-adjustment-table tr.raised td[data-modifier] {
       color: var(--wizard-ink);
+    }
+
+    .character-wizard .wizard-adjustment-table tr.group-start th,
+    .character-wizard .wizard-adjustment-table tr.group-start td {
+      border-top: var(--border-width-2) solid var(--wizard-edge);
     }
 
     .character-wizard .wizard-prompt {
@@ -890,7 +976,6 @@
       display: block;
       font-family: var(--font-display);
       font-weight: var(--font-weight-bold);
-      text-transform: uppercase;
     }
 
     .character-wizard .wizard-package ul {
@@ -919,8 +1004,8 @@
     }
 
     .character-wizard .wizard-adjustments dt {
-      font-size: var(--font-size-xs);
-      text-transform: uppercase;
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
       color: var(--wizard-ink-muted);
     }
 
@@ -955,8 +1040,8 @@
     }
 
     .character-wizard .wizard-identity span {
-      font-size: var(--font-size-xs);
-      text-transform: uppercase;
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
       color: var(--wizard-ink-muted);
     }
 
@@ -971,7 +1056,6 @@
       min-height: 0;
       font-family: var(--font-display);
       font-weight: var(--font-weight-bold);
-      text-transform: uppercase;
       cursor: pointer;
     }
 

@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, it, expect } from 'vitest';
 
 import { parseResults, drawnRow } from '../module/ui/generator/table-result.js';
 import { candidates } from '../module/ui/generator/skills.js';
-import { NUMBERED, PANES, paneTitle } from '../module/ui/generator/steps.js';
+import { NUMBERED, PANES, firstIncomplete, paneTitle } from '../module/ui/generator/steps.js';
 import { CharacterDraft } from '../module/ui/generator/draft.svelte.js';
 import { CHARACTER_CREATION } from '../content/books/psg/character-creation.ts';
 
@@ -127,12 +127,6 @@ describe('the wizard spine', () => {
     expect(skipped.every((step) => step.roll === null)).toBe(true);
   });
 
-  // Everything from step 4 on reads the class, so step 3 — both halves of it — is what the rail
-  // gates on, and nothing else.
-  it('gates on the class and its adjustments, and on nothing else', () => {
-    expect(PANES.filter((pane) => pane.required === true).map((pane) => pane.id)).toEqual(['class', 'adjustments']);
-  });
-
   const empty = {
     rolled: Object.fromEntries(
       ['strength', 'speed', 'intellect', 'combat', 'sanity', 'fear', 'body', 'health', 'credits'].map((key) => [key, null]),
@@ -149,6 +143,27 @@ describe('the wizard spine', () => {
 
   it('ticks nothing but the intro on an untouched draft', () => {
     expect(PANES.filter((pane) => pane.done(empty)).map((pane) => pane.id)).toEqual(['intro']);
+  });
+
+  it('makes the first unfinished task the navigation gate', () => {
+    expect(firstIncomplete(empty)).toBe(PANES.findIndex((pane) => pane.id === 'stats'));
+
+    const statsDone = {
+      ...empty,
+      rolled: { ...empty.rolled, strength: 30, speed: 30, intellect: 30, combat: 30 },
+    };
+    expect(firstIncomplete(statsDone)).toBe(PANES.findIndex((pane) => pane.id === 'saves'));
+
+    expect(firstIncomplete({
+      ...statsDone,
+      rolled: Object.fromEntries(Object.keys(empty.rolled).map((key) => [key, 30])),
+      classUuid: 'Compendium.mothershiprpg.classes_1e.Item.teamster',
+      skillsPicked: true,
+      patch: {},
+      trinket: {},
+      loadout: {},
+      name: 'Rook Vance',
+    })).toBe(-1);
   });
 
   // Step 3 is two questions on two panes: the class is chosen on one, and what it leaves the
@@ -254,6 +269,7 @@ describe('the skills a class hands out', () => {
     img: 'icons/svg/clockwork.svg',
     type: 'class',
     system: {
+      description: '<p>Androids are a terrifying and exciting addition to any crew.</p>',
       trauma_response: 'Fear Save',
       roll_tables: { loadout: '', trinket: '', patch: '' },
       base_adjustment: {
@@ -339,6 +355,24 @@ describe('the skills a class hands out', () => {
     expect(offered()).toEqual(['Xenobiology', 'Cybernetics']);
   });
 
+  it('marks the full tree as selected, available, or unavailable for one pick', async () => {
+    const draft = await drafted();
+    draft.chooseSkillOption(0, 0);
+
+    const states = () => Object.fromEntries(
+      draft.skillTree('class:expert:0:Expert').map((skill: { name: string; state: string }) => [skill.name, skill.state]),
+    );
+    expect(states()).toMatchObject({
+      Linguistics: 'selected',
+      Mathematics: 'unavailable',
+      Xenobiology: 'available',
+      Cybernetics: 'unavailable',
+    });
+
+    draft.chooseSkill('group-0:trained:0:Trained', 'sk-mathematics');
+    expect(states()).toMatchObject({ Mathematics: 'selected', Cybernetics: 'available' });
+  });
+
   it('empties a gated pick when the pick it stood on changes', async () => {
     const draft = await drafted();
     draft.chooseSkillOption(0, 0);
@@ -369,10 +403,9 @@ describe('the skills a class hands out', () => {
     });
   });
 
-  // The class pane is a choice between four cards, so each card says what its class does. A choice
-  // carries the keys it may be spent on, not just its size: the card names "1 Stat" or "1 Save"
-  // from that set, and promising a save the pane will not offer is the bug it exists to prevent.
-  it('summarises what a class brings before it is chosen', async () => {
+  // The selected-class detail panel needs both fixed adjustments and the set a flexible choice may
+  // be spent on; promising a save the next pane will not offer is the bug this shape prevents.
+  it('loads the details the class pane shows after a class is chosen', async () => {
     const draft = new CharacterDraft({ name: 'Rook Vance' });
     await draft.load();
 
@@ -382,6 +415,7 @@ describe('the skills a class hands out', () => {
         name: 'Android',
         img: 'icons/svg/clockwork.svg',
         source: 'world.Item',
+        description: 'Androids are a terrifying and exciting addition to any crew.',
         adjustments: [{ key: 'intellect', value: 20 }, { key: 'fear', value: 60 }],
         choices: [{ modification: -10, stats: ['strength', 'speed', 'intellect', 'combat'] }],
       },

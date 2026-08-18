@@ -42,51 +42,79 @@ const closeEverything = (page: Page) =>
     for (const app of Object.values(w.ui.windows ?? {}) as any[]) await app.close?.();
   });
 
-const openGenerator = async (page: Page, system: Record<string, unknown> = {}) => {
+const openGenerator = async (
+  page: Page,
+  system: Record<string, unknown> = {},
+  { fromCreation = false } = {},
+) => {
   // Leave no other sheet open: the header button is found by selector, and a leftover one belongs
   // to another actor.
   await closeEverything(page);
-  const uuid = await page.evaluate(async (s: Record<string, unknown>) => {
-    const actor = await (window as any).Actor.create({ name: '__e2e_recruit', type: 'character', system: s });
-    await actor.sheet.render(true);
+  const uuid = await page.evaluate(async ({ s, renderSheet }) => {
+    const actor = await (window as any).Actor.create(
+      { name: '__e2e_recruit', type: 'character', system: s },
+      { renderSheet },
+    );
     return actor.uuid as string;
-  }, system);
-  // The entry is a header control under the ellipsis rather than a title-bar button. Calling the
-  // sheet's own method skips the two-step menu, and the control itself is covered by
-  // character-sheet.spec.ts.
-  await page.evaluate(async (u: string) => {
-    const actor = await (window as any).fromUuid(u);
-    actor.sheet.generateCharacter();
-  }, uuid);
+  }, { s: system, renderSheet: fromCreation });
+  if (fromCreation) {
+    await page.click('dialog[open] button[data-action="wizard"]');
+  } else {
+    // A render without the creation context is an ordinary sheet open. The entry is a header
+    // control under the ellipsis rather than a title-bar button; calling the method skips that
+    // menu, whose own wiring is covered by character-sheet.spec.ts.
+    await page.evaluate(async (u: string) => {
+      const actor = await (window as any).fromUuid(u);
+      await actor.sheet.render(true);
+      actor.sheet.generateCharacter();
+    }, uuid);
+  }
   await expect(page.locator('form.character-wizard')).toHaveCount(1);
   return uuid;
 };
 
-/** The rail is the navigation: every pane is one click away, up to the class gate. */
+/** The rail is the navigation: completed panes and the first unfinished pane are reachable. */
 const goTo = async (page: Page, pane: string) => {
   await page.click(`button.wizard-rail-step[data-pane="${pane}"]`);
   await expect(page.locator(`section.wizard-pane[data-pane="${pane}"]`)).toHaveCount(1);
 };
 
+const rollStatsAndSaves = async (page: Page) => {
+  for (const pane of ['stats', 'saves']) {
+    await goTo(page, pane);
+    await page.click('button[data-roll="all"]');
+  }
+};
+
 const chooseClass = async (page: Page, name: string) => {
+  if (await page.locator('button.wizard-rail-step[data-pane="class"]').isDisabled()) {
+    await rollStatsAndSaves(page);
+  }
   await goTo(page, 'class');
   await page.click(`button.wizard-class[data-class="${name}"]`);
 };
 
 /**
- * Fill every skill slot the class left open, each with the first skill it still offers. A slot is
- * a list to browse: it opens onto its candidates, and a skill the draft already holds stays
- * listed but cannot be taken again, so the pick is the first one not marked held.
+ * Fill every skill slot the class left open, each with the first available node in its tree. A
+ * selected skill stays in the graph but cannot be taken twice.
  */
-const pickEverySkill = async (page: Page) => {
+const reachSkills = async (page: Page) => {
+  if (await page.locator('button.wizard-rail-step[data-pane="skills"]').isDisabled()) {
+    await goTo(page, 'health');
+    await page.click('img[data-roll="health"]');
+  }
   await goTo(page, 'skills');
+};
+
+const pickEverySkill = async (page: Page) => {
+  await reachSkills(page);
   const keys = await page.$$eval('[data-pick]', (nodes) =>
     nodes.map((node) => (node as HTMLElement).dataset.pick as string),
   );
   for (const key of keys) {
     const slot = `[data-pick="${key}"]`;
     if (!(await page.$(`${slot} [data-skill]`))) await page.click(`${slot} button[data-slot="open"]`);
-    await page.click(`${slot} [data-skill][aria-disabled="false"] >> nth=0`);
+    await page.click(`${slot} [data-skill][data-state="available"] >> nth=0`);
   }
 };
 
@@ -118,8 +146,7 @@ test.describe('character generator', () => {
     });
   });
 
-  // The wizard's front door: creating a character offers it, and taking the offer opens it over
-  // the sheet the create dialog had already rendered.
+  // The wizard's front door: creating a character offers it before rendering any blank sheet.
   test('a new character is offered the wizard, and taking it opens the window', async ({ gmPage }) => {
     await closeEverything(gmPage);
     await gmPage.evaluate(() => {
@@ -127,10 +154,56 @@ test.describe('character generator', () => {
     });
     await gmPage.click('dialog[open] button[data-action="ok"]');
 
+    await expect(gmPage.locator('.application.character')).toHaveCount(0);
     await gmPage.click('dialog[open] button[data-action="wizard"]');
     await expect(gmPage.locator('form.character-wizard')).toHaveCount(1);
-    // The intro is the first pane, and it is the book's own.
-    await expect(gmPage.locator('section.wizard-pane[data-pane="intro"]')).toHaveCount(1);
+    await expect(gmPage.locator('.application.character:not(:has(form.character-wizard))')).toHaveCount(0);
+    // The intro is the first pane: the first two pieces of the book's front matter beside its
+    // cover, without the third paragraph of procedural instructions.
+    const intro = gmPage.locator('section.wizard-pane[data-pane="intro"]');
+    await expect(intro).toHaveCount(1);
+    await expect(intro.locator('.wizard-intro .wizard-prose p')).toHaveCount(2);
+    const cover = intro.locator('.wizard-intro-cover');
+    await expect(cover).toHaveAttribute(
+      'src',
+      '/systems/mothershiprpg/images/mothership-cover.webp',
+    );
+    await expect.poll(() => cover.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+    const composition = await intro.locator('.wizard-intro').evaluate((element) => {
+      const text = element.querySelector('.wizard-prose')!.getBoundingClientRect();
+      const image = element.querySelector('.wizard-intro-cover')!.getBoundingClientRect();
+      const frame = element.getBoundingClientRect();
+      const pane = element.closest('.wizard-pane')!.getBoundingClientRect();
+      return {
+        position: getComputedStyle(element.querySelector('.wizard-intro-cover')!).position,
+        bottomGap: Math.abs(frame.bottom - image.bottom),
+        paneBottomGap: Math.abs(pane.bottom - image.bottom),
+        overlaps: text.right > image.left,
+      };
+    });
+    expect(composition.position).toBe('absolute');
+    expect(composition.bottomGap).toBeLessThan(1);
+    expect(composition.paneBottomGap).toBeLessThan(1);
+    expect(composition.overlaps).toBe(true);
+  });
+
+  test('blank characters render on request, while creatures bypass the choice', async ({ gmPage }) => {
+    await closeEverything(gmPage);
+    await gmPage.evaluate(() => {
+      void (window as any).Actor.implementation.createDialog({ name: '__e2e_blank', type: 'character' });
+    });
+    await gmPage.click('dialog[open] button[data-action="ok"]');
+    await expect(gmPage.locator('.application.character')).toHaveCount(0);
+    await gmPage.click('dialog[open] button[data-action="blank"]');
+    await expect(gmPage.locator('.application.character')).toHaveCount(1);
+
+    await closeEverything(gmPage);
+    await gmPage.evaluate(() => {
+      void (window as any).Actor.implementation.createDialog({ name: '__e2e_creature', type: 'creature' });
+    });
+    await gmPage.click('dialog[open] button[data-action="ok"]');
+    await expect(gmPage.locator('.application.creature')).toHaveCount(1);
+    await expect(gmPage.locator('dialog[open] button[data-action="wizard"]')).toHaveCount(0);
   });
 
   test('the rail walks the book, and step 3 lists the shipped classes', async ({ gmPage }) => {
@@ -146,51 +219,163 @@ test.describe('character generator', () => {
       'intro', 'stats', 'saves', 'class', 'adjustments', 'health', 'skills', 'gear', 'finish',
     ]);
 
+    await freezeDice(gmPage, LOWEST_FACE);
+    await rollStatsAndSaves(gmPage);
     await goTo(gmPage, 'class');
     const options = await gmPage.$$eval('button.wizard-class .wizard-class-name', (nodes) =>
       nodes.map((n) => n.textContent),
     );
     expect(options.sort()).toEqual(['Android', 'Marine', 'Scientist', 'Teamster']);
+
+    const icons = await gmPage.$$eval('button.wizard-class', (nodes) =>
+      Object.fromEntries(nodes.map((node) => [
+        (node as HTMLElement).dataset.class,
+        node.querySelector('img')?.getAttribute('src'),
+      ])),
+    );
+    expect(icons).toEqual({
+      Android: '/systems/mothershiprpg/images/class_icons/android.png',
+      Marine: '/systems/mothershiprpg/images/class_icons/marine.png',
+      Scientist: '/systems/mothershiprpg/images/class_icons/scientist.png',
+      Teamster: '/systems/mothershiprpg/images/class_icons/teamster.png',
+    });
+    const columns = await gmPage.locator('.wizard-classes').evaluate((element) =>
+      getComputedStyle(element).gridTemplateColumns.split(' '),
+    );
+    expect(columns).toHaveLength(4);
+    await expect(gmPage.locator('.wizard-class-brings, .wizard-class-source')).toHaveCount(0);
+    await expect(gmPage.locator('section.wizard-pane[data-pane="class"] .wizard-instruction')).toHaveCount(0);
+    await expect(gmPage.locator('section.wizard-pane[data-pane="class"] .wizard-prose')).toHaveCount(0);
+    await expect(gmPage.locator('[data-class-detail]')).toHaveCount(0);
+
+    await gmPage.click('button.wizard-class[data-class="Android"]');
+    const androidDetail = gmPage.locator('[data-class-detail="Android"]');
+    await expect(androidDetail.locator('[data-class-description]')).toHaveText(
+      'Androids are a terrifying and exciting addition to any crew. They tend to unnerve other crewmembers with their cold inhumanity.',
+    );
+    const labelTypography = await androidDetail.locator('dt').first().evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        fontSize: Number.parseFloat(style.fontSize),
+        textShadow: style.textShadow,
+        textTransform: style.textTransform,
+      };
+    });
+    expect(labelTypography.fontSize).toBeGreaterThan(12);
+    expect(labelTypography.textShadow).toBe('none');
+    expect(labelTypography.textTransform).toBe('none');
+    await goTo(gmPage, 'adjustments');
+    const adjustments = gmPage.locator('section.wizard-pane[data-pane="adjustments"]');
+    await expect(adjustments.locator('h2')).toHaveText('Android Adjustments');
+    await expect(adjustments.locator('.wizard-adjustments-class-art')).toHaveAttribute(
+      'src',
+      '/systems/mothershiprpg/images/class_icons/android.png',
+    );
+
+    await goTo(gmPage, 'class');
+    await gmPage.click('button.wizard-class[data-class="Marine"]');
+    const detail = gmPage.locator('[data-class-detail="Marine"]');
+    await expect(detail).toHaveCount(1);
+    await expect(detail.locator('[data-bonus="combat"]')).toHaveText('+10');
+    await expect(detail.locator('[data-value="trauma"]')).not.toBeEmpty();
   });
 
-  // Everything from step 4 on reads the class, so the rail refuses to walk past step 3 without one.
-  test('the rail gates every step after the class on having one', async ({ gmPage }) => {
+  test('each pane gates forward navigation until its task is complete', async ({ gmPage }) => {
     await openGenerator(gmPage);
 
-    await expect(gmPage.locator('button.wizard-rail-step[data-pane="health"]')).toBeDisabled();
-    await expect(gmPage.locator('button.wizard-rail-step[data-pane="saves"]')).toBeEnabled();
+    await goTo(gmPage, 'stats');
+    await expect(gmPage.locator('button[data-action="next"]')).toBeDisabled();
+    await expect(gmPage.locator('button.wizard-rail-step[data-pane="saves"]')).toBeDisabled();
 
     await freezeDice(gmPage, LOWEST_FACE);
+    await gmPage.click('button[data-roll="all"]');
+    await expect(gmPage.locator('button[data-action="next"]')).toBeEnabled();
+    await expect(gmPage.locator('button.wizard-rail-step[data-pane="saves"]')).toBeEnabled();
+
+    await goTo(gmPage, 'saves');
+    await expect(gmPage.locator('button[data-action="next"]')).toBeDisabled();
+    await gmPage.click('button[data-roll="all"]');
+    await expect(gmPage.locator('button[data-action="next"]')).toBeEnabled();
+
     await chooseClass(gmPage, 'Teamster');
 
-    // The Teamster leaves no adjustment to place, so the class alone lifts the gate -- and it
-    // lifts without a dialog having opened.
+    // The Teamster leaves no adjustment to place, so that pane is already complete and Health is
+    // the next gate. The choice itself opens no dialog.
     await expect(gmPage.locator('dialog[open]')).toHaveCount(0);
     await expect(gmPage.locator('button.wizard-rail-step[data-pane="health"]')).toBeEnabled();
+    await goTo(gmPage, 'health');
+    await expect(gmPage.locator('button[data-action="next"]')).toBeDisabled();
+    await gmPage.click('img[data-roll="health"]');
+    await expect(gmPage.locator('button[data-action="next"]')).toBeEnabled();
   });
 
   test('generates a Marine, and its three-item loadout row becomes three items', async ({ gmPage }) => {
     // Stress has drifted from where the book starts it, which is the case that shows whether the
     // generator writes it or leaves it to the schema's defaults.
-    const uuid = await openGenerator(gmPage, { other: { stress: { value: 9, min: 4 } } });
+    const uuid = await openGenerator(
+      gmPage,
+      { other: { stress: { value: 9, min: 4 } } },
+      { fromCreation: true },
+    );
     // Row 0 of the Marine loadouts is "Tank Top and Camo Pants, Combat Knife, Stimpak".
     await freezeDice(gmPage, LOWEST_FACE);
 
     await chooseClass(gmPage, 'Marine');
 
     // The Marine's bonus skills are a choice of two packages, taken on the skills pane itself.
-    await goTo(gmPage, 'skills');
+    await reachSkills(gmPage);
     await gmPage.click('button.wizard-package >> nth=1');
+
+    const tree = gmPage.locator('[data-pick] .skill-tree').first();
+    await expect(tree).toHaveAttribute('data-target-rank', 'Trained');
+    await expect(tree.locator('[data-state="selected"]')).not.toHaveCount(0);
+    await expect(tree.locator('[data-state="available"]')).not.toHaveCount(0);
+    // A Trained choice is a starting point, so every unowned target is available. Locked targets
+    // appear only in the higher-rank path view where prerequisites apply.
+    await expect(tree.locator('[data-state="unavailable"]')).toHaveCount(0);
+    await expect(tree.locator('svg')).toHaveCount(0);
+
+    // Starting skills need no graph at all: they are a compact grid of choices. Higher-ranked
+    // slots render one self-contained path card per target instead of sharing connector lines.
+    const treeLayout = await tree.evaluate((element) => {
+      const first = element.querySelector<HTMLElement>('[data-skill]')!;
+      const node = first.getBoundingClientRect();
+      return {
+        nodeWidth: node.width,
+        radius: Number.parseFloat(getComputedStyle(first).borderRadius),
+        height: node.height,
+      };
+    });
+    expect(treeLayout.nodeWidth).toBeGreaterThanOrEqual(160);
+    expect(treeLayout.height).toBeLessThan(40);
+    expect(treeLayout.radius).toBeGreaterThanOrEqual(treeLayout.height / 2);
+
+    // Every state keeps normal-size text at WCAG AA contrast; shape, border style and symbols also
+    // distinguish them, so color is not the only signal.
+    const contrast = await tree.locator('[data-skill]').evaluateAll((nodes) => {
+      const channel = (value: number) => {
+        const normalized = value / 255;
+        return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+      };
+      const luminance = (color: string) => {
+        const [red, green, blue] = color.match(/[\d.]+/g)!.slice(0, 3).map(Number);
+        return 0.2126 * channel(red) + 0.7152 * channel(green) + 0.0722 * channel(blue);
+      };
+      return nodes.map((node) => {
+        const style = getComputedStyle(node);
+        const light = Math.max(luminance(style.color), luminance(style.backgroundColor));
+        const dark = Math.min(luminance(style.color), luminance(style.backgroundColor));
+        return (light + 0.05) / (dark + 0.05);
+      });
+    });
+    expect(Math.min(...contrast)).toBeGreaterThanOrEqual(4.5);
+
     await pickEverySkill(gmPage);
     await expect(gmPage.locator('ul[data-list="skills"] li')).toHaveCount(4);
     await expect(gmPage.locator('dialog[open]')).toHaveCount(0);
 
-    for (const pane of ['stats', 'saves']) {
-      await goTo(gmPage, pane);
-      await gmPage.click('button[data-roll="all"]');
-    }
+    await rollStatsAndSaves(gmPage);
     await goTo(gmPage, 'health');
-    await gmPage.click('img[data-roll="health"]');
     await expect(gmPage.locator('input[data-value="wounds"]')).toHaveValue('3');
 
     await goTo(gmPage, 'gear');
@@ -199,9 +384,14 @@ test.describe('character generator', () => {
     await expect(gmPage.locator('ul[data-list="loadout"] li')).toHaveCount(3);
 
     await goTo(gmPage, 'finish');
-    await gmPage.fill('input[name="pronouns"]', 'they/them');
+    await gmPage.fill('form.character-wizard input[name="name"]', '');
+    await expect(gmPage.locator('button[data-action="save"]')).toBeDisabled();
+    await gmPage.fill('form.character-wizard input[name="name"]', '__e2e_recruit');
+    await expect(gmPage.locator('button[data-action="save"]')).toBeEnabled();
+    await gmPage.fill('form.character-wizard input[name="pronouns"]', 'they/them');
     await gmPage.click('button[data-action="save"]');
     await gmPage.waitForSelector('form.character-wizard', { state: 'detached' });
+    await expect(gmPage.locator('.application.character')).toHaveCount(1);
 
     // Marine: +10 COMBAT, +10 BODY SAVE, +20 FEAR SAVE, +1 MAX WOUNDS.
     expect(await stored(gmPage, uuid, 'system.stats.strength.value')).toBe(27);
@@ -259,10 +449,16 @@ test.describe('character generator', () => {
     // Strength, then move it to Speed.
     await expect(gmPage.locator('button.wizard-rail-step[data-pane="health"]')).toBeDisabled();
     await goTo(gmPage, 'adjustments');
+    await expect(gmPage.locator('.wizard-adjustment-table thead th')).toHaveText([
+      '', 'Base', 'Adjustment', 'Total',
+    ]);
     await gmPage.selectOption('[data-choice="0"] select', 'strength');
+    await expect(gmPage.locator('[data-base="strength"]')).toHaveText('27');
     await expect(gmPage.locator('[data-modifier="strength"]')).toHaveText('-10');
+    await expect(gmPage.locator('[data-value="strength"]')).toHaveText('17');
     await gmPage.selectOption('[data-choice="0"] select', 'speed');
-    await expect(gmPage.locator('[data-modifier="strength"]')).toHaveText('—');
+    await expect(gmPage.locator('[data-modifier="strength"]')).toHaveText('0');
+    await expect(gmPage.locator('[data-value="strength"]')).toHaveText('27');
     await expect(gmPage.locator('button.wizard-rail-step[data-pane="health"]')).toBeEnabled();
 
     await goTo(gmPage, 'skills');
@@ -280,8 +476,8 @@ test.describe('character generator', () => {
     await goTo(gmPage, 'skills');
     await expect(gmPage.locator('ul[data-list="skills"] li')).toHaveCount(5);
 
-    await goTo(gmPage, 'stats');
-    await gmPage.click('img[data-roll="strength"]');
+    await goTo(gmPage, 'gear');
+    await gmPage.click('button[data-roll="all"]');
     await goTo(gmPage, 'finish');
     await gmPage.click('button[data-action="save"]');
     await gmPage.waitForSelector('form.character-wizard', { state: 'detached' });
@@ -291,8 +487,8 @@ test.describe('character generator', () => {
     // The class item follows the class: one of them, and it is the one that was saved.
     const carried = await items(gmPage, uuid);
     expect(carried.filter((i) => i.type === 'class').map((i) => i.name)).toEqual(['Android']);
-    // Nothing else was rolled, so nothing else was written.
-    expect(await stored(gmPage, uuid, 'system.stats.combat.value')).toBe(10);
+    // Completing every prior pane means the unmodified rolled Combat score is written too.
+    expect(await stored(gmPage, uuid, 'system.stats.combat.value')).toBe(27);
   });
 
   test('rolling a patch no longer throws on a row that links nothing', async ({ gmPage }) => {
@@ -300,6 +496,8 @@ test.describe('character generator', () => {
     await freezeDice(gmPage, LOWEST_FACE);
 
     await chooseClass(gmPage, 'Teamster');
+
+    await pickEverySkill(gmPage);
 
     await goTo(gmPage, 'gear');
     await gmPage.click('img[data-roll="patch"]');

@@ -1,12 +1,11 @@
 <script>
-  // One skill the class promises, and the skills it may be. Closed, the slot is a line: the rank
-  // it draws from and the pick standing in it. Open, it is the list to browse — every skill the
-  // rank still offers, each with the sentence the book prints under it, because a name alone is
-  // not something a player can choose between.
+  // One skill the class promises, and the prerequisite tree it may be picked from. Closed, the
+  // slot is a line: the rank it draws from and the pick standing in it. Open, it shows one explicit
+  // prerequisite route per possible pick, avoiding ambiguous shared connector lines.
   import { localize } from '../../i18n.ts';
-  import { onActivate } from '../parts/activate.js';
+  import SkillTree from './SkillTree.svelte';
 
-  let { pick, label, options, chosen, chosenName, open, ontoggle, onchoose } = $props();
+  let { pick, rank, label, skills, chosen, chosenName, open, ontoggle, onchoose } = $props();
 </script>
 
 <div class="skill-slot" class:open data-pick={pick}>
@@ -25,36 +24,7 @@
   </button>
 
   {#if open}
-    <ul class="skill-slot-list">
-      {#each options as option (option.uuid)}
-        <li>
-          <!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
-          <div
-            class="skill-card"
-            class:chosen={option.uuid === chosen}
-            class:held={option.disabled}
-            role="button"
-            tabindex={option.disabled ? -1 : 0}
-            aria-pressed={option.uuid === chosen}
-            aria-disabled={option.disabled}
-            data-skill={option.uuid}
-            onclick={() => !option.disabled && onchoose(option.uuid)}
-            onkeydown={onActivate(() => !option.disabled && onchoose(option.uuid))}
-          >
-            <p class="skill-name">
-              {option.name}
-              <span class="skill-bonus">+{option.bonus}</span>
-            </p>
-            {#if option.summary}<p class="skill-summary">{option.summary}</p>{/if}
-            {#if option.prerequisiteNames.length > 0}
-              <p class="skill-needs">
-                {localize('Mothership.SkillsPrerequisite')}: {option.prerequisiteNames.join(', ')}
-              </p>
-            {/if}
-          </div>
-        </li>
-      {/each}
-    </ul>
+    <SkillTree {skills} {rank} {onchoose} />
   {/if}
 </div>
 
@@ -66,13 +36,8 @@
   @layer system {
     .skill-slot {
       --skillslot-radius: var(--radius-md);
-      --skillslot-list-max-height: 18rem;
       --skillslot-edge: var(--border-neutral-ink);
-      --skillslot-rule: var(--border-neutral-medium);
       --skillslot-ink-muted: var(--text-secondary);
-      --skillslot-ink-held: var(--text-muted);
-      --skillslot-fill: var(--surface-neutral-lowest);
-      --skillslot-fill-ink: var(--text-inverted);
 
       border: var(--border-width-2) solid var(--skillslot-edge);
       border-radius: var(--skillslot-radius);
@@ -98,10 +63,8 @@
     }
 
     .skill-slot-rank {
-      font-size: var(--font-size-xs);
+      font-size: var(--font-size-sm);
       font-weight: var(--font-weight-bold);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
       color: var(--skillslot-ink-muted);
     }
 
@@ -116,59 +79,5 @@
       color: var(--skillslot-ink-muted);
     }
 
-    .skill-slot-list {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--space-6);
-      max-height: var(--skillslot-list-max-height);
-      overflow-y: auto;
-      margin: 0;
-      padding: var(--space-10);
-      border-top: var(--border-width-1) solid var(--skillslot-rule);
-      list-style: none;
-    }
-
-    .skill-card {
-      height: 100%;
-      padding: var(--space-8);
-      border: var(--border-width-1) solid var(--skillslot-rule);
-      border-radius: var(--skillslot-radius);
-      cursor: pointer;
-    }
-
-    .skill-card.chosen {
-      background: var(--skillslot-fill);
-      color: var(--skillslot-fill-ink);
-    }
-
-    /* A skill the draft already holds stays listed rather than vanishing, so a closed branch is
-       visible — it is just not a pick. */
-    .skill-card.held {
-      color: var(--skillslot-ink-held);
-      cursor: default;
-    }
-
-    .skill-card p {
-      margin: 0;
-    }
-
-    .skill-name {
-      font-family: var(--font-display);
-      font-weight: var(--font-weight-bold);
-      text-transform: uppercase;
-    }
-
-    .skill-bonus {
-      font-size: var(--font-size-xs);
-    }
-
-    .skill-summary,
-    .skill-needs {
-      font-size: var(--font-size-sm);
-    }
-
-    .skill-needs {
-      font-style: italic;
-    }
   }
 </style>

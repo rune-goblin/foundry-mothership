@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mothership skill progression prototypes</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #171717;
+      --muted: #666;
+      --paper: #f7f6f2;
+      --surface: #fff;
+      --rule: #c8c6bf;
+      --soft: #eceae3;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    button, select { font: inherit; }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 48px 0 80px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 850px;
+      margin: 0;
+      font-size: clamp(34px, 6vw, 68px);
+      line-height: .98;
+      letter-spacing: -.045em;
+    }
+
+    .intro {
+      max-width: 780px;
+      margin: 22px 0 0;
+      color: #414141;
+      font-size: 18px;
+      line-height: 1.55;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 36px 0 24px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .tab {
+      min-height: 42px;
+      padding: 8px 16px;
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--ink);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .tab[aria-selected="true"] {
+      background: var(--ink);
+      color: white;
+    }
+
+    [hidden] { display: none !important; }
+
+    .proposal-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 420px);
+      gap: 30px;
+      align-items: start;
+      margin-bottom: 24px;
+    }
+
+    .proposal-head h2 {
+      margin: 0 0 8px;
+      font-size: clamp(26px, 4vw, 40px);
+      letter-spacing: -.025em;
+    }
+
+    .proposal-head p { margin: 0; line-height: 1.55; }
+
+    .note {
+      padding: 14px 16px;
+      border-left: 4px solid var(--ink);
+      background: var(--soft);
+      color: #393939;
+      font-size: 14px;
+    }
+
+    .rank-section { margin-top: 36px; }
+
+    .rank-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+      padding-bottom: 9px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .rank-heading h3 { margin: 0; font-size: 24px; }
+    .rank-heading span { color: var(--muted); font-weight: 750; }
+
+    .foundation-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 5px 11px;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      background: var(--surface);
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .text-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .text-item {
+      min-width: 0;
+      padding: 15px 16px;
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      background: var(--surface);
+      line-height: 1.45;
+    }
+
+    .text-item strong { display: block; margin-bottom: 3px; }
+    .requires { color: var(--muted); font-size: 14px; }
+    .requires b { color: var(--ink); }
+
+    .route-list {
+      display: grid;
+      gap: 5px;
+      margin-top: 9px;
+      padding-top: 9px;
+      border-top: 1px solid var(--soft);
+      color: #3f3f3f;
+      font-size: 13px;
+    }
+
+    .route-list code {
+      white-space: normal;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .diagram-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 18px;
+    }
+
+    .diagram-controls label { font-size: 14px; font-weight: 800; }
+    .diagram-controls select {
+      min-height: 40px;
+      padding: 6px 34px 6px 10px;
+      border: 1px solid var(--ink);
+      border-radius: 6px;
+      background: var(--surface);
+    }
+
+    .diagram-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .diagram-card {
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid var(--rule);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+
+    .diagram-card h3 {
+      margin: 0 0 4px;
+      font-size: 18px;
+    }
+
+    .diagram-card > p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .mermaid {
+      display: grid;
+      min-height: 150px;
+      place-items: center;
+      margin: 0;
+      overflow-x: auto;
+      white-space: pre;
+      font-size: 12px;
+    }
+
+    .mermaid svg { max-width: 100%; height: auto; }
+
+    details {
+      margin-top: 10px;
+      border-top: 1px solid var(--soft);
+      padding-top: 8px;
+    }
+
+    summary { cursor: pointer; font-size: 13px; font-weight: 750; }
+
+    .source {
+      overflow: auto;
+      margin: 10px 0 0;
+      padding: 14px;
+      border-radius: 8px;
+      background: #171717;
+      color: #f2f2f2;
+      font: 13px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre-wrap;
+    }
+
+    .markdown-source { min-height: 70vh; white-space: pre; }
+
+    .fallback {
+      display: none;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border: 1px solid #a35d00;
+      border-radius: 8px;
+      background: #fff3de;
+    }
+
+    .fallback.visible { display: block; }
+
+    @media (max-width: 780px) {
+      .page { width: min(100% - 20px, 1180px); padding-top: 28px; }
+      .proposal-head, .text-list, .diagram-grid { grid-template-columns: 1fr; }
+      .diagram-controls { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <p class="eyebrow">Rendering study · standalone HTML</p>
+    <h1>How should skill progression read?</h1>
+    <p class="intro">
+      The source data is not a strict tree. It is a directed graph with <strong>OR prerequisites</strong>:
+      any one listed prerequisite unlocks the next skill. These prototypes make that rule explicit
+      instead of asking connector lines to explain it.
+    </p>
+
+    <nav class="tabs" role="tablist" aria-label="Prototype views">
+      <button class="tab" type="button" role="tab" aria-selected="true" aria-controls="text-view" id="text-tab">
+        1. Plain text
+      </button>
+      <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="diagram-view" id="diagram-tab">
+        2. Mermaid diagrams
+      </button>
+      <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="markdown-view" id="markdown-tab">
+        Markdown source
+      </button>
+    </nav>
+
+    <section id="text-view" role="tabpanel" aria-labelledby="text-tab"></section>
+    <section id="diagram-view" role="tabpanel" aria-labelledby="diagram-tab" hidden></section>
+    <section id="markdown-view" role="tabpanel" aria-labelledby="markdown-tab" hidden></section>
+  </main>
+
+  <script>
+    const skills = [
+      { id: 'archaeology', name: 'Archaeology', tier: 'trained', prerequisites: [] },
+      { id: 'art', name: 'Art', tier: 'trained', prerequisites: [] },
+      { id: 'athletics', name: 'Athletics', tier: 'trained', prerequisites: [] },
+      { id: 'botany', name: 'Botany', tier: 'trained', prerequisites: [] },
+      { id: 'chemistry', name: 'Chemistry', tier: 'trained', prerequisites: [] },
+      { id: 'computers', name: 'Computers', tier: 'trained', prerequisites: [] },
+      { id: 'geology', name: 'Geology', tier: 'trained', prerequisites: [] },
+      { id: 'industrial-equipment', name: 'Industrial Equipment', tier: 'trained', prerequisites: [] },
+      { id: 'jury-rigging', name: 'Jury-Rigging', tier: 'trained', prerequisites: [] },
+      { id: 'linguistics', name: 'Linguistics', tier: 'trained', prerequisites: [] },
+      { id: 'mathematics', name: 'Mathematics', tier: 'trained', prerequisites: [] },
+      { id: 'military-training', name: 'Military Training', tier: 'trained', prerequisites: [] },
+      { id: 'rimwise', name: 'Rimwise', tier: 'trained', prerequisites: [] },
+      { id: 'theology', name: 'Theology', tier: 'trained', prerequisites: [] },
+      { id: 'zero-g', name: 'Zero-G', tier: 'trained', prerequisites: [] },
+      { id: 'zoology', name: 'Zoology', tier: 'trained', prerequisites: [] },
+      { id: 'asteroid-mining', name: 'Asteroid Mining', tier: 'expert', prerequisites: ['geology', 'industrial-equipment'] },
+      { id: 'ecology', name: 'Ecology', tier: 'expert', prerequisites: ['botany', 'geology'] },
+      { id: 'explosives', name: 'Explosives', tier: 'expert', prerequisites: ['chemistry', 'jury-rigging', 'military-training'] },
+      { id: 'field-medicine', name: 'Field Medicine', tier: 'expert', prerequisites: ['zoology'] },
+      { id: 'firearms', name: 'Firearms', tier: 'expert', prerequisites: ['military-training', 'rimwise'] },
+      { id: 'hacking', name: 'Hacking', tier: 'expert', prerequisites: ['computers'] },
+      { id: 'hand-to-hand-combat', name: 'Hand-to-Hand Combat', tier: 'expert', prerequisites: ['athletics', 'military-training', 'rimwise'] },
+      { id: 'mechanical-repair', name: 'Mechanical Repair', tier: 'expert', prerequisites: ['industrial-equipment', 'jury-rigging'] },
+      { id: 'mysticism', name: 'Mysticism', tier: 'expert', prerequisites: ['archaeology', 'art'] },
+      { id: 'pathology', name: 'Pathology', tier: 'expert', prerequisites: ['zoology'] },
+      { id: 'pharmacology', name: 'Pharmacology', tier: 'expert', prerequisites: ['chemistry'] },
+      { id: 'physics', name: 'Physics', tier: 'expert', prerequisites: ['mathematics'] },
+      { id: 'piloting', name: 'Piloting', tier: 'expert', prerequisites: ['zero-g'] },
+      { id: 'psychology', name: 'Psychology', tier: 'expert', prerequisites: ['linguistics', 'zoology'] },
+      { id: 'wilderness-survival', name: 'Wilderness Survival', tier: 'expert', prerequisites: ['military-training', 'theology'] },
+      { id: 'artificial-intelligence', name: 'Artificial Intelligence', tier: 'master', prerequisites: ['hacking'] },
+      { id: 'command', name: 'Command', tier: 'master', prerequisites: ['firearms', 'piloting'] },
+      { id: 'cybernetics', name: 'Cybernetics', tier: 'master', prerequisites: ['mechanical-repair'] },
+      { id: 'engineering', name: 'Engineering', tier: 'master', prerequisites: ['mechanical-repair'] },
+      { id: 'exobiology', name: 'Exobiology', tier: 'master', prerequisites: ['pathology'] },
+      { id: 'hyperspace', name: 'Hyperspace', tier: 'master', prerequisites: ['mysticism', 'physics', 'piloting'] },
+      { id: 'planetology', name: 'Planetology', tier: 'master', prerequisites: ['asteroid-mining', 'ecology'] },
+      { id: 'robotics', name: 'Robotics', tier: 'master', prerequisites: ['mechanical-repair'] },
+      { id: 'sophontology', name: 'Sophontology', tier: 'master', prerequisites: ['psychology'] },
+      { id: 'surgery', name: 'Surgery', tier: 'master', prerequisites: ['field-medicine', 'pathology'] },
+      { id: 'xenoesotericism', name: 'Xenoesotericism', tier: 'master', prerequisites: ['mysticism'] },
+    ];
+
+    const byId = new Map(skills.map((skill) => [skill.id, skill]));
+    const inTier = (tier) => skills.filter((skill) => skill.tier === tier);
+    const names = (ids) => ids.map((id) => byId.get(id)?.name ?? id);
+    const escapeHtml = (value) => value.replace(/[&<>"']/g, (character) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    })[character]);
+    const sentence = (list) => list.map((item) => `<b>${escapeHtml(item)}</b>`).join(' <em>or</em> ');
+
+    const masterRoutes = (master) => master.prerequisites.map((expertId) => {
+      const expert = byId.get(expertId);
+      return `${names(expert.prerequisites).join(' / ')} → ${expert.name} → ${master.name}`;
+    });
+
+    function textItem(skill) {
+      const routes = skill.tier === 'master'
+        ? `<div class="route-list">${masterRoutes(skill).map((route) => `<code>${escapeHtml(route)}</code>`).join('')}</div>`
+        : '';
+      return `<li class="text-item">
+        <strong>${escapeHtml(skill.name)}</strong>
+        <span class="requires">Requires any one of: ${sentence(names(skill.prerequisites))}</span>
+        ${routes}
+      </li>`;
+    }
+
+    document.querySelector('#text-view').innerHTML = `
+      <div class="proposal-head">
+        <div>
+          <p class="eyebrow">Proposal one</p>
+          <h2>A prerequisite index</h2>
+          <p>Fast to scan, impossible to misread, and easy to make accessible. Master skills also show every complete route in a compact monospace line.</p>
+        </div>
+        <p class="note"><strong>Trade-off:</strong> this is a reference list rather than a spatial overview. It prioritizes certainty over showing the whole system at once.</p>
+      </div>
+      <div class="rank-section">
+        <div class="rank-heading"><h3>Trained</h3><span>Starting skills · +10</span></div>
+        <ul class="foundation-list">${inTier('trained').map((skill) => `<li class="chip">${escapeHtml(skill.name)}</li>`).join('')}</ul>
+      </div>
+      <div class="rank-section">
+        <div class="rank-heading"><h3>Expert</h3><span>Requires any one Trained skill · +15</span></div>
+        <ul class="text-list">${inTier('expert').map(textItem).join('')}</ul>
+      </div>
+      <div class="rank-section">
+        <div class="rank-heading"><h3>Master</h3><span>Requires any one Expert skill · +20</span></div>
+        <ul class="text-list">${inTier('master').map(textItem).join('')}</ul>
+      </div>`;
+
+    function mermaidFor(target) {
+      const lines = ['flowchart LR'];
+      const nodes = new Map();
+      const addNode = (skill) => nodes.set(skill.id, `${skill.tier}_${skill.id.replaceAll('-', '_')}["${skill.name}"]`);
+      const addEdge = (from, to, alternatives) => {
+        const label = alternatives > 1 ? '|OR|' : '';
+        lines.push(`  ${nodes.get(from).split('[')[0]} -->${label} ${nodes.get(to).split('[')[0]}`);
+      };
+
+      addNode(target);
+      if (target.tier === 'master') {
+        for (const expertId of target.prerequisites) {
+          const expert = byId.get(expertId);
+          addNode(expert);
+          for (const trainedId of expert.prerequisites) addNode(byId.get(trainedId));
+        }
+        for (const expertId of target.prerequisites) {
+          const expert = byId.get(expertId);
+          for (const trainedId of expert.prerequisites) addEdge(trainedId, expertId, expert.prerequisites.length);
+          addEdge(expertId, target.id, target.prerequisites.length);
+        }
+      } else {
+        for (const trainedId of target.prerequisites) addNode(byId.get(trainedId));
+        for (const trainedId of target.prerequisites) addEdge(trainedId, target.id, target.prerequisites.length);
+      }
+
+      for (const definition of nodes.values()) lines.splice(1, 0, `  ${definition}`);
+      lines.push('  classDef trained fill:#fff,stroke:#171717,stroke-width:2px,color:#171717');
+      lines.push('  classDef expert fill:#e9e7df,stroke:#171717,stroke-width:2px,color:#171717');
+      lines.push('  classDef master fill:#171717,stroke:#171717,stroke-width:2px,color:#fff');
+      for (const skill of [target, ...target.prerequisites.map((id) => byId.get(id))]) {
+        lines.push(`  class ${skill.tier}_${skill.id.replaceAll('-', '_')} ${skill.tier}`);
+        if (skill.tier === 'expert') {
+          for (const trainedId of skill.prerequisites) lines.push(`  class trained_${trainedId.replaceAll('-', '_')} trained`);
+        }
+      }
+      return lines.join('\n');
+    }
+
+    const usedExperts = new Set(inTier('master').flatMap((skill) => skill.prerequisites));
+    const endpointExperts = inTier('expert').filter((skill) => !usedExperts.has(skill.id));
+    const diagramTargets = [...inTier('master'), ...endpointExperts];
+
+    function diagramCard(skill) {
+      const source = mermaidFor(skill);
+      return `<article class="diagram-card" data-tier="${skill.tier}">
+        <h3>${escapeHtml(skill.name)}</h3>
+        <p>${skill.tier === 'master' ? 'Complete routes to this Master skill' : 'Expert progression with no Master continuation'}</p>
+        <pre class="mermaid">${escapeHtml(source)}</pre>
+        <details><summary>Show Mermaid source</summary><pre class="source">${escapeHtml(source)}</pre></details>
+      </article>`;
+    }
+
+    document.querySelector('#diagram-view').innerHTML = `
+      <div class="proposal-head">
+        <div>
+          <p class="eyebrow">Proposal two</p>
+          <h2>Small Mermaid diagrams</h2>
+          <p>One diagram per destination. Shared prerequisites repeat between cards, so every line belongs to exactly one progression and never becomes a misleading global bus.</p>
+        </div>
+        <p class="note"><strong>Trade-off:</strong> repetition takes more vertical space, but each diagram stays legible and can be filtered to the rank the player is choosing.</p>
+      </div>
+      <div class="fallback" id="mermaid-fallback"><strong>Mermaid did not load.</strong> The source for every diagram is still available below each card.</div>
+      <div class="diagram-controls">
+        <label for="diagram-filter">Show</label>
+        <select id="diagram-filter">
+          <option value="all">All progressions</option>
+          <option value="master">Master progressions</option>
+          <option value="expert">Standalone Expert progressions</option>
+        </select>
+      </div>
+      <div class="diagram-grid">${diagramTargets.map(diagramCard).join('')}</div>`;
+
+    const markdown = [
+      '# Skill progression',
+      '',
+      '> A listed prerequisite means **any one of**, not all of them.',
+      '',
+      '## Trained (+10)',
+      '',
+      ...inTier('trained').map((skill) => `- **${skill.name}** — no prerequisites`),
+      '',
+      '## Expert (+15)',
+      '',
+      ...inTier('expert').map((skill) => `- **${skill.name}** — requires ${names(skill.prerequisites).map((name) => `**${name}**`).join(' or ')}`),
+      '',
+      '## Master (+20)',
+      '',
+      ...inTier('master').flatMap((skill) => [
+        `- **${skill.name}** — requires ${names(skill.prerequisites).map((name) => `**${name}**`).join(' or ')}`,
+        ...masterRoutes(skill).map((route) => `  - Route: \`${route}\``),
+      ]),
+    ].join('\n');
+
+    document.querySelector('#markdown-view').innerHTML = `
+      <div class="proposal-head">
+        <div>
+          <p class="eyebrow">Copyable reference</p>
+          <h2>Markdown source</h2>
+          <p>The same plain-text proposal without presentation styling.</p>
+        </div>
+      </div>
+      <pre class="source markdown-source">${escapeHtml(markdown)}</pre>`;
+
+    const tabs = [...document.querySelectorAll('[role="tab"]')];
+    const panels = [...document.querySelectorAll('[role="tabpanel"]')];
+    for (const tab of tabs) {
+      tab.addEventListener('click', () => {
+        for (const candidate of tabs) candidate.setAttribute('aria-selected', String(candidate === tab));
+        for (const panel of panels) panel.hidden = panel.id !== tab.getAttribute('aria-controls');
+      });
+    }
+
+    document.querySelector('#diagram-filter').addEventListener('change', (event) => {
+      const filter = event.target.value;
+      for (const card of document.querySelectorAll('.diagram-card')) {
+        card.hidden = filter !== 'all' && card.dataset.tier !== filter;
+      }
+    });
+  </script>
+
+  <script type="module">
+    try {
+      const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'base',
+        securityLevel: 'strict',
+        flowchart: { curve: 'stepBefore', htmlLabels: false, nodeSpacing: 22, rankSpacing: 42 },
+        themeVariables: {
+          fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
+          lineColor: '#555',
+          primaryColor: '#fff',
+          primaryTextColor: '#171717',
+          primaryBorderColor: '#171717',
+        },
+      });
+      await mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
+    } catch (error) {
+      document.querySelector('#mermaid-fallback').classList.add('visible');
+      console.warn('Mermaid could not be loaded; showing its source instead.', error);
+    }
+  </script>
+</body>
+</html>

@@ -35,6 +35,7 @@ export async function loadSkills() {
  * adjustments it applies outright, and the ones it hands the player to place.
  */
 const brings = (klass) => ({
+  description: sentence(klass.system.description),
   adjustments: Object.entries(klass.system.base_adjustment)
     .filter(([key, value]) => key !== 'skills_granted' && value !== 0)
     .map(([key, value]) => ({ key, value })),
