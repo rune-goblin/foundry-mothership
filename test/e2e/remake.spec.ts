@@ -101,7 +101,9 @@ test.describe('the remade core, executed live', () => {
     await rigDie(gmPage, 95); // 95 ≥ 10: a failure, not a double, so no crit muddies the assertion.
 
     await runMacro(gmPage, TRIGGERED, 'Strength Check');
-    await answer(gmPage, 'next');
+    // No dialog: the macro states its modifier and this actor holds no Skill to offer, so there is
+    // nothing left to ask. It used to open a window whose only control was Next.
+    await expect(gmPage.locator('dialog[open].macro-popup-dialog')).toHaveCount(0);
 
     await expect.poll(() => stored(gmPage, uuid, 'system.other.stress.value')).toBe(3);
   });
@@ -146,7 +148,6 @@ test.describe('the remade core, executed live', () => {
       await rigDie(gmPage, roll);
 
       await runMacro(gmPage, TRIGGERED, 'Strength Check');
-      await answer(gmPage, 'next');
 
       await expect.poll(() => lastMessageText(gmPage)).toContain(verdict);
     });

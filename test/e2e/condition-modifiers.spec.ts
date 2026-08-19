@@ -115,7 +115,7 @@ test.describe('conditions preselect the roll they name', () => {
     const dialog = await roll(gmPage, uuid, 'fear');
 
     await expect(dialog.locator('.condition-modifier')).toHaveCount(0);
-    await expect(dialog.locator('button[data-action="advantage"]')).toHaveAttribute('autofocus', '');
+    await expect(dialog.locator('button[data-action="none"]')).toHaveAttribute('autofocus', '');
   });
 
   test('Spiraling defaults the panic check, which is a d20 and its own dialog', async ({ gmPage }) => {
@@ -131,6 +131,8 @@ test.describe('conditions preselect the roll they name', () => {
     const dialog = await roll(gmPage, uuid, 'restSave');
 
     await expect(dialog.locator('.condition-modifier')).toHaveCount(0);
-    await expect(dialog.locator('button[data-action="advantage"]')).toHaveAttribute('autofocus', '');
+    // Normal is the default now, so Enter on an untouched window rolls the plain roll. Advantage
+    // only ever carried the autofocus because it happened to be the first button.
+    await expect(dialog.locator('button[data-action="none"]')).toHaveAttribute('autofocus', '');
   });
 });

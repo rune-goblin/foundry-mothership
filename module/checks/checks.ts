@@ -21,6 +21,7 @@ import {
 } from '../chat/cards.ts';
 import { CHECK_SCOPES, type CheckScope } from '../chat/enrichers.ts';
 import {
+  ATTRIBUTE_KEYS,
   askReload,
   chooseAdvantage,
   chooseAttribute,
@@ -40,6 +41,7 @@ import {
   cardSource,
   isCharacter,
   skillBonus,
+  skillRankWord,
   speakerOf,
   statOf,
   voiceOfActor,
@@ -166,6 +168,7 @@ function skillRows(actor: CheckActor): SkillRow[] {
       img: item.img,
       bonus: skillBonus(item.system),
       description: typeof system.description === 'string' ? system.description : '',
+      rank: skillRankWord(item.system),
     });
   }
   return rows;
@@ -186,19 +189,31 @@ interface Chosen {
   readonly advantage: Advantage;
 }
 
+/**
+ * PSG 2's weapon table gives every weapon a range — Adjacent is the melee band, everything past
+ * it is fired. A default only: the player can still pick a different skill, or none.
+ */
+function defaultCombatSkill(weapon: CheckItem, rows: readonly SkillRow[]): SkillRow | null {
+  const name = (weapon.system as { range?: unknown }).range === 'adjacent' ? 'Hand-to-Hand Combat' : 'Firearms';
+  return rows.find((row) => row.name === name) ?? null;
+}
+
 /** Ask for what the caller did not say — in one dialog, where one dialog carries both answers. */
 async function ask(
   actor: CheckActor,
   check: Check,
   options: CheckOptions,
   stat: StatValue,
+  weapon: CheckItem | null,
 ): Promise<Chosen | null> {
   const given = options.advantage ?? null;
   const rows = skillRows(actor);
   const named = check.kind === 'skill' ? (rows.find((row) => row.id === check.skillId) ?? null) : null;
   const modifier = conditionModifier(actor.items, checkScope(check));
 
-  if (!offersSkill(actor, check)) {
+  // A list of one row saying "No Skill" is not an offer, so an actor holding no skills is asked
+  // the plainer question instead.
+  if (!offersSkill(actor, check) || rows.length === 0) {
     if (given !== null) return { skill: named, advantage: given };
     const advantage = await chooseAdvantage({
       title: stat.rollLabel,
@@ -214,6 +229,9 @@ async function ask(
     note: conditionNote(modifier),
     preselect: conditionPreselect(modifier),
     advantage: given === null,
+    defaultSkill: weapon === null ? null : defaultCombatSkill(weapon, rows),
+    // What the check will roll under before a skill is added — `d100Check` totals the same two.
+    stat: { label: stat.label, amount: stat.value + stat.mod },
   });
   return answer === null ? null : { skill: answer.skill, advantage: given ?? answer.advantage };
 }
@@ -271,7 +289,7 @@ async function d100Check(
   const weapon = check.kind === 'weapon-attack' ? weaponOf(actor, check.itemId) : null;
   if (check.kind === 'weapon-attack' && weapon === null) return null;
 
-  const chosen = await ask(actor, check, options, stat);
+  const chosen = await ask(actor, check, options, stat, weapon);
   if (chosen === null) return null;
 
   if (weapon !== null && !(await spendShot(actor, weapon))) return null;
@@ -359,21 +377,31 @@ export async function runCheck(
   }
 }
 
+/** What each Stat is worth on this actor: `value + mod`, the two numbers `d100Check` totals. */
+function statValues(actor: CheckActor): Record<string, number> {
+  const values: Record<string, number> = {};
+  for (const key of ATTRIBUTE_KEYS) {
+    const stat = statOf(actor.system, key);
+    if (stat !== null) values[key] = stat.value + stat.mod;
+  }
+  return values;
+}
+
 /**
  * The check whose stat nobody has named — the Skill Check the hotbar offers. Choosing the stat is
- * one dialog and adding a skill is the next, exactly as legacy walked them.
+ * one dialog and adding a skill is the next.
+ *
+ * The roll type is **not** asked here. It used to be, which meant committing to Advantage on the
+ * Stat window and then meeting the Skill list with a lone Next — a choice made before its own
+ * grounds were known. The last window before the dice owns it, and here that is the Skill window.
  */
 export async function promptCheck(
   actor: CheckActor,
   options: CheckOptions = {},
 ): Promise<CheckOutcome | null> {
-  const chosen = await chooseAttribute({ advantage: (options.advantage ?? null) === null });
+  const chosen = await chooseAttribute({ advantage: false, values: statValues(actor) });
   if (chosen === null) return null;
-  return await runCheck(
-    actor,
-    { kind: 'stat', stat: chosen.stat },
-    { ...options, advantage: options.advantage ?? chosen.advantage },
-  );
+  return await runCheck(actor, { kind: 'stat', stat: chosen.stat }, options);
 }
 
 /**
@@ -392,12 +420,26 @@ export async function promptSkillCheck(
     return null;
   }
 
-  const chosen = await chooseAttribute({ advantage: (options.advantage ?? null) === null });
+  const bonus = skillBonus(item.system);
+  // This window is the last before the dice, so it owns the roll type — and it can name the Skill
+  // that opened it, which is what the total on show is adding.
+  const chosen = await chooseAttribute({
+    advantage: (options.advantage ?? null) === null,
+    values: statValues(actor),
+    skill: {
+      id: skillId,
+      name: item.name,
+      img: item.img,
+      bonus,
+      description: '',
+      rank: skillRankWord(item.system),
+    },
+  });
   if (chosen === null) return null;
 
   return await runCheck(
     actor,
-    { kind: 'skill', stat: chosen.stat, skillId, bonus: skillBonus(item.system) },
+    { kind: 'skill', stat: chosen.stat, skillId, bonus },
     { ...options, advantage: options.advantage ?? chosen.advantage },
   );
 }

@@ -8,8 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushSync, mount, unmount } from 'svelte';
 
 import ChooseAdvantage from '../module/dialogs/ChooseAdvantage.svelte';
-import ChooseAttribute from '../module/dialogs/ChooseAttribute.svelte';
-import ChooseSkill from '../module/dialogs/ChooseSkill.svelte';
+import CheckPrompt from '../module/dialogs/CheckPrompt.svelte';
 import Cover from '../module/dialogs/Cover.svelte';
 import NoCharacter from '../module/dialogs/NoCharacter.svelte';
 import Reload from '../module/dialogs/Reload.svelte';
@@ -52,6 +51,25 @@ beforeEach(() => {
     'Mothership.RelieveStress': 'Relieve Stress',
     'Mothership.WoundRoll': 'Wound Roll',
     'Mothership.SelectYourRollType': 'Select your roll type',
+    'Mothership.SelectASave': 'Select a Save',
+    'Mothership.Strength': 'Strength',
+    'Mothership.Speed': 'Speed',
+    'Mothership.Intellect': 'Intellect',
+    'Mothership.Combat': 'Combat',
+    'Mothership.AddASkill': 'Add a Skill?',
+    'Mothership.AgainstWhichStat': 'Against which Stat?',
+    'Mothership.ARelevantSkillRaises': 'A relevant Skill raises the number you roll under.',
+    'Mothership.AddASkillNext': 'You can add a Skill on the next screen.',
+    'Mothership.FailedSaveCostsStress': 'Fail a Save and you gain 1 Stress.',
+    'Mothership.SkillAppliesToStat': '<strong>{skill} +{bonus}</strong> applies to whichever Stat suits the task.',
+    'Mothership.RollUnder': 'Roll under:',
+    'Mothership.CheckWorking': '{stat} {statValue} + {skill} {skillValue}',
+    'Mothership.CheckWorkingNoSkill': '{stat} {statValue}, no Skill',
+    'Mothership.NoSkill': 'No Skill',
+    'Mothership.NoSkillExplanation': 'Rolling on the raw Stat.',
+    'Mothership.SkillRankTrained': 'Trained',
+    'Mothership.SkillRankExpert': 'Expert',
+    'Mothership.SkillRankMaster': 'Master',
     'Mothership.OutOfAmmoNeedReload': 'Out of ammo, you need to reload',
     'Mothership.OutOfAmmo': 'Out of ammo',
     'Mothership.Errors.NoCharacterTitle': 'No Character Selected',
@@ -192,25 +210,55 @@ describe('svelteDialog', () => {
   });
 
   it('carries what the user picked into the answer', async () => {
-    const answer = svelteDialog<string, string, { stats: { key: string; label: string; example: string; img: string }[] }>({
-      component: ChooseAttribute,
-      props: {
-        stats: [
-          { key: 'strength', label: 'Strength', example: 'Lifting', img: 'str.png' },
-          { key: 'speed', label: 'Speed', example: 'Running', img: 'spd.png' },
-        ],
-      },
+    const props = {
+      heading: 'Against which Stat?',
+      options: [
+        { key: 'strength', label: 'Strength', amount: 30, description: 'Lifting' },
+        { key: 'speed', label: 'Speed', amount: 45, description: 'Running' },
+      ],
+      picks: 'stat',
+    };
+    const answer = svelteDialog<string, string, typeof props>({
+      component: CheckPrompt,
+      props,
       title: 'Choose a Stat',
       initial: 'strength',
       buttons: [{ action: 'next', label: 'Next', answer: (stat) => stat }],
     });
 
-    const input = only().element.querySelector<HTMLInputElement>('#stat-speed')!;
-    input.click();
+    only().element.querySelector<HTMLButtonElement>('[data-choice="speed"]')!.click();
     flushSync();
     await only().press('next');
 
     await expect(answer).resolves.toBe('speed');
+  });
+
+  // The rail is the dialog's own footer stood on end, so the only thing that switches it on is a
+  // class on the frame. Without it the same buttons lie along the foot, as every other dialog's do.
+  it('asks for the rail class only when the prompt wants the rail', async () => {
+    const props = { note: '', die: '' };
+    const plain = svelteDialog<null, string, typeof props>({
+      component: ChooseAdvantage,
+      props,
+      title: 'Body Save',
+      initial: null,
+      buttons: [{ action: 'ok', label: 'OK', answer: () => 'ok' }],
+    });
+    expect(only().classes).not.toContain('macro-popup-rail');
+    await only().press('ok');
+    await plain;
+
+    const railed = svelteDialog<null, string, typeof props>({
+      component: ChooseAdvantage,
+      props,
+      title: 'Body Save',
+      initial: null,
+      rail: true,
+      buttons: [{ action: 'ok', label: 'OK', answer: () => 'ok' }],
+    });
+    expect(opened[1].classes).toContain('macro-popup-rail');
+    opened[1].dismiss();
+    await railed;
   });
 });
 
@@ -219,8 +267,12 @@ describe('the prompts', () => {
     const answer = chooseAdvantage({ title: 'Body Save', note: '', preselect: null });
 
     expect(only().title).toBe('Body Save');
-    expect(only().buttons.map((button) => button.action)).toEqual(['advantage', 'none', 'disadvantage']);
-    expect(only().buttons.some((button) => button.default === true)).toBe(false);
+    // Normal leads and is the default, so Enter on an untouched window rolls the plain roll.
+    expect(only().buttons.map((button) => button.action)).toEqual(['none', 'advantage', 'disadvantage']);
+    expect(only().buttons.filter((button) => button.default === true).map((button) => button.action)).toEqual([
+      'none',
+    ]);
+    expect(only().buttons.some((button) => button.class === 'condition-preselect')).toBe(false);
 
     await only().press('disadvantage');
     await expect(answer).resolves.toBe('disadvantage');
@@ -234,6 +286,7 @@ describe('the prompts', () => {
       preselect: 'disadvantage',
     });
 
+    // The condition takes the default off Normal rather than adding a second one.
     const preselected = only().buttons.filter((button) => button.default === true);
     expect(preselected).toHaveLength(1);
     expect(preselected[0]).toMatchObject({ action: 'disadvantage', class: 'condition-preselect' });
@@ -243,28 +296,93 @@ describe('the prompts', () => {
     await expect(answer).resolves.toBeNull();
   });
 
+  const ATHLETICS = {
+    id: 'sk1',
+    name: 'Athletics',
+    img: 'sk1.png',
+    bonus: 10,
+    description: '<p>Running.</p>',
+    rank: 'Trained',
+  };
+  const SPEED = { label: 'Speed', amount: 45 };
+
   it('chooseSkill answers with the skill and the modifier together', async () => {
     const answer = chooseSkill({
       title: 'Body Save',
-      skills: [{ id: 'sk1', name: 'Athletics', img: 'sk1.png', bonus: 10, description: '<p>Running.</p>' }],
+      skills: [ATHLETICS],
       note: '',
       preselect: null,
       advantage: true,
+      defaultSkill: null,
+      stat: SPEED,
     });
     await settle();
 
-    only().element.querySelector<HTMLInputElement>('#skill-sk1')!.click();
+    only().element.querySelector<HTMLButtonElement>('[data-choice="sk1"]')!.click();
     flushSync();
     await only().press('advantage');
 
-    await expect(answer).resolves.toEqual({
-      skill: { id: 'sk1', name: 'Athletics', img: 'sk1.png', bonus: 10, description: 'enriched:<p>Running.</p>' },
-      advantage: 'advantage',
+    await expect(answer).resolves.toEqual({ skill: ATHLETICS, advantage: 'advantage' });
+  });
+
+  // The window is about a number, so it states it: the Stat it opened on, and what the chosen
+  // Skill does to it. `d100Check` totals the same two.
+  it('chooseSkill totals the roll it is about to make', async () => {
+    const answer = chooseSkill({
+      title: 'Body Save',
+      skills: [ATHLETICS],
+      note: '',
+      preselect: null,
+      advantage: true,
+      defaultSkill: null,
+      stat: SPEED,
     });
+    await settle();
+
+    const { element } = only();
+    expect(element.querySelector('.check-readout-total')?.textContent).toBe('45');
+    expect(element.querySelector('.check-sum-working')?.textContent).toBe('Speed 45, no Skill');
+
+    element.querySelector<HTMLButtonElement>('[data-choice="sk1"]')!.click();
+    flushSync();
+    expect(element.querySelector('.check-readout-total')?.textContent).toBe('55');
+    expect(element.querySelector('.check-sum-working')?.textContent).toBe('Speed 45 + Athletics 10');
+
+    only().dismiss();
+    await expect(answer).resolves.toBeNull();
+  });
+
+  it('chooseSkill opens on the skill it was given, and answers with no skill for the empty row', async () => {
+    const answer = chooseSkill({
+      title: 'Body Save',
+      skills: [ATHLETICS],
+      note: '',
+      preselect: null,
+      advantage: true,
+      defaultSkill: ATHLETICS,
+      stat: SPEED,
+    });
+    await settle();
+
+    expect(only().element.querySelector('[data-choice="sk1"]')?.getAttribute('aria-checked')).toBe('true');
+
+    only().element.querySelector<HTMLButtonElement>('[data-choice=""]')!.click();
+    flushSync();
+    await only().press('none');
+
+    await expect(answer).resolves.toEqual({ skill: null, advantage: 'none' });
   });
 
   it('chooseSkill offers only Next when the modifier is already settled', async () => {
-    const answer = chooseSkill({ title: 'Body Save', skills: [], note: '', preselect: null, advantage: false });
+    const answer = chooseSkill({
+      title: 'Body Save',
+      skills: [],
+      note: '',
+      preselect: null,
+      advantage: false,
+      defaultSkill: null,
+      stat: SPEED,
+    });
     await settle();
 
     expect(only().buttons.map((button) => button.action)).toEqual(['next']);
@@ -275,28 +393,59 @@ describe('the prompts', () => {
   it('chooseAttribute answers with the stat and the modifier', async () => {
     const answer = chooseAttribute({ advantage: true });
 
-    only().element.querySelector<HTMLInputElement>('#stat-combat')!.click();
+    only().element.querySelector<HTMLButtonElement>('[data-choice="combat"]')!.click();
     flushSync();
     await only().press('advantage');
 
     await expect(answer).resolves.toEqual({ stat: 'combat', advantage: 'advantage' });
   });
 
+  // The inverse window: the Skill is known, so it names it and adds it to whichever Stat is chosen.
+  it('chooseAttribute names the skill that opened it and totals against each stat', async () => {
+    const answer = chooseAttribute({
+      advantage: true,
+      values: { strength: 30, speed: 45, intellect: 35, combat: 40 },
+      skill: ATHLETICS,
+    });
+
+    const { element } = only();
+    expect(element.querySelector('.check-intro')?.textContent).toContain('Athletics +10');
+    expect(element.querySelector('.check-readout-total')?.textContent).toBe('40');
+    expect(element.querySelector('.check-sum-working')?.textContent).toBe('Strength 30 + Athletics 10');
+
+    element.querySelector<HTMLButtonElement>('[data-choice="speed"]')!.click();
+    flushSync();
+    expect(element.querySelector('.check-readout-total')?.textContent).toBe('55');
+
+    only().dismiss();
+    await expect(answer).resolves.toBeNull();
+  });
+
   it('chooseSave offers the three Saves, not the four Stats', async () => {
     const answer = chooseSave();
 
     expect(only().title).toBe('Choose a Save');
-    expect([...only().element.querySelectorAll('input[name="stat"]')].map((node) => node.id)).toEqual([
-      'stat-sanity',
-      'stat-fear',
-      'stat-body',
-    ]);
+    expect([...only().element.querySelectorAll('[data-choice]')].map((node) => node.getAttribute('data-choice'))).toEqual(
+      ['sanity', 'fear', 'body'],
+    );
 
-    only().element.querySelector<HTMLInputElement>('#stat-body')!.click();
+    only().element.querySelector<HTMLButtonElement>('[data-choice="body"]')!.click();
     flushSync();
     await only().press('disadvantage');
 
     await expect(answer).resolves.toEqual({ stat: 'body', advantage: 'disadvantage' });
+  });
+
+  // A Save is asked before its actor is settled, so no Stat has a number yet. Saying nothing beats
+  // saying zero.
+  it('chooseSave states no total, having no actor to total against', async () => {
+    const answer = chooseSave();
+
+    expect(only().element.querySelector('.check-readout')).toBeNull();
+    expect(only().element.querySelector('.check-sum')).toBeNull();
+
+    only().dismiss();
+    await expect(answer).resolves.toBeNull();
   });
 
   // The two directions are one procedure: the sign is the argument, never a second function.
@@ -418,35 +567,76 @@ describe('the components themselves', () => {
     return target;
   };
 
-  it('ChooseSkill lists the rows as data, description enriched and escaped by the compiler', () => {
+  const rows = [
+    { key: '', label: 'No Skill', amount: 0, description: 'Rolling on the raw Stat.', muted: true },
+    {
+      key: 'sk1',
+      label: 'Hacking',
+      note: 'Expert',
+      value: '+15',
+      amount: 15,
+      description: '<em>Computers.</em>',
+    },
+  ];
+
+  it('CheckPrompt lists the rows as data, description enriched and escaped by the compiler', () => {
     const changes: unknown[] = [];
-    const skills = [
-      { id: 'sk1', name: 'Hacking', img: 'sk1.png', bonus: 15, description: '<em>Computers.</em>' },
-    ];
-    const target = render(ChooseSkill as never, {
-      skills,
+    const target = render(CheckPrompt as never, {
+      heading: 'Add a Skill?',
+      options: rows,
+      value: '',
+      onchange: (key: unknown) => changes.push(key),
+      picks: 'skill',
+      fixed: { label: 'Speed', amount: 45 },
       note: 'Anxious: this roll is at [-].',
-      prompt: true,
-      value: null,
-      onchange: (skill: unknown) => changes.push(skill),
     });
 
-    expect(target.querySelector('#skill-none')).not.toBeNull();
-    const row = target.querySelector<HTMLInputElement>('#skill-sk1')!;
-    expect(row.getAttribute('value')).toBe('15');
-    expect(row.closest('label')!.querySelector('em')?.textContent).toBe('Computers.');
+    const row = target.querySelector<HTMLButtonElement>('[data-choice="sk1"]')!;
+    expect(row.querySelector('.choice-value')?.textContent).toBe('+15');
+    expect(row.querySelector('.choice-note')?.textContent).toBe('Expert');
+    expect(row.querySelector('em')?.textContent).toBe('Computers.');
     expect(target.querySelector('.condition-modifier')?.textContent).toContain('Anxious');
 
     row.click();
     flushSync();
-    expect(changes).toEqual([skills[0]]);
+    expect(changes).toEqual(['sk1']);
   });
 
-  it('ChooseSkill shows no skill list at all when the actor holds none', () => {
-    const target = render(ChooseSkill as never, { skills: [], prompt: false, value: null, onchange: () => {} });
+  // Only the chosen row prints its description, so the name is written once and the sum beneath has
+  // nothing to do but add up.
+  it('CheckPrompt gives its description to the chosen row alone', () => {
+    const target = render(CheckPrompt as never, {
+      heading: 'Add a Skill?',
+      options: rows,
+      value: 'sk1',
+      onchange: () => {},
+      picks: 'skill',
+      fixed: { label: 'Speed', amount: 45 },
+    });
 
-    expect(target.querySelector('#skill-none')).toBeNull();
-    expect(target.querySelector('.macro_prompt')).toBeNull();
+    const checked = [...target.querySelectorAll('[data-choice]')].filter(
+      (row) => row.getAttribute('aria-checked') === 'true',
+    );
+    expect(checked.map((row) => row.getAttribute('data-choice'))).toEqual(['sk1']);
+    expect(target.querySelector('.check-sum-working')?.textContent).toBe('Speed 45 + Hacking 15');
+    expect(target.querySelector('.check-readout-total')?.textContent).toBe('60');
+  });
+
+  // The slot is a fixed number of lines whether the chosen row needs them or not, so the rows below
+  // never move as the selection travels.
+  it('CheckPrompt reserves the description slot the caller asked for', () => {
+    const target = render(CheckPrompt as never, {
+      heading: 'Against which Stat?',
+      options: rows,
+      value: '',
+      onchange: () => {},
+      picks: 'stat',
+      lines: 3,
+    });
+
+    expect(target.querySelector<HTMLElement>('.choice-list')!.style.getPropertyValue(
+      '--choice-list-description-lines',
+    )).toBe('3');
   });
 
   it('Cover shows each option’s bonus beside the actor’s own armour', () => {

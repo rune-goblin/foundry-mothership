@@ -504,6 +504,41 @@ test.describe('visual baselines', () => {
     await captureCard(gmPage, 'card-rollCheck');
   });
 
+  // The same window with the halves swapped: the Skill was clicked, so the list supplies the Stat
+  // and the number beside each row is what that Stat is worth rather than a bonus.
+  //
+  // Asserted structurally rather than pinned as a second image. It draws the same component the
+  // baseline above already covers, and a near-identical shot of it bought nothing but a 1px
+  // rasterisation difference that came and went with the order the file ran in.
+  test('the stat dialog a clicked skill opens', async ({ gmPage }) => {
+    const uuid = await makeActor(gmPage, '__e2e_stat', CHARACTER, [LOADOUT[0]!]);
+
+    // Unawaited on purpose: the call does not settle until the dialog is answered.
+    await gmPage.evaluate(async (u: string) => {
+      const actor = await (window as any).fromUuid(u);
+      const skill = actor.items.find((item: any) => item.type === 'skill');
+      void actor.rollSkill(skill.id);
+    }, uuid);
+
+    const dialog = gmPage.locator('dialog[open].macro-popup-dialog');
+    await expect(dialog).toBeVisible();
+
+    // The window names the Skill that opened it — the paragraph it replaced never could.
+    await expect(dialog.locator('.check-intro')).toContainText('__e2e_Zero-G +10');
+    // The chip is the Stat's value, not a bonus, and the total adds the Skill to whichever is chosen.
+    await expect(dialog.locator('[data-choice="strength"] .choice-value')).toHaveText('50');
+    await expect(dialog.locator('.check-readout-total')).toHaveText('60');
+    await expect(dialog.locator('.check-sum-working')).toHaveText('Strength 50 + __e2e_Zero-G 10');
+
+    await dialog.locator('[data-choice="combat"]').click();
+    await expect(dialog.locator('.check-readout-total')).toHaveText('75');
+
+    // This window is the last before the dice, so it owns the roll type, and Normal is the default.
+    await expect(dialog.locator('button[data-action="none"]')).toHaveAttribute('autofocus', '');
+    await dialog.locator('button[data-action="none"]').click();
+    await expect(dialog).toHaveCount(0);
+  });
+
   // rollTable.html — a Wound table, which is also the flow that spends a Wound.
   test('the rollTable card', async ({ gmPage }) => {
     const uuid = await makeActor(gmPage, '__e2e_table', CHARACTER);

@@ -1014,6 +1014,97 @@
     margin-bottom: var(--space-6);
   }
 
+  /* The book's marks for the two modifiers. `[+]` and `[-]` are what the PSG prints, so they are
+     notation rather than language and belong in the stylesheet; a plain roll carries the bare
+     `roll-mark`, which holds the column open so the three labels align down the rail. Font Awesome
+     drew a chevron pair and a dash here, three symbol systems for a book that uses one. */
+  .mothership.macro-popup-dialog .form-footer button i.roll-mark {
+    flex: 0 0 auto;
+    width: 2em;
+    font-family: var(--font-display);
+    font-style: normal;
+    font-weight: var(--font-weight-bold);
+    color: var(--text-tertiary);
+  }
+
+  .mothership.macro-popup-dialog .form-footer button i.roll-mark-advantage::before {
+    content: "[+]";
+  }
+
+  .mothership.macro-popup-dialog .form-footer button i.roll-mark-disadvantage::before {
+    content: "[\2212]";
+  }
+
+  .mothership.macro-popup-dialog .form-footer button:hover i.roll-mark {
+    color: var(--color-neutral-300);
+  }
+
+  /* The roll rail. The buttons stay DialogV2's own — only the form's tracks move — so the default
+     button keeps the `autofocus` Foundry stamps on it and Enter still submits through it. That is
+     why `.dialog-content` and the mount point stand aside with `display: contents`: the body's head
+     has to span both tracks, and the footer has to be able to take the second one. */
+  .mothership.macro-popup-rail .dialog-form.standard-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 164px;
+    gap: var(--space-16);
+    align-items: start;
+  }
+
+  .mothership.macro-popup-rail .dialog-content.standard-form,
+  .mothership.macro-popup-rail .mothership-dialog-root {
+    display: contents;
+  }
+
+  .mothership.macro-popup-rail .window-content {
+    padding: var(--space-16);
+  }
+
+  .mothership.macro-popup-rail .form-footer {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-8);
+    margin: var(--space-0);
+    padding: var(--space-0);
+  }
+
+  .mothership.macro-popup-rail .form-footer button {
+    width: 100%;
+    justify-content: flex-start;
+    padding: var(--space-10);
+    font-family: var(--font-display);
+    letter-spacing: var(--letter-spacing-wide);
+  }
+
+  /* The roll nobody has to think about, filled. Foundry stamps `autofocus` on the default button,
+     so the mark that says "Enter does this" is the same attribute that makes it true. */
+  .mothership.macro-popup-rail .form-footer button[autofocus] {
+    background: var(--color-neutral-850);
+    color: var(--text-inverted);
+    border-color: var(--color-neutral-850);
+  }
+
+  .mothership.macro-popup-rail .form-footer button[autofocus] i.roll-mark {
+    color: var(--color-neutral-400);
+  }
+
+  .mothership.macro-popup-rail .form-footer button[autofocus]:hover {
+    background: var(--color-neutral-950);
+    border-color: var(--color-neutral-950);
+  }
+
+  .mothership.macro-popup-rail .form-footer button[autofocus]::after {
+    content: "\21B5";
+    margin-left: auto;
+    padding: var(--space-0) var(--space-4);
+    font-family: var(--font-sans-mothership);
+    font-size: var(--font-size-xs);
+    border: var(--border-width-1) solid currentColor;
+    border-radius: var(--radius-sm);
+    opacity: 0.65;
+  }
+
   /* The condition sheet's modifier list moved into Condition.svelte, the only thing that ever
      writes it. `condition-modifier` above is the dialog's single line and stays with the dialog
      it is drawn in. */

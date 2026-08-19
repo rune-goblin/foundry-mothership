@@ -12,9 +12,8 @@ import type { Advantage, StatKey } from '../rolls/spec.ts';
 import { COVER_KEYS, type Cover } from '../rules.ts';
 import { WOUND_TABLE_KEYS, type TableKey } from '../tables/tables.ts';
 import AmountPromptBody from './Amount.svelte';
+import CheckPrompt from './CheckPrompt.svelte';
 import ChooseAdvantage from './ChooseAdvantage.svelte';
-import ChooseAttribute from './ChooseAttribute.svelte';
-import ChooseSkill from './ChooseSkill.svelte';
 import CoverPrompt from './Cover.svelte';
 import NoCharacter from './NoCharacter.svelte';
 import ReloadPrompt from './Reload.svelte';
@@ -23,10 +22,18 @@ import { svelteDialog, type DialogButton } from './svelte-dialog.ts';
 
 const DIALOG_WIDTH = 600;
 
+/** Wide enough for the list and the roll rail side by side. */
+const RAIL_WIDTH = 660;
+
+/**
+ * The book's own marks. `[+]` and `[−]` are what the PSG prints, so they are notation rather than
+ * language and `css/mothership.css` draws them from these classes; a plain roll is the absence of a
+ * mark, and keeps the empty column so the three labels align.
+ */
 const ICONS: Readonly<Record<Advantage, string>> = {
-  advantage: 'fas fa-angle-double-up',
-  none: 'fas fa-minus',
-  disadvantage: 'fas fa-angle-double-down',
+  advantage: 'roll-mark roll-mark-advantage',
+  none: 'roll-mark',
+  disadvantage: 'roll-mark roll-mark-disadvantage',
 };
 
 const LABELS: Readonly<Record<Advantage, string>> = {
@@ -35,24 +42,28 @@ const LABELS: Readonly<Record<Advantage, string>> = {
   disadvantage: 'Mothership.Disadvantage',
 };
 
-const ORDER: readonly Advantage[] = ['advantage', 'none', 'disadvantage'];
+/** Normal leads: it is the roll nobody has to think about, and the one Enter fires. */
+const ORDER: readonly Advantage[] = ['none', 'advantage', 'disadvantage'];
 
 /** The class `css/mothership.css` paints the preselected button with. */
 const PRESELECT = 'condition-preselect';
 
 /**
- * The three roll-type buttons. A condition that names this roll preselects the button it argues
- * for, which DialogV2 autofocuses — a default, never a decision (§34).
+ * The three roll-type buttons. Normal is the default, so a window opened and dismissed with Enter
+ * rolls the plain roll. A condition that names this roll takes that default and preselects the
+ * button it argues for instead, which DialogV2 autofocuses — a default, never a decision (§34).
  */
 function advantageButtons<V, T>(
   preselect: Advantage | null,
   answer: (advantage: Advantage, value: V) => T,
 ): DialogButton<V, T>[] {
+  const fallback = preselect ?? 'none';
   return ORDER.map((advantage) => ({
     action: advantage,
     label: localize(LABELS[advantage]),
     icon: ICONS[advantage],
-    ...(preselect === advantage ? { default: true, class: PRESELECT } : {}),
+    ...(advantage === fallback ? { default: true } : {}),
+    ...(preselect === advantage ? { class: PRESELECT } : {}),
     answer: (value: V) => answer(advantage, value),
   }));
 }
@@ -80,6 +91,9 @@ const ATTRIBUTES: readonly StatRow[] = [
   { key: 'combat', label: 'Mothership.Combat', example: 'Mothership.CombatSkillExample' },
 ];
 
+/** The keys the Stat picker offers, so a caller can price them before it asks. */
+export const ATTRIBUTE_KEYS: readonly StatKey[] = ATTRIBUTES.map((row) => row.key);
+
 /** PSG 22's three Saves. The same picker, a different list — the hotbar's Save macro asks with it. */
 const SAVES: readonly StatRow[] = [
   { key: 'sanity', label: 'Mothership.Sanity', example: 'Mothership.SanitySaveExample' },
@@ -95,6 +109,14 @@ export interface ChosenAttribute {
 export interface AttributePrompt {
   /** Whether the roll type is still open; when it is not, one Next button closes the window. */
   readonly advantage: boolean;
+  /**
+   * What each Stat is worth on this actor — `value + mod`, the number `d100Check` rolls under. A
+   * Save asked before its actor is settled has none, and the window states no total rather than
+   * a wrong one.
+   */
+  readonly values?: Readonly<Record<string, number>>;
+  /** The Skill already chosen, when the click that opened this window was a Skill's. */
+  readonly skill?: SkillRow | null;
 }
 
 interface StatPromptText {
@@ -103,38 +125,56 @@ interface StatPromptText {
   readonly intro: string;
 }
 
+/** The Stat and Save examples run to 125 characters, which is three lines in this window. */
+const STAT_DESCRIPTION_LINES = 3;
+
 async function pickStat(
   rows: readonly StatRow[],
   text: StatPromptText,
   prompt: AttributePrompt,
 ): Promise<ChosenAttribute | null> {
-  const stats = rows.map((entry) => ({
-    key: entry.key,
-    label: localize(entry.label),
-    example: localize(entry.example),
-    img: asset(`images/icons/ui/attributes/${entry.key}.png`),
-  }));
-  const props = { stats, heading: text.heading, intro: text.intro };
+  const values = prompt.values ?? {};
+  const skill = prompt.skill ?? null;
+  const props = {
+    heading: text.heading,
+    intro: text.intro,
+    options: rows.map((entry) => ({
+      key: entry.key,
+      label: localize(entry.label),
+      value: values[entry.key] === undefined ? '' : String(values[entry.key]),
+      amount: values[entry.key],
+      description: localize(entry.example),
+    })),
+    picks: 'stat',
+    fixed: skill === null ? null : { label: skill.name, amount: skill.bonus },
+    lines: STAT_DESCRIPTION_LINES,
+  };
 
-  return await svelteDialog<StatKey, ChosenAttribute, typeof props>({
-    component: ChooseAttribute,
+  return await svelteDialog<string, ChosenAttribute, typeof props>({
+    component: CheckPrompt,
     props,
     title: text.title,
     initial: rows[0].key,
-    width: DIALOG_WIDTH,
+    width: RAIL_WIDTH,
+    rail: true,
     buttons: prompt.advantage
-      ? advantageButtons(null, (advantage, stat) => ({ stat, advantage }))
-      : [nextButton((stat: StatKey) => ({ stat, advantage: 'none' as Advantage }))],
+      ? advantageButtons(null, (advantage, stat) => ({ stat: stat as StatKey, advantage }))
+      : [nextButton((stat: string) => ({ stat: stat as StatKey, advantage: 'none' as Advantage }))],
   });
 }
 
 export async function chooseAttribute(options: AttributePrompt): Promise<ChosenAttribute | null> {
+  const skill = options.skill ?? null;
   return await pickStat(
     ATTRIBUTES,
     {
       title: localize('Mothership.ChooseAStat'),
-      heading: localize('Mothership.SelectAStat'),
-      intro: `${localize('Mothership.ChooseTheStatForSkillCheck')} <em>${localize('Mothership.GivingYouAHigherNumber')}</em>`,
+      heading: localize('Mothership.AgainstWhichStat'),
+      // The window can name what was clicked, which the paragraph it replaces never could.
+      intro:
+        skill === null
+          ? localize('Mothership.AddASkillNext')
+          : format('Mothership.SkillAppliesToStat', { skill: skill.name, bonus: skill.bonus }),
     },
     options,
   );
@@ -147,7 +187,7 @@ export async function chooseSave(): Promise<ChosenAttribute | null> {
     {
       title: localize('Mothership.ChooseASave'),
       heading: localize('Mothership.SelectASave'),
-      intro: localize('Mothership.WhatASaveIs'),
+      intro: localize('Mothership.FailedSaveCostsStress'),
     },
     { advantage: true },
   );
@@ -160,6 +200,8 @@ export interface SkillRow {
   readonly img: string;
   readonly bonus: number;
   readonly description: string;
+  /** The word the book gives the bonus — `Trained`, `Expert`, `Master` — or null for a rank it does not name. */
+  readonly rank: string | null;
 }
 
 export interface ChosenSkill {
@@ -173,23 +215,61 @@ export interface SkillPrompt {
   readonly note: string;
   readonly preselect: Advantage | null;
   readonly advantage: boolean;
+  /** The skill the dialog opens with checked — a default, never a decision (§34). */
+  readonly defaultSkill: SkillRow | null;
+  /** The Stat this check is rolled against, and the number it contributes to the total. */
+  readonly stat: { readonly label: string; readonly amount: number };
 }
+
+/** The row that adds nothing. An empty key, because no skill can hold one. */
+const NO_SKILL = '';
+
+/** Every skill description the book ships fits two lines here; the longest is 114 characters. */
+const SKILL_DESCRIPTION_LINES = 2;
 
 export async function chooseSkill(options: SkillPrompt): Promise<ChosenSkill | null> {
   const skills = await Promise.all(
     options.skills.map(async (skill) => ({ ...skill, description: await enrich(skill.description) })),
   );
-  const props = { skills, note: options.note, prompt: options.advantage };
+  const chosen = (key: string): SkillRow | null =>
+    options.skills.find((skill) => skill.id === key) ?? null;
 
-  return await svelteDialog<SkillRow | null, ChosenSkill, typeof props>({
-    component: ChooseSkill,
+  const props = {
+    heading: localize('Mothership.AddASkill'),
+    intro: localize('Mothership.ARelevantSkillRaises'),
+    options: [
+      {
+        key: NO_SKILL,
+        label: localize('Mothership.NoSkill'),
+        amount: 0,
+        description: localize('Mothership.NoSkillExplanation'),
+        muted: true,
+      },
+      ...skills.map((skill) => ({
+        key: skill.id,
+        label: skill.name,
+        note: skill.rank === null ? '' : localize(`Mothership.SkillRank${skill.rank}`),
+        value: `+${skill.bonus}`,
+        amount: skill.bonus,
+        description: skill.description,
+      })),
+    ],
+    picks: 'skill',
+    fixed: options.stat,
+    lines: SKILL_DESCRIPTION_LINES,
+    note: options.note,
+  };
+
+  return await svelteDialog<string, ChosenSkill, typeof props>({
+    component: CheckPrompt,
     props,
     title: options.title,
-    initial: null,
-    width: DIALOG_WIDTH,
+    initial: options.defaultSkill?.id ?? NO_SKILL,
+    width: RAIL_WIDTH,
+    rail: true,
     buttons: options.advantage
-      ? advantageButtons(options.preselect, (advantage, skill) => ({ skill, advantage }))
-      : [nextButton((skill: SkillRow | null) => ({ skill, advantage: 'none' as Advantage }))],
+      ? advantageButtons(options.preselect, (advantage, key) => ({ skill: chosen(key), advantage }))
+      : [nextButton((key: string) => ({ skill: chosen(key), advantage: 'none' as Advantage }))],
   });
 }
 

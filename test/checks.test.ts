@@ -33,7 +33,12 @@ const prompts = vi.hoisted(() => ({
   noCharacter: vi.fn(),
 }));
 
-vi.mock('../module/dialogs/prompts.ts', () => prompts);
+// `prompts` holds only the mocked functions, because the beforeEach resets every value in it.
+// ATTRIBUTE_KEYS is data the module also exports — the Stats `promptCheck` prices before it asks.
+vi.mock('../module/dialogs/prompts.ts', () => ({
+  ...prompts,
+  ATTRIBUTE_KEYS: ['strength', 'speed', 'intellect', 'combat'],
+}));
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
 
@@ -240,7 +245,14 @@ describe('a stat check', () => {
         title: 'Body Save',
         advantage: true,
         skills: [
-          { id: 'sk1', name: 'Mechanical Repair', img: 'sk1.png', bonus: 10, description: '<p>Fixes things.</p>' },
+          {
+            id: 'sk1',
+            name: 'Mechanical Repair',
+            img: 'sk1.png',
+            bonus: 10,
+            description: '<p>Fixes things.</p>',
+            rank: 'Trained',
+          },
         ],
       }),
     );
@@ -308,7 +320,7 @@ describe('a stat check', () => {
   it('rolls nothing when the dialog is dismissed', async () => {
     stubs([{ faces: 100, result: 10 }]);
     prompts.chooseSkill.mockResolvedValue(null);
-    const actor = character();
+    const actor = character([skill('sk1', 'Mechanical Repair')]);
 
     expect(await runCheck(actor, { kind: 'stat', stat: 'body' })).toBeNull();
     expect(rolls.formulas).toEqual([]);
@@ -412,7 +424,9 @@ describe('a Rest Save', () => {
     const nightmares = condition('Nightmares', [{ modifier: 'disadvantage', scope: 'restSave' }]);
     const frightened = condition('Frightened', [{ modifier: 'disadvantage', scope: 'body' }]);
 
-    await runCheck(character([nightmares, frightened]), { kind: 'rest-save' });
+    await runCheck(character([nightmares, frightened, skill('sk1', 'Mechanical Repair')]), {
+      kind: 'rest-save',
+    });
 
     expect(prompts.chooseSkill).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -481,6 +495,58 @@ describe('an attack', () => {
 
     expect(await runCheck(character(), { kind: 'weapon-attack', itemId: 'gone' })).toBeNull();
     expect(notices.errors).toEqual(['No Item with id gone.']);
+  });
+
+  // PSG 2's weapon table — Adjacent is the melee band, everything past it is fired.
+  it('opens the skill dialog on Hand-to-Hand Combat for an Adjacent-range weapon', async () => {
+    stubs([{ faces: 100, result: 20 }]);
+    const handToHand = skill('sk1', 'Hand-to-Hand Combat');
+    const actor = character([weapon({ range: 'adjacent' }), handToHand]);
+
+    await runCheck(actor, { kind: 'weapon-attack', itemId: 'wpn1' });
+
+    expect(prompts.chooseSkill).toHaveBeenCalledWith(
+      expect.objectContaining({
+        defaultSkill: {
+          id: 'sk1',
+          name: 'Hand-to-Hand Combat',
+          img: 'sk1.png',
+          bonus: 10,
+          description: '<p>Fixes things.</p>',
+          rank: 'Trained',
+        },
+      }),
+    );
+  });
+
+  it('opens the skill dialog on Firearms for anything with a range', async () => {
+    stubs([{ faces: 100, result: 20 }]);
+    const firearms = skill('sk1', 'Firearms');
+    const actor = character([weapon({ range: 'close' }), firearms]);
+
+    await runCheck(actor, { kind: 'weapon-attack', itemId: 'wpn1' });
+
+    expect(prompts.chooseSkill).toHaveBeenCalledWith(
+      expect.objectContaining({
+        defaultSkill: {
+          id: 'sk1',
+          name: 'Firearms',
+          img: 'sk1.png',
+          bonus: 10,
+          description: '<p>Fixes things.</p>',
+          rank: 'Trained',
+        },
+      }),
+    );
+  });
+
+  it('opens on no skill when the actor holds nothing matching the default', async () => {
+    stubs([{ faces: 100, result: 20 }]);
+    const actor = character([weapon({ range: 'close' }), skill('sk1', 'Zero-G')]);
+
+    await runCheck(actor, { kind: 'weapon-attack', itemId: 'wpn1' });
+
+    expect(prompts.chooseSkill).toHaveBeenCalledWith(expect.objectContaining({ defaultSkill: null }));
   });
 });
 
@@ -624,13 +690,18 @@ describe('the check a piece of content names', () => {
 });
 
 describe('promptCheck — the check nobody has named yet', () => {
-  it('asks for the stat, then rolls it', async () => {
+  // The roll type is asked once, on the last window before the dice — which on this path is the
+  // Skill window, not this one. Asking here meant committing to Advantage before knowing which
+  // Skill you had, and then meeting the Skill list with a lone Next.
+  it('asks for the stat without asking the roll type, then rolls it', async () => {
     stubs([{ faces: 100, result: 10 }]);
-    prompts.chooseAttribute.mockResolvedValue({ stat: 'combat', advantage: 'disadvantage' });
+    prompts.chooseAttribute.mockResolvedValue({ stat: 'combat', advantage: 'none' });
+    prompts.chooseAdvantage.mockResolvedValue('disadvantage');
 
     const result = await promptCheck(creature());
 
-    expect(prompts.chooseAttribute).toHaveBeenCalledWith({ advantage: true });
+    // A creature holds only the stats it has, so the window prices only those.
+    expect(prompts.chooseAttribute).toHaveBeenCalledWith({ advantage: false, values: { combat: 50 } });
     expect(rolls.formulas).toEqual(['{1d100,1d100}kh']);
     expect(result).toMatchObject({ stat: { key: 'combat' } });
   });
@@ -652,7 +723,18 @@ describe('promptSkillCheck — the skill is known, the stat is not', () => {
 
     const result = await promptSkillCheck(sarah, 'sk1');
 
-    expect(prompts.chooseAttribute).toHaveBeenCalledWith({ advantage: true });
+    expect(prompts.chooseAttribute).toHaveBeenCalledWith({
+      advantage: true,
+      values: { strength: 30, speed: 35, intellect: 40, combat: 50 },
+      skill: {
+        id: 'sk1',
+        name: 'Hacking',
+        img: 'sk1.png',
+        bonus: 15,
+        description: '',
+        rank: 'Expert',
+      },
+    });
     expect(prompts.chooseSkill).not.toHaveBeenCalled();
     expect(result).toMatchObject({ target: 55, skill: { name: 'Hacking', bonus: 15 } });
   });

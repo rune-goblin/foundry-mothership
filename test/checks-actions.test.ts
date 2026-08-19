@@ -47,6 +47,20 @@ function condition(name: string, severity: number, id = `cond-${name}`): CheckIt
   };
 }
 
+/** A character with no skills is asked the plainer question, so a spec about the Skill prompt needs one. */
+function skill(name: string): CheckItem {
+  return {
+    id: 'sk1',
+    name,
+    img: 'skill.png',
+    type: 'skill',
+    system: { rank: 'Trained', bonus: 10, description: '' },
+    fire: async () => ({ status: 'fired', spent: 0, curShots: 0 }),
+    reload: async () => ({ status: 'untracked', curShots: 0, ammo: 0, loaded: 0 }),
+    toChat: () => ({ itemId: null, name, img: '', type: 'skill', description: '', roll: null }),
+  };
+}
+
 interface FakeActor extends CheckActor {
   readonly updates: Record<string, number>[];
 }
@@ -159,14 +173,14 @@ describe('@Check', () => {
   // preselects the button it argues for. Content that states one is an instruction.
   it('opens the prompt when the expression names no modifier', async () => {
     stubs([{ faces: 100, result: 10 }]);
-    await runAction(action('@Check[fear]'), [character()]);
+    await runAction(action('@Check[fear]'), [character([skill('Athletics')])]);
 
     expect(prompts.chooseSkill).toHaveBeenCalledWith(expect.objectContaining({ advantage: true }));
   });
 
   it('takes the modifier the expression states, without asking', async () => {
     stubs([{ faces: 100, result: 10 }]);
-    await runAction(action('@Check[fear +]'), [character()]);
+    await runAction(action('@Check[fear +]'), [character([skill('Athletics')])]);
 
     expect(prompts.chooseSkill).toHaveBeenCalledWith(expect.objectContaining({ advantage: false }));
     expect(rolls.formulas).toEqual(['{1d100,1d100}kl']);

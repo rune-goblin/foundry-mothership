@@ -142,6 +142,7 @@ export interface DialogButtonStub {
 /** A dialog that is open right now, and the three things a user can do to it. */
 export interface OpenDialog {
   readonly title: string;
+  readonly classes: readonly string[];
   readonly buttons: DialogButtonStub[];
   readonly element: HTMLElement;
   press(action: string): Promise<void>;
@@ -152,6 +153,7 @@ export interface OpenDialog {
 
 interface DialogConfig {
   window: { title: string };
+  classes?: readonly string[];
   content: string;
   buttons: DialogButtonStub[];
   render?: (event: unknown, dialog: { element: HTMLElement }) => void;
@@ -181,6 +183,7 @@ export function installDialogV2(): OpenDialog[] {
 
           opened.push({
             title: config.window.title,
+            classes: config.classes ?? [],
             buttons: config.buttons,
             element,
             press: async (action: string) => {

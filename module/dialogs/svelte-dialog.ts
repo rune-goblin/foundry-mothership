@@ -13,6 +13,8 @@
 
 import { mount, unmount, type Component } from 'svelte';
 
+import DialogBody from './DialogBody.svelte';
+
 export interface AnswerProps<V> {
   /** What the component starts on. */
   readonly value: V;
@@ -37,6 +39,12 @@ export interface SvelteDialogOptions<V, T, P extends object> {
   readonly initial: V;
   readonly buttons: readonly DialogButton<V, T>[];
   readonly width?: number;
+  /**
+   * Stand the buttons down the right of the window instead of along its foot. They stay DialogV2's
+   * own `.form-footer` buttons — only the form's tracks move — so the default button keeps its
+   * `autofocus` and Enter still submits through it.
+   */
+  readonly rail?: boolean;
 }
 
 interface DialogInstance {
@@ -70,6 +78,9 @@ declare const foundry:
 /** The class the legacy dialogs carry, so `css/mothership.css` styles these the same way. */
 const CLASSES = ['mothership', 'macro-popup-dialog'] as const;
 
+/** The class that turns the form's one column into two and stands the footer up as the rail. */
+const RAIL_CLASS = 'macro-popup-rail';
+
 /** A mount point, not a surface: no rule in either stylesheet selects it, so its rename is code. */
 const MOUNT_CLASS = 'mothership-dialog-root';
 
@@ -84,7 +95,7 @@ export async function svelteDialog<V, T, P extends object>(
 
   const answered = await foundry.applications.api.DialogV2.wait({
     window: { title: options.title },
-    classes: CLASSES,
+    classes: options.rail === true ? [...CLASSES, RAIL_CLASS] : CLASSES,
     ...(options.width === undefined ? {} : { position: { width: options.width } }),
     content: `<div class="${MOUNT_CLASS}"></div>`,
     buttons: options.buttons.map((button) => ({
@@ -104,14 +115,20 @@ export async function svelteDialog<V, T, P extends object>(
       if (target === null || target === mounted) return;
       if (component !== null) void unmount(component);
 
-      const props = Object.assign({}, options.props, {
-        value,
-        onchange: (next: V) => {
+      // A remount picks up where the last one left off, so a re-render is invisible to the user.
+      const props = {
+        component: options.component,
+        props: options.props,
+        initial: value,
+        report: (next: V) => {
           value = next;
         },
-      });
+      };
       mounted = target;
-      component = mount(options.component, { target, props }) as Record<string, unknown>;
+      component = mount(DialogBody as Component<typeof props>, { target, props }) as Record<
+        string,
+        unknown
+      >;
     },
     close: () => {
       // Returning anything here would become the dialog's answer, so the unmount is discarded.

@@ -14,7 +14,7 @@ import { voiceOf } from '../chat/cards.ts';
 import type { ItemCard } from '../documents/item.ts';
 import type { FireOutcome, ReloadOutcome } from '../inventory/ammo.ts';
 import type { MutableDocument } from '../mutation/mutate.ts';
-import { isSkillRank, rankBonus } from '../rules.ts';
+import { isSkillRank, rankBonus, skillRank, storedRank } from '../rules.ts';
 import { isRobotic } from '../tables/tables.ts';
 
 /** An embedded item, as `documents/item.ts` implements it. */
@@ -108,6 +108,15 @@ export function skillBonus(system: unknown): number {
   const skill = fields(system);
   const rank = text(skill.rank);
   return isSkillRank(rank) ? rankBonus(rank) : number(skill.bonus);
+}
+
+/**
+ * The word the book gives this skill's bonus, for the window that names the rank beside it. A rank
+ * the book does not name has no word — the bonus stands on its own rather than inventing one.
+ */
+export function skillRankWord(system: unknown): string | null {
+  const stored = text(fields(system).rank);
+  return isSkillRank(stored) ? storedRank(skillRank(stored)) : null;
 }
 
 export function isCharacter(actor: CheckActor): boolean {
