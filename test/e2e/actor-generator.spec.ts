@@ -469,9 +469,9 @@ test.describe('character generator', () => {
     // The Trained slot is filled first, which is what makes an Expert available to pick at all.
     await chooseClass(gmPage, 'Teamster');
     await pickEverySkill(gmPage);
-    // +5 to all stats and saves, so every bonus box reads 5.
-    await goTo(gmPage, 'stats');
-    await expect(gmPage.locator('input[data-bonus="combat"]')).toHaveValue('5');
+    // +5 to all stats and saves, so every ledger row is raised by 5.
+    await goTo(gmPage, 'adjustments');
+    await expect(gmPage.locator('[data-modifier="combat"]')).toHaveText('+5');
 
     await chooseClass(gmPage, 'Android');
 
@@ -501,12 +501,11 @@ test.describe('character generator', () => {
     await pickEverySkill(gmPage);
 
     // The Teamster's +5 is gone rather than added to: Android is +20 INTELLECT, +60 FEAR.
-    await goTo(gmPage, 'stats');
-    await expect(gmPage.locator('input[data-bonus="intellect"]')).toHaveValue('20');
-    await expect(gmPage.locator('input[data-bonus="speed"]')).toHaveValue('-10');
-    await expect(gmPage.locator('input[data-bonus="combat"]')).toHaveValue('0');
-    await goTo(gmPage, 'saves');
-    await expect(gmPage.locator('input[data-bonus="fear"]')).toHaveValue('60');
+    await goTo(gmPage, 'adjustments');
+    await expect(gmPage.locator('[data-modifier="intellect"]')).toHaveText('+20');
+    await expect(gmPage.locator('[data-modifier="speed"]')).toHaveText('-10');
+    await expect(gmPage.locator('[data-modifier="combat"]')).toHaveText('0');
+    await expect(gmPage.locator('[data-modifier="fear"]')).toHaveText('+60');
     // Three granted plus the two chosen, not the Teamster's on top.
     await goTo(gmPage, 'skills');
     await expect(gmPage.locator('ul[data-list="skills"] li')).toHaveCount(5);

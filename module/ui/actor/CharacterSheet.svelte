@@ -575,7 +575,8 @@
      (Generator and SheetHeader), `profile` (CreatureSheet),
      `textarea-input-grey` and `skill_training_frame` (CreatureSheet),
      `resource-label`, `sheet-body` (five sheets), the modifier pair `mainstatmod-input`/
-     `mainstatmod-title` (RollBox), the `.grid*`/`.flex*`/`widegap` set and the
+     `mainstatmod-title` (this sheet alone since the generator dropped its modifier pill, so
+     both can follow `mainsavemod-input` here), the `.grid*`/`.flex*`/`widegap` set and the
      `list-roll`/`rollable` hover group.
      `savetext` stays there despite this sheet being its only writer: RollableStat renders the
      element the class lands on, so a scoped block here can never reach it -- and its

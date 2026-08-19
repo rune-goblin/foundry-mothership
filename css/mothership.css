@@ -428,7 +428,7 @@
      transparent variant wins on source order alone. Reordering these changes what renders.
      ========================================================================================== */
 
-  /* shared tier: RollBox, CharacterSheet.
+  /* shared tier: CharacterSheet.
      A two-digit bonus overflows the 28px pill under an ApplicationV2 window's input padding,
      which is wider than AppV1's. Every other input in this file already zeroes it. */
   .mothership .mainstatmod-input {
@@ -452,9 +452,10 @@
   }
 
   /* The save's twin of the rule above moved into CharacterSheet.svelte, which is its only
-     writer. This one stays: RollBox writes it too. */
+     writer. The generator dropped its modifier pill, so this pair has one writer too and can
+     follow it there. */
 
-  /* shared tier: RollBox, CharacterSheet. */
+  /* shared tier: CharacterSheet. */
   .mothership .mainstatmod-title {
     position: relative;
     color: var(--text-disabled);

@@ -15,7 +15,7 @@ import { localize, format } from '../../i18n.ts';
 const STATS = ['strength', 'speed', 'intellect', 'combat'];
 const SAVES = ['sanity', 'fear', 'body'];
 
-/** Everything base_adjustment can raise, plus the health bonus the window offers beside it. */
+/** Everything base_adjustment can raise. */
 const BONUSES = [...STATS, ...SAVES, 'health', 'max_wounds'];
 
 const step = (id) => CHARACTER_CREATION.steps.find((s) => s.id === id);
@@ -210,8 +210,7 @@ export class CharacterDraft {
     this.#tables = { ...klass.system.roll_tables };
 
     // A second class replaces the first rather than stacking on it. The loadout goes with it
-    // because that table is the class's own; trinkets and patches are one table for everyone. The
-    // health bonus is the player's own number and no class sets it, so it stays.
+    // because that table is the class's own; trinkets and patches are one table for everyone.
     this.loadout = null;
 
     // base_adjustment declares all eight keys, so assigning them is the replacement -- there is

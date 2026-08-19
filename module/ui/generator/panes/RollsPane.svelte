@@ -15,7 +15,6 @@
       {key}
       label={localize(label)}
       value={draft.rolled[key]}
-      bind:bonus={draft.bonus[key]}
       onroll={() => draft.roll(key)}
     />
   {/each}

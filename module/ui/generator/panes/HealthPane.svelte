@@ -15,7 +15,6 @@
     key="health"
     label={localize('Mothership.Health')}
     value={draft.rolled.health}
-    bind:bonus={draft.bonus.health}
     onroll={() => draft.roll('health')}
   />
   <MainStat key="wounds" label={localize('Mothership.Wounds')}>

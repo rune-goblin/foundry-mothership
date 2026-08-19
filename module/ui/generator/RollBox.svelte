@@ -1,19 +1,15 @@
 <script>
-  // One rolled value: a die you click, which becomes the result, plus the class bonus beside it.
+  // One rolled value: a die you click, which becomes the result.
   // Local to the generator by design — recurrence inside one window gets a local component,
   // not a shared primitive; the label and circle come from MainStat so
   // the css/mothership.css class names stay in one place.
   //
-  // No <style> block: `circle-input` and the `mainstatmod-*` pair are shared tier there, and
-  // `clicable-item` moved into Generator.svelte, which scopes it by the form this always
-  // renders inside.
+  // No <style> block: `circle-input` is shared tier there, and `clicable-item` moved into
+  // Generator.svelte, which scopes it by the form this always renders inside.
   import MainStat from '../parts/MainStat.svelte';
   import { onActivate } from '../parts/activate.js';
 
-  let { key, label, value, bonus = $bindable(null), onroll } = $props();
-
-  // An <input> hands back a string, and the draft adds these to the rolled totals.
-  const setBonus = (event) => (bonus = Number(event.currentTarget.value) || 0);
+  let { key, label, value, onroll } = $props();
 </script>
 
 <MainStat {label} {key}>
@@ -33,13 +29,6 @@
       />
     {:else}
       <input class="circle-input" type="text" readonly data-value={key} {value} />
-    {/if}
-  {/snippet}
-
-  {#snippet after()}
-    {#if bonus !== null}
-      <input class="mainstatmod-input" type="text" data-bonus={key} value={bonus} oninput={setBonus} />
-      <div class="mainstatmod-title">+</div>
     {/if}
   {/snippet}
 </MainStat>

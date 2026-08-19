@@ -128,57 +128,60 @@
 </script>
 
 <div class="skill-selector" role="group" aria-label={localize('Mothership.CharacterGenerator.SkillTree.Label')}>
-  <div class="skill-selector-desc">
-    {#if hovered}
-      <span class="skill-selector-desc-name">{hovered.name}</span>
-      <p class="skill-selector-desc-text">{hovered.summary}</p>
-    {:else}
-      <p class="skill-selector-desc-text">{localize('Mothership.CharacterGenerator.SkillTree.DescHint')}</p>
-    {/if}
-  </div>
-
-  <div class="skill-selector-info">
-    <div class="skill-selector-info-line">
-      {#if !hovered}
-        <span class="skill-selector-info-muted">{localize('Mothership.CharacterGenerator.SkillTree.HoverHint')}</span>
-      {:else if hovered.reason === 'strands'}
-        <!-- Its own prerequisites are met, so the chips below would read as an invitation; what is
-             in the way is the pick above it, which this skill leads nowhere for. -->
-        <span class="skill-selector-info-name">{hovered.name}</span>
-        <span class="skill-selector-info-warn">
-          {localize('Mothership.CharacterGenerator.SkillTree.WouldStrandMaster')}
-        </span>
-      {:else if hovered.reason === 'spent'}
-        <!-- Its prerequisites are beside the point: nothing of this rank can be taken at all until
-             a pick is freed, and that is a fact about the budget, not about the skill. -->
-        <span class="skill-selector-info-name">{hovered.name}</span>
-        <span class="skill-selector-info-warn">
-          {format('Mothership.CharacterGenerator.SkillTree.NoPicksLeft', { rank: localize(RANK_LABEL[hovered.rank]) })}
-        </span>
-      {:else if hovered.prerequisites.length === 0}
-        <span class="skill-selector-info-name">{hovered.name}</span>
-        <span class="skill-selector-info-muted">{localize('Mothership.CharacterGenerator.SkillTree.NoPrerequisites')}</span>
-      {:else}
-        <span class="skill-selector-info-name">
-          {hovered.name} {localize('Mothership.CharacterGenerator.SkillTree.Requires')}
-        </span>
-        <span class="skill-selector-chips">
-          {#each hovered.prerequisites as req, index (req)}
-            {#if index > 0}<span class="skill-selector-info-muted">{localize('Mothership.CharacterGenerator.SkillTree.Or')}</span>{/if}
-            <span class="skill-selector-chip" class:met={held(req)} class:unmet={!held(req)}>
-              {byUuid.get(req)?.name ?? req}
-            </span>
-          {/each}
-        </span>
-      {/if}
+  <!-- Three labelled fields, not three sentences. The label says what the slot holds and the slot
+       holds the answer, so an empty one reads as a field waiting rather than as an instruction the
+       player has to read once and never again. -->
+  <div class="skill-selector-readout">
+    <div class="skill-selector-field is-entry">
+      <span class="skill-selector-label">{localize('Mothership.CharacterGenerator.SkillTree.Skill')}</span>
+      <div class="skill-selector-entry">
+        <span class="skill-selector-entry-name" class:is-blank={!hovered}>{hovered?.name ?? '—'}</span>
+        <!-- Why the row cannot be taken belongs beside its name, not in Requires: both reasons are
+             facts about the budget or the rank above it, and neither is answered by the chips. -->
+        {#if hovered?.reason === 'strands'}
+          <span class="skill-selector-note">
+            {localize('Mothership.CharacterGenerator.SkillTree.WouldStrandMaster')}
+          </span>
+        {:else if hovered?.reason === 'spent'}
+          <span class="skill-selector-note">
+            {format('Mothership.CharacterGenerator.SkillTree.NoPicksLeft', { rank: localize(RANK_LABEL[hovered.rank]) })}
+          </span>
+        {/if}
+      </div>
+      <p class="skill-selector-entry-text">{hovered?.summary ?? ''}</p>
     </div>
-    <div class="skill-selector-info-line" class:is-empty={hoveredUnlocks.length === 0}>
-      <span class="skill-selector-info-name">{localize('Mothership.CharacterGenerator.SkillTree.Unlocks')}</span>
-      <span class="skill-selector-chips">
-        {#each hoveredUnlocks.length ? hoveredUnlocks : ['—'] as dep (dep)}
-          <span class="skill-selector-chip met">{dep === '—' ? '—' : byUuid.get(dep)?.name ?? dep}</span>
-        {/each}
-      </span>
+
+    <div class="skill-selector-split">
+      <div class="skill-selector-field">
+        <span class="skill-selector-label">{localize('Mothership.CharacterGenerator.SkillTree.Requires')}</span>
+        <div class="skill-selector-chips">
+          {#if !hovered}
+            <span class="skill-selector-blank">—</span>
+          {:else if hovered.prerequisites.length === 0}
+            <span class="skill-selector-blank">{localize('Mothership.CharacterGenerator.SkillTree.NoPrerequisites')}</span>
+          {:else}
+            {#each hovered.prerequisites as req, index (req)}
+              {#if index > 0}<span class="skill-selector-conj">{localize('Mothership.CharacterGenerator.SkillTree.Or')}</span>{/if}
+              <span class="skill-selector-chip" class:met={held(req)} class:unmet={!held(req)}>
+                {byUuid.get(req)?.name ?? req}
+              </span>
+            {/each}
+          {/if}
+        </div>
+      </div>
+
+      <div class="skill-selector-field">
+        <span class="skill-selector-label">{localize('Mothership.CharacterGenerator.SkillTree.Unlocks')}</span>
+        <div class="skill-selector-chips">
+          {#if hoveredUnlocks.length === 0}
+            <span class="skill-selector-blank">—</span>
+          {:else}
+            {#each hoveredUnlocks as dep (dep)}
+              <span class="skill-selector-chip met">{byUuid.get(dep)?.name ?? dep}</span>
+            {/each}
+          {/if}
+        </div>
+      </div>
     </div>
   </div>
 
@@ -238,7 +241,10 @@
       --skillselector-rule: var(--border-neutral-medium);
       --skillselector-picked-surface: var(--surface-neutral-lowest);
       --skillselector-picked-text: var(--text-inverted);
-      --skillselector-granted-surface: var(--surface-neutral-highest);
+      /* A wash, not a step on the neutral ramp: `highest` stops at #bbb, heavy enough that a row
+         wearing it reads as a second kind of selection next to the black one. Hover is not a
+         state the player owns, so it gets the faintest mark that still registers. */
+      --skillselector-hover-surface: color-mix(in srgb, var(--surface-neutral-lowest) 7%, var(--surface-neutral-paper));
       --skillselector-muted: var(--text-secondary);
       --skillselector-warn-stripe: color-mix(in srgb, var(--border-warning) 12%, transparent);
       --skillselector-warn-border: color-mix(in srgb, var(--border-warning) 45%, transparent);
@@ -250,65 +256,78 @@
       font-family: var(--font-sans-mothership);
     }
 
-    .skill-selector-desc,
-    .skill-selector-info {
+    /* The readout is the tree's masthead, so it closes on the same 2px ink rule each rank heading
+       draws rather than the hairline that divides fields inside it. Nothing here is filled: the
+       plate is paper, which leaves the greys free and the black spent entirely on the rows. */
+    .skill-selector-readout {
+      border-bottom: var(--border-width-2) solid var(--skillselector-edge);
+    }
+
+    .skill-selector-field {
       display: flex;
-      align-items: baseline;
-      gap: var(--space-10);
+      flex-direction: column;
+      gap: var(--space-2);
+      min-width: 0;
       padding: var(--space-8) var(--space-12);
+    }
+
+    .skill-selector-field.is-entry {
       border-bottom: var(--border-width-1) solid var(--skillselector-rule);
-      background: var(--skillselector-granted-surface);
-      font-size: var(--font-size-sm);
+    }
+
+    /* Doubled to outweigh the wizard's typography reset, which flattens case across the window —
+       the same escape SkillSelector's rank headings take. A label has to look like a label here or
+       it reads as more of the answer. */
+    .skill-selector-label.skill-selector-label {
+      font-family: var(--font-display);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: var(--letter-spacing-wider);
+      text-transform: uppercase;
       color: var(--skillselector-muted);
     }
 
-    /* Book entries run from one short sentence to a long one; clamped to two lines at a fixed
-       height (not a min-height) so the box the tree sits under never grows or shrinks as the
-       hovered skill's entry gets longer or shorter — the fourth wiggle source alongside the two
-       info-lines below and the rows' own rings, all fixed the same way: an explicit height content
-       is capped to, never one content is left free to stretch. */
-    .skill-selector-desc {
-      align-items: flex-start;
-      height: 2.7rem;
-      overflow: hidden;
-    }
-
-    .skill-selector-info {
-      flex-direction: column;
-      gap: var(--space-4);
-      background: none;
-    }
-
-    /* A fixed, explicit height, not a `min-height` guess — a chip pill and a plain text line
-       don't naturally render at quite the same height, and a longer Requires/Unlocks list (some
-       skills chain three or four) would otherwise wrap to a second line and grow the box every
-       time the hovered skill changes. Content never wraps here; `.skill-selector-chips` scrolls
-       sideways instead, so the line's height truly cannot vary with what it's showing. */
-    .skill-selector-info-line {
+    /* Every height in this plate is explicit, never a floor content may exceed: the tree below it
+       must not shift by a pixel as the hovered skill changes, and entries, prerequisite lists and
+       warnings all vary in length. Text clamps, chips scroll sideways. */
+    .skill-selector-entry {
       display: flex;
-      align-items: center;
-      gap: var(--space-8);
-      flex-wrap: nowrap;
-      height: 1.75rem;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-12);
+      height: 1.5rem;
       overflow: hidden;
     }
 
-    .skill-selector-info-line.is-empty {
-      visibility: hidden;
-    }
-
-    .skill-selector-desc-name,
-    .skill-selector-info-name {
-      flex: none;
-      white-space: nowrap;
+    .skill-selector-entry-name {
+      min-width: 0;
       font-family: var(--font-display);
+      font-size: var(--font-size-lg);
       font-weight: var(--font-weight-bold);
       color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .skill-selector-desc-text {
+    .skill-selector-entry-name.is-blank {
+      color: var(--text-muted);
+    }
+
+    .skill-selector-note {
+      flex: none;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium);
+      color: var(--text-warning-muted);
+      white-space: nowrap;
+    }
+
+    .skill-selector-entry-text {
       margin: 0;
+      height: 2.1rem;
+      font-size: var(--font-size-sm);
       line-height: var(--line-height-tight);
+      color: var(--text-primary);
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
@@ -316,13 +335,25 @@
       overflow: hidden;
     }
 
-    .skill-selector-info-muted,
-    .skill-selector-info-warn {
+    .skill-selector-split {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .skill-selector-split .skill-selector-field + .skill-selector-field {
+      border-left: var(--border-width-1) solid var(--skillselector-rule);
+    }
+
+    .skill-selector-blank,
+    .skill-selector-conj {
+      flex: none;
+      font-size: var(--font-size-sm);
+      color: var(--skillselector-muted);
       white-space: nowrap;
     }
 
-    .skill-selector-info-warn {
-      color: var(--text-warning-muted);
+    .skill-selector-blank {
+      color: var(--text-muted);
     }
 
     .skill-selector-chips {
@@ -331,6 +362,7 @@
       align-items: center;
       gap: var(--space-6);
       min-width: 0;
+      height: 1.5rem;
       overflow-x: auto;
       scrollbar-width: thin;
     }
@@ -423,7 +455,9 @@
       gap: var(--space-8);
       width: 100%;
       padding: var(--space-6) var(--space-8) var(--space-6) var(--space-6);
-      border: var(--border-width-1) solid transparent;
+      /* 2px on every row, transparent until a state claims it, so the outline a granted row wears
+         costs its neighbours no reflow — the border box is the same on all four states. */
+      border: var(--border-width-2) solid transparent;
       border-radius: var(--radius-md);
       /* Explicit, not `none` — every state needs a real declared background for the e2e contrast
          check to measure against, not the paper surface it happens to inherit visually. */
@@ -481,34 +515,50 @@
       transition: color var(--skillselector-transition), transform var(--skillselector-transition);
     }
 
-    /* available: an open pick, waiting */
+    /* available: an open pick, waiting. Hover deliberately draws no border — an ink outline is the
+       one thing that says "you hold this", and a row the cursor merely rests on must not borrow it.
+       A wash barely off the paper and a dot that comes up to full ink are enough to say where the
+       cursor is, and both vanish the moment it leaves. */
     .skill-selector-row.is-available:hover,
     .skill-selector-row.is-available:focus-visible {
-      background: var(--skillselector-granted-surface);
-      border-color: var(--border-neutral-strong);
+      background: var(--skillselector-hover-surface);
+    }
+    .skill-selector-row.is-available:hover .skill-selector-dot,
+    .skill-selector-row.is-available:focus-visible .skill-selector-dot {
+      border-color: var(--skillselector-edge);
+    }
+    .skill-selector-row.is-available:hover .skill-selector-chev,
+    .skill-selector-row.is-available:focus-visible .skill-selector-chev {
+      color: var(--text-primary);
     }
 
-    /* picked: this session's answer — filled dot, filled row, and clicking it again clears it */
+    /* Two rows you hold, told apart by agency rather than by tint: filled is the one you chose and
+       can unchoose, outlined is the one the class handed you. Both are the same ink, so "held"
+       reads at a glance across all three columns and only the fill says whether it is yours to
+       change — a distinction a second grey could never carry. */
+
+    /* picked: this session's answer — filled dot, filled row, and clicking it again clears it. The
+       inverted ink sits on the row itself, not only on the name, so every descendant inherits it
+       and the e2e contrast probe measures the pair that is actually painted. */
     .skill-selector-row.is-picked {
       background: var(--skillselector-picked-surface);
       border-color: var(--skillselector-picked-surface);
+      color: var(--skillselector-picked-text);
     }
-    .skill-selector-row.is-picked .skill-selector-name { color: var(--skillselector-picked-text); }
     .skill-selector-row.is-picked .skill-selector-dot { background: var(--skillselector-picked-text); border-color: var(--skillselector-picked-text); }
     .skill-selector-row.is-picked .skill-selector-dot::after { background: var(--skillselector-picked-surface); transform: scale(1); }
     .skill-selector-row.is-picked .skill-selector-chev { color: var(--skillselector-picked-text); }
 
-    /* granted: the class handed it out, nothing to decide — locked on, quieter than a fresh pick */
+    /* granted: the class handed it out, nothing to decide */
     .skill-selector-row.is-granted {
-      background: var(--skillselector-granted-surface);
-      border-color: var(--skillselector-rule);
+      border-color: var(--skillselector-edge);
       cursor: default;
     }
     .skill-selector-row.is-granted .skill-selector-dot {
       background: var(--border-accent);
       border-color: var(--border-accent);
     }
-    .skill-selector-row.is-granted .skill-selector-chev { color: var(--border-neutral-strong); }
+    .skill-selector-row.is-granted .skill-selector-chev { color: var(--skillselector-muted); }
 
     /* unavailable: no open slot can take it yet. The dot itself is hidden, not just dimmed, so a
        dot's mere presence always means "you can act on this row" — an empty ring next to another
@@ -564,7 +614,7 @@
       color: var(--border-accent);
       transform: translateX(2px);
     }
-    .skill-selector-row.is-granted.is-lit { box-shadow: 0 0 0 1px var(--border-accent) inset; }
+    .skill-selector-row.is-granted.is-lit,
     .skill-selector-row.is-picked.is-lit { box-shadow: 0 0 0 2px var(--border-accent) inset; }
 
     .skill-selector-row.is-hover-lit { outline-color: var(--border-accent); }
