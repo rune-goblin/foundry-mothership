@@ -1,82 +1,121 @@
-import { CHARACTER_CREATION } from '../../../content/books/psg/character-creation.ts';
+import IntroPane from './panes/IntroPane.svelte';
+import RollsPane from './panes/RollsPane.svelte';
+import ClassPane from './panes/ClassPane.svelte';
+import AdjustmentsPane from './panes/AdjustmentsPane.svelte';
+import HealthPane from './panes/HealthPane.svelte';
+import SkillsPane from './panes/SkillsPane.svelte';
+import GearPane from './panes/GearPane.svelte';
+import FinishPane from './panes/FinishPane.svelte';
+import { CLASS_ICONS, SAVES, STATS } from './labels.js';
+import { format, localize } from '../../i18n.ts';
+
+const K = 'Mothership.CharacterGenerator.Wizard';
 
 /**
- * The wizard's panes: the book's steps in the book's order, each paired with the draft state it
- * fills in. Nothing here renders — this is the spine the window walks, and it is pure so
- * `test/generator.test.ts` can walk it too.
+ * The wizard's spine: every step it walks, in the book's order, and the only list of them. The
+ * rail, the counter, the gate and the pane on screen are all read off this, so a step is added,
+ * reordered or dropped here and nowhere else.
  *
- * A pane is a question. The book's steps 5 and 6 ask nothing — Stress starts at 2 for everyone,
- * and the Trauma Response is whatever the chosen class prints — so neither is a pane: the class
- * pane shows the Trauma Response the class brings. The rail numbers what it walks, which is why a
- * pane's number is its position rather than the book's.
+ * `done` is a step's whole contract with the draft. It both ticks the rail marker and unlocks the
+ * step after it, so a half-answered question cannot be walked past by either route. `blocked` is
+ * what the nav says while `done` is false — a step asking more than its title names says something
+ * better than the default.
  *
- * Two panes are the wizard's own rather than the book's, and say so with `step: null`: the front
- * matter, which asks nothing and so is the one pane the rail stars instead of numbering, and the
- * adjustments pane, which places everything a class leaves to the player — where its free
- * adjustment goes, and which of the skill bonuses it offers one of. Step 3 is those questions on
- * two panes — which class, then what the class hands you — and asking them together meant
- * answering against cards that had already stopped being the subject. A pane of the wizard's own
- * prints its own copy, so it carries `titleKey`/`introKeys` where a book pane carries the step.
- *
- * `done` both ticks the rail and gates the pane after it. Every question must be answered before
- * the wizard walks forward, so the same predicate is the single source of truth for progress and
- * navigation.
+ * The book's steps 5 and 6 are not here: neither asks the player anything — Stress starts at 2 for
+ * everyone, and the Trauma Response is whatever the class prints — so the class step shows the one
+ * and `apply` writes the other. `adjustments` is the wizard's own rather than the book's: step 3
+ * asks two things, and "where does the class's free +5 go" is decided against the stat ledger, not
+ * against the class cards that answered the question before it.
  */
-
-const byId = (id) => {
-  const step = CHARACTER_CREATION.steps.find((entry) => entry.id === id);
-  if (!step) throw new Error(`No creation step "${id}" in the PSG catalog`);
-  return step;
-};
-
-/** The intro asks nothing; it is the book's own front matter, and always done. */
-const stated = () => true;
-
-const rolled = (keys) => (draft) => keys.every((key) => draft.rolled[key] !== null);
-
-export const PANES = [
+export const STEPS = [
   {
     id: 'intro',
-    title: CHARACTER_CREATION.name,
-    intro: CHARACTER_CREATION.intro,
-    step: null,
+    // The front matter asks nothing, so it is the one step the rail stars instead of numbering.
     numbered: false,
-    done: stated,
+    // It is a composed page rather than a stack of controls: the prose is set over the cover, and
+    // the cover runs to the pane's own edge. `test/e2e/actor-generator.spec.ts` pins that edge.
+    bleed: true,
+    title: `${K}.Intro.Title`,
+    pane: IntroPane,
+    done: () => true,
   },
-  { id: 'stats', step: byId('step-1-roll-stats'), done: rolled(['strength', 'speed', 'intellect', 'combat']) },
-  { id: 'saves', step: byId('step-2-roll-saves'), done: rolled(['sanity', 'fear', 'body']) },
-  { id: 'class', step: byId('step-3-choose-your-class'), done: (draft) => draft.classUuid !== '' },
+  {
+    id: 'stats',
+    title: `${K}.Stats.Title`,
+    instruction: `${K}.Stats.Instruction`,
+    pane: RollsPane,
+    props: { rolls: STATS },
+    done: (draft) => draft.statsRolled,
+  },
+  {
+    id: 'saves',
+    title: `${K}.Saves.Title`,
+    instruction: `${K}.Saves.Instruction`,
+    pane: RollsPane,
+    props: { rolls: SAVES },
+    done: (draft) => draft.savesRolled,
+  },
+  {
+    id: 'class',
+    title: `${K}.Class.Title`,
+    pane: ClassPane,
+    done: (draft) => draft.classChosen,
+    blocked: () => localize('Mothership.CharacterGenerator.Error.NoClass'),
+  },
   {
     id: 'adjustments',
-    titleKey: 'Mothership.CharacterGenerator.Wizard.Adjustments',
-    step: null,
-    // A draft with no class has no choices to spend, and `every` over nothing is true — so this
-    // reads the class too, or the rail would tick a pane the player has not reached.
-    done: (draft) => draft.classUuid !== '' && draft.statChoicesSpent && draft.skillGroupsChosen,
+    title: (draft) => (draft.className
+      ? format(`${K}.Adjustments.TitleFor`, { class: draft.className })
+      : localize(`${K}.Adjustments.Title`)),
+    art: (draft) => (draft.selectedClass
+      ? CLASS_ICONS[draft.selectedClass.name] ?? draft.selectedClass.img
+      : null),
+    pane: AdjustmentsPane,
+    done: (draft) => draft.adjustmentsMade,
+    blocked: (draft) => localize(draft.statChoicesSpent
+      ? 'Mothership.CharacterGenerator.Error.UnpickedSkillBonus'
+      : 'Mothership.CharacterGenerator.Error.UnspentAdjustment'),
   },
-  { id: 'health', step: byId('step-4-roll-health'), done: rolled(['health']) },
-  { id: 'skills', step: byId('step-7-choose-skills'), done: (draft) => draft.skillsPicked },
+  {
+    id: 'health',
+    title: `${K}.Health.Title`,
+    instruction: `${K}.Health.Instruction`,
+    pane: HealthPane,
+    done: (draft) => draft.healthRolled,
+  },
+  {
+    id: 'skills',
+    title: `${K}.Skills.Title`,
+    instruction: `${K}.Skills.Instruction`,
+    pane: SkillsPane,
+    done: (draft) => draft.skillsPicked,
+  },
   {
     id: 'gear',
-    step: byId('step-8-roll-loadout-trinket-and-patch'),
-    done: (draft) => draft.loadout !== null && draft.trinket !== null && draft.patch !== null && draft.rolled.credits !== null,
+    title: `${K}.Gear.Title`,
+    pane: GearPane,
+    done: (draft) => draft.gearRolled,
   },
-  { id: 'finish', step: byId('step-9-finishing'), done: (draft) => draft.name.trim() !== '' },
+  {
+    id: 'finish',
+    title: `${K}.Finish.Title`,
+    pane: FinishPane,
+    done: (draft) => draft.named,
+  },
 ];
 
-/** The book's own title for a pane. A pane printing the wizard's copy carries `titleKey` instead. */
-export const paneTitle = (pane) => pane.title ?? pane.step.title;
+export const LAST_STEP = STEPS.length - 1;
 
-/** The panes the counter counts, in order: everything the wizard asks something on. */
-export const NUMBERED = PANES.filter((pane) => pane.numbered !== false);
+const NUMBERED = STEPS.filter((step) => step.numbered !== false);
 
-/** The pane a wizard opening on an untouched draft should land on: the first one left to do. */
-export function firstIncomplete(draft) {
-  return PANES.findIndex((pane) => !pane.done(draft));
-}
+/** What the counter counts. The star is not one of them, so "Step 1 of 8" stays true. */
+export const STEP_TOTAL = NUMBERED.length;
 
-/** Where to open: the first incomplete pane, or Finish when a complete draft is reopened. */
-export function firstUnfinished(draft) {
-  const index = firstIncomplete(draft);
-  return index === -1 ? PANES.length - 1 : index;
-}
+export const stepNumber = (step) => NUMBERED.indexOf(step) + 1;
+
+/** A field the draft may answer for itself: a lang key, or a function returning the finished text. */
+const resolve = (value, draft) => (typeof value === 'function' ? value(draft) : localize(value));
+
+export const stepTitle = (step, draft) => resolve(step.title, draft);
+
+export const stepBlocked = (step, draft) => resolve(step.blocked ?? `${K}.CompleteStep`, draft);

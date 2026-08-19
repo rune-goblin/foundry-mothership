@@ -1,26 +1,27 @@
 <script>
+  // What is left, and how to get back to what is done. The rail knows nothing about the steps
+  // beyond what `steps.js` says they are and what the shell has already worked out about them.
+  import { STEPS, stepNumber, stepTitle } from './steps.js';
   import { localize } from '../../i18n.ts';
-  import { PANES } from './steps.js';
-  import { numberOf, titleOf } from './labels.js';
 
-  let { draft, index, reachable, onpick } = $props();
+  let { draft, index, progress, reachable, onpick } = $props();
 </script>
 
 <nav class="wizard-rail" aria-label={localize('Mothership.CharacterGenerator.Wizard.Steps')}>
   <ol>
-    {#each PANES as entry, position (entry.id)}
+    {#each STEPS as step, position (step.id)}
       <li>
         <button
           type="button"
           class="wizard-rail-step"
-          class:current={position === index}
-          class:complete={entry.done(draft)}
+          class:current={index === position}
+          class:complete={progress[position]}
           disabled={!reachable(position)}
-          data-pane={entry.id}
+          data-pane={step.id}
           onclick={() => onpick(position)}
         >
-          <span class="wizard-rail-number">{entry.numbered === false ? '★' : numberOf(entry)}</span>
-          <span class="wizard-rail-title">{titleOf(entry, draft)}</span>
+          <span class="wizard-rail-number">{step.numbered === false ? '★' : stepNumber(step)}</span>
+          <span class="wizard-rail-title">{stepTitle(step, draft)}</span>
         </button>
       </li>
     {/each}

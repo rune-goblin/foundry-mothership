@@ -26,6 +26,13 @@
   />
 {/snippet}
 
+<div class="wizard-prose">
+  <p>{localize('Mothership.CharacterGenerator.Wizard.Gear.Loadout')}</p>
+  <p>{localize('Mothership.CharacterGenerator.Wizard.Gear.Trinket')}</p>
+  <p>{localize('Mothership.CharacterGenerator.Wizard.Gear.Credits')}</p>
+  <p class="wizard-reference">{localize('Mothership.CharacterGenerator.Wizard.Gear.Reference')}</p>
+</div>
+
 <div class="wizard-tables">
   {#each TABLES as [kind, label] (kind)}
     <div class="wizard-table">

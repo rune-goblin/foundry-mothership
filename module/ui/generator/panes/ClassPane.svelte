@@ -1,9 +1,11 @@
 <script>
-  import { localize, format } from '../../../i18n.ts';
+  import { format, localize } from '../../../i18n.ts';
   import { offerLabel } from '../../class/choosable-stats.js';
   import { BONUS_LABEL, CLASS_ICONS, signed } from '../labels.js';
 
-  let { draft, selectedClass } = $props();
+  let { draft } = $props();
+
+  const selectedClass = $derived(draft.selectedClass);
 
   /** A bonus package as one phrase: the book's own wording where it has one, its picks otherwise. */
   const packageLabel = (option) =>

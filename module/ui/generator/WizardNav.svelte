@@ -1,21 +1,8 @@
 <script>
   import { localize } from '../../i18n.ts';
-  import { PANES } from './steps.js';
 
-  let { draft, pane, index, gate, reachable, onback, onnext, onfinish } = $props();
-
-  const LAST = PANES.length - 1;
-
-  const gateMessage = (entry) => {
-    if (entry.id === 'class') return 'Mothership.CharacterGenerator.Error.NoClass';
-    // The pane asks two things now, so it names whichever is still open.
-    if (entry.id === 'adjustments') {
-      return draft.statChoicesSpent
-        ? 'Mothership.CharacterGenerator.Error.UnpickedSkillBonus'
-        : 'Mothership.CharacterGenerator.Error.UnspentAdjustment';
-    }
-    return 'Mothership.CharacterGenerator.Wizard.CompleteStep';
-  };
+  // `blocked` arrives already worded and already decided: empty means the walk is not blocked here.
+  let { index, last, blocked, cannext, canfinish, onback, onnext, onfinish } = $props();
 </script>
 
 <footer class="wizard-nav">
@@ -23,18 +10,14 @@
     {localize('Mothership.CharacterGenerator.Wizard.Back')}
   </button>
 
-  <p class="wizard-gate">
-    {#if index === gate}
-      {localize(gateMessage(pane))}
-    {/if}
-  </p>
+  <p class="wizard-gate">{blocked}</p>
 
-  {#if index === LAST}
+  {#if index === last}
     <button
       type="button"
       class="wizard-step-button primary"
       data-action="save"
-      disabled={draft.name.trim() === ''}
+      disabled={!canfinish}
       onclick={onfinish}
     >
       {localize('Mothership.CharacterGenerator.Wizard.Create')}
@@ -44,7 +27,7 @@
       type="button"
       class="wizard-step-button primary"
       data-action="next"
-      disabled={!reachable(index + 1)}
+      disabled={!cannext}
       onclick={onnext}
     >
       {localize('Mothership.Next')}

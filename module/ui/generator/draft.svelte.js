@@ -2,6 +2,7 @@ import { CHARACTER_CREATION } from '../../../content/books/psg/character-creatio
 import { parseResults, drawnRow } from './table-result.js';
 import { loadSkills, loadClasses } from './skills.js';
 import { expandSlots, packageCounts, PICK_KINDS } from './picks.js';
+import { CLASS_ICONS } from './labels.js';
 import { localize, format } from '../../i18n.ts';
 
 /**
@@ -54,9 +55,29 @@ const SHED = ['item', 'armor', 'weapon', 'skill', 'condition'];
 const zeroed = (keys) => Object.fromEntries(keys.map((key) => [key, 0]));
 const nulled = (keys) => Object.fromEntries(keys.map((key) => [key, null]));
 
+const PLACEHOLDER = 'icons/svg/mystery-man.svg';
+
+const STOCK_PORTRAITS = new Set([PLACEHOLDER, ...Object.values(CLASS_ICONS)]);
+
+const ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+
+// Escaped, not trusted: the sheet prints both fields back enriched.
+function paragraphs(text) {
+  return text
+    .split(/\n{2,}/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .map((block) => `<p>${block.replace(/[&<>"']/g, (char) => ESCAPES[char]).replace(/\n/g, '<br>')}</p>`)
+    .join('');
+}
+
 export class CharacterDraft {
   name = $state('');
   pronouns = $state('');
+  /** Empty means the class's art. */
+  portrait = $state('');
+  biography = $state('');
+  notes = $state('');
   className = $state('');
   classUuid = $state('');
   traumaResponse = $state('');
@@ -87,6 +108,51 @@ export class CharacterDraft {
     this.#actor = actor;
     this.name = actor.name;
     this.pronouns = actor.system?.pronouns?.value ?? '';
+    // Art a player chose survives a regeneration; the placeholder and last class's icon do not, or
+    // the portrait would keep showing a class the character no longer is.
+    this.portrait = STOCK_PORTRAITS.has(actor.img) ? '' : actor.img ?? '';
+  }
+
+  /** The chosen class as the scan flattened it: its description, adjustments, art and skills. */
+  get selectedClass() {
+    return this.classOptions.find((option) => option.uuid === this.classUuid) ?? null;
+  }
+
+  get portraitSrc() {
+    if (this.portrait) return this.portrait;
+    return CLASS_ICONS[this.className] ?? this.selectedClass?.img ?? '';
+  }
+
+  // One per card: whether the question that card asks has been answered. The rail ticks these and
+  // the wizard walks on them, so a half-answered step cannot be stepped past by either route.
+  get statsRolled() {
+    return STATS.every((key) => this.rolled[key] !== null);
+  }
+
+  get savesRolled() {
+    return SAVES.every((key) => this.rolled[key] !== null);
+  }
+
+  get classChosen() {
+    return this.classUuid !== '';
+  }
+
+  // A draft with no class has no choices to spend, and `every` over nothing is true — so this reads
+  // the class too, or the rail would tick a card the player has not reached.
+  get adjustmentsMade() {
+    return this.classChosen && this.statChoicesSpent && this.skillGroupsChosen;
+  }
+
+  get healthRolled() {
+    return this.rolled.health !== null;
+  }
+
+  get gearRolled() {
+    return this.loadout !== null && this.trinket !== null && this.patch !== null && this.rolled.credits !== null;
+  }
+
+  get named() {
+    return this.name.trim() !== '';
   }
 
   /**
@@ -313,8 +379,10 @@ export class CharacterDraft {
     return this.skillGroups.every((group) => group.chosen !== null);
   }
 
+  // `every` over nothing is true, so a draft with no class would report its skills picked before
+  // it has any to pick.
   get skillsPicked() {
-    return this.skillGroupsChosen && this.skillSlots.every((slot) => slot.chosen !== null);
+    return this.classChosen && this.skillGroupsChosen && this.skillSlots.every((slot) => slot.chosen !== null);
   }
 
   /** The skills the draft would hand out: granted, then taken with a package, then picked. */
@@ -416,6 +484,10 @@ export class CharacterDraft {
     if (this.rolled.credits !== null) update['system.credits.value'] = String(this.rolled.credits);
     if (this.name) update.name = this.name;
     if (this.pronouns) update['system.pronouns.value'] = this.pronouns;
+    if (this.portraitSrc) update.img = this.portraitSrc;
+    // Left blank, both fields keep whatever the actor already carries.
+    if (this.biography.trim()) update['system.biography'] = paragraphs(this.biography);
+    if (this.notes.trim()) update['system.notes'] = paragraphs(this.notes);
     if (this.className) {
       update['system.class.value'] = this.className;
       update['system.other.stressdesc.value'] = this.traumaResponse;

@@ -1,13 +1,13 @@
 import { psg, type Source } from './source.ts';
 
+// The record the wizard is measured against, not the copy it prints: the panes carry their own
+// strings, and only step 5 kept its `text`, because a test reads STARTING_STRESS out of it.
 export interface CreationStep {
   id: string;
   number: number;
   title: string;
   instruction: string | null;
-  text: readonly string[];
-  bullets: readonly string[];
-  references: readonly { text: string; pages: readonly number[] }[];
+  text?: readonly string[];
   /** The step's dice, where it has any. `formula` is what the generator rolls. */
   roll: { raw: string; formula: string } | null;
   source: Source;
@@ -16,7 +16,6 @@ export interface CreationStep {
 export interface CharacterCreation {
   id: string;
   name: string;
-  intro: readonly string[];
   steps: readonly CreationStep[];
   source: Source;
 }
@@ -24,23 +23,12 @@ export interface CharacterCreation {
 export const CHARACTER_CREATION = {
   id: 'character-creation',
   name: 'How to Make Your Character',
-  intro: [
-    'Welcome to Mothership®, the sci-fi horror RPG where you and your crew try to survive in the most inhospitable environment in the universe: outer space!',
-    "Excavate dangerous derelict spacecraft, explore strange unknown worlds, encounter hostile alien life, and escape the horrors encroaching upon your every move. Let's get started!",
-    "The sheet at the back of this book has all the instructions for how to create your character. All you need to do is follow the numbered steps in each box until you've filled everything in.",
-  ],
   steps: [
     {
       id: 'step-1-roll-stats',
       number: 1,
       title: 'Roll Stats',
       instruction: 'Roll 2 ten-sided dice (2d10), add them together, then add 25. Record the results for each Stat.',
-      text: [
-        'Characters have four Stats: Strength, Speed, Intellect, and Combat, representing how well they act under extreme pressure.',
-        "A Stat of 36 is average, but don't get too hung up on the numbers right now.",
-      ],
-      bullets: [],
-      references: [{ text: 'Read about Stats on pg. 18.', pages: [18] }],
       source: psg(4),
       roll: {
         raw: 'Roll 2 ten-sided dice (2d10), add them together, then add 25. Record the results for each Stat.',
@@ -52,11 +40,6 @@ export const CHARACTER_CREATION = {
       number: 2,
       title: 'Roll Saves',
       instruction: 'Roll 2 ten-sided dice (2d10), add them together, then add 10. Record the results for each Save.',
-      text: [
-        'Characters have three Saves: Sanity, Fear, and Body, representing how resistant and reactive they are to different kinds of trauma and danger.',
-      ],
-      bullets: [],
-      references: [{ text: 'Read about Saves on pg. 18.', pages: [18] }],
       source: psg(4),
       roll: {
         raw: 'Roll 2 ten-sided dice (2d10), add them together, then add 10. Record the results for each Save.',
@@ -68,17 +51,6 @@ export const CHARACTER_CREATION = {
       number: 3,
       title: 'Choose Your Class',
       instruction: 'Mark your class, then alter your Stats and Saves accordingly.',
-      text: [
-        'There are four basic classes in Mothership:',
-        "Classes broadly define character backgrounds (e.g., scientists know basic info about most scientific disciplines). We'll get into specialities in Step 7.",
-      ],
-      bullets: [
-        'Marines are handy in a fight, but whenever they Panic it may cause problems for the rest of the crew.',
-        'Androids are a terrifying and exciting addition to any crew. They tend to unnerve other crewmembers with their cold inhumanity.',
-        'Scientists are doctors, researchers, or anyone who wants to slice open creatures (or infected crewmembers) with a scalpel.',
-        'Teamsters are rough and tumble blue-collar space workers, mechanics, engineers, miners, and pilots.',
-      ],
-      references: [],
       source: psg(4),
       roll: null,
     },
@@ -87,11 +59,6 @@ export const CHARACTER_CREATION = {
       number: 4,
       title: 'Roll Health',
       instruction: 'Roll 1 ten-sided die (1d10) then add 10. Record the result for Maximum Health.',
-      text: [
-        'Characters can suffer a certain number of Wounds before they die. Each class has different starting Maximum Wounds. Characters gain a Wound when their Health reaches zero.',
-      ],
-      bullets: [],
-      references: [],
       source: psg(5),
       roll: {
         raw: 'Roll 1 ten-sided die (1d10) then add 10. Record the result for Maximum Health.',
@@ -104,8 +71,6 @@ export const CHARACTER_CREATION = {
       title: 'Gain Stress',
       instruction: null,
       text: ["Characters' current Stress and Minimum Stress both start at 2."],
-      bullets: [],
-      references: [],
       source: psg(5),
       roll: null,
     },
@@ -114,11 +79,6 @@ export const CHARACTER_CREATION = {
       number: 6,
       title: 'Note Trauma Response',
       instruction: null,
-      text: [
-        'Each class deals with Stress and Panic differently, which comes into play later in the game. Mark your Trauma Response for future reference.',
-      ],
-      bullets: [],
-      references: [],
       source: psg(5),
       roll: null,
     },
@@ -127,11 +87,6 @@ export const CHARACTER_CREATION = {
       number: 7,
       title: 'Choose Skills',
       instruction: 'To choose a Skill you must have at least one prerequisite Skill (a Skill that has an arrow pointing from it) first.',
-      text: [
-        'Each class comes preloaded with relevant Skills, which help characters perform better at different challenges. Additionally, each class has a number of bonus Skills to select.',
-      ],
-      bullets: [],
-      references: [{ text: 'Read about Skills on pg. 22.', pages: [22] }],
       source: psg(5),
       roll: null,
     },
@@ -140,16 +95,6 @@ export const CHARACTER_CREATION = {
       number: 8,
       title: 'Roll Loadout, Trinket, and Patch',
       instruction: null,
-      text: [
-        "Roll for a Loadout based on your character's class.",
-        'Roll for a Trinket and a Patch',
-        'Finally, roll 2d10 and multiply it by 10 for starting Credits.',
-      ],
-      bullets: [],
-      references: [
-        { text: 'See Loadouts on pg. 7.', pages: [7] },
-        { text: 'Trinkets & Patches on pg. 8-9.', pages: [8, 9] },
-      ],
       source: psg(5),
       roll: { raw: 'Finally, roll 2d10 and multiply it by 10 for starting Credits.', formula: '2d10*10' },
     },
@@ -158,11 +103,6 @@ export const CHARACTER_CREATION = {
       number: 9,
       title: 'Finishing',
       instruction: null,
-      text: [
-        "Write the character's name and pronouns. Mark a zero above High Score. You're now ready to play your first session of Mothership!",
-      ],
-      bullets: [],
-      references: [],
       source: psg(5),
       roll: null,
     },

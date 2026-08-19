@@ -1,9 +1,6 @@
-// What the wizard prints: the label pairs its panes iterate, the class art it hangs beside a
-// heading, and the two spellings — a signed number, an unanswered slot — that several panes share.
-// Kept out of the components because the panes were split apart and would otherwise each keep
-// their own copy of the book's ordering.
-import { localize, format } from '../../i18n.ts';
-import { NUMBERED, paneTitle } from './steps.js';
+// The vocabulary more than one card iterates: the book's stat and save orders, the class art, the
+// ledger's rows, and the two spellings — a signed number, an unanswered slot — they share.
+import { localize } from '../../i18n.ts';
 
 export const STATS = [
   ['strength', 'Mothership.Strength'],
@@ -48,15 +45,3 @@ export const LEDGER = [...STATS, ...SAVES, ['max_wounds', 'Mothership.Wounds']];
 export const DASH = '—';
 
 export const signed = (value) => (value > 0 ? `+${value}` : `${value}`);
-
-// The rail numbers the panes it walks. Two of the book's nine steps ask the player nothing, and
-// step 3 asks two things, so the wizard's numbering is its own.
-export const numberOf = (entry) => NUMBERED.indexOf(entry) + 1;
-
-/** A pane prints the book's step, or — where the wizard interposes one of its own — its own copy. */
-export function titleOf(entry, draft) {
-  if (entry.id === 'adjustments' && draft.className) {
-    return format('Mothership.CharacterGenerator.Wizard.ClassAdjustments', { class: draft.className });
-  }
-  return entry.titleKey ? localize(entry.titleKey) : paneTitle(entry);
-}

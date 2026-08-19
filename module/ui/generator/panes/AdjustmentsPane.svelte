@@ -24,8 +24,8 @@
   }
 </script>
 
-<!-- One arithmetic table: what was rolled, what the class changes, and where that leaves
-     the character. Wounds use the same equation, beginning at the system's base of two. -->
+<!-- One arithmetic table: what was rolled, what the class changes, and where that leaves the
+     character. Wounds use the same equation, beginning at the system's base of two. -->
 <table class="wizard-adjustment-table" data-list="ledger">
   <thead>
     <tr>
@@ -55,7 +55,7 @@
      are two decisions, and the second is made against these numbers, not against the cards.
      Each is answered by naming a stat, and unanswered by taking the blank line. -->
 {#if draft.statChoices.length > 0}
-  <p class="wizard-prompt">{localize('Mothership.CharacterGenerator.Wizard.AdjustmentsChoose')}</p>
+  <p class="wizard-prompt">{localize('Mothership.CharacterGenerator.Wizard.Adjustments.Choose')}</p>
 {/if}
 {#each draft.statChoices as choice, position (position)}
   {@const question = `${localize('Mothership.CharacterGenerator.StatOptionPopupText')} ${signed(choice.modification)}`}

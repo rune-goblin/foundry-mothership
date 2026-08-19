@@ -1,6 +1,6 @@
 import { mount, unmount, flushSync } from 'svelte';
 import CharacterSheet from './CharacterSheet.svelte';
-import { GeneratorApp } from '../generator/GeneratorApp.js';
+import { WizardWindow } from '../generator/Wizard.svelte';
 import { chooseCreationMode } from './creation.js';
 import { createDocumentStore } from '../document-store.svelte.js';
 
@@ -88,8 +88,8 @@ export class MothershipCharacterSheet extends ActorSheetV2 {
     // Centred on the sheet it was opened from, and never off the left edge: the wizard is wider
     // than the sheet, so half the difference is negative. On initial creation the sheet has no
     // position yet, and ApplicationV2 centres the generator from its own default position.
-    const { width } = GeneratorApp.DEFAULT_OPTIONS.position;
-    new GeneratorApp({
+    const { width } = WizardWindow.DEFAULT_OPTIONS.position;
+    new WizardWindow({
       actor: this.document,
       onComplete,
       ...(centreOnSheet

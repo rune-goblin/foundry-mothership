@@ -2,11 +2,26 @@
 // the DOM. `test/e2e/actor-generator.spec.ts` drives the window itself.
 import { afterEach, beforeEach, describe, it, expect } from 'vitest';
 
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
 import { parseResults, drawnRow } from '../module/ui/generator/table-result.js';
 import { candidates } from '../module/ui/generator/skills.js';
-import { NUMBERED, PANES, firstIncomplete, paneTitle } from '../module/ui/generator/steps.js';
 import { CharacterDraft } from '../module/ui/generator/draft.svelte.js';
+import { STEPS, STEP_TOTAL, stepNumber } from '../module/ui/generator/steps.js';
 import { CHARACTER_CREATION } from '../content/books/psg/character-creation.ts';
+
+function lang(file: string): Map<string, string> {
+  const flatten = (value: unknown, prefix: string): [string, string][] =>
+    (typeof value === 'object' && value !== null
+      ? Object.entries(value).flatMap(([key, child]) => flatten(child, prefix ? `${prefix}.${key}` : key))
+      : [[prefix, String(value)]]);
+  const path = fileURLToPath(new URL(`../lang/${file}`, import.meta.url));
+  return new Map(flatten(JSON.parse(readFileSync(path, 'utf8')), ''));
+}
+
+const en = lang('en.json');
+const ptBR = lang('pt-BR.json');
 
 const loadoutRow = {
   type: 'text',
@@ -91,105 +106,117 @@ describe('skill candidates', () => {
   });
 });
 
-describe('the wizard spine', () => {
+describe('the steps the wizard walks', () => {
+  const K = 'Mothership.CharacterGenerator.Wizard';
+
+  // The wizard's spine is one table, so this walks that table rather than a copy of it. Two of its
+  // steps are the wizard's own — the front matter and the class adjustments — and the rest answer
+  // a step of the book; this is what stops the shell rewording the book on the way.
+  const BOOK = {
+    stats: 'step-1-roll-stats',
+    saves: 'step-2-roll-saves',
+    class: 'step-3-choose-your-class',
+    health: 'step-4-roll-health',
+    skills: 'step-7-choose-skills',
+    gear: 'step-8-roll-loadout-trinket-and-patch',
+    finish: 'step-9-finishing',
+  };
+
   const walked = CHARACTER_CREATION.steps.filter((step) => ![5, 6].includes(step.number));
+  const fromBook = STEPS.filter((step) => step.id in BOOK);
 
-  // The panes are the book's own steps, so an edition that renumbers or renames one must not be
-  // able to leave the wizard walking a list of its own.
-  it('is the intro plus the book\'s steps, in the book\'s order', () => {
-    const printed = PANES.filter((pane) => pane.step !== null);
-    expect(printed.map((pane) => pane.step!.number)).toEqual([1, 2, 3, 4, 7, 8, 9]);
-    expect(printed.map(paneTitle)).toEqual(walked.map((step) => step.title));
+  it("is the book's steps, in the book's order", () => {
+    expect(fromBook.map((step) => BOOK[step.id as keyof typeof BOOK])).toEqual(walked.map((step) => step.id));
   });
 
-  // The wizard may interpose a pane the book gives it no step for, and does so twice: the front
-  // matter, and the pane that places what a class leaves to the player. Neither may print a book
-  // title it did not earn, so both carry their own copy rather than borrowing a step's.
-  it('interposes only panes that print their own copy', () => {
-    const own = PANES.filter((pane) => pane.step === null);
-    expect(own.map((pane) => pane.id)).toEqual(['intro', 'adjustments']);
-    expect(own.every((pane) => pane.title !== undefined || pane.titleKey !== undefined)).toBe(true);
+  it("gives every step the book's own title", () => {
+    expect(fromBook.map((step) => en.get(step.title as string))).toEqual(walked.map((step) => step.title));
   });
 
-  // The counter counts questions. The intro is the book's front matter and asks nothing, so it is
-  // the one pane the rail stars instead of numbering.
-  it('numbers every pane but the intro', () => {
-    expect(NUMBERED.map((pane) => pane.id)).toEqual(PANES.slice(1).map((pane) => pane.id));
-  });
-
-  // A pane is a question. Steps 5 and 6 ask nothing — Stress starts at 2 for everyone and the
-  // Trauma Response is whatever the class prints — so the wizard shows both where they land
-  // rather than stopping on them. Nothing else may be dropped on that argument: every step it
-  // skips must be one the book states rather than rolls for.
+  // A step is a question. The book's steps 5 and 6 ask nothing — Stress starts at 2 for everyone
+  // and the Trauma Response is whatever the class prints — so the wizard shows both where they land
+  // rather than stopping on them. Nothing else may be dropped on that argument: every step it skips
+  // must be one the book states rather than rolls for.
   it('stops on every step the book asks something in, and on no other', () => {
-    const skipped = CHARACTER_CREATION.steps.filter((step) => !PANES.some((pane) => pane.step === step));
+    const skipped = CHARACTER_CREATION.steps.filter(
+      (step) => !Object.values(BOOK).includes(step.id),
+    );
     expect(skipped.map((step) => step.number)).toEqual([5, 6]);
     expect(skipped.every((step) => step.roll === null)).toBe(true);
   });
 
-  const empty = {
-    rolled: Object.fromEntries(
-      ['strength', 'speed', 'intellect', 'combat', 'sanity', 'fear', 'body', 'health', 'credits'].map((key) => [key, null]),
-    ),
-    classUuid: '',
-    skills: [],
-    patch: null,
-    trinket: null,
-    loadout: null,
-    name: '',
-    statChoicesSpent: true,
-    skillGroupsChosen: true,
-    skillsPicked: false,
-  };
-
-  it('ticks nothing but the intro on an untouched draft', () => {
-    expect(PANES.filter((pane) => pane.done(empty)).map((pane) => pane.id)).toEqual(['intro']);
+  it('numbers what it counts, and stars the one step that asks nothing', () => {
+    expect(STEPS.filter((step) => step.numbered === false).map((step) => step.id)).toEqual(['intro']);
+    expect(STEP_TOTAL).toBe(STEPS.length - 1);
+    expect(STEPS.map((step) => stepNumber(step))).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8]);
   });
 
-  it('makes the first unfinished task the navigation gate', () => {
-    expect(firstIncomplete(empty)).toBe(PANES.findIndex((pane) => pane.id === 'stats'));
+  // The lang-keys spec cannot see these: it does not scan module/ui.
+  it('names no string neither lang file carries', () => {
+    const named = [
+      `${K}.Intro.Title`, `${K}.Intro.Welcome`, `${K}.Intro.Excavate`,
+      `${K}.Adjustments.Title`, `${K}.Adjustments.TitleFor`, `${K}.Adjustments.Choose`,
+      `${K}.Health.Wounds`, `${K}.Gear.Loadout`, `${K}.Gear.Trinket`, `${K}.Gear.Credits`,
+      `${K}.Gear.Reference`, `${K}.Finish.Ready`, `${K}.Counter`, `${K}.Steps`,
+      `${K}.CompleteStep`,
+      ...STEPS.flatMap((step) => [step.title, step.instruction])
+        .filter((key): key is string => typeof key === 'string'),
+    ];
 
-    const statsDone = {
-      ...empty,
-      rolled: { ...empty.rolled, strength: 30, speed: 30, intellect: 30, combat: 30 },
-    };
-    expect(firstIncomplete(statsDone)).toBe(PANES.findIndex((pane) => pane.id === 'saves'));
+    expect(named.filter((key) => !en.has(key))).toEqual([]);
+    expect(named.filter((key) => !ptBR.has(key))).toEqual([]);
+  });
+});
 
-    expect(firstIncomplete({
-      ...statsDone,
-      rolled: Object.fromEntries(Object.keys(empty.rolled).map((key) => [key, 30])),
-      classUuid: 'Compendium.mothershiprpg.classes_1e.Item.teamster',
-      skillsPicked: true,
-      patch: {},
-      trinket: {},
-      loadout: {},
-      name: 'Rook Vance',
-    })).toBe(-1);
+describe('what a step counts as answered', () => {
+  const drafted = () => new CharacterDraft({ name: '' });
+
+  // The same predicates the rail ticks and the walk gates on, read off the spine the wizard reads.
+  const answers = (draft: CharacterDraft) => STEPS.map((step) => step.done(draft));
+
+  it('answers nothing but the front matter on an untouched draft', () => {
+    expect(answers(drafted())).toEqual([true, false, false, false, false, false, false, false, false]);
   });
 
-  // Step 3 is two questions on two panes: the class is chosen on one, and everything it leaves the
-  // player is settled on the next — where its free adjustment goes, and which of the skill bonuses
-  // it offers one of. An unspent -10 walked past would be dropped from every pane that reads the
-  // stats, and an unchosen bonus leaves the skills pane counting picks the class has not handed
-  // out, so the second pane gates as hard as the first.
+  it('ticks a roll card only once every roll it covers is in', () => {
+    const draft = drafted();
+    draft.rolled = { ...draft.rolled, strength: 30, speed: 30, intellect: 30 };
+    expect(draft.statsRolled).toBe(false);
+
+    draft.rolled = { ...draft.rolled, combat: 30 };
+    expect(draft.statsRolled).toBe(true);
+  });
+
+  // Step 3 is two questions on two cards: the class is chosen on one, and everything it leaves the
+  // player is settled on the next. An unspent -10 walked past would be dropped from every card that
+  // reads the stats, and an unchosen bonus leaves the picker counting picks the class has not handed
+  // out, so the second card gates as hard as the first.
   it('holds step 3 open until the class is chosen and everything it hands over is settled', () => {
-    const klass = PANES.find((pane) => pane.id === 'class')!;
-    const spend = PANES.find((pane) => pane.id === 'adjustments')!;
-    const chosen = { ...empty, classUuid: 'Compendium.mothershiprpg.classes_1e.Item.android' };
+    const draft = drafted();
+    draft.statChoices = [{ modification: -10, stats: ['strength', 'speed'], chosen: null }];
+    expect(draft.classChosen).toBe(false);
+    expect(draft.adjustmentsMade).toBe(false);
 
-    expect(klass.done(empty)).toBe(false);
-    expect(klass.done({ ...chosen, statChoicesSpent: false })).toBe(true);
-    expect(spend.done(empty)).toBe(false);
-    expect(spend.done({ ...chosen, statChoicesSpent: false })).toBe(false);
-    expect(spend.done({ ...chosen, skillGroupsChosen: false })).toBe(false);
-    expect(spend.done(chosen)).toBe(true);
+    draft.classUuid = 'Item.android';
+    expect(draft.classChosen).toBe(true);
+    expect(draft.adjustmentsMade).toBe(false);
+
+    draft.chooseStat(0, 'strength');
+    expect(draft.adjustmentsMade).toBe(true);
+
+    draft.skillGroups = [{ chosen: null, options: [{}, {}] }];
+    expect(draft.adjustmentsMade).toBe(false);
   });
 
-  it('ticks a roll step only once every roll it covers is in', () => {
-    const stats = PANES.find((pane) => pane.id === 'stats')!;
-    const partly = { ...empty, rolled: { ...empty.rolled, strength: 30, speed: 30, intellect: 30 } };
-    expect(stats.done(partly)).toBe(false);
-    expect(stats.done({ ...partly, rolled: { ...partly.rolled, combat: 30 } })).toBe(true);
+  it('holds the last card open until the character has a name', () => {
+    const draft = drafted();
+    expect(draft.named).toBe(false);
+
+    draft.name = '   ';
+    expect(draft.named).toBe(false);
+
+    draft.name = 'Rook Vance';
+    expect(draft.named).toBe(true);
   });
 });
 
@@ -239,6 +266,77 @@ describe('the adjustments a class leaves to the player', () => {
 
     expect(draft.bonus.combat).toBe(0);
     expect(draft.statChoicesSpent).toBe(false);
+  });
+});
+
+describe('the portrait and the two longform fields', () => {
+  const marine = (draft: CharacterDraft) => {
+    draft.classOptions = [{ uuid: 'Item.marine', name: 'Marine', img: 'icons/svg/target.svg' }];
+    draft.classUuid = 'Item.marine';
+    draft.className = 'Marine';
+  };
+
+  it('frames the class art until the player picks something else', () => {
+    const draft = new CharacterDraft({ name: 'Rook Vance' });
+    marine(draft);
+    expect(draft.portraitSrc).toBe('/systems/mothershiprpg/images/class_icons/marine.png');
+
+    draft.portrait = 'worlds/crew/rook.webp';
+    expect(draft.portraitSrc).toBe('worlds/crew/rook.webp');
+  });
+
+  it("falls back to a homebrew class's own image", () => {
+    const draft = new CharacterDraft({ name: 'Rook Vance' });
+    draft.classOptions = [{ uuid: 'Item.pilot', name: 'Pilot', img: 'icons/svg/wing.svg' }];
+    draft.classUuid = 'Item.pilot';
+    draft.className = 'Pilot';
+    expect(draft.portraitSrc).toBe('icons/svg/wing.svg');
+  });
+
+  it('keeps art the player chose and drops art the last run gave them', () => {
+    expect(new CharacterDraft({ name: 'Rook', img: 'worlds/crew/rook.webp' }).portrait)
+      .toBe('worlds/crew/rook.webp');
+    expect(new CharacterDraft({ name: 'Rook', img: 'icons/svg/mystery-man.svg' }).portrait).toBe('');
+    expect(new CharacterDraft({ name: 'Rook', img: '/systems/mothershiprpg/images/class_icons/marine.png' }).portrait)
+      .toBe('');
+  });
+
+  const applied = async (fill: (draft: CharacterDraft) => void) => {
+    let written: Record<string, unknown> = {};
+    const draft = new CharacterDraft({
+      name: 'Rook Vance',
+      items: [],
+      update: async (update: Record<string, unknown>) => {
+        written = update;
+      },
+    });
+    fill(draft);
+    await draft.apply();
+    return written;
+  };
+
+  it('writes the framed portrait, and the two fields as the HTML the sheet reads', async () => {
+    const written = await applied((draft) => {
+      draft.portrait = 'worlds/crew/rook.webp';
+      draft.biography = 'Signed on at Prospero.\nOwed money.\n\nNever says why.';
+      draft.notes = 'Owes <Nostromo> money & says nothing.';
+    });
+
+    expect(written.img).toBe('worlds/crew/rook.webp');
+    expect(written['system.biography'])
+      .toBe('<p>Signed on at Prospero.<br>Owed money.</p><p>Never says why.</p>');
+    // Typed markup is escaped rather than stored: the sheet prints these two fields back enriched.
+    expect(written['system.notes']).toBe('<p>Owes &lt;Nostromo&gt; money &amp; says nothing.</p>');
+  });
+
+  it('leaves a blank field alone rather than erasing what the actor carries', async () => {
+    const written = await applied((draft) => {
+      draft.biography = '   \n\n  ';
+    });
+
+    expect(written).not.toHaveProperty('system.biography');
+    expect(written).not.toHaveProperty('system.notes');
+    expect(written).not.toHaveProperty('img');
   });
 });
 

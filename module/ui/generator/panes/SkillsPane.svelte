@@ -6,10 +6,10 @@
   let { draft } = $props();
 </script>
 
-<!-- The whole tree at once: every rank's remaining picks live in one place, so taking a
-     Trained skill can open an Expert one in the same glance rather than behind a slot the
-     player has to think to reopen. Which bonus package those picks come from was settled a
-     pane earlier, with the rest of what the class hands out. -->
+<!-- The whole tree at once: every rank's remaining picks live in one place, so taking a Trained
+     skill can open an Expert one in the same glance rather than behind a slot the player has to
+     think to reopen. Which bonus package those picks come from was settled a step earlier, with
+     the rest of what the class hands out. -->
 <SkillSelector
   skills={draft.skillTree}
   budget={draft.skillBudget}

@@ -8,7 +8,6 @@
     covers: [
       'module/ui/generator/WizardRail.svelte',
       'module/ui/generator/WizardNav.svelte',
-      'module/ui/generator/WizardProse.svelte',
       'module/ui/generator/panes/IntroPane.svelte',
       'module/ui/generator/panes/RollsPane.svelte',
       'module/ui/generator/panes/ClassPane.svelte',
@@ -20,7 +19,7 @@
     ],
     wide: true,
     standIn: 'The class list, which comes from a compendium scan, and the loadout tables it draws from. The draft is the real `CharacterDraft` and the dice are real — click a d20 to roll.',
-    note: 'The character generator as the book presents it: one numbered step at a time, the PSG’s own prose above the controls that answer it, and a rail showing what is left. `PANES` in steps.js is the spine the window walks.',
+    note: 'The character generator as the book presents it: one numbered step at a time, the PSG’s own prose above the controls that answer it, and a rail showing what is left. `STEPS` in steps.js is the spine the window walks — the shell draws the frame around every step, and a pane draws only the answer it collects.',
   };
 </script>
 

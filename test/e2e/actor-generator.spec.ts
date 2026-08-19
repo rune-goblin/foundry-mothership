@@ -276,7 +276,7 @@ test.describe('character generator', () => {
     await goTo(gmPage, 'adjustments');
     const adjustments = gmPage.locator('section.wizard-pane[data-pane="adjustments"]');
     await expect(adjustments.locator('h2')).toHaveText('Android Adjustments');
-    await expect(adjustments.locator('.wizard-adjustments-class-art')).toHaveAttribute(
+    await expect(adjustments.locator('.wizard-pane-art')).toHaveAttribute(
       'src',
       '/systems/mothershiprpg/images/class_icons/android.png',
     );

@@ -1,45 +1,110 @@
+<script module>
+  import { mount, unmount } from 'svelte';
+  import Self from './Wizard.svelte';
+  import { CharacterDraft } from './draft.svelte.js';
+  import { localize } from '../../i18n.ts';
+
+  /**
+   * The window this wizard opens in. ApplicationV2 rather than DocumentSheetV2 on purpose: nothing
+   * here is a field of the actor, so there is no form for Foundry to persist — the draft holds the
+   * state and writes the actor once, when the player finishes the last card.
+   */
+  export class WizardWindow extends foundry.applications.api.ApplicationV2 {
+    static DEFAULT_OPTIONS = {
+      // css/mothership.css paints the content white and has no dark variant, so pin the light theme.
+      classes: ['mothership', 'sheet', 'actor', 'character', 'themed', 'theme-light'],
+      // A fixed height, not `auto`: a rail beside a scrolling card needs a box to size against, and
+      // an auto-height window would resize itself on every step and jump the rail.
+      position: { width: 960, height: 720 },
+      window: { resizable: true },
+    };
+
+    #actor;
+    #draft;
+    #onComplete;
+    #component;
+    #root;
+
+    constructor({ actor, onComplete, ...options } = {}) {
+      super({ id: `mothership-generator-${actor.id}`, ...options });
+      this.#actor = actor;
+      this.#draft = new CharacterDraft(actor);
+      this.#onComplete = onComplete;
+    }
+
+    get title() {
+      return `${this.#actor.name}: ${localize('Mothership.CharacterGenerator.name')}`;
+    }
+
+    /** For specs and macros: the live draft, so a generated character can be asserted on. */
+    get draft() {
+      return this.#draft;
+    }
+
+    async _renderHTML() {
+      if (this.#component) return this.#root;
+      await this.#draft.load();
+      this.#root = document.createElement('div');
+      this.#root.className = 'mothership-sheet-root';
+      this.#component = mount(Self, {
+        target: this.#root,
+        props: {
+          draft: this.#draft,
+          close: async () => {
+            await this.close();
+            await this.#onComplete?.();
+          },
+        },
+      });
+      return this.#root;
+    }
+
+    _replaceHTML(result, content) {
+      content.replaceChildren(result);
+    }
+
+    async _preClose(options) {
+      await super._preClose(options);
+      if (!this.#component) return;
+      unmount(this.#component);
+      this.#component = undefined;
+      this.#root = undefined;
+    }
+  }
+</script>
+
 <script>
   // The character generator, as the book presents it: one numbered step at a time, the PSG's own
   // prose above the controls that answer it, and a rail down the side showing what is left. The
-  // draft store underneath is unchanged — it is still read once when the window opens and written
-  // once when the last pane's button is pressed.
+  // draft store underneath is read once when the window opens and written once when the last
+  // step's button is pressed.
   //
-  // This file is the shell and nothing else: the frame the panes stand in, the walk between them,
-  // and the vocabulary they are all drawn from. Each pane's markup and its own styles live beside
-  // it in panes/, and the rail, the nav bar and the prose block are components of their own.
+  // This file is the shell and nothing else: the frame every step stands in — its counter, title,
+  // instruction and controls well — and the walk between them. A pane draws the answer it collects
+  // and nothing around it. `steps.js` is where the steps themselves live.
   import WizardRail from './WizardRail.svelte';
   import WizardNav from './WizardNav.svelte';
-  import WizardProse from './WizardProse.svelte';
-  import IntroPane from './panes/IntroPane.svelte';
-  import RollsPane from './panes/RollsPane.svelte';
-  import ClassPane from './panes/ClassPane.svelte';
-  import AdjustmentsPane from './panes/AdjustmentsPane.svelte';
-  import HealthPane from './panes/HealthPane.svelte';
-  import SkillsPane from './panes/SkillsPane.svelte';
-  import GearPane from './panes/GearPane.svelte';
-  import FinishPane from './panes/FinishPane.svelte';
+  import { LAST_STEP, STEPS, STEP_TOTAL, stepBlocked, stepNumber, stepTitle } from './steps.js';
   import { dropTarget } from '../parts/drop-target.js';
-  import { localize, format } from '../../i18n.ts';
-  import { PANES, NUMBERED, firstIncomplete } from './steps.js';
-  import { CLASS_ICONS, SAVES, STATS, numberOf, titleOf } from './labels.js';
+  // `localize` is already in scope: the module block above imports it for the window's title.
+  import { format } from '../../i18n.ts';
 
   let { draft, close } = $props();
 
-  const LAST = PANES.length - 1;
-
-  const proseOf = (entry) => entry.introKeys?.map(localize) ?? entry.intro ?? entry.step?.text ?? [];
-
   let index = $state(0);
-  const pane = $derived(PANES[index]);
-  const selectedClass = $derived(draft.classOptions.find((option) => option.uuid === draft.classUuid) ?? null);
+  const step = $derived(STEPS[index]);
+  const Pane = $derived(step.pane);
+  const art = $derived(step.art?.(draft) ?? null);
 
-  // The first unfinished pane is the rail's ceiling. The same `done` predicate that fills a rail
-  // marker therefore also unlocks the next pane; no task can be bypassed with either navigation.
-  const gate = $derived(firstIncomplete(draft));
-  const reachable = (target) => target <= (gate === -1 ? LAST : gate);
+  const progress = $derived(STEPS.map((entry) => entry.done(draft)));
+
+  // The first unanswered step is the rail's ceiling, so the same answer that ticks a rail marker
+  // unlocks the step after it; no question can be bypassed with either navigation.
+  const gate = $derived(progress.findIndex((answered) => !answered));
+  const reachable = (target) => target <= (gate === -1 ? LAST_STEP : gate);
 
   function go(target) {
-    if (target < 0 || target > LAST || !reachable(target)) return;
+    if (target < 0 || target > LAST_STEP || !reachable(target)) return;
     index = target;
   }
 
@@ -55,59 +120,38 @@
 </script>
 
 <form class="character-wizard" onsubmit={(event) => event.preventDefault()} {@attach dropTarget(onDropClass)}>
-  <WizardRail {draft} {index} {reachable} onpick={go} />
+  <WizardRail {draft} {index} {progress} {reachable} onpick={go} />
 
-  <section class="wizard-pane" data-pane={pane.id}>
-    <header class="wizard-pane-header">
-      {#if pane.numbered !== false}
+  <section class="wizard-pane" data-pane={step.id}>
+    <header class="wizard-pane-header" class:with-art={art}>
+      {#if step.numbered !== false}
         <p class="wizard-counter">
-          {format('Mothership.CharacterGenerator.Wizard.Counter', { number: numberOf(pane), total: NUMBERED.length })}
+          {format('Mothership.CharacterGenerator.Wizard.Counter', {
+            number: stepNumber(step),
+            total: STEP_TOTAL,
+          })}
         </p>
       {/if}
-      <h2>{titleOf(pane, draft)}</h2>
-      {#if pane.id === 'adjustments' && selectedClass}
-        <img
-          class="wizard-adjustments-class-art"
-          src={CLASS_ICONS[selectedClass.name] ?? selectedClass.img}
-          alt=""
-        />
+      <h2>{stepTitle(step, draft)}</h2>
+      {#if step.instruction}
+        <p class="wizard-instruction">{localize(step.instruction)}</p>
       {/if}
-      {#if pane.step?.instruction && pane.id !== 'class'}
-        <p class="wizard-instruction">{pane.step.instruction}</p>
+      {#if art}
+        <img class="wizard-pane-art" src={art} alt="" />
       {/if}
     </header>
 
-    {#if pane.id === 'intro'}
-      <IntroPane lines={proseOf(pane)} />
-    {:else if pane.id !== 'class' && proseOf(pane).length > 0}
-      <WizardProse lines={proseOf(pane)} step={pane.step} />
-    {/if}
-
-    <div class="wizard-controls">
-      {#if pane.id === 'stats' || pane.id === 'saves'}
-        <RollsPane {draft} rolls={pane.id === 'stats' ? STATS : SAVES} />
-      {:else if pane.id === 'class'}
-        <ClassPane {draft} {selectedClass} />
-      {:else if pane.id === 'adjustments'}
-        <AdjustmentsPane {draft} />
-      {:else if pane.id === 'health'}
-        <HealthPane {draft} />
-      {:else if pane.id === 'skills'}
-        <SkillsPane {draft} />
-      {:else if pane.id === 'gear'}
-        <GearPane {draft} />
-      {:else if pane.id === 'finish'}
-        <FinishPane {draft} />
-      {/if}
+    <div class="wizard-controls" class:bleed={step.bleed}>
+      <Pane {draft} {...step.props ?? {}} />
     </div>
   </section>
 
   <WizardNav
-    {draft}
-    {pane}
     {index}
-    {gate}
-    {reachable}
+    last={LAST_STEP}
+    blocked={index === gate ? stepBlocked(step, draft) : ''}
+    cannext={reachable(index + 1)}
+    canfinish={draft.named}
     onback={() => go(index - 1)}
     onnext={() => go(index + 1)}
     onfinish={finish}
@@ -118,11 +162,11 @@
   /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
      application; @layer system puts these in the slot the rest of the system occupies.
 
-     This block is the window's own frame — the pane, its header, the controls well — plus the two
-     things the panes cannot each own: the `--wizard-*` vocabulary, declared here so the whole
-     window is rethemed from one place, and the handful of classes more than one pane writes. Those
-     are marked with their readers, the way css/mothership.css marks its shared tier. Everything
-     else moved to the component that draws it.
+     This block is the window's own frame — the pane, its header, the controls well — which the
+     shell draws itself and so styles without escaping. Beneath it are the two things the panes
+     cannot each own: the `--wizard-*` vocabulary, declared here so the whole window is rethemed
+     from one place, and the handful of classes more than one pane writes. Those are marked with
+     their readers, the way css/mothership.css marks its shared tier.
 
      What the wizard borrows stays borrowed: `circle-input`, `mainstat*` and `fulllabel` are the
      shared stat tier in css/mothership.css, hand-written by the panes here and by MainStat,
@@ -198,12 +242,13 @@
       position: relative;
     }
 
-    .character-wizard .wizard-pane[data-pane='adjustments'] .wizard-pane-header {
+    /* The art hangs in the header's corner, so the heading has to leave it the room. */
+    .character-wizard .wizard-pane-header.with-art {
       min-height: var(--wizard-class-art-size);
       padding-right: calc(var(--wizard-class-art-size) + var(--space-16));
     }
 
-    .character-wizard .wizard-adjustments-class-art {
+    .character-wizard .wizard-pane-art {
       position: absolute;
       top: 0;
       right: 0;
@@ -226,16 +271,20 @@
       font-weight: var(--font-weight-semibold);
     }
 
+    /* The controls well: everything a step puts under its heading. It grows so a pane that means
+       to fill the page can. */
     .character-wizard .wizard-controls {
       display: flex;
+      flex-grow: 1;
       flex-direction: column;
       gap: var(--wizard-gap);
       padding-bottom: var(--wizard-pad);
     }
 
-    /* The front matter is a full-height spread and answers nothing, so it has no controls well. */
-    .character-wizard .wizard-pane[data-pane='intro'] .wizard-controls {
-      display: none;
+    /* A composed page instead of a stack of controls: it runs to the pane's own edge, so the
+       well's floor comes off. The front matter is the one step that asks for this. */
+    .character-wizard .wizard-controls.bleed {
+      padding-bottom: 0;
     }
 
     /* A two-column grid of controls. Read by RollsPane and HealthPane, and by GearPane under its
@@ -280,6 +329,19 @@
       background: none;
       color: var(--wizard-ink-disabled);
       cursor: default;
+    }
+
+    /* Each pane writes its own copy, so what is shared is the block's face and nothing else.
+       Read by IntroPane, HealthPane, GearPane and FinishPane. */
+    .character-wizard :global(.wizard-prose p) {
+      margin: 0 0 var(--space-8);
+    }
+
+    .character-wizard :global(.wizard-reference) {
+      margin: var(--space-8) 0 0;
+      font-size: var(--font-size-sm);
+      font-style: italic;
+      color: var(--wizard-ink-muted);
     }
 
     /* What a pane itemises under a rolled result. Read by SkillsPane and GearPane; the floor keeps

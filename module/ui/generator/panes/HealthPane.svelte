@@ -6,6 +6,10 @@
   let { draft } = $props();
 </script>
 
+<div class="wizard-prose">
+  <p>{localize('Mothership.CharacterGenerator.Wizard.Health.Wounds')}</p>
+</div>
+
 <div class="wizard-rolls">
   <RollBox
     key="health"

@@ -1,11 +1,12 @@
 <script>
-  import WizardProse from '../WizardProse.svelte';
-
-  let { lines } = $props();
+  import { localize } from '../../../i18n.ts';
 </script>
 
 <div class="wizard-intro">
-  <WizardProse lines={lines.slice(0, 2)} />
+  <div class="wizard-prose">
+    <p>{localize('Mothership.CharacterGenerator.Wizard.Intro.Welcome')}</p>
+    <p>{localize('Mothership.CharacterGenerator.Wizard.Intro.Excavate')}</p>
+  </div>
   <img
     class="wizard-intro-cover"
     src="/systems/mothershiprpg/images/mothership-cover.webp"
@@ -21,9 +22,9 @@
       min-height: 28rem;
     }
 
-    /* WizardProse owns the block; the front matter is the one place it is set over an image and
-       has to leave the cover its corner. */
-    .wizard-intro :global(.wizard-prose) {
+    /* The front matter is the one place the prose block is set over an image and has to leave the
+       cover its corner. */
+    .wizard-intro .wizard-prose {
       position: relative;
       z-index: 1;
       width: 72%;
