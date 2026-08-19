@@ -1,3 +1,5 @@
+import { pickPhrases } from './picks.js';
+
 /**
  * The skill catalog the generator's pickers offer, and the rule for what a pick may offer.
  * Flattened off the documents on purpose: the pickers are then pure functions over plain data,
@@ -32,9 +34,11 @@ export async function loadSkills() {
 
 /**
  * What each class brings, so the pane can be read before one is pressed rather than after: the
- * adjustments it applies outright, and the ones it hands the player to place.
+ * adjustments it applies outright, the ones it hands the player to place, and the skills — the
+ * book's own class card prints those with the rest of what a class gives you, so the pane that asks
+ * which class you are has to print them too, even though the picking itself happens two panes on.
  */
-const brings = (klass) => ({
+const brings = (klass, named) => ({
   description: sentence(klass.system.description),
   adjustments: Object.entries(klass.system.base_adjustment)
     .filter(([key, value]) => key !== 'skills_granted' && value !== 0)
@@ -42,10 +46,24 @@ const brings = (klass) => ({
   choices: klass.system.selected_adjustment.choose_stat
     .filter((entry) => entry.modification)
     .map((entry) => ({ modification: entry.modification, stats: [...entry.stats] })),
+  skills: {
+    granted: klass.system.base_adjustment.skills_granted.map(named),
+    picks: pickPhrases(klass.system.selected_adjustment.choose_skill_and),
+    // An option keeps the book's own wording where it has one; a homebrew package that named
+    // itself nothing still describes what it hands out.
+    groups: klass.system.selected_adjustment.choose_skill_or
+      .filter((group) => group.length > 0)
+      .map((group) => group.map((option) => ({ name: option.name, picks: pickPhrases(option) }))),
+  },
 });
 
-/** Every class document in the world and in the compendia, as the class pane's options. */
-export async function loadClasses() {
+/**
+ * Every class document in the world and in the compendia, as the class pane's options. The skill
+ * catalog comes in because a class stores the skills it grants as UUIDs and the pane prints their
+ * names; a UUID the catalog does not carry prints as itself rather than as a blank.
+ */
+export async function loadClasses(catalog = []) {
+  const named = (uuid) => catalog.find((skill) => skill.uuid === uuid)?.name ?? uuid;
   const options = game.items
     .filter((item) => item.type === 'class')
     .map((klass) => ({
@@ -53,7 +71,7 @@ export async function loadClasses() {
       name: klass.name,
       img: klass.img,
       source: 'world.Item',
-      ...brings(klass),
+      ...brings(klass, named),
     }));
 
   for (const pack of game.packs) {
@@ -63,7 +81,7 @@ export async function loadClasses() {
         name: klass.name,
         img: klass.img,
         source: klass.pack.replace(/\..*$/, ''),
-        ...brings(klass),
+        ...brings(klass, named),
       });
     }
   }

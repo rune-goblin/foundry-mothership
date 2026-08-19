@@ -74,7 +74,7 @@ test.describe('skill sheet', () => {
     await expect(sheet.locator('.window-title')).toContainText('__e2e_skill');
     await expect(sheet.locator('input[name="name"]')).toHaveValue('__e2e_skill');
     await expect(sheet.locator('input[name="system.bonus"]')).toHaveValue('15');
-    await expect(sheet.locator('input[name="system.rank"]')).toHaveValue('Expert');
+    await expect(sheet.locator('select[name="system.rank"]')).toHaveValue('Expert');
   });
 
   test('editing bonus and rank persists to the document', async ({ gmPage }) => {
@@ -89,8 +89,7 @@ test.describe('skill sheet', () => {
       )
       .toBe(25);
 
-    await sheet.locator('input[name="system.rank"]').fill('Master');
-    await sheet.locator('input[name="system.rank"]').blur();
+    await sheet.locator('select[name="system.rank"]').selectOption('Master');
     await expect
       .poll(async () =>
         gmPage.evaluate(async (u: string) => (await (window as any).fromUuid(u)).toObject().system.rank, uuid),

@@ -262,6 +262,7 @@ describe('the skills a class hands out', () => {
     skill('sk-zero-g', 'Zero-G', 'Trained'),
     skill('sk-xenobiology', 'Xenobiology', 'Expert', ['sk-linguistics']),
     skill('sk-cybernetics', 'Cybernetics', 'Expert', ['sk-mathematics']),
+    skill('sk-hyperspace', 'Hyperspace', 'Master', ['sk-cybernetics']),
   ];
 
   const picks = (over: Record<string, number> = {}) => ({
@@ -293,10 +294,38 @@ describe('the skills a class hands out', () => {
     },
   };
 
+  // The one class the book grants a set: "1 Master Skill, and an Expert and Trained Skill
+  // prerequisite", plus a Trained skill of its own.
+  const SCIENTIST = {
+    uuid: 'Item.scientist',
+    name: 'Scientist',
+    img: 'icons/svg/lab.svg',
+    type: 'class',
+    system: {
+      description: '<p>Scientists slice things open.</p>',
+      trauma_response: 'Sanity Save',
+      roll_tables: { loadout: '', trinket: '', patch: '' },
+      base_adjustment: {
+        strength: 0, speed: 0, intellect: 10, combat: 0,
+        sanity: 30, fear: 0, body: 0, max_wounds: 0,
+        skills_granted: [],
+      },
+      selected_adjustment: {
+        choose_stat: [],
+        choose_skill_and: picks({ master_full_set: 1, trained: 1 }),
+        choose_skill_or: [],
+      },
+    },
+  };
+
+  const WORLD = [...CATALOG, ANDROID, SCIENTIST];
+
   beforeEach(() => {
     const globals = globalThis as Record<string, unknown>;
-    globals.game = { items: [...CATALOG, ANDROID], packs: [] };
-    globals.fromUuid = async (uuid: string) => [...CATALOG, ANDROID].find((doc) => doc.uuid === uuid) ?? null;
+    globals.game = { items: [...WORLD], packs: [] };
+    // Read through `game` rather than closing over WORLD, so a test can add a class of its own.
+    globals.fromUuid = async (uuid: string) =>
+      (globals.game as { items: { uuid: string }[] }).items.find((doc) => doc.uuid === uuid) ?? null;
     globals.ui = { notifications: { warn: () => {}, error: () => {} } };
   });
 
@@ -347,10 +376,12 @@ describe('the skills a class hands out', () => {
     ]);
 
     draft.chooseSkillOption(0, 1);
+    // A set's slots run bottom up: its Expert is gated, so nothing can fill it until its Trained
+    // slot is answered.
     expect(keys(draft)).toEqual([
       'class:expert:0:Expert',
-      'group-0:expert_full_set:0:Expert',
       'group-0:expert_full_set:0:Trained',
+      'group-0:expert_full_set:0:Expert',
     ]);
     // The package brings a skill of its own, and it arrives with the package.
     expect(named(draft)).toEqual(['Linguistics', 'Rimwise']);
@@ -455,8 +486,145 @@ describe('the skills a class hands out', () => {
         description: 'Androids are a terrifying and exciting addition to any crew.',
         adjustments: [{ key: 'intellect', value: 20 }, { key: 'fear', value: 60 }],
         choices: [{ modification: -10, stats: ['strength', 'speed', 'intellect', 'combat'] }],
+        skills: {
+          granted: ['Linguistics'],
+          picks: [{ label: 'Mothership.CharacterGenerator.Pick.Expert', count: 1 }],
+          groups: [[
+            { name: 'Two Trained', picks: [{ label: 'Mothership.CharacterGenerator.Pick.TrainedPlural', count: 2 }] },
+            { name: 'One Expert Set', picks: [{ label: 'Mothership.CharacterGenerator.Pick.ExpertSet', count: 1 }] },
+          ]],
+        },
+      },
+      // A class that leaves nothing to place offers the pane no choices to print.
+      {
+        uuid: 'Item.scientist',
+        name: 'Scientist',
+        img: 'icons/svg/lab.svg',
+        source: 'world.Item',
+        description: 'Scientists slice things open.',
+        adjustments: [{ key: 'intellect', value: 10 }, { key: 'sanity', value: 30 }],
+        choices: [],
+        skills: {
+          granted: [],
+          // The book's own order, widest promise first — the Master set is the headline of the
+          // Scientist's card and its extra Trained skill is the footnote.
+          picks: [
+            { label: 'Mothership.CharacterGenerator.Pick.MasterSet', count: 1 },
+            { label: 'Mothership.CharacterGenerator.Pick.Trained', count: 1 },
+          ],
+          groups: [],
+        },
       },
     ]);
+  });
+
+  // The Scientist's Master pick is not three free picks: the book hands it a Master "and an Expert
+  // and Trained Skill prerequisite". Gating the set's upper slots is the whole rule — a Scientist
+  // could otherwise finish with a Master, an unrelated Expert and an unrelated Trained skill, and
+  // the wizard called that character complete.
+  describe('a full set', () => {
+    const scientist = async () => {
+      const draft = new CharacterDraft({ name: 'Rook Vance' });
+      await draft.load();
+      await draft.chooseClass('Item.scientist');
+      return draft;
+    };
+
+    const stateOf = (draft: CharacterDraft, uuid: string) =>
+      draft.skillTree.find((skill: { uuid: string }) => skill.uuid === uuid)?.state;
+
+    it('opens only its base until something stands under the rest', async () => {
+      const draft = await scientist();
+
+      expect(keys(draft)).toEqual([
+        'class:master_full_set:0:Trained',
+        'class:master_full_set:0:Expert',
+        'class:master_full_set:0:Master',
+        'class:trained:0:Trained',
+      ]);
+      expect(draft.skillBudget).toEqual({ Trained: 2, Expert: 1, Master: 1 });
+      expect(stateOf(draft, 'sk-mathematics')).toBe('available');
+      expect(stateOf(draft, 'sk-cybernetics')).toBe('unavailable');
+      expect(stateOf(draft, 'sk-hyperspace')).toBe('unavailable');
+    });
+
+    it('lets each rank up only what the rank beneath it bought', async () => {
+      const draft = await scientist();
+
+      draft.toggleSkill('sk-mathematics');
+      expect(stateOf(draft, 'sk-cybernetics')).toBe('available');
+      // Xenobiology stands on Linguistics, which nothing holds — the Expert slot is not a free pick.
+      expect(stateOf(draft, 'sk-xenobiology')).toBe('unavailable');
+      expect(stateOf(draft, 'sk-hyperspace')).toBe('unavailable');
+
+      draft.toggleSkill('sk-cybernetics');
+      expect(stateOf(draft, 'sk-hyperspace')).toBe('available');
+
+      draft.toggleSkill('sk-hyperspace');
+      draft.toggleSkill('sk-rimwise');
+      expect(named(draft)).toEqual(['Mathematics', 'Cybernetics', 'Hyperspace', 'Rimwise']);
+      expect(draft.skillsPicked).toBe(true);
+    });
+
+    // Xenobiology is a terminal Expert: nothing in the catalog stands on it. Taking it would spend
+    // the set's one Expert pick and leave the Master pick above it unfillable, so the picker never
+    // offers it — the alternative is a player walking into a dead end and having to work out for
+    // themselves that the way out is to take the pick back.
+    it('refuses an Expert that would leave the Master pick standing on nothing', async () => {
+      const draft = await scientist();
+      draft.toggleSkill('sk-linguistics');
+
+      expect(stateOf(draft, 'sk-xenobiology')).toBe('unavailable');
+      expect(draft.skillTree.find((skill: { uuid: string }) => skill.uuid === 'sk-xenobiology')?.reason)
+        .toBe('strands');
+
+      draft.toggleSkill('sk-xenobiology');
+      expect(named(draft)).toEqual(['Linguistics']);
+    });
+
+    // The rule reads the slots rather than the class: a second Expert pick can still buy the
+    // Master's prerequisite, so it must not refuse the first one a legal skill. Worlds carry
+    // homebrew classes, and the class sheet will write exactly this shape.
+    it('allows a terminal Expert while another Expert pick can still feed the Master', async () => {
+      const globals = globalThis as unknown as { game: { items: unknown[] } };
+      globals.game.items = [...WORLD, {
+        ...SCIENTIST,
+        uuid: 'Item.homebrew',
+        name: 'Wildcat',
+        system: {
+          ...SCIENTIST.system,
+          selected_adjustment: {
+            ...SCIENTIST.system.selected_adjustment,
+            choose_skill_and: picks({ trained: 2, expert: 2, master: 1 }),
+          },
+        },
+      }];
+      const draft = new CharacterDraft({ name: 'Rook Vance' });
+      await draft.load();
+      await draft.chooseClass('Item.homebrew');
+
+      draft.toggleSkill('sk-linguistics');
+      draft.toggleSkill('sk-mathematics');
+      expect(stateOf(draft, 'sk-xenobiology')).toBe('available');
+
+      // Spending the second Expert pick on the Master's prerequisite settles it either way round.
+      draft.toggleSkill('sk-cybernetics');
+      expect(stateOf(draft, 'sk-xenobiology')).toBe('available');
+    });
+
+    it('drops the whole chain when what it stands on is taken back', async () => {
+      const draft = await scientist();
+      draft.toggleSkill('sk-mathematics');
+      draft.toggleSkill('sk-cybernetics');
+      draft.toggleSkill('sk-hyperspace');
+      draft.toggleSkill('sk-rimwise');
+
+      draft.toggleSkill('sk-mathematics');
+
+      // Rimwise was nobody's prerequisite, so the free pick stands while the set empties.
+      expect(named(draft)).toEqual(['Rimwise']);
+      expect(draft.skillsPicked).toBe(false);
+    });
   });
 
   it('cannot be given the same skill twice', async () => {

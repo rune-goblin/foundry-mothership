@@ -141,6 +141,13 @@
     <div class="skill-selector-info-line">
       {#if !hovered}
         <span class="skill-selector-info-muted">{localize('Mothership.CharacterGenerator.SkillTree.HoverHint')}</span>
+      {:else if hovered.reason === 'strands'}
+        <!-- Its own prerequisites are met, so the chips below would read as an invitation; what is
+             in the way is the pick above it, which this skill leads nowhere for. -->
+        <span class="skill-selector-info-name">{hovered.name}</span>
+        <span class="skill-selector-info-warn">
+          {localize('Mothership.CharacterGenerator.SkillTree.WouldStrandMaster')}
+        </span>
       {:else if hovered.reason === 'spent'}
         <!-- Its prerequisites are beside the point: nothing of this rank can be taken at all until
              a pick is freed, and that is a fact about the budget, not about the skill. -->
@@ -374,7 +381,10 @@
       border-bottom: var(--border-width-2) solid var(--skillselector-edge);
     }
 
-    .skill-selector-column-head h4 {
+    /* The class is doubled to outweigh the wizard's typography reset, which flattens case across
+       everything inside that window. These four rank headings are the one thing in it that means
+       to shout. */
+    .skill-selector-column-head.skill-selector-column-head h4 {
       margin: 0;
       font-family: var(--font-display);
       font-size: var(--font-size-sm);

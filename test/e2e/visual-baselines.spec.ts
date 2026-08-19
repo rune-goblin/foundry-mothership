@@ -49,6 +49,23 @@ async function capture(page: Page, target: Locator, name: string, mask: Locator[
   await expect(target).toHaveScreenshot(`${name}.png`, { mask });
 }
 
+/**
+ * Puts a frame on whole pixels. Foundry centres a window on its measured height, and the skill
+ * dialog's is 306.09px — so its top lands on a fraction, and which fraction depends on what was
+ * opened before it. The element clip then rounds to 307px or 308px from the same layout: the one
+ * capture here whose rectangle is decided by anything other than its own content.
+ */
+const pinFrame = (page: Page, selector: string, top: number, left: number) =>
+  page.evaluate(
+    ({ sel, t, l }: { sel: string; t: number; l: number }) => {
+      const el = document.querySelector(sel) as HTMLElement | null;
+      if (!el) throw new Error(`no element matched ${sel}`);
+      el.style.top = `${t}px`;
+      el.style.left = `${l}px`;
+    },
+    { sel: selector, t: top, l: left },
+  );
+
 /* -------------------------------------------- */
 /*  World state                                 */
 /* -------------------------------------------- */
@@ -478,6 +495,8 @@ test.describe('visual baselines', () => {
     }, uuid);
 
     const dialog = gmPage.locator('dialog[open].macro-popup-dialog');
+    await expect(dialog).toBeVisible();
+    await pinFrame(gmPage, 'dialog[open].macro-popup-dialog', 200, 400);
     await capture(gmPage, dialog, 'dialog-skill-check');
 
     await dialog.locator('button[data-action="none"]').click();

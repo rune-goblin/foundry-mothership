@@ -1,8 +1,14 @@
 /**
  * What a class's skill picks expand to. A pick is a promise of one skill at some rank; a
  * *_full_set pick is one skill plus the prerequisite chain beneath it, so it expands to a slot per
- * rank and gates none of them, while a bare Expert or Master pick is one slot gated on already
- * owning a prerequisite.
+ * rank, while a bare Expert or Master pick is one slot gated on already owning a prerequisite.
+ *
+ * A set's slots run narrowest rank first, and every slot above the base is gated — which is the
+ * whole of the Scientist's "1 Master Skill, and an Expert and Trained Skill prerequisite". The set
+ * needs no rule of its own: step 7's rule for everyone, "you must have at least one prerequisite
+ * Skill first", already forces the chain when the picks are taken from the bottom up, because the
+ * only Expert the Master can stand on is the one the set just bought. Gating nothing was the bug —
+ * it let a Scientist finish with a Master and two unrelated skills.
  *
  * The wizard fills these in place, so the expansion has to be a pure function of the class: the
  * pane rebuilds its slots whenever a bonus package changes and keeps the picks whose slot survives.
@@ -10,13 +16,13 @@
 
 const SETS = {
   master_full_set: [
-    { rank: 'Master', gated: false },
-    { rank: 'Expert', gated: false },
     { rank: 'Trained', gated: false },
+    { rank: 'Expert', gated: true },
+    { rank: 'Master', gated: true },
   ],
   expert_full_set: [
-    { rank: 'Expert', gated: false },
     { rank: 'Trained', gated: false },
+    { rank: 'Expert', gated: true },
   ],
   trained: [{ rank: 'Trained', gated: false }],
   expert: [{ rank: 'Expert', gated: true }],
@@ -41,9 +47,10 @@ const PACKAGE_COUNTS = [
 ];
 
 /**
- * One slot per skill the pick-set promises, broadest rank first — the order the prerequisite chain
- * needs, and the order a player reads. `source` keys the slots to what handed them out, so a
- * package swapped for another does not carry the old package's answers across.
+ * One slot per skill the pick-set promises, narrowest rank first — the order the prerequisite chain
+ * needs, since a gated slot can only be filled once something it stands on is held. `source` keys
+ * the slots to what handed them out, so a package swapped for another does not carry the old
+ * package's answers across.
  */
 export function expandSlots(picks, source) {
   const slots = [];
@@ -55,6 +62,29 @@ export function expandSlots(picks, source) {
     }
   }
   return slots;
+}
+
+/**
+ * The same pick-set as a sentence rather than a tally, broadest rank first — what the book's class
+ * card prints under a class name before anything has been chosen. Singular and plural are separate
+ * keys because the book writes "1 Expert Skill" and "2 Trained Skills"; Foundry's localizer has no
+ * plural rule of its own.
+ */
+const PHRASES = {
+  master_full_set: 'MasterSet',
+  master: 'Master',
+  expert_full_set: 'ExpertSet',
+  expert: 'Expert',
+  trained: 'Trained',
+};
+
+export function pickPhrases(picks) {
+  return Object.entries(PHRASES)
+    .filter(([kind]) => picks?.[kind])
+    .map(([kind, name]) => ({
+      label: `Mothership.CharacterGenerator.Pick.${name}${picks[kind] === 1 ? '' : 'Plural'}`,
+      count: picks[kind],
+    }));
 }
 
 /** What a bonus package promises, as label keys and counts the pane can print. */

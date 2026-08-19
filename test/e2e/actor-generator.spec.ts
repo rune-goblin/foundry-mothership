@@ -287,6 +287,21 @@ test.describe('character generator', () => {
     await expect(detail).toHaveCount(1);
     await expect(detail.locator('[data-bonus="combat"]')).toHaveText('+10');
     await expect(detail.locator('[data-value="trauma"]')).not.toBeEmpty();
+
+    // The book's class card prints the skills with the adjustments, so this pane does too — the
+    // ones the class simply grants, and the bonus it funds a pick of.
+    await expect(detail.locator('[data-skills="granted"]')).toHaveText('Military Training, Athletics');
+    await expect(detail.locator('[data-skills="group"]')).toHaveText('1 Expert Skill OR 2 Trained Skills');
+
+    // The Scientist grants nothing outright; its whole skill benefit is the qualified pick, which
+    // the pane has to spell out or the class reads as the one that hands over no skills at all.
+    await gmPage.click('button.wizard-class[data-class="Scientist"]');
+    const scientist = gmPage.locator('[data-class-detail="Scientist"]');
+    await expect(scientist.locator('[data-skills="granted"]')).toHaveCount(0);
+    await expect(scientist.locator('[data-skills="pick"]')).toHaveText([
+      '1 Master Skill, and an Expert and Trained Skill prerequisite',
+      '1 Trained Skill',
+    ]);
   });
 
   test('each pane gates forward navigation until its task is complete', async ({ gmPage }) => {
@@ -509,6 +524,66 @@ test.describe('character generator', () => {
     expect(carried.filter((i) => i.type === 'class').map((i) => i.name)).toEqual(['Android']);
     // Completing every prior pane means the unmodified rolled Combat score is written too.
     expect(await stored(gmPage, uuid, 'system.stats.combat.value')).toBe(27);
+  });
+
+  // The Scientist is the one class the book grants a set — "1 Master Skill, and an Expert and
+  // Trained Skill prerequisite" — so it is the one class whose picks have to arrive as a chain.
+  test('the Scientist’s Master set is filled from the bottom up', async ({ gmPage }) => {
+    const uuid = await openGenerator(gmPage);
+    await freezeDice(gmPage, LOWEST_FACE);
+
+    await chooseClass(gmPage, 'Scientist');
+    // Its "+5 to 1 stat" is placed before the rail walks on, like any other class benefit.
+    await goTo(gmPage, 'adjustments');
+    await gmPage.selectOption('[data-choice="0"] select', 'intellect');
+    await reachSkills(gmPage);
+
+    const picker = gmPage.locator('.skill-selector');
+    const column = (rank: string) => picker.locator(`.skill-selector-column[data-rank="${rank}"]`);
+
+    // The Scientist starts with no skills at all, so only the base of the set is open.
+    await expect(column('Trained').locator('[data-state="available"]')).not.toHaveCount(0);
+    await expect(column('Expert').locator('[data-state="available"]')).toHaveCount(0);
+    await expect(column('Master').locator('[data-state="available"]')).toHaveCount(0);
+
+    // Chemistry's two Experts, Explosives and Pharmacology, are both terminal — no Master stands on
+    // either. Spending the set's one Expert pick on them would leave the Master pick unfillable, so
+    // the picker refuses them outright rather than letting the player walk into a dead end.
+    await column('Trained').locator('[data-skill]:has-text("Chemistry")').click();
+    await expect(column('Expert').locator('[data-state="available"]')).toHaveCount(0);
+    await expect(column('Expert').locator('[data-skill]:has-text("Explosives")'))
+      .toHaveAttribute('data-reason', 'strands');
+
+    // Industrial Equipment is the prerequisite of Asteroid Mining and Mechanical Repair, and
+    // Mechanical Repair of Cybernetics, Engineering and Robotics: each pick opens exactly what
+    // stands on it, and nothing else.
+    await column('Trained').locator('[data-skill]:has-text("Industrial Equipment")').click();
+    await expect(column('Expert').locator('[data-state="available"]')).toHaveText([
+      /Asteroid Mining/, /Mechanical Repair/,
+    ]);
+    await expect(column('Master').locator('[data-state="available"]')).toHaveCount(0);
+
+    await column('Expert').locator('[data-skill]:has-text("Mechanical Repair")').click();
+    await expect(column('Master').locator('[data-state="available"]')).toHaveText([
+      /Robotics/, /Engineering/, /Cybernetics/,
+    ]);
+
+    await column('Master').locator('[data-skill]:has-text("Cybernetics")').click();
+    await pickEverySkill(gmPage);
+    await expect(gmPage.locator('ul[data-list="skills"] li')).toHaveCount(4);
+
+    await rollStatsAndSaves(gmPage);
+    await goTo(gmPage, 'gear');
+    await gmPage.click('button[data-roll="all"]');
+    await goTo(gmPage, 'finish');
+    await gmPage.fill('form.character-wizard input[name="name"]', '__e2e_scientist');
+    await gmPage.click('button[data-action="save"]');
+    await gmPage.waitForSelector('form.character-wizard', { state: 'detached' });
+
+    // What was saved is the chain the book describes, plus the class's own free Trained pick.
+    const carried = await items(gmPage, uuid);
+    const skills = carried.filter((item) => item.type === 'skill').map((item) => item.name).sort();
+    expect(skills).toEqual(['Chemistry', 'Cybernetics', 'Industrial Equipment', 'Mechanical Repair']);
   });
 
   test('rolling a patch no longer throws on a row that links nothing', async ({ gmPage }) => {

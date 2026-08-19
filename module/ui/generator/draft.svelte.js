@@ -89,9 +89,13 @@ export class CharacterDraft {
     this.pronouns = actor.system?.pronouns?.value ?? '';
   }
 
-  /** The compendium scans, run once when the window opens rather than per dialog. */
+  /**
+   * The compendium scans, run once when the window opens rather than per dialog. Skills first: the
+   * class pane prints the names of the skills a class grants, and only the catalog knows them.
+   */
   async load() {
-    [this.classOptions, this.#catalog] = await Promise.all([loadClasses(), loadSkills()]);
+    this.#catalog = await loadSkills();
+    this.classOptions = await loadClasses(this.#catalog);
   }
 
   total(key) {
@@ -214,6 +218,7 @@ export class CharacterDraft {
     }
     const skill = this.#skill(uuid);
     if (!skill) return;
+    if (this.#strandsMaster(skill)) return;
     const heldUuids = this.skills.map((entry) => entry.uuid);
     const open = this.skillSlots.filter((slot) => slot.chosen === null && slot.rank === skill.rank);
     const slot = open.find((slot) => slot.gated && skill.prerequisites.some((id) => heldUuids.includes(id)))
@@ -234,27 +239,51 @@ export class CharacterDraft {
    * The whole catalog, each skill flagged with where it stands this session: `granted` (the class
    * or a chosen package handed it out outright, nothing to pick), `picked` (this session's answer
    * to one of the slots above), `available` (an unfilled slot of its rank can still take it), or
-   * `unavailable` (no slot can — every slot of its rank is spent, or the only ones left are gated
-   * on a prerequisite nothing held yet satisfies). An unavailable skill carries which of those two
-   * it is as `reason`, because the picker has to say so: a Trained skill greyed out for want of a
-   * pick reads as a rule about the skill unless the pane names the budget.
+   * `unavailable` (no slot can — every slot of its rank is spent, the only ones left are gated on a
+   * prerequisite nothing held yet satisfies, or taking it would strand the Master slot). An
+   * unavailable skill carries which of those it is as `reason`, because the picker has to say so: a
+   * skill greyed out for want of a pick reads as a rule about the skill unless the pane says what
+   * is actually in the way.
    */
   get skillTree() {
     const grantedUuids = this.#grantedUuids();
     const pickedUuids = new Set(this.skillSlots.map((slot) => slot.chosen).filter(Boolean));
     return this.#catalog.map((skill) => {
+      const fits = this.#openSlotFor(skill);
       const state = grantedUuids.has(skill.uuid) ? 'granted'
         : pickedUuids.has(skill.uuid) ? 'picked'
-        : this.#openSlotFor(skill) ? 'available'
+        : fits && !this.#strandsMaster(skill) ? 'available'
         : 'unavailable';
       return {
         ...skill,
         state,
         reason: state !== 'unavailable' ? null
+          : fits ? 'strands'
           : this.skillSlots.some((slot) => slot.chosen === null && slot.rank === skill.rank) ? 'gated'
           : 'spent',
       };
     });
+  }
+
+  /**
+   * Whether taking this skill would leave the Master slot unfillable. Four of the book's Experts —
+   * Explosives, Hand-to-Hand Combat, Pharmacology, Wilderness Survival — are terminal: no Master
+   * stands on them. A Scientist who spends their one Expert pick on one of those can never fill the
+   * Master pick above it, so the picker refuses the move rather than letting them walk into it and
+   * work out for themselves that it has to be taken back.
+   *
+   * Only the Master slot needs this. Every Trained skill in the book leads to at least one Expert,
+   * and a class with a second Expert slot can still buy the Master's prerequisite with it — which
+   * is what the count below reads, so a homebrew class of that shape is not refused a legal pick.
+   */
+  #strandsMaster(skill) {
+    if (skill.rank !== 'Expert') return false;
+    const open = this.skillSlots.filter((slot) => slot.chosen === null);
+    if (!open.some((slot) => slot.rank === 'Master')) return false;
+    if (open.filter((slot) => slot.rank === 'Expert').length !== 1) return false;
+    const heldUuids = [...this.skills.map((entry) => entry.uuid), skill.uuid];
+    return !this.#catalog.some((master) =>
+      master.rank === 'Master' && master.prerequisites.some((id) => heldUuids.includes(id)));
   }
 
   /** What the class, or a package already taken, hands out with no choice involved. */

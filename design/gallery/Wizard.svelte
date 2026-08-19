@@ -3,6 +3,21 @@
     group: 'Windows',
     title: 'Wizard',
     path: 'module/ui/generator/Wizard.svelte',
+    // The shell mounts one pane at a time, so the specimen is the whole family: walk the rail and
+    // every one of these draws. None is reachable — or reviewable — on its own.
+    covers: [
+      'module/ui/generator/WizardRail.svelte',
+      'module/ui/generator/WizardNav.svelte',
+      'module/ui/generator/WizardProse.svelte',
+      'module/ui/generator/panes/IntroPane.svelte',
+      'module/ui/generator/panes/RollsPane.svelte',
+      'module/ui/generator/panes/ClassPane.svelte',
+      'module/ui/generator/panes/AdjustmentsPane.svelte',
+      'module/ui/generator/panes/HealthPane.svelte',
+      'module/ui/generator/panes/SkillsPane.svelte',
+      'module/ui/generator/panes/GearPane.svelte',
+      'module/ui/generator/panes/FinishPane.svelte',
+    ],
     wide: true,
     standIn: 'The class list, which comes from a compendium scan, and the loadout tables it draws from. The draft is the real `CharacterDraft` and the dice are real — click a d20 to roll.',
     note: 'The character generator as the book presents it: one numbered step at a time, the PSG’s own prose above the controls that answer it, and a rail showing what is left. `PANES` in steps.js is the spine the window walks.',
@@ -12,9 +27,20 @@
 <script>
   import Wizard from '../../module/ui/generator/Wizard.svelte';
   import { CharacterDraft } from '../../module/ui/generator/draft.svelte.js';
+  import { pickPhrases } from '../../module/ui/generator/picks.js';
   import { say } from './fixtures.js';
 
   const STATS = ['strength', 'speed', 'intellect', 'combat'];
+
+  // The skills half of a class row, phrased by the real `pickPhrases` so the card prints what the
+  // window would. `granted` arrives already named: the pane never sees the UUIDs a class stores.
+  const skills = (granted, picks = {}, groups = []) => ({
+    granted,
+    picks: pickPhrases(picks),
+    groups: groups.map((group) => group.map(([name, counts]) => ({ name, picks: pickPhrases(counts) }))),
+  });
+
+  const EITHER_OR = [['1 Expert Skill', { expert: 1 }], ['2 Trained Skills', { trained: 2 }]];
 
   const draft = new CharacterDraft({ name: 'Rook Vance', items: [] });
 
@@ -34,6 +60,7 @@
         { key: 'max_wounds', value: 1 },
       ],
       choices: [{ modification: -10, stats: STATS }],
+      skills: skills(['Linguistics', 'Computers', 'Mathematics'], {}, [EITHER_OR]),
     },
     {
       uuid: 'Design.marine',
@@ -48,6 +75,7 @@
         { key: 'max_wounds', value: 1 },
       ],
       choices: [],
+      skills: skills(['Military Training', 'Athletics'], {}, [EITHER_OR]),
     },
     {
       uuid: 'Design.scientist',
@@ -60,6 +88,7 @@
         { key: 'sanity', value: 30 },
       ],
       choices: [{ modification: 5, stats: STATS }],
+      skills: skills([], { master_full_set: 1, trained: 1 }),
     },
     {
       uuid: 'Design.teamster',
@@ -77,6 +106,7 @@
         { key: 'body', value: 10 },
       ],
       choices: [],
+      skills: skills(['Industrial Equipment', 'Zero-G'], { trained: 1, expert: 1 }),
     },
   ];
 
