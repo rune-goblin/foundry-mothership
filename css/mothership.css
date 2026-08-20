@@ -909,7 +909,7 @@
     margin: var(--space-0) var(--space-8) var(--space-0) var(--space-2);
     vertical-align: middle;
 
-    /* Beats Foundry's core theme glow: module CSS outranks layer(system) in normal order. */
+    /* !important beats Foundry's core theme glow: module CSS outranks layer(system) here. */
     box-shadow: none !important;
     outline: none;
   }
@@ -942,7 +942,7 @@
     outline-offset: var(--space-2);
   }
 
-  /* Beats a theme's :has(input:checked) row highlight, which outranks layer(system). */
+  /* !important strips a theme's :has(input:checked) row highlight, which outranks layer(system). */
   .mothership.macro-popup-dialog label:has(input[type="radio"]:checked) {
     background: inherit !important;
     box-shadow: none !important;

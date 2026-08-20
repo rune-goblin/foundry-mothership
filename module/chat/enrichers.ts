@@ -60,6 +60,14 @@ const SPELLING: Readonly<Record<ActionVerb, string>> = {
   damage: 'Damage',
 };
 
+/**
+ * What content authors type by hand:
+ * `@Check[fear -]` Fear Save at disadvantage · `@Table[gunshot]` roll the Gunshot Wound table ·
+ * `@Gain[stress 1d5]` gain 1d5 Stress · `@Gain[health -bleeding]` take damage equal to Bleeding ·
+ * `@Apply[coward]` gain the Coward condition. A trailing `{…}` overrides the generated label, as
+ * `@UUID[…]{…}` does. A Panic Check is judged against Stress, so it is `@Check[panicCheck]`, not a
+ * `@Table`.
+ */
 const SYNTAX = '@(Check|Table|Gain|Apply|Damage)\\[([^\\]]*)\\](?:\\{([^}]*)\\})?';
 
 /** `parseAction` uses its own anchored copy, so neither this nor that carries the other's `lastIndex`. */

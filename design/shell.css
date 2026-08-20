@@ -28,9 +28,17 @@
   --ui-gray-850: #c7c7c7;
   --ui-gray-950: #f2f2f2;
 
-  /* Every rung here clears 4.5:1 against --ui-surface-highest (#292929), the lightest ground any
-     is printed on. Nothing in this app is set below --ui-font-size-sm (14px), so the large-text
-     AA exemption is never leaned on. */
+  /* The text ramp departs from the editor's values, whose lowest rung (#4d4d4d) sits at 2.3:1 on
+     black. Every rung here clears 4.5:1 against --ui-surface-highest (#292929), the lightest
+     ground any is printed on — measured, not estimated:
+       on #292929 / #212121 / #0f0f0f / #000000
+       primary   #ffffff   14.6  16.1  19.2  21.0
+       secondary #c9c9c9    8.8   9.7  11.6  12.7
+       tertiary  #9d9d9d    5.4   5.9   7.1   7.7
+       muted     #919191    4.6   5.1   6.1   6.7
+       highlight #ffac28    7.8   8.6  10.2  11.2
+     Nothing here is set below --ui-font-size-sm (14px), so the large-text exemption is never
+     leaned on. */
   --ui-text-primary: #ffffff;
   --ui-text-secondary: #c9c9c9;
   --ui-text-tertiary: #9d9d9d;

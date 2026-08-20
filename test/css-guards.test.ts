@@ -65,7 +65,7 @@ const layered = (prelude: string) => /^@(layer|font-face|import|charset)\b/.test
 describe('css guards', () => {
   it(`keeps !important at or under ${IMPORTANT_CEILING} across css/`, () => {
     const total = stylesheets.reduce(
-      (count, { css }) => count + (css.match(/!\s*important/gi)?.length ?? 0),
+      (count, { css }) => count + (withoutComments(css).match(/!\s*important/gi)?.length ?? 0),
       0,
     );
 
