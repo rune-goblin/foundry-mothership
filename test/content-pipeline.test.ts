@@ -1,9 +1,3 @@
-// The standing content tests, and the proof that each fails when it should.
-//
-// These run against test/fixtures/content/books/fixture — three packs, one per document type,
-// cross-linked by @UUID the way the shipped content is — because a negative case has to be staged,
-// and staging one by damaging the real book would mean editing the book. What the same machinery
-// produces from the PSG is asserted in content-psg.test.ts.
 import { beforeAll, describe, expect, it } from 'vitest';
 import { copyFileSync, mkdirSync, mkdtempSync, readdirSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -44,7 +38,6 @@ function run(
   });
 }
 
-/** The same fixture, with one record rewritten — how each negative case is staged. */
 function mutated(pack: string, edit: (record: ContentRecord) => ContentRecord | null): Book[] {
   return [
     {
@@ -58,14 +51,12 @@ function mutated(pack: string, edit: (record: ContentRecord) => ContentRecord | 
   ];
 }
 
-/** The same fixture with one gadget's `system` replaced outright. */
 function systemOf(contentId: string, system: Record<string, unknown>): Book[] {
   return mutated('gadgets', (r) =>
     r.contentId === contentId ? { ...r, body: { kind: 'Item', type: 'condition', system } } : r,
   );
 }
 
-/** The same staging as `systemOf`, against the one type carrying an enumerated field. */
 function weaponWith(system: Record<string, unknown>): Book[] {
   return mutated('gadgets', (r) =>
     r.contentId === 'flux-capacitor' ? { ...r, body: { kind: 'Item', type: 'weapon', system } } : r,
@@ -99,8 +90,6 @@ describe('the fixture is worth testing against', () => {
   });
 });
 
-// Adding the Warden's book must be a directory and a BOOKS entry, never a rework. It stops being
-// additive the moment two books claim the same id, pack name or compendium.
 describe('a second book is additive', () => {
   it('refuses two books with the same id', () => {
     expect(() => run([FIXTURE_BOOK, { ...FIXTURE_BOOK, packs: [] }])).toThrow('two books claim "fixture"');
@@ -154,8 +143,8 @@ describe('a second book is additive', () => {
   });
 });
 
-// Catches: a timestamp, a random id, or object iteration order leaking into the packs — any of
-// which turns every rebuild into a whole-tree diff and hides the change that mattered.
+// A leaking timestamp, random id, or object iteration order would turn every rebuild
+// into a whole-tree diff and hide the change that mattered.
 describe('determinism', () => {
   it('produces byte-identical output on a second build', () => {
     const again = run();
@@ -198,8 +187,7 @@ describe('determinism', () => {
   });
 });
 
-// Catches: a document silently disappearing from the build. Its _id is what an installed world
-// tracks the document by, so a vanished id orphans every copy already in play.
+// A world tracks a document by its _id, so a vanished id orphans every copy already in play.
 describe('id preservation', () => {
   it('accounts for every id the registry has handed out', () => {
     expect(checkIdPreservation(FIXTURE_IDS_BEFORE, built.emitted, built.registry)).toEqual([]);
@@ -218,7 +206,6 @@ describe('id preservation', () => {
     );
   });
 
-  // Dropping a document something links to is caught earlier still, by the reference check.
   it('never gets the chance to fail when the dropped document is linked', () => {
     expect(() => run(mutated('gadgets', (r) => (r.contentId === 'reactor-shim' ? null : r)))).toThrow(
       /@UUID target fixture_gadgets_1e\.FiXaaaaaaaaaaa02 was not emitted/,
@@ -262,10 +249,8 @@ describe('id preservation', () => {
   });
 });
 
-// Catches: a `system` key no DataModel declares. Foundry's SchemaField cleans such a key off on
-// load, so the build succeeds, the pack ships, and the data is gone the first time anyone opens
-// the document. This is the repo's signature bug — armour `equipped`, creature `swarm`, and the
-// twelve like them that `test/sheet-bindings.test.ts` now pins across all 13 types.
+// Foundry's SchemaField silently drops any system key no DataModel declares, so a bad
+// pack builds and ships fine — the data just vanishes the first time anyone opens it.
 describe('the DataModel guard', () => {
   it('passes the fixture, whose system keys MothershipConditionModel declares', () => {
     const item = built.emitted.find((d) => d.contentId === 'flux-capacitor')!;
@@ -301,9 +286,8 @@ describe('the DataModel guard', () => {
     ).toThrow(/condition declares no system\.treatment\.salve/);
   });
 
-  // A condition's modifiers are an array of SchemaFields, so both checks have to descend into the
-  // list. Until they did, a mistyped scope was emitted, cleaned off on load, and the condition
-  // silently modified nothing.
+  // A condition's modifiers are an array of SchemaFields, so the check must descend into
+  // the list to catch an undeclared key there too.
   it('reaches inside an array of SchemaFields', () => {
     const modifiers = (entry: Record<string, unknown>) =>
       systemOf('flux-capacitor', { description: '<p>Bends time.</p>', modifiers: [entry] });
@@ -321,9 +305,8 @@ describe('the DataModel guard', () => {
     expect(() => run(systemOf('flux-capacitor', { description: '<p>Bends time.</p>' }))).not.toThrow();
   });
 
-  // A StringField that declares `choices` validates on load as well. An off-list value falls back
-  // to the initial, which loses the data exactly as quietly as an undeclared key -- and the
-  // title-cased band below is precisely what the emitter used to write.
+  // 'Long' is title-cased because the emitter used to write range values that way;
+  // that casing is now off-list, same as an undeclared key would be.
   it('fails on a value outside the choices its field declares', () => {
     expect(() => run(weaponWith({ range: 'Long' }))).toThrow(
       'emitted content does not fit its DataModel:\n' +
@@ -351,8 +334,6 @@ describe('the DataModel guard', () => {
   });
 });
 
-// Catches: an @UUID that resolves to nothing. A broken content link is invisible until a player
-// clicks it, and the build that produced it is the only place it can be caught cheaply.
 describe('referential integrity', () => {
   it('resolves every @UUID the fixture emits', () => {
     expect(checkReferences({ systemId: 'mothershiprpg', emitted: built.emitted, compendia: COMPENDIA })).toEqual([]);
@@ -409,13 +390,9 @@ describe('referential integrity', () => {
   });
 });
 
-// Catches: a macro command reading `game.settings.get` directly (audit C1's shipped bug), naming
-// a bare document id (audit C2), or calling a retired `init*` verb — decision 4 retires all three
-// in favour of `game.mothershiprpg`'s own entry points, which resolve targeting and identity
-// themselves.
 describe('the macro command guard', () => {
   it('passes the fixture, whose macros call the new API', () => {
-    // `beforeAll` already built the fixture; a violation here would have thrown before this runs.
+    // beforeAll already built the fixture; a violation here would have thrown before this runs.
     expect(built.emitted.filter((d) => d.pack === 'quips')).toHaveLength(2);
   });
 
@@ -647,9 +624,6 @@ describe('the build manifest', () => {
   });
 });
 
-// A book's records now arrive as imports, so a `dir` typo can no longer empty one silently. What
-// `dir` still decides is what the manifest cites as every document's provenance, and where BOOK.md
-// records the printing and the licence — so both have to be there.
 describe('the book directory', () => {
   it('rejects a book whose directory is not there', () => {
     expect(() =>

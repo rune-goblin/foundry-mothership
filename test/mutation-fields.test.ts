@@ -12,8 +12,6 @@ const { ACTOR_MODELS } = (await import('../module/data/actor-models.js')) as {
 const character = new Set(leaves(ACTOR_MODELS.character.defineSchema()));
 
 describe('the fields content can name', () => {
-  // A field key that names nothing would be discovered as a runtime AddressError in a player's
-  // chat log. The schema is right here, so it is discovered by this instead.
   it('every one addresses a number the character schema declares', () => {
     for (const key of FIELD_KEYS) {
       for (const leaf of ['value', 'min', 'max'] as const) {

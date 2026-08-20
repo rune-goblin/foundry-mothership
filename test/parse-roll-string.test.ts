@@ -2,9 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { rollFormula } from '../module/rolls/parse.ts';
 import type { Aim } from '../module/rolls/spec.ts';
 
-// These cases are legacy's `parseRollString` contract, kept verbatim through the swap that deleted
-// it: R0 ran them against both implementations, and they now hold `rolls/parse.ts` to the answers
-// the shipped system has always given.
 const parse = (rollString: string, aimFor: Aim): string => rollFormula(rollString, aimFor);
 
 describe('rollFormula — the roll string a check is built from', () => {
@@ -13,9 +10,7 @@ describe('rollFormula — the roll string a check is built from', () => {
     expect(parse('2d10', 'high')).toBe('2d10');
   });
 
-  // [+] is advantage: roll the dice set twice and keep the result that helps. Which result
-  // helps depends on the direction of the check -- Mothership rolls under for stat checks
-  // and over for damage, so aimFor is what decides keep-highest vs keep-lowest.
+  // [+] rolls the dice set twice and keeps the result that helps; aimFor decides which end that is.
   it('keeps the highest for advantage when aiming high', () => {
     expect(parse('1d100[+]', 'high')).toBe('{1d100,1d100}kh');
   });

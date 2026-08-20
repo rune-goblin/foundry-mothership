@@ -1,22 +1,3 @@
-/**
- * The dotted address a macro passes — `'system.other.stress.value'` — parsed once and resolved
- * against the field it names. The string stays the boundary because 39 shipped macros carry it;
- * everything past this module is typed (audit F12).
- *
- * **The pod contract.** `module/data/actor-models.js` never stores a tracked number bare: it
- * wraps it in a `SchemaField` beside the bounds and the label that describe it. Three shapes
- * exist, and the difference is real rather than incidental:
- *
- * - **bounded** `{value, min, max, label}` — `health`, `hits`, `netHP`, `other.stress`, and every
- *   entry of `stats`, which carries further siblings the bounds do not care about.
- * - **floored** `{value, min, label}` — `bleeding` alone: severity has no ceiling.
- * - **bare** `{value}` — `xp`, `attributes.level`, `swarm.combat`, and the four string pods
- *   `class`, `rank`, `pronouns`, `credits` plus `other.stressdesc`.
- *
- * So "has a maximum" is a property of the pod, not of the convention, and a resolved field says
- * which bounds it actually has instead of assuming four siblings exist.
- */
-
 export type PodLeaf = 'value' | 'min' | 'max';
 
 const POD_LEAVES: readonly string[] = ['value', 'min', 'max'];
@@ -24,10 +5,8 @@ const POD_LEAVES: readonly string[] = ['value', 'min', 'max'];
 const ROOT = 'system';
 
 export interface FieldAddress {
-  /** The canonical dotted path, which is what an update payload is keyed by. */
   readonly path: string;
   readonly podPath: string;
-  /** The pod's own key — `health`, `stress`, `body` — which is what the rules dispatch on. */
   readonly pod: string;
   readonly leaf: PodLeaf;
 }
@@ -95,7 +74,6 @@ function podOf(system: unknown, address: FieldAddress): Record<string, unknown> 
   return node as Record<string, unknown>;
 }
 
-/** The pod's numbers, read out of a document's system data. Throws rather than guess. */
 export function resolveField(system: unknown, address: FieldAddress): FieldRef {
   const pod = podOf(system, address);
   const raw = pod[address.leaf];
@@ -111,8 +89,8 @@ export function resolveField(system: unknown, address: FieldAddress): FieldRef {
   return {
     address,
     value,
-    // A bound is not itself bounded — `min` and `max` describe `value`. Legacy clamped
-    // `…stress.max` against itself, so an effect raising it could never take effect.
+    // A bound isn't itself bounded: min/max describe value only, else raising max could
+    // never take effect (it would clamp against itself).
     bounds:
       address.leaf === 'value'
         ? { min: numberOrNull(pod.min), max: numberOrNull(pod.max) }
@@ -127,7 +105,6 @@ export interface FieldChange {
   readonly to: number;
 }
 
-/** One update payload, built from computed keys — never `JSON.parse` on a string (audit F12). */
 export function updateData(changes: readonly FieldChange[]): Record<string, number> {
   const data: Record<string, number> = {};
   for (const change of changes) data[change.path] = change.to;

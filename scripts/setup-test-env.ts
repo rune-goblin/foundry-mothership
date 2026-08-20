@@ -1,13 +1,6 @@
-// Build test/foundry-data/ — an isolated Foundry data path for the Playwright e2e harness, so
-// driving a headless Foundry never touches the real install. Idempotent; start-test-env.sh
-// re-runs it on every boot.
-//
-// systems/worlds are CLONED, not symlinked. A running Foundry takes an exclusive LevelDB lock on
-// every world db AND every compendium pack it can see, so two instances sharing those directories
-// cannot both boot — symlinking means you cannot run your own Foundry while the suite runs. On
-// APFS the clones are copy-on-write: gigabytes mirror in seconds for almost no disk.
-//
-// Adapted from runegoblin-foundrytemplate for a system rather than a module.
+// systems/worlds are CLONED, not symlinked — Foundry takes an exclusive LevelDB lock on every
+// world db and compendium pack it can see, so a linked test instance would block your own
+// Foundry from booting. CoW (APFS/reflink) makes cloning nearly free.
 import {
   existsSync, mkdirSync, copyFileSync, readFileSync, writeFileSync, unlinkSync, lstatSync, rmSync,
   readdirSync, readlinkSync, renameSync,
@@ -40,8 +33,7 @@ function resolveFoundryData(): string {
   return found;
 }
 
-// Copy-on-write where the filesystem supports it. `cp -R` keeps symlinks as symlinks, which the
-// packs fixup below relies on.
+// `cp -R` keeps symlinks as symlinks, which declinkSystemPacks below relies on.
 function cloneArgs(): string[] {
   if (process.platform === 'darwin') return ['-c', '-R', '-p'];
   if (process.platform === 'linux') return ['--reflink=auto', '-R', '-p'];
@@ -56,8 +48,7 @@ function removePath(p: string): void {
   else rmSync(p, { recursive: true, force: true });
 }
 
-// Stage into a sibling then swap, so an interrupted clone can't leave a half-populated tree that
-// later boots would treat as complete.
+// Stage into a sibling then swap, so an interrupted clone can't leave a half-populated tree.
 function cloneTree(src: string, dest: string): void {
   const staging = `${dest}.staging`;
   removePath(staging);
@@ -78,11 +69,9 @@ function humanSize(dir: string): string {
   }
 }
 
-// npm run setup links each pack directory individually (packs/ is a real dir of symlinks), so
-// unlike the template's module scaffold there is no single `packs` symlink to swap. Left alone
-// the test instance locks the repo's LevelDB, blocking scripts/packs.sh and the developer's own
-// Foundry. Everything else (dist, templates, lang, images) stays linked, so a Vite rebuild
-// reaches the harness with no re-clone.
+// npm run setup links each pack directory individually, so there's no single `packs` symlink to
+// swap — left alone the test instance locks the repo's LevelDB, blocking packs.sh and your own
+// Foundry. Everything else stays linked, so a Vite rebuild reaches the harness with no re-clone.
 function declinkSystemPacks(systemsDir: string): void {
   const packsDir = join(systemsDir, SYSTEM_ID, 'packs');
   const st = lstatSync(packsDir, { throwIfNoEntry: false });
@@ -156,9 +145,8 @@ writeFileSync(
 );
 console.log(`✅ wrote Config/options.json (port ${PORT}, upnp off)`);
 
-// Refreshed every run: a stale clone would silently test an old build. Cheap enough (CoW) that
-// "always" beats any staleness heuristic. `modules` comes along because a world may reference
-// installed modules, and Foundry warns loudly about missing ones.
+// Refreshed every run — cheap enough (CoW) that "always" beats a staleness heuristic. `modules`
+// comes along because a world may reference installed modules, and Foundry warns if any are missing.
 for (const name of ['systems', 'modules'] as const) {
   const src = join(foundryData, name);
   if (!existsSync(src)) continue;
@@ -193,21 +181,13 @@ if (existsSync(worldDest)) {
   console.log(`🌍 cloned world "${TEST_WORLD}" (${humanSize(worldDest)}) — independent of the original`);
 }
 
-// Foundry refuses to auto-launch a world whose `system` is not installed, or whose recorded
-// `systemVersion` is newer than the installed one — and the rename to `mothershiprpg` reset the
-// version to 0.0.0, so a world made on 0.6.1 fails both checks. The clone is throwaway, so
-// repoint it rather than requiring a hand-migrated world just to run the harness.
+// Foundry won't auto-launch a world whose recorded systemVersion is newer than the installed
+// one — and the mothershiprpg rename reset the installed version to 0.0.0 — so repoint the
+// clone's system/systemVersion rather than requiring a hand-migrated world.
 //
-// `safeMode` is armed in the same write. It is Foundry's own "launch in safe configuration"
-// flag (`common/packages/base-world.mjs`): on launch the server deletes every module from the
-// world's `core.moduleConfiguration` setting, keeping only what the system or world declares as
-// a hard dependency — this system declares none — so the harness runs against **no modules at
-// all**. The clone comes from the live Data dir, which carries whatever happens to be enabled
-// there; one enabled module (a timer widget with a `position: fixed` overlay) is enough to paint
-// pixels into a visual baseline, and any module's CSS can reach our windows. The flag is
-// one-shot — the server writes `safeMode: false` back after it launches — so it is re-armed on
-// every setup run, which is every boot. Safe mode also deactivates the active scene and stops
-// playlists; no spec touches either.
+// safeMode strips every module from the clone on launch (Foundry's own flag, one-shot — it
+// writes itself back to false after boot, so re-arm it every run): keeps a stray enabled
+// module's CSS or overlay from bleeding into a visual baseline.
 const worldManifest = join(worldDest, 'world.json');
 if (existsSync(worldManifest)) {
   const world = JSON.parse(readFileSync(worldManifest, 'utf8')) as Record<string, unknown>;

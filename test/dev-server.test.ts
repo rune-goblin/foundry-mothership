@@ -6,13 +6,6 @@ import { createServer, type InlineConfig, type ViteDevServer } from 'vite';
 
 import config from '../vite.config.ts';
 
-/**
- * `npm run dev` is the only tier where Foundry loads our source instead of `dist/`, and it fails
- * silently: Foundry fetches the two files system.json names, so a 404 means `onInit` never runs,
- * no sheet registers, and every actor opens on Foundry's base sheet with nothing thrown. Both
- * entries broke that way, so the tier exists now.
- */
-
 const manifest = JSON.parse(
   readFileSync(fileURLToPath(new URL('../system.json', import.meta.url)), 'utf8'),
 ) as { id: string; esmodules: string[]; styles: string[] };

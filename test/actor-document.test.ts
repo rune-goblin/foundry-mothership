@@ -15,12 +15,6 @@ import {
   type Notifications,
 } from './foundry-stubs.ts';
 
-/**
- * What the document does itself. The roll methods are one line each and are pinned by the
- * dispatch they build (`test/actor-rolls.test.ts`); here is everything with a consequence — the
- * mutation, the grant, the card, and the three legacy-named methods world macros call directly.
- */
-
 const prompts = vi.hoisted(() => ({
   chooseAdvantage: vi.fn(),
   chooseAttribute: vi.fn(),
@@ -125,9 +119,8 @@ function actorOf(items: FakeItem[] = [], overrides: Record<string, unknown> = {}
       }
       return data;
     },
-    // Mimics Foundry's own `createEmbeddedDocuments`: a supplied `_id` is discarded unless the
-    // caller passes `{keepId: true}` — the option `grantItem` relies on to keep a Condition's
-    // compendium id alive onto the actor.
+    // Mimics Foundry's `createEmbeddedDocuments`: a supplied `_id` is discarded unless the caller
+    // passes `{keepId: true}`, which `grantItem` relies on to keep a Condition's compendium id.
     createEmbeddedDocuments: async (
       _type: string,
       data: readonly object[],
@@ -172,9 +165,6 @@ afterEach(clearFoundryStubs);
 
 const cardData = (index = 0) => chat.cards[index].data as Record<string, unknown>;
 
-// The rules the sheets used to hold themselves (audit U5): a swarm's dice, the swarm toggle's
-// rewrite, and the XP track's bounds. None of them were reachable from a test while they lived in
-// a component, and the XP clamp was wrong by one the whole time (U14).
 describe('the creature rules', () => {
   const swarming = (enabled: boolean, damage = '1d10') =>
     actorOf([item({ id: 'w1', type: 'weapon', name: 'Mandibles', system: { damage } })], {
@@ -193,7 +183,6 @@ describe('the creature rules', () => {
     });
 
     it('leaves a weapon whose damage names no dice alone', () => {
-      // AppV1 indexed the failed match and threw.
       expect(swarming(true, 'as the scalpel').actor.swarmDamage('w1')).toBeNull();
     });
 
@@ -236,7 +225,7 @@ describe('the creature rules', () => {
     });
 
     // Derivation multiplies Combat in `system` itself, so stashing what is there would stash the
-    // product — the mutation engine reads `toObject()` for the same reason (divergence R1-4).
+    // product — `toObject()` gives the stored value instead.
     it('stashes the stored Combat, not the derived one', async () => {
       const { actor, updates } = swarming(false);
       Object.assign(actor, {
@@ -264,8 +253,6 @@ describe('the creature rules', () => {
       expect(updates).toEqual([{ 'system.xp.value': 4 }, { 'system.xp.value': 3 }]);
     });
 
-    // U14: both sheets clamped at 16 over a 15-pip track, so the sixteenth click stored a state
-    // nothing could draw and the next right-click appeared to do nothing.
     it('stops at the end of the track the sheets draw', async () => {
       const { actor, updates } = trained(XP_PIPS);
 
@@ -348,9 +335,8 @@ describe('applyItem', () => {
     expect(created).toEqual([[{ name: 'Bleeding', img: 'condition.png', type: 'condition', system: { severity: 2 } }]]);
   });
 
-  // The compendium id is what lets a later reader (`checks/actions.ts`'s `severityOf`) match this
-  // item by identity rather than by name alone — `grantItem` has to ask `createEmbeddedDocuments`
-  // to keep it, or Foundry mints a fresh one and the id half of `isCondition` never matches again.
+  // `checks/actions.ts`'s `severityOf` matches this item by id, not name — without `keepId`,
+  // Foundry mints a fresh one and that match never fires again.
   it('keeps the compendium id a granted condition arrives with', async () => {
     const withId: GrantDocument = {
       id: 'pxtF1NfletmoFFGV',
@@ -412,8 +398,8 @@ describe('applyItem', () => {
     expect(cardData().flavorText).toBe('You learn this skill');
   });
 
-  // The generator hands out a class, a loadout, two table results and a skill list in one pass;
-  // a card apiece would bury the rolls that produced them (R7).
+  // The generator grants a class, a loadout, two table results and a skill list in one pass;
+  // a card apiece would bury the rolls that produced them.
   it('grants without a card when the caller asks for none', async () => {
     const { actor, created } = actorOf();
 
@@ -502,8 +488,6 @@ describe('printDescription', () => {
     expect((cardData().item as Record<string, unknown>).name).toBe('Rebreather');
   });
 
-  // Legacy cloned the item through duplicate(), which drops the `id` accessor, then asked for
-  // `item.id` — so every gear hotbar macro threw instead of posting (audit RC3).
   it('reports a missing item instead of throwing', async () => {
     const { actor } = actorOf();
 
@@ -532,11 +516,8 @@ describe('chooseCover', () => {
   });
 });
 
-// The Bleeding document's real id (content/ids.json) — the id `grantItem`'s `{keepId: true}`
-// carries onto an embedded item when this system grants one. `isCondition` (module/conditions.ts)
-// also matches by the exact canonical name alone, which is the only identity a condition dragged
-// straight from the compendium onto a sheet keeps — that path never touches `grantItem` at all,
-// so it never receives this id and mints a fresh one instead.
+// The Bleeding document's real compendium id — a sheet-dragged condition never touches
+// `grantItem`, so `isCondition` also matches those by exact name alone.
 const BLEEDING_ID = 'pxtF1NfletmoFFGV';
 
 describe('takeBleedingDamage', () => {
@@ -563,8 +544,6 @@ describe('takeBleedingDamage', () => {
     expect(updates).toEqual([{ 'system.health.value': 6 }]);
   });
 
-  // The card's image used to be hand-written HTML pointing at systems/foundry-mothership/… , a
-  // path that stopped existing at the rename (audit F4).
   it('posts a card whose art is under the system’s real id', async () => {
     const { actor } = actorOf([item({ id: BLEEDING_ID, type: 'condition', name: 'Bleeding', system: { severity: 1 } })]);
 

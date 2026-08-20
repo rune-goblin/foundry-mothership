@@ -225,7 +225,7 @@ describe('@Gain', () => {
     });
   });
 
-  // Divergence R1-5: a rolled amount is the roll's own arithmetic, not the kept die.
+  // A rolled amount is the roll's own arithmetic, not the kept die.
   it('rolls the dice an expression names, and shows them on the card', async () => {
     stubs([{ faces: 5, result: 4 }]);
     const sarah = character();
@@ -240,8 +240,8 @@ describe('@Gain', () => {
 
   it('takes the severity of a condition granted through this system, matched by its compendium id', async () => {
     stubs([]);
-    // The real Bleeding document id (content/ids.json) — the id `grantItem`'s `{keepId: true}`
-    // carries onto the embedded item when a macro or `@Apply` gives it, not a fixture convenience.
+    // The real Bleeding compendium id — `grantItem`'s `{keepId: true}` carries this onto the
+    // embedded item, not a fixture convenience.
     const sarah = character([condition('Bleeding', 3, 'pxtF1NfletmoFFGV')]);
 
     await runAction(action('@Gain[health -bleeding]'), [sarah]);
@@ -249,9 +249,8 @@ describe('@Gain', () => {
     expect(sarah.updates).toEqual([{ 'system.health.value': 6 }]);
   });
 
-  // The sheet-drop path: dragging Bleeding from the compendium onto an actor never touches
-  // `grantItem`, so the embedded item keeps whatever fresh id Foundry's own handler minted for it
-  // — only the exact name it copied from the compendium still says what condition it is.
+  // Sheet-dragged items never touch `grantItem`, so this one keeps whatever fresh id Foundry
+  // minted for it — only its copied name still says what condition it is.
   it('takes the severity of a condition dragged onto the sheet, matched by its canonical name alone', async () => {
     stubs([]);
     const sarah = character([condition('Bleeding', 3, 'aFreshDragAndDropId01')]);

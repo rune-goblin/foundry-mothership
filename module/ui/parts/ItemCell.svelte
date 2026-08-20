@@ -1,9 +1,6 @@
 <script>
   import { onActivate } from './activate.js';
 
-  // `variant` picks between the two cells an item row is built from: the plain `.skill-stat`
-  // readout and the black `.skill-name` pill. `roll` adds `.list-roll`, the hover cue every
-  // clickable cell wears. The +/- cells take both handlers: left click adds, right click removes.
   let {
     children,
     grow,
@@ -41,19 +38,10 @@
 </div>
 
 <style>
-  /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
-     application; @layer system puts these in the slot the rest of the system occupies.
-     Both variants land here now that the four sheets that hand-wrote the black pill mount this
-     component instead. `.skill-name` keeps its `.items-list` ancestor through `:global()`: the
-     rule weighs (0,3,0) in css/mothership.css and the pill's `color: white` beats the
-     `list-roll:hover` group on that weight alone — the ancestor is what holds the tie, not the
-     scope hash. Both names stay on the markup: creature-sheet.spec.ts locates the quantity cell
-     by `.skill-stat`, and the class sheet's inert wrapper is not ours to rename. */
+  /* creature-sheet.spec.ts locates the quantity cell by `.skill-stat` -- keep the class name. */
   @layer system {
     .skill-stat {
       --itemcell-stat-text: var(--text-primary);
-      /* `medium` is the absolute keyword, 16px; no stylesheet in the app sets a root
-         font-size, so 1rem is the same 16px. */
       --itemcell-stat-font-size: var(--font-size-lg);
       --itemcell-stat-margin-inline-start: var(--space-0);
       --itemcell-stat-padding-block: var(--space-2);
@@ -71,13 +59,14 @@
       white-space: nowrap;
     }
 
+    /* The .items-list ancestor is what wins specificity over list-roll:hover; drop it and
+       hover repaints the pill white on white. */
     :global(.items-list) .skill-name {
       --itemcell-name-text: var(--text-inverted);
       --itemcell-name-surface: var(--surface-neutral-lowest);
       --itemcell-name-font-weight: var(--font-weight-bold);
       --itemcell-name-font-size: var(--font-size-md);
-      /* The pill's own height, like the row's — a measurement, not a step. */
-      --itemcell-name-height: 27px;
+      --itemcell-name-height: 27px; /* measurement, not a spacing-scale step */
       --itemcell-name-margin-inline-start: var(--space-0);
       --itemcell-name-padding: var(--space-2);
       --itemcell-name-radius: var(--radius-xl);

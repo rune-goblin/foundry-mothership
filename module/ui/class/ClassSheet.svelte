@@ -17,11 +17,8 @@
   import { promptStatOption } from './stat-option.js';
   import { localize } from '../../i18n.ts';
 
-  // No <style> block: every name this sheet writes is shared vocabulary css/mothership.css keeps
-  // declaring — the `.grid*`/`widegap` set, `resource-label`, `skill-name` (SkillSheet, OptionDraft
-  // and ItemCell's `name` variant) and the `list-roll` hover group. The six `skills-*`/`stat-option-*`
-  // names are class props on ItemControl's anchor, where a scoped block here could not reach them
-  // anyway, and no rule keys off any of them: they exist as e2e locators.
+  // No <style> block: every class here is shared vocabulary owned by css/mothership.css, or (the
+  // `skills-*`/`stat-option-*` names) an e2e locator with no rule keyed off it.
   let { store } = $props();
 
   const doc = $derived(store.current);
@@ -79,7 +76,6 @@
       'system.base_adjustment.skills_granted': granted().filter((id) => id !== uuid),
     });
 
-  /** Replace one group in choose_skill_or without mutating what the document is holding. */
   const withGroup = (groupIndex, replace) =>
     groups().map((group, index) => (index === groupIndex ? replace(group) : group));
 
@@ -131,9 +127,8 @@
 <SheetHeader documentName={doc.name} img={doc.img} />
 <br />
 
-<!-- The nine adjustments are written out rather than looped: an interpolated `name` is invisible
-     to test/sheet-bindings.test.ts and to the field-usage ratchet, and the whole point of the
-     SchemaField behind them is that a binding no schema declares fails a tier. -->
+<!-- Adjustments are written out rather than looped: an interpolated `name` is invisible to
+     test/sheet-bindings.test.ts, and an undeclared SchemaField key is silently dropped. -->
 <div class="grid">
   <div class="grid grid-1col widegap">
     <MainStat

@@ -4,13 +4,8 @@ import { compare } from '../module/compare.js';
 import { SETTING_DEFAULTS } from '../module/checks/settings.ts';
 import { clearChatActions } from '../module/chat/actions.ts';
 
-/**
- * Boot. `init.ts` self-registers when it is imported — that is its whole job — so this spec
- * installs the globals first, imports it once, and then drives each handler by hand.
- *
- * The sheets and the DataModels are stubbed: they are registered here, not written here, and
- * both reach for `foundry.*` the moment they load.
- */
+// init.ts self-registers on import, so this spec installs the globals, imports it once,
+// and drives each handler by hand; sheets/DataModels are stubbed since both need `foundry.*`.
 
 type Globals = Record<string, unknown>;
 const globals = globalThis as unknown as Globals;
@@ -181,7 +176,7 @@ describe('init', () => {
     expect(sheets.unregistered).toEqual(['v1 ActorSheet', 'v1 ItemSheet']);
   });
 
-  // RC2: the v1 namespace is deprecated for removal in v16, when dereferencing it kills boot.
+  // The v1 namespace is deprecated for removal in v16, when dereferencing it kills boot.
   it('survives a Foundry with no appv1 namespace left', () => {
     const withV1 = globals.foundry as Globals;
     delete withV1.appv1;
@@ -217,11 +212,8 @@ describe('a newly created actor', () => {
     return Object.assign({}, ...changes) as Record<string, unknown>;
   };
 
-  /**
-   * `TokenDocument#getBarAttribute` resolves its path against `actor.system` — verified against
-   * the installed Foundry, which calls `getProperty(this.actor.system, attribute)`. The old hook
-   * wrote `system.health`, with a comment claiming the opposite (audit RC1).
-   */
+  // TokenDocument#getBarAttribute resolves against `actor.system`, confirmed against the
+  // installed Foundry — the path is 'health', not 'system.health'.
   it('gets bars that point at fields that exist', () => {
     const token = created({ type: 'character', name: 'Sarah' });
 

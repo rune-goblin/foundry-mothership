@@ -1,14 +1,3 @@
-/**
- * Rolling on one of the system's tables, and doing what the roll costs. `tables/tables.ts` draws
- * the row and judges the roll without touching anything; the parts with consequences — spending
- * the Wound the table charges for, reading the Stress a Panic Check is measured against, asking
- * which way to roll — are here, where they can be seen.
- *
- * The prompt names the table it is about to roll and the die that table uses. Legacy titled it
- * "Panic Check" and rolled 1d20 for every table in the system, with the correct code sitting
- * unreachable underneath (audit F2).
- */
-
 import { chooseAdvantage } from '../dialogs/prompts.ts';
 import { mutationOutcome, postCard, tableCard, type Card } from '../chat/cards.ts';
 import { notifyMiss } from '../lookup.ts';

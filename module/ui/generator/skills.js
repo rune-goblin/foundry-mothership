@@ -1,16 +1,9 @@
 import { pickPhrases } from './picks.js';
 
-/**
- * The skill catalog the generator's pickers offer, and the rule for what a pick may offer.
- * Flattened off the documents on purpose: the pickers are then pure functions over plain data,
- * which is what makes them testable outside Foundry.
- */
+// Flattened off the documents on purpose: pickers stay pure functions over plain data, testable
+// outside Foundry.
 
-/**
- * The book prints a sentence under every skill and the wizard asks the player to pick one, so the
- * sentence travels with it. Descriptions are stored as HTML; the picker prints them as a line of
- * text beside the name, which is what the tags come off for.
- */
+// Descriptions are stored as HTML; strip tags for the picker's plain-text line.
 const sentence = (html) =>
   (html ?? '')
     .replace(/<[^>]*>/g, ' ')
@@ -32,12 +25,8 @@ export async function loadSkills() {
   }));
 }
 
-/**
- * What each class brings, so the pane can be read before one is pressed rather than after: the
- * adjustments it applies outright, the ones it hands the player to place, and the skills — the
- * book's own class card prints those with the rest of what a class gives you, so the pane that asks
- * which class you are has to print them too, even though the picking itself happens two panes on.
- */
+// So the class pane can be read before pressing one: prints the skills a class grants even
+// though the picking itself happens two panes later, matching how the book's class card reads.
 const brings = (klass, named) => ({
   description: sentence(klass.system.description),
   adjustments: Object.entries(klass.system.base_adjustment)
@@ -49,19 +38,14 @@ const brings = (klass, named) => ({
   skills: {
     granted: klass.system.base_adjustment.skills_granted.map(named),
     picks: pickPhrases(klass.system.selected_adjustment.choose_skill_and),
-    // An option keeps the book's own wording where it has one; a homebrew package that named
-    // itself nothing still describes what it hands out.
     groups: klass.system.selected_adjustment.choose_skill_or
       .filter((group) => group.length > 0)
       .map((group) => group.map((option) => ({ name: option.name, picks: pickPhrases(option) }))),
   },
 });
 
-/**
- * Every class document in the world and in the compendia, as the class pane's options. The skill
- * catalog comes in because a class stores the skills it grants as UUIDs and the pane prints their
- * names; a UUID the catalog does not carry prints as itself rather than as a blank.
- */
+// catalog resolves the UUIDs a class stores its granted skills as, to names the pane can print;
+// an unresolved UUID prints as itself rather than as a blank.
 export async function loadClasses(catalog = []) {
   const named = (uuid) => catalog.find((skill) => skill.uuid === uuid)?.name ?? uuid;
   const options = game.items
@@ -88,12 +72,7 @@ export async function loadClasses(catalog = []) {
   return options;
 }
 
-/**
- * What a pick of `rank` may offer. Expert and Master picks made on their own are gated on already
- * owning a prerequisite — the book's rule, and the reason the *_full_set picks exist at all: those
- * hand out the whole chain in one dialog, so they are not gated. Owned skills stay listed and
- * disabled rather than vanishing, so a closed branch is visible.
- */
+// Owned skills stay listed and disabled rather than vanishing, so a closed branch stays visible.
 export function candidates(catalog, rank, owned, { requirePrerequisite = false } = {}) {
   return catalog
     .filter((skill) => skill.rank === rank)

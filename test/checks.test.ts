@@ -18,11 +18,6 @@ import {
   type RollLog,
 } from './foundry-stubs.ts';
 
-/**
- * The dialogs are the seam: what a check asks for, and what it does with the answer, is the whole
- * of this unit's behaviour. Mocking the prompts lets a spec both answer them and assert what they
- * were asked — which is how the F2 pin below can see the title legacy got wrong.
- */
 const prompts = vi.hoisted(() => ({
   chooseAdvantage: vi.fn(),
   chooseAttribute: vi.fn(),
@@ -34,8 +29,7 @@ const prompts = vi.hoisted(() => ({
   noCharacter: vi.fn(),
 }));
 
-// `prompts` holds only the mocked functions, because the beforeEach resets every value in it.
-// ATTRIBUTE_KEYS is data the module also exports — the Stats `promptCheck` prices before it asks.
+// ATTRIBUTE_KEYS is data the module also exports, not a mock — beforeEach resets `prompts` only.
 vi.mock('../module/dialogs/prompts.ts', () => ({
   ...prompts,
   ATTRIBUTE_KEYS: ['strength', 'speed', 'intellect', 'combat'],
@@ -278,7 +272,6 @@ describe('a stat check', () => {
     expect(result).toMatchObject({ target: 50, stat: { value: 45, mod: 5 }, outcome: { success: true } });
   });
 
-  // The skill is named, so there is nothing left to offer — only how to roll it.
   it('asks no skill question of a check that already names its skill', async () => {
     stubs([{ faces: 100, result: 10 }]);
     const actor = character([skill('sk1', 'Zero-G')]);
@@ -290,7 +283,6 @@ describe('a stat check', () => {
     expect(result).toMatchObject({ target: 30, skill: { id: 'sk1', bonus: 10 } });
   });
 
-  // A creature has no skills to add, so it goes straight to the roll-type question.
   it('asks a creature only how to roll, naming the stat', async () => {
     stubs([{ faces: 100, result: 60 }]);
     await runCheck(creature(), { kind: 'stat', stat: 'instinct' });
@@ -309,7 +301,6 @@ describe('a stat check', () => {
     expect(rolls.formulas).toEqual(['{1d100,1d100}kh']);
   });
 
-  // The skill offer stands even when the modifier is settled — that is the dialog's other half.
   it('still offers the skill when the modifier is given, without asking for it again', async () => {
     stubs([{ faces: 100, result: 10 }]);
     await runCheck(character([skill('sk1', 'Zero-G')]), { kind: 'stat', stat: 'body' }, { advantage: 'none' });
@@ -419,7 +410,7 @@ describe('a Rest Save', () => {
     expect(actor.updates).toEqual([{ 'system.other.stress.value': 4 }]);
   });
 
-  // §34 — a Rest Save is its own scope, not the save it happens to resolve to.
+  // Rest Save is its own condition scope, distinct from the stat it resolves to (§34).
   it('asks the conditions about the Rest Save, not about Body', async () => {
     stubs([{ faces: 100, result: 15 }]);
     const nightmares = condition('Nightmares', [{ modifier: 'disadvantage', scope: 'restSave' }]);
@@ -650,7 +641,6 @@ describe('a Panic Check', () => {
     expect(chat.cards[0].template).toBe('systems/mothershiprpg/templates/chat/rollTable.html');
   });
 
-  // §34 — Spiraling names the Panic Check, and the prompt opens on the button it argues for.
   it('opens on the button a condition arguing about panic preselects', async () => {
     stubs([{ faces: 20, result: 11 }]);
     world('Panic Check');
@@ -666,8 +656,7 @@ describe('a Panic Check', () => {
     });
   });
 
-  // Audit F22: the android substitution read `system.class.value` on any actor, so a creature
-  // that panicked to 19 threw. It rolls like anyone else's now.
+  // A creature has no `system.class.value`, so the android-panic substitution must not assume it.
   it('lets a creature through', async () => {
     stubs([{ faces: 20, result: 19 }]);
     installI18n({ 'Mothership.HEARTATTACKSHORTCIRCUITANDROIDS': 'HEART ATTACK / SHORT CIRCUIT (ANDROIDS)' });
@@ -681,8 +670,6 @@ describe('a Panic Check', () => {
 });
 
 describe('a table roll', () => {
-  // Audit F2: legacy titled every table's prompt "Panic Check" and rolled 1d20 for it, with the
-  // table-aware prompt sitting unreachable below. The table names itself and its die.
   it('asks about the table it is about to roll, with that table’s die', async () => {
     stubs([{ faces: 10, result: 4 }]);
     world('Gunshot Wound');
@@ -775,9 +762,7 @@ describe('the check a piece of content names', () => {
 });
 
 describe('promptCheck — the check nobody has named yet', () => {
-  // The roll type is asked once, on the last window before the dice — which on this path is the
-  // Skill window, not this one. Asking here meant committing to Advantage before knowing which
-  // Skill you had, and then meeting the Skill list with a lone Next.
+  // Roll type is asked on the last window before the dice — the Skill window here, not this one.
   it('asks for the stat without asking the roll type, then rolls it', async () => {
     stubs([{ faces: 100, result: 10 }]);
     prompts.chooseAttribute.mockResolvedValue({ stat: 'combat', advantage: 'none' });
@@ -842,7 +827,6 @@ describe('promptSkillCheck — the skill is known, the stat is not', () => {
   });
 });
 
-// The S8 condition-modifier cases, inherited whole when the legacy suite died with actor.js (R5).
 describe('conditions reach the roll they name', () => {
   const NIGHTMARES = condition('Nightmares', [{ modifier: 'disadvantage', scope: 'restSave' }]);
   const SPIRALING = condition('Spiraling', [{ modifier: 'disadvantage', scope: 'panicCheck' }]);

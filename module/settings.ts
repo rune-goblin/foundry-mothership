@@ -1,20 +1,3 @@
-/**
- * What the GM can decide, registered once. Two things change from the old registration and
- * nothing else does:
- *
- * - **Every name, hint and choice is a `Mothership.*` key.** Foundry localizes registration strings
- *   itself, so hardcoding English left the shipped `pt-BR` translation structurally unable to
- *   cover the settings window (audit RC14).
- * - **`macroTarget` is client-scoped.** It answers "whose sheet do my macros act on", which is a
- *   per-player preference; world-scoped, the dialog that tells a player to change it was pointing
- *   at a door only the GM could open (audit RC14, divergence R3-3).
- *
- * The setting **keys** are unchanged, so a world's stored choices survive the swap, and every
- * default comes from the module that reads it — `checks/settings.ts` for the four the roll path
- * asks about, `tables/tables.ts` for the seven hidden table ids (audit RC13). The log-only
- * `onChange` handlers are gone (RC12).
- */
-
 import { MACRO_TARGET_CHOICES, MACRO_TARGET_DEFAULT, MACRO_TARGET_KEY } from './api/api.ts';
 import { SYSTEM_ID } from './chat/cards.ts';
 import { CRIT_DAMAGE_CHOICES, SETTING_DEFAULTS } from './checks/settings.ts';
@@ -36,6 +19,8 @@ export const HIDE_WEIGHT_DEFAULT = true;
 
 export const SETTINGS: readonly SettingDefinition[] = [
   {
+    // Client-scoped, unlike the rest: it's a per-player preference (whose sheet a player's
+    // macros act on), not a world rule.
     key: MACRO_TARGET_KEY,
     scope: 'client',
     type: 'string',

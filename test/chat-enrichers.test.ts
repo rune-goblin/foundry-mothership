@@ -31,9 +31,8 @@ const parsed = (text: string): ChatAction => {
 };
 
 /**
- * The fifteen macro documents content actually references today — six condition descriptions and
- * the Panic table's eight condition results — as expressions. This table is the unit's contract
- * with R4: when the content stops linking macros, these are what it links instead.
+ * The fifteen expressions content actually links today — six condition descriptions and
+ * the Panic table's eight condition results.
  */
 const CONTENT_ACTIONS: readonly (readonly [string, string, ChatAction])[] = [
   ['Bleeding', '@Gain[health -bleeding]', { verb: 'gain', field: 'health', leaf: 'value', amount: { kind: 'severity', condition: 'bleeding', sign: -1 } }],
@@ -91,9 +90,8 @@ describe('parsing', () => {
     expect(formatAction({ verb: 'apply', condition: 'bleeding', count: 2 })).toBe('@Apply[bleeding 2]');
   });
 
-  // A damage expression is one argument that keeps its spaces and its braces: `critFormula`
-  // writes `1d10 * 2` and `{1d10,1d10}kh`, and a card's damage button carries whichever the GM's
-  // crit rule produced.
+  // critFormula produces formulas like `1d10 * 2` and `{1d10,1d10}kh` — the expression must
+  // keep its spaces and braces intact.
   it('reads a damage expression whole, spaces and all', () => {
     for (const formula of ['4d10', '1d10 * 2', '{1d10,1d10}kh', 'floor(45/10)', '1']) {
       expect(parsed(`@Damage[${formula}]`)).toEqual({ verb: 'damage', formula });
@@ -122,15 +120,13 @@ describe('parsing', () => {
     expect(parseAction('')).toMatchObject({ ok: false, fault: 'syntax' });
   });
 
-  // A Panic Check draws from a table and is judged against Stress. Two spellings for one action
-  // is how a vocabulary starts to drift, so the parser names the one that exists.
   it('has one spelling for a Panic Check', () => {
     expect(parseAction('@Table[panic]')).toMatchObject({ ok: false, detail: 'a Panic Check is @Check[panicCheck]' });
     expect(parsed('@Table[gunshot -]')).toEqual({ verb: 'table', table: 'gunshot', advantage: 'disadvantage' });
   });
 
-  // S8 gave conditions a `scope` enum so a condition modifies only the roll its text names. A
-  // check names the same key space, so `@Check[restSave]` is the roll Nightmares talks about.
+  // Conditions have a `scope` enum so text like Nightmares names a specific roll; checks
+  // must name that same key space.
   it('names checks with the schema’s own scope vocabulary', () => {
     expect([...CHECK_SCOPES]).toEqual(ROLL_SCOPES);
   });

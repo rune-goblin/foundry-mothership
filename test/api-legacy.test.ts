@@ -11,12 +11,6 @@ import {
   type Notifications,
 } from './foundry-stubs.ts';
 
-/**
- * The shim, pinned. What a world already holds is the contract: macros users imported into their
- * hotbars call these seven names with these positional arguments, and nothing about the new API
- * is allowed to change that. Every signature's arity is asserted here so the shim cannot drift.
- */
-
 const prompts = vi.hoisted(() => ({
   chooseAdvantage: vi.fn(),
   chooseAttribute: vi.fn(),
@@ -129,7 +123,7 @@ describe('initRollCheck', () => {
     expect(sarah.rollStat).toHaveBeenCalledWith('body', { advantage: null });
   });
 
-  // `restSave` and `damage` were never stats: legacy read the same parameter three ways (F14).
+  // `restSave` and `damage` are not stats — the same parameter is read three different ways.
   it('reads restSave as the Rest Save it is', async () => {
     await legacy.initRollCheck('1d100 [+]', 'low', 'restSave', null, null, null);
 
@@ -158,8 +152,7 @@ describe('initRollCheck', () => {
     expect(sarah.rollSkill).toHaveBeenCalledWith('s1', { advantage: null });
   });
 
-  // Legacy would have looked the word up as a stat and thrown; there is one message instead, and
-  // it is not repeated once per selected token.
+  // Warns once, not once per selected token.
   it('says so once when the macro names something that is not a stat', async () => {
     installSettings({ macroTarget: 'token' });
 
@@ -191,7 +184,7 @@ describe('initRollTable', () => {
     expect(sarah.rollTable).toHaveBeenCalledWith('gunshot', { advantage: 'none' });
   });
 
-  // Legacy's one table sentinel: an id argument that was not an id (audit F2).
+  // 'panicCheck' is a sentinel value passed where a table id normally goes, not a real id.
   it('reads the panicCheck sentinel as a Panic Check', async () => {
     await legacy.initRollTable('panicCheck', '[+]', null, false, false, null, null);
 
@@ -228,8 +221,7 @@ describe('initModifyActor', () => {
     );
   });
 
-  // Legacy read `if (modValue)`, so a zero meant "no value given" and it fell through to the roll
-  // string — which, with no roll string either, reached `new Roll(undefined)`.
+  // `if (modValue)` treats 0 as "no value given" — a zero falls through to the roll string.
   it('falls through to the roll string on a zero, and changes nothing when neither is given', async () => {
     await legacy.initModifyActor('system.health.value', 0, '1d5', true);
     await legacy.initModifyActor('system.health.value', 0, null, true);
@@ -271,7 +263,6 @@ describe('initModifyItem', () => {
 });
 
 describe('the two entry points that were broken', () => {
-  // RC3/RC4: every gear, armour, ability and condition hotbar macro threw.
   it('rollItemMacro posts the card its item asked for', async () => {
     sarah = actor([{ id: 'g1', type: 'item', name: 'Rebreather' }]);
     (globals.game as Globals).user = { id: 'user1', character: sarah };
@@ -281,7 +272,6 @@ describe('the two entry points that were broken', () => {
     expect(sarah.printDescription).toHaveBeenCalledWith('g1');
   });
 
-  // RC5: it called a method defined nowhere, so it threw for anyone who tried it.
   it('rollStatMacro opens the stat picker', async () => {
     await legacy.rollStatMacro();
 

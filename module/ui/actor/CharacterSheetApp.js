@@ -6,11 +6,7 @@ import { createDocumentStore } from '../document-store.svelte.js';
 
 const { ActorSheetV2 } = foundry.applications.sheets;
 
-/**
- * The character sheet. Same shape as the creature's (module/ui/creature/CreatureSheetApp.js):
- * ActorSheetV2 brings drag-and-drop and form persistence, the document stays the source of truth,
- * and the component mounts once.
- */
+// Document stays the source of truth, Foundry persists the form, component mounts once.
 export class MothershipCharacterSheet extends ActorSheetV2 {
   static DEFAULT_OPTIONS = {
     // css/mothership.css paints the content white and has no dark variant, so pin the light theme.
@@ -31,7 +27,6 @@ export class MothershipCharacterSheet extends ActorSheetV2 {
     actions: { generateCharacter: MothershipCharacterSheet.#onGenerateCharacter },
   };
 
-  /** AppV1's ActorSheet titled the window with the bare actor name; keep that. */
   get title() {
     return this.document.name;
   }
@@ -40,19 +35,9 @@ export class MothershipCharacterSheet extends ActorSheetV2 {
     this.generateCharacter();
   }
 
-  /**
-   * Stop a newly created character before Foundry builds its first sheet frame. `createActor` is
-   * the render context stamped by both the sidebar create dialog and
-   * `Actor.create(…, {renderSheet: true})`; creature creation resolves to MothershipCreatureSheet
-   * instead, so it never enters this branch.
-   *
-   * The empty-inventory guard is what keeps a compendium import, which arrives the same way but
-   * already carrying its class and gear, from being asked whether it wants to be rolled up.
-   *
-   * `_canRender` is synchronous and Foundry honors `false` before preparing or inserting any DOM.
-   * The dialog therefore runs beside the aborted render. A later render uses a private context so
-   * choosing a blank sheet (or dismissing the choice, as before) cannot ask the question twice.
-   */
+  // On createActor render with no items yet (compendium imports already carry items), abort
+  // synchronously before Foundry builds any DOM and prompt for creation mode. The later render
+  // passes a private context so the prompt can't fire twice.
   _canRender(options) {
     const allowed = super._canRender(options);
     if (allowed === false) return false;
@@ -85,9 +70,8 @@ export class MothershipCharacterSheet extends ActorSheetV2 {
   }
 
   #openGenerator({ centreOnSheet = true, onComplete } = {}) {
-    // Centred on the sheet it was opened from, and never off the left edge: the wizard is wider
-    // than the sheet, so half the difference is negative. On initial creation the sheet has no
-    // position yet, and ApplicationV2 centres the generator from its own default position.
+    // Clamped to 0: the wizard is wider than the sheet, so half the difference can go negative.
+    // A sheet with no position yet (initial creation) falls back to ApplicationV2's own centering.
     const { width } = WizardWindow.DEFAULT_OPTIONS.position;
     new WizardWindow({
       actor: this.document,
@@ -107,15 +91,13 @@ export class MothershipCharacterSheet extends ActorSheetV2 {
   #root;
   #store;
 
-  /** Everything the component needs that is not on the document, re-read on every render. */
   async _context() {
     const { TextEditor } = foundry.applications.ux;
     const enrich = (html) =>
       TextEditor.implementation.enrichHTML(html ?? '', { relativeTo: this.document });
 
     return {
-      // The gear list's weight column is a world setting, not actor data. AppV1 wrote it onto
-      // `system.settings`, a branch no schema declares, on every render.
+      // World setting, not actor data — kept off system.settings, which no schema declares.
       hideWeight: game.settings.get('mothershiprpg', 'hideWeight'),
       enriched: {
         biography: await enrich(this.document.system.biography),
@@ -131,10 +113,7 @@ export class MothershipCharacterSheet extends ActorSheetV2 {
     };
   }
 
-  /**
-   * Mount once and return the cached node, refreshing the store on later renders. `flushSync`
-   * puts the rows in the DOM before `_onRender` binds dragstart to them.
-   */
+  // flushSync puts rows in the DOM before _onRender binds dragstart to them.
   async _renderHTML() {
     const context = await this._context();
     if (this.#component) {

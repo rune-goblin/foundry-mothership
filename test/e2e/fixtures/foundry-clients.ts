@@ -10,7 +10,7 @@ declare global {
 
 export const SYSTEM_ID = 'mothershiprpg';
 
-/** What `GET /api/status` reports. `users` is the count of sessions currently joined. */
+// `users` is the count of sessions currently joined.
 export type FoundryStatus = {
   active: boolean;
   version: string;
@@ -23,11 +23,8 @@ export type FoundryStatus = {
 export const FREE_THE_PORT =
   'lsof -ti:30005 | xargs kill -9; until ! lsof -ti:30005 >/dev/null; do sleep 1; done';
 
-/**
- * Poll until the reading satisfies `done`, or the deadline passes; return the last reading either
- * way. A session Foundry is still releasing looks exactly like one that is stuck, and only time
- * tells them apart -- so every check that could catch a teardown mid-flight waits before it judges.
- */
+// A session Foundry is still releasing looks exactly like one that is stuck, and only time
+// tells them apart -- so every check that could catch a teardown mid-flight waits before it judges.
 async function settle<T>(read: () => Promise<T>, done: (value: T) => boolean, ms = 10_000): Promise<T> {
   const deadline = Date.now() + ms;
   let value = await read();
@@ -38,14 +35,8 @@ async function settle<T>(read: () => Promise<T>, done: (value: T) => boolean, ms
   return value;
 }
 
-/**
- * Everything that can be known before a browser opens. Each of these used to surface as the same
- * 30-second `game.ready` timeout deep inside a join, which says nothing about which of them it was.
- *
- * Playwright reuses a server already on the port (`webServer.reuseExistingServer`), so the one
- * answering may not be the one this harness would have started — a stray launched without
- * TEST_WORLD serves no world at all.
- */
+// Consolidates checks that used to all surface as the same unhelpful 30s `game.ready` timeout.
+// Playwright reuses a server already on the port, so the one answering may be a stray started without TEST_WORLD.
 export async function preflight(baseURL: string, expectedWorld: string): Promise<FoundryStatus> {
   const url = new URL('/api/status', baseURL);
   const read = async (): Promise<FoundryStatus> => {
@@ -94,13 +85,8 @@ export async function preflight(baseURL: string, expectedWorld: string): Promise
   return status;
 }
 
-/**
- * Drive Foundry's /join screen to log this context in as a specific user.
- *
- * The world is launched a moment after the server starts answering HTTP, and a client that joins
- * into the tail of that can sit at /game with no world for as long as you leave it. Reloading is
- * what a person does, and it costs nothing when the first attempt was fine -- so the join gets one.
- */
+// A client that joins in the moment after the server starts answering HTTP but before the world
+// has launched can sit at /game with no world indefinitely, so the join gets one reload retry.
 export async function joinAs(page: Page, userId: string, password = ''): Promise<void> {
   await page.goto('/join');
   await page.selectOption('select[name="userid"]', userId);
@@ -117,7 +103,7 @@ export async function joinAs(page: Page, userId: string, password = ''): Promise
   }
 }
 
-/** Join as the world's first GM (role >= 4). The test world must have a password-less GM. */
+// Requires the test world to have a password-less GM.
 export async function joinAsFirstGm(page: Page): Promise<void> {
   const read = async () => {
     await page.goto('/join');
@@ -157,11 +143,8 @@ export async function joinAsFirstGm(page: Page): Promise<void> {
   await joinAs(page, state.gmId);
 }
 
-/**
- * Wait for `game.ready === true`. A blind timeout here says only "something is wrong somewhere",
- * so report what the page actually held — a system that threw during `init` never reaches ready,
- * and that is indistinguishable from a slow world until you look.
- */
+// A blind timeout says only "something is wrong"; report what the page held so an init error is
+// distinguishable from a slow world.
 export async function waitForGameReady(page: Page, attempt = 'on the first attempt'): Promise<void> {
   try {
     await page.waitForFunction(() => (window as any).game?.ready === true, undefined, {
@@ -193,14 +176,8 @@ type WorkerFixtures = {
   gmPage: Page;
 };
 
-/**
- * `gmPage` — a worker-scoped context logged into the test world as the first GM. Worker scope
- * means one login for the whole suite (workers: 1); per-test isolation comes from each spec
- * creating throwaway `__e2e_`-named documents and deleting them, not from tearing down the browser.
- *
- * Unlike the module template there is no "enable the package" step: a system is inherently active
- * in a world built on it, which global-setup asserts instead.
- */
+// Worker scope means one login for the whole suite; per-test isolation comes from each spec
+// creating throwaway `__e2e_`-named documents and deleting them, not from tearing down the browser.
 export const test = base.extend<object, WorkerFixtures>({
   gmContext: [
     async ({ browser }, use) => {

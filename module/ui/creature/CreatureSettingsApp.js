@@ -4,17 +4,12 @@ import { createDocumentStore } from '../document-store.svelte.js';
 
 const { DocumentSheetV2 } = foundry.applications.api;
 
-/**
- * The six stat toggles keep `name="system.stats.<stat>.enabled"` and ride Foundry's own form
- * handling via `submitOnChange`. The swarm toggle is deliberately unnamed -- see
- * CreatureSettings.svelte -- so it never lands in `formData` and does its own batched update.
- */
+// Swarm toggle is deliberately unnamed (see CreatureSettings.svelte) so it stays out of formData.
 export class CreatureSettingsApp extends DocumentSheetV2 {
   static DEFAULT_OPTIONS = {
-    // css/mothership.css paints the content white with no dark variant, so pin the light theme (see
-    // MothershipItemSheet) or the window renders dark text on those light boxes.
-    // `creature-settings` is what tells this window apart from the creature sheet underneath,
-    // which is an ApplicationV2 carrying the same mothership/sheet/actor/creature classes.
+    // Pin the light theme: css/mothership.css paints the content white with no dark variant.
+    // `creature-settings` tells this window apart from the creature sheet underneath, which
+    // carries the same mothership/sheet/actor/creature classes.
     classes: ['mothership', 'sheet', 'actor', 'creature', 'creature-settings', 'themed', 'theme-light'],
     position: { width: 320, height: 150 },
     window: { resizable: false },

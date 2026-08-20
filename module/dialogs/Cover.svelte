@@ -4,10 +4,7 @@
   import { localize } from '../i18n.ts';
   import { COVER_BONUS } from '../rules.ts';
 
-  // The radio group holds the choice; `value` is the cover the actor is already behind.
-  //
-  // No <style> block: the dialog vocabulary is the shell tier's (css/mothership.css), and the
-  // armour readout is ArmorBar, which this file and ArmorBlock used to draw by hand apiece.
+  // No <style> block: the dialog vocabulary is the shell tier's, declared in css/mothership.css.
   let { options, armorPoints, damageReduction, value, onchange } = $props();
 </script>
 

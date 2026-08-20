@@ -1,13 +1,5 @@
-/**
- * What a weapon does when it connects. Every path here is about *damage*, and none of them can
- * reach the magazine: `documents/item.ts` owns `fire()`, only an attack calls it, and nothing in
- * this module's import graph can (audit F5 — `test/checks-damage.test.ts` asserts the graph).
- *
- * The damage itself stays an inline roll in the card, as it has always been: the player rolls it
- * by clicking, Foundry keeps the dice, and the crit rule the GM chose is baked into the
- * expression rather than into a second roll nobody asked for.
- */
-
+// Nothing here may import a path that reaches the item's fire or reload methods —
+// test/checks-damage.test.ts asserts the import graph.
 import {
   asset,
   CARD_FLAG,
@@ -59,10 +51,6 @@ export function cardWeapon(item: CheckItem): CardWeapon {
   };
 }
 
-/**
- * The damage expression a critical hit turns the weapon's into. The six answers are the GM's
- * `critDamage` setting, stated once instead of at the six branches legacy compared strings at.
- */
 export function critFormula(damage: string, mode: CritDamage, critDamageValue: string): string {
   switch (mode) {
     case 'advantage':
@@ -157,10 +145,8 @@ function offerHtml(
 }
 
 /**
- * The line the card shows. Unarmed damage is the wielder's Strength over ten, rounded down, so it
- * is stated as arithmetic rather than as dice; everything else is the weapon's own expression,
- * wearing the colorset the GM chose for damage. With auto-rolling off it offers the damage
- * instead of stating it, every mode of it: nothing here knows the range.
+ * Unarmed damage is stated as arithmetic (Strength/10, rounded down), not dice. With auto-rolling
+ * off, offers every mode instead of stating one — this function doesn't know the range.
  */
 export function damageFlavor(actor: CheckActor, item: CheckItem, options: DamageOptions = {}): string {
   const modes = damageModes(item, options.override ?? null);
@@ -193,12 +179,7 @@ const EFFECT_PATTERN = new RegExp(`(${Object.keys(WOUND_EFFECTS).join('|')})\\s*
 
 const MODIFIERS: Readonly<Record<string, Advantage>> = { '+': 'advantage', '-': 'disadvantage' };
 
-/**
- * The weapon's wound effect as clickable rules. Legacy rewrote the same string into `@UUID` links
- * to fifteen macro documents by way of a lang-file lookup table, so a translator could break the
- * links and a re-minted id could dangle (audit F13, F20, C2). The table a wound names is data
- * now; anything else in the field stays the text the author wrote.
- */
+/** Only a recognized wound-effect name becomes a table link; the rest of the field's text passes through unchanged. */
 export function woundEffectActions(effect: string): string {
   return String(effect ?? '').replace(EFFECT_PATTERN, (match, label: string, modifier?: string) => {
     const table = WOUND_EFFECTS[label.toLowerCase()];
@@ -260,9 +241,9 @@ function rememberedCard(message: CardMessage): Card<Record<string, unknown>> | n
 }
 
 /**
- * `forbidden` is a rule, not a failure to route around: posting the damage as a separate card
- * would let a player roll a creature's by the back door. `unrecorded` is a card posted before the
- * system kept its own data behind one, which can only be rolled the other way.
+ * `forbidden` is a rule, not a failure to route around — a separate card would let a player roll
+ * a creature's damage by the back door. `unrecorded` is a card posted before this system kept its
+ * own data behind one.
  */
 export type CardDamage = 'rewritten' | 'forbidden' | 'unrecorded';
 

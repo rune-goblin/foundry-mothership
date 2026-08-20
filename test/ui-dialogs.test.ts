@@ -1,10 +1,4 @@
 // @vitest-environment jsdom
-//
-// The modules that built dialog markup by concatenating HTML strings (audit U10): the actor
-// sheet's new-skill prompt and the class sheet's stat-option prompt. They are Svelte components
-// in `DialogV2.wait` now, so what each one answers is testable outside Foundry — none of it was
-// before. The generator's own pickers used to be here; the wizard asks inline and opens no
-// dialog at all, so `test/generator.test.ts` covers what they answered.
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { promptAddItem, promptNewSkill } from '../module/ui/actor/items.js';
@@ -80,8 +74,7 @@ describe('promptNewSkill', () => {
     };
   };
 
-  // The bonus is `rules.ts`'s: `ui/actor/items.js` used to carry a second copy of the table
-  // (audit U5), which is exactly how the two could have disagreed.
+  // The bonus comes from rules.ts, not a second copy of the table that could disagree with it.
   it('creates the skill with the bonus its rank is worth', async () => {
     const { actor, created } = actorOf();
     const done = promptNewSkill(actor);

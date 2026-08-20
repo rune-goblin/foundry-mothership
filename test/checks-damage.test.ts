@@ -178,8 +178,6 @@ describe('what a critical hit does to it', () => {
 });
 
 describe('the wound a weapon names', () => {
-  // Audit F13/F20/C2: legacy turned this same string into `@UUID` links to fifteen macro
-  // documents by way of a lang-file lookup, so a translation could break the link.
   it('becomes the table action for that wound', () => {
     expect(woundEffectActions('Gunshot')).toBe('@Table[gunshot]');
     expect(woundEffectActions('Bleeding [+]')).toBe('@Table[bleeding +]');
@@ -221,12 +219,8 @@ describe('the damage card', () => {
   });
 });
 
-/**
- * Audit F5, stated literally. The sheet's damage button spent ammunition because the ammo block
- * ran for any call carrying a weapon, before the damage branch was reached — so attack-then-damage
- * decremented `curShots` twice per shot. The rule is now structural rather than a branch order:
- * nothing the damage flow can reach is able to write shots.
- */
+// The ammo block used to run before the damage branch, double-decrementing curShots on
+// attack-then-damage. The rule is now structural: nothing the damage flow can reach writes shots.
 describe('the damage flow never touches the magazine', () => {
   it('calls neither fire nor reload, and writes nothing', async () => {
     stubs();

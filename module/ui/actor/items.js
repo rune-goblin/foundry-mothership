@@ -1,7 +1,3 @@
-// The embedded-item operations an actor sheet's rows drive. AppV1 bound each of these by jQuery
-// selector in `activateListeners` and reached the item through `duplicate(getEmbeddedDocument(...))`;
-// they are plain functions now, called from the component with the id the row already carries.
-
 import { svelteDialog } from '../../dialogs/svelte-dialog.ts';
 import { localize } from '../../i18n.ts';
 import { rankBonus, SKILL_RANKS, storedRank } from '../../rules.ts';
@@ -9,12 +5,7 @@ import { rankChoices } from '../skill/ranks.js';
 import NewSkill from './NewSkill.svelte';
 import PickFromPack from './PickFromPack.svelte';
 
-/**
- * The +/- cells: left click adds one, right click removes one. AppV1 read `event.button` off the
- * *global* `event` inside a `mousedown` handler -- a click/contextmenu pair says the same thing
- * without the global, and gives the cell a keyboard twin for free. The right click is consumed so
- * it does not also open a context menu over the sheet.
- */
+// contextmenu (right click) is consumed here so it doesn't also open the browser context menu.
 export const stepBy = (event) => {
   if (event.type !== 'contextmenu') return 1;
   event.preventDefault();
@@ -23,7 +14,6 @@ export const stepBy = (event) => {
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
-/** Nudge one numeric field on an embedded item, within its bounds. */
 export function adjust(actor, itemId, path, delta, { min = -Infinity, max = Infinity } = {}) {
   const item = actor.items.get(itemId);
   if (!item) return;
@@ -33,10 +23,7 @@ export function adjust(actor, itemId, path, delta, { min = -Infinity, max = Infi
   ]);
 }
 
-/**
- * Firing spends a shot and a round of ammunition; the reverse puts both back. The two move
- * together, which is why this is not two `adjust` calls.
- */
+// Shots and ammo move together, which is why this isn't two `adjust` calls.
 export function stepShots(actor, itemId, delta) {
   const item = actor.items.get(itemId);
   if (!item) return;
@@ -63,7 +50,6 @@ export const deleteItem = (actor, itemId) => actor.deleteEmbeddedDocuments('Item
 export const createItem = (actor, type) =>
   actor.createEmbeddedDocuments('Item', [{ name: `New ${type.capitalize()}`, type }]);
 
-/** What each pickable type shows in the picker, and which pack its rows come from. */
 const PICKS = {
   skill: {
     pack: 'mothershiprpg.skills_1e',
@@ -107,11 +93,7 @@ const rankIndex = (doc) => {
 
 const byRankThenName = (a, b) => rankIndex(a) - rankIndex(b) || byName(a, b);
 
-/**
- * PSG 22 — an Expert or Master skill is learned from one of the skills that point at it: the
- * tree's converging arrows are alternatives, and no skill in the book needs two at once. The
- * prerequisite ids are pack UUIDs; what an actor owns are copies, so the tie is the name.
- */
+// Prerequisite ids are pack UUIDs; what an actor owns are copies, so match on name instead.
 function markUnmet(sorted, actor) {
   const names = new Map(sorted.map((doc) => [doc.uuid, doc.name]));
   const owned = new Set(
@@ -123,15 +105,10 @@ function markUnmet(sorted, actor) {
   };
 }
 
-/** The blank-create path, kept for the fallback when a pack is missing or empty. */
+// Fallback when the pack is missing or empty.
 const blank = (actor, type) =>
   type === 'skill' ? promptNewSkill(actor) : createItem(actor, type);
 
-/**
- * Add from the book: the panel's + opens the matching compendium as a filterable table, and Add
- * embeds a copy of the row picked. Cancel — or Add with nothing picked — adds nothing. Skills
- * run weakest rank first, with prerequisite enforcement the toggle can lift.
- */
 export async function promptAddItem(actor, type) {
   const spec = PICKS[type];
   const pack = globalThis.game?.packs?.get(spec.pack);
@@ -176,10 +153,7 @@ export async function promptAddItem(actor, type) {
   return actor.createEmbeddedDocuments('Item', [doc.toObject()]);
 }
 
-/**
- * A skill is created through a dialog because its rank sets its bonus — and the bonus is
- * `rules.ts`'s, not a second table kept here (audit U5).
- */
+// Bonus comes from rules.ts's rankBonus(), not a duplicate table here.
 export async function promptNewSkill(actor) {
   const skill = await svelteDialog({
     component: NewSkill,

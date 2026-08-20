@@ -1,6 +1,3 @@
-// Nothing else proves the committed packs/_source/** still matches what the catalogs would
-// emit today — editing a catalog and forgetting `npm run content` ships stale output past every
-// other gate (audit C4). canonical()'s determinism makes byte equality the right assertion.
 import { expect, it } from 'vitest';
 import { mkdtempSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';

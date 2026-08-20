@@ -1,14 +1,11 @@
 <script>
   import { onActivate } from './activate.js';
 
-  // The `.minmaxwrapper` pair: a caption, two number inputs either side of a slant, and a
-  // caption under each. Health, wounds and the character's stress are all this shape -- the
-  // right-hand field is a maximum on the first two and a minimum on stress, so it is named
-  // rather than derived.
+  // rightName/rightValue, not max/min: the right field is a maximum on health/wounds but a
+  // minimum on stress.
   //
-  // No <style> block: ArmorBlock and Cover hand-write this same wrapper, slant and captions, so
-  // every class here is shared vocabulary css/mothership.css declares and a scoped block could
-  // only reach one of the three writers.
+  // No <style> block: ArmorBlock and Cover hand-write this same wrapper/slant/captions, styled
+  // in css/mothership.css -- a scoped block here would miss the other two.
   let {
     label,
     labelClass = '',

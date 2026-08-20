@@ -1,13 +1,7 @@
 /**
- * The shim. The 104 shipped macros are generated from `content/books/psg/macros.ts` — we own both
- * sides of those and they regenerate onto the new API — so the only compatibility surface that
- * matters is **copies users have already imported into worlds and hotbars**. Those call these
- * seven functions with these exact positional signatures, and dotted field addresses as strings.
- *
- * This module is the one place old shapes survive: each maps onto the new API through
- * `forTargetActors`, each logs one deprecation, and `test/api-legacy.test.ts` pins every name and
- * arity so the shim cannot drift away from what a world already holds. It stays for one release
- * cycle past the swap; removing it is a later, deliberate decision.
+ * Shim for macros already imported into worlds and hotbars, which call these seven functions with
+ * these exact positional signatures. `test/api-legacy.test.ts` pins every name and arity. Kept for
+ * one release cycle past the swap; removing it is a later, deliberate decision.
  */
 
 import { deprecated } from '../debug.ts';
@@ -42,7 +36,7 @@ const STAT_KEYS: readonly StatKey[] = [
 
 const REST_SAVE = 'restSave';
 const DAMAGE = 'damage';
-/** Legacy's one table sentinel: the id argument that meant "not an id" (audit F2). */
+/** The id argument that meant "not an id" — legacy's sentinel for a Panic Check. */
 const PANIC = 'panicCheck';
 
 /** A roll string states the modifier; no roll string at all means the dialog still has to ask. */
@@ -52,11 +46,7 @@ function advantageOf(rollString: string | null | undefined): Advantage | null {
     : parseRollSpec(String(rollString), 'low').advantage;
 }
 
-/**
- * Which of the seven tables a document id names — the GM's current choice first, the shipped
- * default second. A macro naming anything else gets the missing-document notice rather than a
- * roll on a table this system has no rules for.
- */
+/** Checks the GM's current table choice first, the shipped default second. */
 export function tableKeyOf(ref: string): TableKey | null {
   const wanted = String(ref ?? '').trim();
   if (wanted === '') return null;
@@ -85,7 +75,6 @@ export function rollItemMacro(itemName: string): Promise<unknown> {
   return rollItem(itemName);
 }
 
-/** Legacy's version called a method that was defined nowhere, so it threw (audit RC5). */
 export function rollStatMacro(): Promise<unknown> {
   deprecated('game.mothershiprpg.rollStatMacro', 'game.mothershiprpg.promptCheck');
   return promptCheck();
@@ -116,12 +105,7 @@ export async function initRollTable(
   await forTargetActors((actor) => actor.rollTable(key, { advantage }));
 }
 
-/**
- * Legacy read `attribute` three ways — a stat key, and two words that were not stats at all —
- * and the shape of the call is what decided which (audit F14). That reading happens once, here,
- * before any actor is touched: an argument this system cannot honour is one message, not one per
- * selected token.
- */
+/** `attribute` is read once here, before any actor is touched, so an argument this system can't honour is one message, not one per selected token. */
 export async function initRollCheck(
   rollString: string | null,
   aimFor: string | null,

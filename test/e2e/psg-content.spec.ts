@@ -1,8 +1,5 @@
 import { test, expect } from './fixtures/foundry-clients.ts';
 
-// S3's milestone: the book is in a real Foundry, and the joins between its documents resolve
-// there rather than only in the build. The content tests prove the emitter; this proves Foundry
-// reads the packs back with the links intact.
 test.describe('the PSG content in a live world', () => {
   // The generator scans every compendium for these two types and has never found any — which is
   // why its whole class and skill flow has been dead since it was written.
@@ -84,9 +81,8 @@ test.describe('the PSG content in a live world', () => {
     expect(result.links).toBeGreaterThanOrEqual(120);
   });
 
-  // The signature bug of this repo: a SchemaField cleans off a key it does not declare, so the
-  // pack ships and the data is gone the first time Foundry loads it. The build guards it; this
-  // is the same guard, run by the thing that would have discarded it.
+  // A SchemaField cleans off a key it does not declare, so an unmapped key ships in the pack but
+  // is gone the moment Foundry loads it -- this runs the same check against the real loader.
   test('Foundry keeps every system key the packs shipped', async ({ gmPage }) => {
     const kept = await gmPage.evaluate(async () => {
       const g = (window as any).game;

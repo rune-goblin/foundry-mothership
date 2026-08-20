@@ -1,6 +1,5 @@
-// Backs the `compare` Handlebars helper. Previously this built an expression string and
-// ran it through eval(), which meant any value containing a quote produced a syntax error
-// rather than a comparison.
+// Backs the `compare` Handlebars helper. Not eval() of a built expression string — a quote
+// in the value used to produce a syntax error instead of a comparison.
 const COMPARATORS = {
   '===': (a, b) => a === b,
   '!==': (a, b) => a !== b,
@@ -18,8 +17,7 @@ export function compare(varType, varOne, comparator, varTwo) {
     console.warn(`mothership | unknown comparator '${comparator}' in compare helper`);
     return false;
   }
-  // The old eval quoted both operands for 'str' and left them bare for 'int', so the
-  // coercion below is what kept '10' > '9' false for strings and true for numbers.
+  // Coerces explicitly to keep '10' > '9' false for strings, true for numbers.
   if (varType === 'str') return op(String(varOne), String(varTwo));
   if (varType === 'int') return op(Number(varOne), Number(varTwo));
   return false;

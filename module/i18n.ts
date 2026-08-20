@@ -1,8 +1,4 @@
-/**
- * Foundry's localizer, reached through one module so the runtime has a single place that knows a
- * user-visible string is a `Mothership.*` key. Outside Foundry — the unit tier — the key comes back
- * unchanged, which is what an untranslated string should look like: visible, not invented.
- */
+/** Outside Foundry (the unit tier) the key comes back unchanged — visible, not invented. */
 
 interface Localization {
   localize(key: string): string;

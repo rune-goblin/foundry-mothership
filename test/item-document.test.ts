@@ -49,8 +49,6 @@ describe('MothershipItem.fire', () => {
     expect([...empty.writes, ...dry.writes]).toEqual([]);
   });
 
-  // Audit F5: the sheet's damage button used to spend a shot, double-charging the attack that
-  // already had. Only fire() spends, and only an attack calls fire().
   it('is the only method that spends a shot', async () => {
     const item = weapon({ useAmmo: true, shots: 6, curShots: 6, ammo: 12, shotsPerFire: 1 });
 

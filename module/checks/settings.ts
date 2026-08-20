@@ -1,17 +1,10 @@
-/**
- * The four GM choices a roll reads. Legacy asked `game.settings.get` at nine sites and compared
- * the answer to a bare string each time; here each choice is one typed reader with the default it
- * was registered with, so a world that has never opened the settings and a test with no Foundry
- * at all give the same answer. `settings.ts` (R4) registers from this same record.
- */
-
 declare const game:
   | { readonly settings?: { get(namespace: string, key: string): unknown } }
   | undefined;
 
 const NAMESPACE = 'mothershiprpg';
 
-/** What a critical hit does to the damage roll — the GM's house rule, as legacy spelled it. */
+/** The GM's house rule for what a critical hit does to the damage roll. */
 export type CritDamage =
   | 'advantage'
   | 'doubleDamage'
@@ -49,10 +42,7 @@ export function autoStress(): boolean {
   return typeof value === 'boolean' ? value : SETTING_DEFAULTS.autoStress;
 }
 
-/**
- * Two answers, because a table that wants players rolling their own damage rarely wants the Warden
- * clicking through every creature's as well.
- */
+/** Two answers: a table wanting players to roll their own damage rarely wants the Warden rolling every creature's too. */
 export function autoRollDamage(character: boolean): boolean {
   const key: SettingKey = character ? 'autoRollDamagePlayers' : 'autoRollDamageCreatures';
   const value = stored(key);

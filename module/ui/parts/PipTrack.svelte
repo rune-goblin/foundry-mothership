@@ -1,15 +1,4 @@
 <script>
-  // Both actor sheets built these pips as an HTML string in `getData()` and persisted the
-  // result on the document (`xp.html`, `condition.treatment.html`). They are two renderings of
-  // one shape: N pips, the first `value` of them filled.
-  //
-  // A pip is one element in one of four states. It used to be two class names -- `circle` and
-  // `circle-f` -- each drawing its own circle, which meant the empty and filled pips shared no
-  // geometry and drifted apart. `filled` and `milestone` are states on one `.pip` now, and each
-  // state says only what it changes: the fill, and the stroke.
-  //
-  // The track lays itself out. Both sheets used to wrap it in `.flex` and nudge the result up by
-  // seven pixels; a row of pips is this component's business, not every caller's.
   let { count, value, variant = 'circle', milestones = {} } = $props();
 
   const pips = $derived(
@@ -20,7 +9,6 @@
     }))
   );
 
-  // The clearance below the row exists for the captions; a milestone carrying no label needs none.
   const captioned = $derived(Object.values(milestones).some((label) => label));
 </script>
 
@@ -39,19 +27,9 @@
 </span>
 
 <style>
-  /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
-     application; @layer system puts these in the slot the rest of the system occupies.
-     Every name here is this component's own -- nothing else writes `pip-track`, `pip` or
-     `pip-caption`.
-
-     The caption is centred under its pip by transform rather than by measurement. It used to be
-     relatively positioned and pulled left by a number measured per rank (-54, -50, -52), because
-     the label is wider than the 16px pip it hangs under; those three numbers were the only reason
-     `milestones` carried anything but a label. */
   @layer system {
     .pip-track {
       --pip-track-gap: var(--space-4);
-      /* Room for the captions, which hang out of flow below the row. */
       --pip-track-caption-clearance: var(--space-20);
 
       display: inline-flex;
@@ -59,15 +37,9 @@
       gap: var(--pip-track-gap);
     }
 
-    /* A captioned track is a rank track: fifteen pips spanning a labelled row, not a small inline
-       meter. It distributes into its slot rather than measuring 15 pips plus 14 gaps, because that
-       intrinsic width (296px) is wider than the row the sheets give it (~278px) and the overflow
-       sliced the last pip and clipped "Master" to "Mas".
-
-       This is what the callers used to do: both sheets wrapped the track in `.flex`
-       (`justify-content: space-evenly`) and the old component emitted its pips as bare siblings, so
-       they were that wrapper's flex children. Moving layout in here was right; the fixed gap that
-       came with it swapped a row that fits any slot for one that fits only a slot 296px wide. */
+    /* space-evenly, not a measured 15-pips-plus-gaps width: the intrinsic width (296px) is
+       wider than the row the sheets give it (~278px), and a fixed layout overflowed and
+       clipped the last pip/caption. */
     .pip-track.captioned {
       display: flex;
       justify-content: space-evenly;
@@ -80,8 +52,6 @@
       --pip-track-pip-radius: var(--radius-full);
       --pip-track-pip-border-width: var(--border-width-1);
 
-      /* Empty is the page showing through a drawn edge; filled is ink. The milestone pair is the
-         same two states one step darker, because a captioned pip marks a rank. */
       --pip-track-pip-surface: var(--surface-neutral-paper);
       --pip-track-pip-border-color: var(--border-neutral-medium);
       --pip-track-pip-filled-surface: var(--surface-neutral);
@@ -92,9 +62,8 @@
       --pip-track-pip-milestone-filled-border-color: var(--surface-neutral-lowest);
 
       position: relative;
-      /* Shrinks rather than overflows. A pip that cannot give way turns a row one pixel too narrow
-         into a sliced pip and a broken panel edge, which is the failure this component already had
-         once; `aspect-ratio` keeps it round on the way down instead of squashing it to an ellipse. */
+      /* flex-shrink + aspect-ratio deliberately: a pip that can't shrink slices the row edge
+         when it's one pixel short; aspect-ratio keeps it round rather than squashed. */
       flex: 0 1 var(--pip-track-pip-size);
       min-width: 0;
       box-sizing: border-box;
@@ -139,11 +108,8 @@
       white-space: nowrap;
     }
 
-    /* The captions at the two ends anchor to their pip's outer edge instead of centring on it, so
-       no label can bleed past the row however long it grows. A centred end caption reaches half its
-       own width beyond the last pip, which is what clipped "Master" to "Maste"; reserving that
-       overhang as padding only works for the label you measured, and the same row reads
-       "Especializado" in pt-BR. An anchor needs no measurement. */
+    /* Anchored to the pip's outer edge, not centred: a centred end caption overflows by half its
+       own width, and label length varies by locale ("Master" vs "Especializado"). */
     .pip:first-child .pip-caption {
       left: 0;
       transform: none;

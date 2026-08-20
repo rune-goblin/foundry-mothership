@@ -66,9 +66,8 @@ const DYNAMIC: Entry[] = [
 ];
 
 /**
- * No reader, and not part of the audited set P0.2 pruned. Grandfathered so this spec can be a
- * ratchet on *new* fields today rather than waiting on a second audit. This list should only ever
- * shrink: before adding to it, prune the field instead.
+ * No reader. Grandfathered so this spec ratchets on *new* fields — the list should only
+ * ever shrink; prune the field instead of adding to it.
  */
 const GRANDFATHERED: Entry[] = [
   {

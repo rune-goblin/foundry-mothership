@@ -1,20 +1,10 @@
 import { type Page } from '@playwright/test';
 import { test, expect } from './fixtures/foundry-clients.ts';
 
-// CreatureSettingsApp (module/ui/creature/) is DocumentSheetV2 + Svelte. The six stat toggles are
-// named fields Foundry persists via submitOnChange; the swarm toggle is deliberately unnamed and
-// runs its own batched update, because it multiplies combat by the creature's remaining wounds and
-// stashes the original to restore later.
-//
-// The swarm arithmetic is also asserted in data-models.spec.ts, but there it is reproduced inside
-// evaluate() -- so it covers the schema, not this window. These drive the window itself.
-
-// The creature sheet underneath is now an ApplicationV2 too, carrying the same
-// mothership/sheet/actor/creature classes -- `creature-settings` is what tells the two apart.
+// The creature sheet and the settings window share `mothership/sheet/actor/creature` classes; `creature-settings` is what tells them apart.
 const SETTINGS = '.application.creature-settings';
 
-// Wait for the sheet to actually be on screen before opening the settings window over it, or the
-// settings window lands underneath and its inputs cannot be clicked.
+// Wait for the sheet to be on screen before opening the settings window, or it lands underneath and its inputs can't be clicked.
 const openSettings = async (page: Page, system: Record<string, unknown> = {}) => {
   const { uuid, appId } = await page.evaluate(async (s: Record<string, unknown>) => {
     const doc = await (window as any).Actor.create({
@@ -77,8 +67,7 @@ test.describe('creature settings window', () => {
     await expect(settings.locator('input#swarm-enabled')).toBeVisible();
   });
 
-  // The six named toggles have no click handler at all -- if Foundry's form handling is not wired
-  // up, this write goes nowhere. That is the whole point of the assertion.
+  // The named toggles have no click handler — if Foundry's form handling isn't wired up, this write goes nowhere.
   test('a stat toggle persists through Foundry form handling', async ({ gmPage }) => {
     const uuid = await openSettings(gmPage, { stats: { instinct: { enabled: false } } });
     const toggle = gmPage.locator(SETTINGS).locator('input[name="system.stats.instinct.enabled"]');
@@ -90,8 +79,7 @@ test.describe('creature settings window', () => {
     await expect.poll(() => stored(gmPage, uuid, 'system.stats.instinct.enabled')).toBe(false);
   });
 
-  // 30 -> 60 -> 30. The stash in system.swarm.combat.value is what makes the restore possible; it
-  // was in no schema once, so it was cleaned off and combat multiplied permanently.
+  // 30 -> 60 -> 30: system.swarm.combat.value stashes the original so unchecking can restore it exactly.
   test('the swarm toggle multiplies combat and undoes it', async ({ gmPage }) => {
     const uuid = await openSettings(gmPage, {
       stats: { combat: { value: 30 } },

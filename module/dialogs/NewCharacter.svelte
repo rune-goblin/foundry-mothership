@@ -1,6 +1,5 @@
 <script>
-  // The fork in the road a new character reaches: walk the PSG's nine steps, or start on a blank
-  // sheet. The buttons are the answer, so this component holds no state.
+  // The buttons are the answer, so this component holds no state.
   import { localize } from '../i18n.ts';
 </script>
 

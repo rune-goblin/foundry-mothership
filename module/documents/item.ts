@@ -6,7 +6,7 @@ import {
   type ReloadOutcome,
 } from '../inventory/ammo.ts';
 
-/** The part of Foundry's `Item` this class uses; the global supplies the rest at runtime. */
+// A subset of Foundry's `Item`; the global supplies the rest at runtime.
 interface ItemDocument {
   readonly id: string | null;
   readonly name: string;
@@ -18,14 +18,14 @@ interface ItemDocument {
 
 declare const Item: new (...args: never[]) => ItemDocument;
 
-/** What a card needs to show an item. Data only — the chat layer owns the markup. */
+// Data only — the chat layer owns the markup.
 export interface ItemCard {
   readonly itemId: string | null;
   readonly name: string;
   readonly img: string;
   readonly type: string;
   readonly description: string;
-  /** An ability's roll expression, for the card to evaluate and print beside the description. */
+  // An ability's roll expression, evaluated and printed beside the description.
   readonly roll: string | null;
 }
 
@@ -35,10 +35,7 @@ function text(system: unknown, key: string): string {
 }
 
 export class MothershipItem extends Item {
-  /**
-   * Spend what one attack costs. Only the attack path calls this: a damage roll never does
-   * (audit F5), and `fire` never guesses which of the two it was asked for.
-   */
+  // Only the attack path calls this — a damage roll never does.
   async fire(): Promise<FireOutcome> {
     const outcome = planFire(ammoState(this.system));
     if (outcome.spent > 0) await this.update({ 'system.curShots': outcome.curShots });

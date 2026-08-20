@@ -1,15 +1,3 @@
-/**
- * Every card the system posts, assembled as data and rendered once. Legacy built its outcome and
- * dice markup inside the dice engine and its condition cards as hand-written HTML strings — which
- * is how two of them came to point at `systems/foundry-mothership/…`, a path that stopped
- * existing at the rename (audit F4, F8). Here the assembly is pure and unit-tested, every path
- * comes from one constant, and the only impure step is `postCard`.
- *
- * The six `templates/chat/*.html` files stay Handlebars and keep the keys they read today: until
- * R5 deletes it, legacy renders the same templates, so a shape change here would break the
- * shipped system while this module is still wired to nothing.
- */
-
 import type { ItemCard } from '../documents/item.ts';
 import { format, has, localize } from '../i18n.ts';
 import type { ReloadOutcome } from '../inventory/ammo.ts';
@@ -19,7 +7,6 @@ import type { Outcome } from '../rolls/resolve.ts';
 import type { Comparison, RollSpec } from '../rolls/spec.ts';
 import type { TableDraw, TableKey } from '../tables/tables.ts';
 
-/** The one place the system's own id appears in a path (audit F4, §18's rename). */
 export const SYSTEM_ID = 'mothershiprpg';
 
 export function asset(path: string): string {
@@ -46,7 +33,6 @@ export interface Card<D extends object = object> {
   readonly data: D;
 }
 
-/** What every template reads to tag its message with who it came from. */
 export interface CardSource {
   readonly actorId: string | null;
   readonly actorImg: string;
@@ -68,11 +54,7 @@ export function voiceOf(robotic: boolean): Voice {
   return robotic ? 'android' : 'human';
 }
 
-/**
- * The flavour library: `Mothership.<type>.<context>.<action>.<voice>`. A missing android line falls
- * back to the human one; a missing entry is nothing at all, where `getFlavorText` printed its own
- * argument — "increase" — into the card (audit F20).
- */
+/** Key is `Mothership.<type>.<context>.<action>.<voice>`. A missing android line falls back to human; a missing entry is `''`. */
 export function flavor(voice: Voice, ...path: readonly string[]): string {
   const key = `Mothership.${path.join('.')}`;
   if (has(`${key}.${voice}`)) return localize(`${key}.${voice}`);
@@ -94,11 +76,7 @@ const COMPARE_WORDS: Readonly<Record<Comparison, string>> = {
   '>=': 'Mothership.Chat.GreaterThanOrEqual',
 };
 
-/**
- * The verdict line. A check with nothing to beat has no verdict, so it prints none. Legacy carried
- * the type here as an inline style because the stylesheet was out of that plan's scope; the design
- * system has since taken the cards, so this names a class and `css/mothership.css` draws it.
- */
+/** A check with nothing to beat has no verdict, so it prints none. */
 export function outcomeHtml(outcome: Outcome): string {
   if (outcome.target === null) return '';
   const key = outcome.critical
@@ -124,7 +102,7 @@ export interface RollHtmlOptions {
   readonly comparison: Comparison | null;
 }
 
-/** Foundry's own dice-tooltip markup, built from the outcome instead of from the `Roll` (F19). */
+/** Foundry's own dice-tooltip markup, built from the outcome rather than the `Roll` object. */
 export function rollHtml(outcome: Outcome, options: RollHtmlOptions): string {
   const formula =
     outcome.target === null || options.comparison === null
@@ -161,7 +139,6 @@ function rolled(outcome: Outcome, options: RollHtmlOptions): object {
     total: outcome.total,
     success: outcome.success,
     critical: outcome.critical,
-    // The template used to compare the total against a literal 90: PSG 24 stated twice.
     autoFailed: outcome.autoFailed,
     outcomeHtml: outcomeHtml(outcome),
     rollHtml: rollHtml(outcome, options),
@@ -199,10 +176,7 @@ export interface CheckCardInput {
 /** A title this long no longer fits the header pill at its own size. */
 const LONG_HEADER = 22;
 
-/**
- * The template used to hold the English glue — "You … your … plus … skill bonus" — around four
- * localized fragments, so `pt-BR` could reach the words and never the sentence they sat in.
- */
+/** Built from localized fragments, not one English sentence, so `pt-BR` gets the words without the sentence structure baked in. */
 function checkSentence(input: CheckCardInput): string {
   const bonus = input.skillBonus ?? 0;
   const parts = {
@@ -231,8 +205,6 @@ export function checkCard(input: CheckCardInput): Card<object> {
       msgHeader: input.header,
       longHeader: input.header.length >= LONG_HEADER,
       msgImgPath: input.image,
-      // The template used to re-derive both of these from a `specialRoll` sentinel, `success` and
-      // `weapon`, which is how its two weapon-description blocks became near-identical copies.
       showCheck: !damage,
       showWeapon: needsDesc && (damage || input.outcome.success),
       parsedRollResult: rolled(input.outcome, input),
@@ -294,7 +266,7 @@ export function tableCard(input: TableCardInput): Card<object> {
   };
 }
 
-/** The image each tracked number shows, in code — the lang files carry prose, not paths (F20). */
+/** Image paths stay in code — the lang files carry prose only. */
 const POD_IMAGES: Readonly<Record<string, string>> = {
   health: asset('images/icons/ui/attributes/health.png'),
   hits: asset('images/icons/ui/attributes/health.png'),
@@ -333,13 +305,10 @@ export interface MutationCardInput {
 }
 
 /**
- * What the change did, in words. The two 140-line copies legacy kept of this had already drifted
- * apart on which of `Mothership.HealthZeroMessage`/`HealthZeroMessage2` they used (audit F7); the second
- * is the one that names the health the bar came back with, and since the last Wound now refills
- * the bar too (divergence R1-6) it is the only one left with anything to say.
+ * Uses `HealthZeroMessage2`, not `HealthZeroMessage` — the last Wound now refills the bar, so only
+ * the variant that names the refilled health has anything left to say.
  *
- * Exported because a check that costs Stress says this line inside its own card rather than
- * posting a second one, which is what legacy's `modifyActor(…, false)` return value was for.
+ * Exported so a check that costs Stress can say this line inside its own card instead of posting a second one.
  */
 export function mutationOutcome(input: MutationCardInput): string {
   const { result, voice } = input;
@@ -364,9 +333,7 @@ export function mutationOutcome(input: MutationCardInput): string {
     to: strong(result.field.to),
   });
 
-  // PSG 20 — Stress over its maximum is spent reducing a Stat or Save, and it says so whether or
-  // not the bar itself moved. Legacy's "already at maximum" branch shadowed the second half of
-  // that rule, so a player at 20 Stress was never told to reduce anything (divergence R2-1).
+  // PSG 20 — Stress over its maximum is spent reducing a Stat or Save; say so whether or not the bar itself moved.
   if (pod === 'stress' && result.overflow > 0) {
     const surplus = format('Mothership.Chat.ReduceStatBySurplus', { amount: result.overflow });
     return moved ? `${changed} ${surplus}` : `${flavor(voice, 'attribute', pod, 'hitCeiling')} ${surplus}`;
@@ -466,14 +433,7 @@ function number(system: unknown, key: string): number | null {
   return Number.isFinite(value) && value !== 0 ? value : null;
 }
 
-/**
- * The item as a card. `toChat()` says who the item is; the three numbers this shows besides the
- * description are presentation, so the card reads them rather than growing the document's record.
- *
- * Legacy swapped an item's name and description when the description was exactly `<p>Trinket</p>`
- * or `<p>Patch</p>` — items the AppV1 generator made, which nothing has created since S5 and no
- * shipped document carries. The swap is gone with them: a card shows the item's own name.
- */
+/** The three numbers shown besides the description are presentation only — read here, not stored on the document. */
 export function descriptionCard(item: ItemCard, system: unknown, source: CardSource): Card<object> {
   return {
     kind: 'description',
@@ -540,28 +500,17 @@ export interface CardMessage {
   update(data: object): Promise<unknown>;
 }
 
-/**
- * A player may act on their own card, the Warden on any. `BaseChatMessage#getUserLevel` reads
- * OWNER for the message's author and `testUserPermission` hands every GM OWNER, so this one call
- * states the rule and predicts whether the write behind it would be accepted.
- */
+/** A player may act on their own card, the Warden on any — `canUserModify` already grants every GM OWNER on any message. */
 export function ownsCard(message: CardMessage, user: unknown): boolean {
   return message.canUserModify(user, 'update');
 }
 
-/**
- * Rewriting a card means re-rendering its template, and the rendered HTML has thrown away the data
- * that built it. Only the check card needs this: it is the only one with a button that rewrites it.
- */
+/** Rewriting a card re-renders its template, and the rendered HTML has thrown away the data that built it. */
 function remembered<D extends object>(card: Card<D>): object {
   return card.kind === 'check' ? { flags: { [SYSTEM_ID]: { [CARD_FLAG]: card } } } : {};
 }
 
-/**
- * The impure half, and all of it: render the card's template and post it. A card built from a
- * roll posts through the roll so Foundry keeps the dice; anything else goes through
- * `ChatMessage`, with the GM's current message mode applied either way.
- */
+/** A card built from a roll posts through the roll so Foundry keeps the dice; anything else goes through `ChatMessage`. */
 export async function postCard<D extends object>(card: Card<D>, options: PostOptions): Promise<unknown> {
   if (typeof foundry === 'undefined' || typeof ChatMessage === 'undefined') return null;
 

@@ -27,11 +27,8 @@ const lang = (file: string): Set<string> =>
 const en = lang('en.json');
 const ptBR = lang('pt-BR.json');
 
-/**
- * Every setting's name and hint is a key Foundry localizes itself, which is the whole point of
- * registering them as keys (audit RC14) — and every one is built from the setting's own name, so
- * none of them appears as a literal for the scan above to find.
- */
+// Setting keys are built from the setting's own name, so none appears as a literal for the scan
+// above to find — list them explicitly instead.
 const settingKeys = [
   ...SETTINGS.flatMap((setting) => [
     settingKey(setting.key, 'Name'),
@@ -60,8 +57,6 @@ describe('the strings the new runtime asks for', () => {
     expect(used.filter((key) => !en.has(key))).toEqual([]);
   });
 
-  // A translation that silently stops covering the system is how `pt-BR` would rot: every key
-  // added by a unit is added to both files in that unit.
   it('exist in Portuguese', () => {
     expect(used.filter((key) => !ptBR.has(key))).toEqual([]);
   });

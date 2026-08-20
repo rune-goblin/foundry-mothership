@@ -1,8 +1,5 @@
 <script>
-  // No <style> block: this window owns no class. `creature-settings`, which tells it apart from
-  // the creature sheet underneath, styles nothing and is the e2e locator; `sheet-header` is
-  // core's; `header-fields` needs a `char-header` ancestor only CharacterSheet and Generator
-  // provide, so the one rule it has is inert here; the `.grid*`/`.flex*` set is shared.
+  // No <style> block: every class here is shared or (for `creature-settings`) only an e2e locator.
   import CheckField from '../parts/CheckField.svelte';
   import { localize } from '../../i18n.ts';
 
@@ -17,8 +14,7 @@
     { key: 'sanity', label: 'Mothership.Sanity' },
   ];
 
-  // Not a form field: the toggle rewrites Combat as well as itself (the rule is the document's,
-  // `setSwarm`), which plain form persistence cannot express — so it stays out of `formData`.
+  // Not a plain form field: setSwarm() also rewrites Combat, which form persistence can't express.
   const onSwarmChange = (event) => store.document.setSwarm(event.currentTarget.checked);
 </script>
 

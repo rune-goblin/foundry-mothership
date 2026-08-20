@@ -1,11 +1,6 @@
 import { type Page } from '@playwright/test';
 import { test, expect } from './fixtures/foundry-clients.ts';
 
-// The character sheet is ApplicationV2 + Svelte (module/ui/actor/). It shares its item panels and
-// health block with the creature (module/ui/parts/sections/), so these specs concentrate on what
-// is the character's own: the identity header, the four stats with their bonuses, the three
-// saves, the stress panic label, the carrying-capacity footer and the generator control.
-
 const open = async (page: Page, system: Record<string, unknown> = {}, name = '__e2e_character') => {
   const opened = await page.evaluate(
     async ({ s, n }: { s: Record<string, unknown>; n: string }) => {
@@ -147,15 +142,13 @@ test.describe('character sheet', () => {
     await expect(sheet.locator('input[name="system.other.stress.value"]')).toHaveValue('5');
     await expect(sheet.locator('input[name="system.other.stress.min"]')).toHaveValue('2');
 
-    // rollPanic() with no advantage asks for it first, so the panic check starts with that
-    // dialog rather than a chat message — and the dialog names the table it is about to roll.
+    // rollPanic() with no advantage asks for it first, so this opens a dialog naming the table, not a chat message.
     await sheet.locator('label[for="system.other.stress.value"]').click();
     await expect(gmPage.locator('dialog[open].macro-popup-dialog')).toContainText('Panic Check');
   });
 
-  // Two rules the system only needed once the sheet left AppV1: Foundry stretched a textarea and
-  // padded an input differently inside a .window-app, and an .application never saw either. The
-  // first lives in TextareaField now, the second in css/mothership.css.
+  // Foundry sizes a textarea and pads an input differently inside .window-app than .application;
+  // an .application sheet never saw either rule.
   test('the trauma box fills its column and a two-digit bonus fits its pill', async ({ gmPage }) => {
     const { appId } = await open(gmPage, { stats: { combat: { mod: 10 } } });
     const sheet = gmPage.locator(`#${appId}`);
@@ -268,8 +261,6 @@ test.describe('character sheet', () => {
     await expect.poll(() => itemField(gmPage, uuid, id, 'system.curShots')).toBe(6);
   });
 
-  // The footer reads system.weight, which _deriveCharacter computes now -- the sheet used to
-  // compute it during render and write it onto the document.
   test('the carrying-capacity footer reports derived weight', async ({ gmPage }) => {
     await setHideWeight(gmPage, false);
     try {
@@ -435,12 +426,10 @@ test.describe('character sheet', () => {
     const { appId } = await open(gmPage);
     const sheet = gmPage.locator(`#${appId}`);
 
-    // AppV1 put this in the title bar; ApplicationV2 files header controls under the ellipsis.
     await sheet.locator('.header-control[data-action="toggleControls"]').click();
     await gmPage.locator('.context-item', { hasText: 'Character Creation Wizard' }).click();
 
-    // The window id is still the generator's: the draft store and its window kept their names
-    // when the single page became a wizard, and only the label the control reads changed.
+    // The window id is still the generator's — only the control's label changed when the page became a wizard.
     await expect(gmPage.locator('.application[id^="mothership-generator-"]')).toBeVisible();
   });
 });

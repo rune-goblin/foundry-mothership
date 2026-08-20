@@ -23,9 +23,8 @@ describe('actor DataModels reproduce template.json exactly', () => {
   });
 });
 
-// The three types share a `base` template; a model that dropped it would still match its
-// own type's defaults only because templateDefaults merges base in too, so assert the
-// shared pools explicitly.
+// templateDefaults merges the shared `base` template in, so a model that dropped `base`
+// would still pass the per-type check above — assert the shared pools directly too.
 describe('every actor carries the shared base pools', () => {
   for (const type of Object.keys(ACTOR_MODELS)) {
     it(`${type} has health, hits, netHP and bleeding`, () => {

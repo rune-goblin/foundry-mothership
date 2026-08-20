@@ -49,8 +49,8 @@ describe('bindChatActions', () => {
     expect(gain).not.toHaveBeenCalled();
   });
 
-  // The button carries the expression, not a bag of attributes: what content wrote and what the
-  // click runs go through the same parser, so the two cannot describe different actions.
+  // The button carries the expression itself, so what content wrote and what the click runs
+  // go through the same parser.
   it('reads the action back out of the element the enricher wrote', () => {
     const apply = vi.fn();
     registerChatAction('apply', apply);
@@ -83,7 +83,6 @@ describe('bindChatActions', () => {
     expect(check).not.toHaveBeenCalled();
   });
 
-  // R3 fills the check entry. Until it does, the button says so rather than doing nothing.
   it('reports a verb nobody has claimed', () => {
     installI18n({ 'Mothership.Chat.ActionUnavailable': 'That action is not available yet.' });
     const warn = vi.fn();
@@ -120,8 +119,7 @@ describe('bindChatActions', () => {
   });
 });
 
-// Disabling the other verbs would stop a player rolling their own Fear Save off a card someone
-// else posted.
+// Disabling every verb would stop a player rolling their own Fear Save off a card someone else posted.
 describe('guardCardActions', () => {
   const card = (...expressions: string[]) => {
     const root = document.createElement('div');

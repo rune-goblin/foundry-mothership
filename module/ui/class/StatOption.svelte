@@ -1,6 +1,4 @@
 <script>
-  // The value and the stats it may be spent on are one answer, so both are gathered here and
-  // reported whole on every change.
   let { heading, valueLabel, stats, value, onchange } = $props();
 
   const chosen = new Set();

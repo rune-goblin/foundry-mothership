@@ -1,19 +1,3 @@
-/**
- * Giving an actor an item, and adding to the one it already carries — the write behind
- * `@Apply[bleeding 2]` and behind every `+N <Condition>` macro a world has imported.
- *
- * Legacy's `modifyItem` resolved the document, branched five ways on its type, and wrote twice:
- * a `createEmbeddedDocuments` followed by an unawaited `update` that set the count on the
- * document it had just created (audit F10). Here the count is part of what gets created, so one
- * awaited write says everything, and what happened comes back as a record for the chat layer to
- * narrate. Nothing in this module reads `game` or renders.
- *
- * `{keepId: true}` on the create call is load-bearing: without it Foundry mints a fresh id for
- * every embedded document, and a Condition's whole identity story (`conditions.ts`'s `isCondition`)
- * depends on the compendium id surviving the grant the way legacy's nine `keepId` call sites kept
- * it alive.
- */
-
 import { CONDITION_IDS, isCondition } from '../conditions.ts';
 
 export interface HeldItem {
@@ -24,7 +8,6 @@ export interface HeldItem {
   update(data: Record<string, unknown>): Promise<unknown>;
 }
 
-/** The document being given: a compendium item, or a world one. */
 export interface GrantDocument {
   readonly id?: string | null;
   readonly name: string;
@@ -43,7 +26,7 @@ export interface GrantTarget {
   ): Promise<unknown>;
 }
 
-/** The field each type counts in. Anything else is counted by holding another one. */
+// null (a type absent here) means counted by holding another one, not by a field.
 const COUNTED: Readonly<Record<string, 'quantity' | 'severity'>> = {
   item: 'quantity',
   condition: 'severity',
@@ -52,9 +35,7 @@ const COUNTED: Readonly<Record<string, 'quantity' | 'severity'>> = {
 export type CountedField = 'quantity' | 'severity';
 
 export interface GrantChange {
-  /** Whether the actor was given the item, or already had the one that changed. */
   readonly created: boolean;
-  /** The field that counts it, or `null` for a type counted by holding another one. */
   readonly counted: CountedField | null;
   readonly from: number;
   readonly to: number;
@@ -76,8 +57,7 @@ function number(value: unknown): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-/** The slug a Condition's own canonical name identifies — granting one never carries its slug
- * this far, so this is the reverse of the join `conditions.ts`'s map states forward. */
+// Reverses the name -> slug join conditions.ts states forward, since a grant carries only the name.
 function conditionSlugOf(name: string): string | null {
   for (const [slug, identity] of Object.entries(CONDITION_IDS)) {
     if (identity.name === name) return slug;
@@ -85,11 +65,8 @@ function conditionSlugOf(name: string): string | null {
   return null;
 }
 
-/**
- * Held by name, the way legacy identified "the actor already has this one" — except a Condition,
- * which is held by the identity `isCondition` gives every other reader of one, so a rename or a
- * translation cannot make this module and `checks/actions.ts` disagree about who has what.
- */
+// Held by name, except a Condition, which is matched by isCondition's identity so a rename or
+// translation can't make this module and checks/actions.ts disagree about who has what.
 export function heldItem(actor: GrantTarget, document: Pick<GrantDocument, 'name' | 'type'>): HeldItem | null {
   const slug = document.type === 'condition' ? conditionSlugOf(document.name) : null;
   if (slug !== null) {
@@ -121,7 +98,8 @@ export async function grantItem(
 
   const data = document.toObject();
   if (counted !== null) data.system = { ...fields(data.system), [counted]: count };
-  // A second copy of a held item must mint its own id — re-sending the held _id would collide.
+  // keepId only on a first grant: Condition identity (isCondition) depends on the compendium
+  // id surviving, but a second copy must mint its own or collide with the held one.
   await actor.createEmbeddedDocuments('Item', [data], { keepId: held === null });
 
   return {

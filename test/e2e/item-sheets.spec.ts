@@ -1,11 +1,5 @@
 import { test, expect } from './fixtures/foundry-clients.ts';
 
-// The simple item types are ApplicationV2 + Svelte (module/ui/item/); skill and class have their
-// own sheets and their own specs (skill-sheet.spec.ts, class-sheet.spec.ts). Their fields keep
-// `name="system.…"` and Foundry's own form handling persists them, so what needs proving is that
-// the round trip works: the sheet renders the stored value, an edit reaches the document, and a
-// document update reaches the sheet.
-
 const TYPES = ['item', 'weapon', 'armor', 'ability', 'condition'];
 
 const openSheet = async (page: any, type: string, system: Record<string, unknown> = {}) =>
@@ -36,7 +30,6 @@ test.describe('item sheets', () => {
       const sheet = gmPage.locator(`#${appId}`);
       await expect(sheet).toBeVisible();
       await expect(sheet.locator('input[name="name"]')).toHaveValue(`__e2e_${type}`);
-      // Every type offers a description tab backed by the V2 prose-mirror element.
       await expect(sheet.locator('prose-mirror[name="system.description"]')).toHaveCount(1);
     });
   }
@@ -56,10 +49,8 @@ test.describe('item sheets', () => {
       .toBe(7);
   });
 
-  // Mothership ranges in bands, so `system.range` is a StringField with choices rather than the
-  // free-text field (and vestigial short/medium/long trio) it replaced. `none` is one of the five:
-  // Ammo is on the weapons list and is never thrown at anyone. The point of the enum is that
-  // Foundry rejects anything else, which is what the last assertion drives.
+  // `none` is one of the five options despite the name -- Ammo is on the weapons list and is
+  // never thrown at anyone.
   test('the weapon range is a band picked from the four, and nothing else stores', async ({
     gmPage,
   }) => {
@@ -138,8 +129,6 @@ test.describe('item sheets', () => {
     await expect(sheet.locator('input[name="system.cost"]')).toHaveValue('42');
   });
 
-  // These three were gated behind the firstEdition setting, which has been removed along with
-  // the 0e rules. They are unconditional now, and the setting no longer exists to toggle.
   test('the 1e-only fields render unconditionally', async ({ gmPage }) => {
     const armor = await openSheet(gmPage, 'armor');
     await expect(gmPage.locator(`#${armor.appId} input[name="system.damageReduction"]`)).toHaveCount(1);

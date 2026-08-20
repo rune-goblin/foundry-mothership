@@ -29,9 +29,7 @@ describe('item DataModels reproduce template.json exactly', () => {
   });
 });
 
-// template.json is the oracle for defaults, and an empty array has none -- it cannot say what a
-// choose_stat entry or a choose_skill_or option looks like. That shape is what the generator reads
-// and the content build emits, so pin it here where the schema itself can be walked.
+// template.json has no oracle for an empty array's element shape, so walk the schema instead.
 describe('the class adjustment lists', () => {
   const selected = () =>
     ITEM_MODELS.class.defineSchema().selected_adjustment.schema as Record<string, Stub>;

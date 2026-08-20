@@ -1,10 +1,8 @@
 <script>
   import { localize } from '../i18n.ts';
 
-  // The radio group holds the table; the roll-type buttons are the dialog's own footer.
-  //
-  // No <style> block: every class here is the dialog shell's vocabulary — fourteen components
-  // write it, and css/mothership.css declares the tier.
+  // No <style> block: these classes are the dialog shell's shared vocabulary, declared in
+  // css/mothership.css.
   let { image, heading, body, tables, value, onchange } = $props();
 </script>
 

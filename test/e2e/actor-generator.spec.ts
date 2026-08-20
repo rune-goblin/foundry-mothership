@@ -1,27 +1,11 @@
 import { type Page } from '@playwright/test';
 import { test, expect } from './fixtures/foundry-clients.ts';
 
-// S5's capstone, walked one step at a time. The character generator has never had data to work
-// with: it scans compendia for class and skill documents, and until S3 no pack shipped either.
-// This drives the wizard end to end against the real Foundry -- reach it from the create dialog,
-// choose a Marine, answer inline everything the class leaves open, roll each step, finish -- and
-// asserts what landed on the actor. The wizard opens no window over itself: a spec that has to
-// click `dialog[open]` to get through a step is a spec catching a regression.
-//
-// The loadout is the part that matters most. The emitted rows link several gear documents each
-// and the AppV1 generator kept only the last link, so a three-item row
-// handed out one item.
-
-// Foundry rolls a face as ceil((1 - randomUniform()) * faces), so a value just under 1 pins every
-// die to 1 -- stats 27, saves 12, health 11, credits 20, and row 0 of every table.
+// Foundry rolls ceil((1 - randomUniform()) * faces); a value just under 1 pins every die to 1,
+// and every table to row 0.
 const LOWEST_FACE = 0.9999;
 
-/**
- * Every roll in the window, fixed, so the assertions can name exact numbers and an exact row.
- * `randomUniform` is Foundry's own function on `CONFIG.Dice`, so thawing has to put that function
- * back: deleting the patch leaves the key undefined and every later die in the worker — `gmPage`
- * is worker-scoped — throws `randomUniform is not a function` instead of rolling.
- */
+/** `gmPage` is worker-scoped: thaw must restore `CONFIG.Dice.randomUniform`, not delete it, or later tests throw. */
 const freezeDice = (page: Page, value: number) =>
   page.evaluate((v: number) => {
     const dice = (window as any).CONFIG.Dice;
@@ -47,8 +31,7 @@ const openGenerator = async (
   system: Record<string, unknown> = {},
   { fromCreation = false } = {},
 ) => {
-  // Leave no other sheet open: the header button is found by selector, and a leftover one belongs
-  // to another actor.
+  // Close other sheets first — the header button is found by selector, and a leftover sheet has one too.
   await closeEverything(page);
   const uuid = await page.evaluate(async ({ s, renderSheet }) => {
     const actor = await (window as any).Actor.create(
@@ -60,9 +43,8 @@ const openGenerator = async (
   if (fromCreation) {
     await page.click('dialog[open] button[data-action="wizard"]');
   } else {
-    // A render without the creation context is an ordinary sheet open. The entry is a header
-    // control under the ellipsis rather than a title-bar button; calling the method skips that
-    // menu, whose own wiring is covered by character-sheet.spec.ts.
+    // The real entry is a header-menu control, not a title-bar button; calling the method directly
+    // skips it (menu wiring covered by character-sheet.spec.ts).
     await page.evaluate(async (u: string) => {
       const actor = await (window as any).fromUuid(u);
       await actor.sheet.render(true);
@@ -73,7 +55,6 @@ const openGenerator = async (
   return uuid;
 };
 
-/** The rail is the navigation: completed panes and the first unfinished pane are reachable. */
 const goTo = async (page: Page, pane: string) => {
   await page.click(`button.wizard-rail-step[data-pane="${pane}"]`);
   await expect(page.locator(`section.wizard-pane[data-pane="${pane}"]`)).toHaveCount(1);
@@ -94,19 +75,11 @@ const chooseClass = async (page: Page, name: string) => {
   await page.click(`button.wizard-class[data-class="${name}"]`);
 };
 
-/**
- * Take one of the class's either/or skill bonuses. It is a benefit of the class, so it is asked on
- * the adjustments pane, with the rest of what the class hands over — a pane before the skills the
- * picks it funds are spent on.
- */
 const takeSkillBonus = async (page: Page, position: number) => {
   await goTo(page, 'adjustments');
   await page.click(`button.wizard-package >> nth=${position}`);
 };
 
-/**
- * Reach the skills pane, rolling ahead of it if the rail still has it gated.
- */
 const reachSkills = async (page: Page) => {
   if (await page.locator('button.wizard-rail-step[data-pane="skills"]').isDisabled()) {
     await goTo(page, 'health');
@@ -115,11 +88,7 @@ const reachSkills = async (page: Page) => {
   await goTo(page, 'skills');
 };
 
-/**
- * Every skill the class still owes is one flat tree, not a slot opened one at a time — picking one
- * available skill can make the next tier's picks available in the same glance, so this just keeps
- * taking the first available skill until none are left, rather than walking a fixed slot list.
- */
+/** Picking a skill can reveal new available skills, so this loops rather than walking a fixed slot list. */
 const pickEverySkill = async (page: Page) => {
   await reachSkills(page);
   while (await page.locator('[data-skill][data-state="available"]').count() > 0) {
@@ -155,7 +124,6 @@ test.describe('character generator', () => {
     });
   });
 
-  // The wizard's front door: creating a character offers it before rendering any blank sheet.
   test('a new character is offered the wizard, and taking it opens the window', async ({ gmPage }) => {
     await closeEverything(gmPage);
     await gmPage.evaluate(() => {
@@ -167,8 +135,7 @@ test.describe('character generator', () => {
     await gmPage.click('dialog[open] button[data-action="wizard"]');
     await expect(gmPage.locator('form.character-wizard')).toHaveCount(1);
     await expect(gmPage.locator('.application.character:not(:has(form.character-wizard))')).toHaveCount(0);
-    // The intro is the first pane: the first two pieces of the book's front matter beside its
-    // cover, without the third paragraph of procedural instructions.
+    // Intro pane shows only the book's first two front-matter paragraphs beside the cover, not the third (procedural) one.
     const intro = gmPage.locator('section.wizard-pane[data-pane="intro"]');
     await expect(intro).toHaveCount(1);
     await expect(intro.locator('.wizard-intro .wizard-prose p')).toHaveCount(2);
@@ -221,9 +188,8 @@ test.describe('character generator', () => {
     const rail = await gmPage.$$eval('button.wizard-rail-step', (nodes) =>
       nodes.map((n) => (n as HTMLElement).dataset.pane),
     );
-    // Steps 5 and 6 ask the player nothing -- Stress starts at 2 and the Trauma Response is the
-    // class's -- so the wizard shows both where they land and stops on neither. Step 3 asks two
-    // things, so it is two panes: which class, and where its free adjustment goes.
+    // Steps 5-6 ask the player nothing (Stress starts at 2, Trauma Response is fixed by class), so
+    // the wizard skips panes for them; step 3 asks two things, so it's two panes.
     expect(rail).toEqual([
       'intro', 'stats', 'saves', 'class', 'adjustments', 'health', 'skills', 'gear', 'finish',
     ]);
@@ -288,13 +254,11 @@ test.describe('character generator', () => {
     await expect(detail.locator('[data-bonus="combat"]')).toHaveText('+10');
     await expect(detail.locator('[data-value="trauma"]')).not.toBeEmpty();
 
-    // The book's class card prints the skills with the adjustments, so this pane does too — the
-    // ones the class simply grants, and the bonus it funds a pick of.
+    // The book's class card prints granted skills alongside adjustments, so this pane does too.
     await expect(detail.locator('[data-skills="granted"]')).toHaveText('Military Training, Athletics');
     await expect(detail.locator('[data-skills="group"]')).toHaveText('1 Expert Skill OR 2 Trained Skills');
 
-    // The Scientist grants nothing outright; its whole skill benefit is the qualified pick, which
-    // the pane has to spell out or the class reads as the one that hands over no skills at all.
+    // The Scientist grants no skills outright — its whole benefit is the qualified pick, so the pane must spell that out.
     await gmPage.click('button.wizard-class[data-class="Scientist"]');
     const scientist = gmPage.locator('[data-class-detail="Scientist"]');
     await expect(scientist.locator('[data-skills="granted"]')).toHaveCount(0);
@@ -323,8 +287,7 @@ test.describe('character generator', () => {
 
     await chooseClass(gmPage, 'Teamster');
 
-    // The Teamster leaves no adjustment to place, so that pane is already complete and Health is
-    // the next gate. The choice itself opens no dialog.
+    // The Teamster leaves no adjustment to place, so that pane is already complete and opens no dialog.
     await expect(gmPage.locator('dialog[open]')).toHaveCount(0);
     await expect(gmPage.locator('button.wizard-rail-step[data-pane="health"]')).toBeEnabled();
     await goTo(gmPage, 'health');
@@ -334,8 +297,7 @@ test.describe('character generator', () => {
   });
 
   test('generates a Marine, and its three-item loadout row becomes three items', async ({ gmPage }) => {
-    // Stress has drifted from where the book starts it, which is the case that shows whether the
-    // generator writes it or leaves it to the schema's defaults.
+    // Stress starts pre-drifted here so the test can tell whether the generator writes it or leaves the schema default.
     const uuid = await openGenerator(
       gmPage,
       { other: { stress: { value: 9, min: 4 } } },
@@ -346,9 +308,8 @@ test.describe('character generator', () => {
 
     await chooseClass(gmPage, 'Marine');
 
-    // The Marine's bonus skills are a choice of two packages. It is one of the class's benefits, so
-    // it is taken with them, and the wizard will not walk on to the skills until it is answered —
-    // the picker would otherwise be counting picks the class had not handed out yet.
+    // The Marine's bonus skills are a choice of two packages, taken with the class's other benefits;
+    // the rail blocks skills until it's answered.
     await expect(gmPage.locator('button.wizard-rail-step[data-pane="skills"]')).toBeDisabled();
     await takeSkillBonus(gmPage, 1);
     await expect(gmPage.locator('section.wizard-pane[data-pane="adjustments"] button.wizard-package')).toHaveCount(2);
@@ -360,8 +321,7 @@ test.describe('character generator', () => {
     const trainedColumn = picker.locator('.skill-selector-column[data-rank="Trained"]');
     await expect(trainedColumn.locator('[data-state="granted"]')).not.toHaveCount(0);
     await expect(trainedColumn.locator('[data-state="available"]')).not.toHaveCount(0);
-    // Trained is never gated on a prerequisite, so every unowned skill in that column is
-    // available — nothing in it is ever locked.
+    // Trained has no prerequisites, so every unowned skill in that column is available.
     await expect(trainedColumn.locator('[data-state="unavailable"]')).toHaveCount(0);
     await expect(picker.locator('svg')).toHaveCount(0);
 
@@ -371,8 +331,7 @@ test.describe('character generator', () => {
     );
     expect(columnCount).toBe(3);
 
-    // Every state keeps normal-size text at WCAG AA contrast; shape, border style and symbols also
-    // distinguish them, so color is not the only signal.
+    // Checks WCAG AA contrast; color isn't the only signal, as shape/border/symbols also distinguish states.
     const contrast = await picker.locator('[data-skill]').evaluateAll((nodes) => {
       const channel = (value: number) => {
         const normalized = value / 255;
@@ -394,10 +353,8 @@ test.describe('character generator', () => {
     await pickEverySkill(gmPage);
     await expect(gmPage.locator('ul[data-list="skills"] li')).toHaveCount(4);
 
-    // With the last Trained pick spent the whole column locks, and it says which of the two reasons
-    // that is. Clicking one of those rows has to change nothing at all — `force` because the row
-    // reports itself disabled, which is the point: the click still lands, and leaves no focus ring
-    // sitting on a skill the player never took.
+    // Locked rows report disabled, so `force` is needed to click them at all; the click must still
+    // do nothing and leave no focus ring on a skill never taken.
     await expect(trainedColumn.locator('.skill-selector-bonus.is-spent')).toHaveCount(1);
     const locked = trainedColumn.locator('[data-state="unavailable"][data-reason="spent"]').first();
     await locked.click({ force: true });
@@ -448,12 +405,11 @@ test.describe('character generator', () => {
     const carried = await items(gmPage, uuid);
     expect(carried.filter((i) => i.type === 'skill')).toHaveLength(4);
 
-    // The class arrives as a document, not just as `system.class.value`: its `robotic` flag is
-    // what tells the Panic table an android from a human (R7).
+    // The class arrives as a document, not just `system.class.value`: its `robotic` flag is what
+    // tells the Panic table android from human.
     expect(carried.filter((i) => i.type === 'class').map((i) => i.name)).toEqual(['Marine']);
 
-    // The row links armour, a weapon and a piece of equipment, under the names the book prints
-    // for them; all three must arrive, as the documents they resolve to.
+    // The row links armour, a weapon and equipment under the book's names; all three must arrive as resolved documents.
     const gear = carried
       .filter((i) => i.type !== 'skill' && i.type !== 'class')
       .map((i) => i.name)
@@ -465,8 +421,8 @@ test.describe('character generator', () => {
     const uuid = await openGenerator(gmPage);
     await freezeDice(gmPage, LOWEST_FACE);
 
-    // The Teamster grants its bonus skills outright: 1 Trained and 1 Expert, no package to take.
-    // The Trained slot is filled first, which is what makes an Expert available to pick at all.
+    // The Teamster grants skills outright (1 Trained, 1 Expert); the Trained pick must land first
+    // to make an Expert available.
     await chooseClass(gmPage, 'Teamster');
     await pickEverySkill(gmPage);
     // +5 to all stats and saves, so every ledger row is raised by 5.
@@ -475,10 +431,8 @@ test.describe('character generator', () => {
 
     await chooseClass(gmPage, 'Android');
 
-    // The Android's "-10 to 1 stat" is a choice, and it is asked on the pane after the cards:
-    // picking a class and spending what it hands you are two questions. Until it is spent the rail
-    // will not walk on, and spending it twice moves it rather than paying it twice — park it on
-    // Strength, then move it to Speed.
+    // The Android's "-10 to 1 stat" gates the rail until spent; spending it again moves the penalty
+    // rather than doubling it — park it on Strength, then move it to Speed.
     await expect(gmPage.locator('button.wizard-rail-step[data-pane="health"]')).toBeDisabled();
     await goTo(gmPage, 'adjustments');
     await expect(gmPage.locator('.wizard-adjustment-table thead th')).toHaveText([
@@ -492,8 +446,7 @@ test.describe('character generator', () => {
     await expect(gmPage.locator('[data-modifier="strength"]')).toHaveText('0');
     await expect(gmPage.locator('[data-value="strength"]')).toHaveText('27');
 
-    // The pane asks both of the class's questions, so placing the adjustment is not enough on its
-    // own: the either/or bonus holds the rail too.
+    // The pane asks two questions; placing the adjustment alone isn't enough — the either/or bonus also gates the rail.
     await expect(gmPage.locator('button.wizard-rail-step[data-pane="health"]')).toBeDisabled();
     await gmPage.click('button.wizard-package >> nth=1');
     await expect(gmPage.locator('button.wizard-rail-step[data-pane="health"]')).toBeEnabled();
@@ -525,14 +478,11 @@ test.describe('character generator', () => {
     expect(await stored(gmPage, uuid, 'system.stats.combat.value')).toBe(27);
   });
 
-  // The Scientist is the one class the book grants a set — "1 Master Skill, and an Expert and
-  // Trained Skill prerequisite" — so it is the one class whose picks have to arrive as a chain.
   test('the Scientist’s Master set is filled from the bottom up', async ({ gmPage }) => {
     const uuid = await openGenerator(gmPage);
     await freezeDice(gmPage, LOWEST_FACE);
 
     await chooseClass(gmPage, 'Scientist');
-    // Its "+5 to 1 stat" is placed before the rail walks on, like any other class benefit.
     await goTo(gmPage, 'adjustments');
     await gmPage.selectOption('[data-choice="0"] select', 'intellect');
     await reachSkills(gmPage);
@@ -545,17 +495,15 @@ test.describe('character generator', () => {
     await expect(column('Expert').locator('[data-state="available"]')).toHaveCount(0);
     await expect(column('Master').locator('[data-state="available"]')).toHaveCount(0);
 
-    // Chemistry's two Experts, Explosives and Pharmacology, are both terminal — no Master stands on
-    // either. Spending the set's one Expert pick on them would leave the Master pick unfillable, so
-    // the picker refuses them outright rather than letting the player walk into a dead end.
+    // Chemistry's two Experts are both terminal (no Master stands on either); spending the set's one
+    // Expert pick there would leave the Master pick unfillable, so the picker refuses them outright.
     await column('Trained').locator('[data-skill]:has-text("Chemistry")').click();
     await expect(column('Expert').locator('[data-state="available"]')).toHaveCount(0);
     await expect(column('Expert').locator('[data-skill]:has-text("Explosives")'))
       .toHaveAttribute('data-reason', 'strands');
 
-    // Industrial Equipment is the prerequisite of Asteroid Mining and Mechanical Repair, and
-    // Mechanical Repair of Cybernetics, Engineering and Robotics: each pick opens exactly what
-    // stands on it, and nothing else.
+    // Industrial Equipment gates Asteroid Mining and Mechanical Repair; Mechanical Repair gates
+    // Cybernetics, Engineering and Robotics — each pick opens only what stands on it.
     await column('Trained').locator('[data-skill]:has-text("Industrial Equipment")').click();
     await expect(column('Expert').locator('[data-state="available"]')).toHaveText([
       /Asteroid Mining/, /Mechanical Repair/,

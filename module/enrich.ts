@@ -1,8 +1,4 @@
-/**
- * Stored rich text on its way into a window. Chat enriches message content itself, so only the
- * dialogs need this: a skill's description reaches the roll prompt with its links resolved
- * instead of as the raw HTML legacy pasted into a template string (audit F23).
- */
+/** Only dialogs need this — chat enriches message content itself. */
 
 declare const foundry:
   | {

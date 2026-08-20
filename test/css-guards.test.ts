@@ -1,19 +1,11 @@
-// The two green numbers from the CSS audit — five `!important` (six until DS5 deleted the
-// invalid `color: none !important`) and zero rules outside `@layer` in either sheet — rot
-// silently: nothing else in any tier notices a sixth `!important` or a stray unlayered rule, and
-// both decide what beats Foundry core. The ceiling only ever ratchets down. The third guard is
-// the price of keeping live-tokens' shared vocabulary (decision 1): a Foundry upgrade that mints
-// a token name we already define would silently retheme either the VTT or our sheets, so the
-// overlap is asserted empty against the installed build rather than trusted.
 import { describe, it, expect } from 'vitest';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const REPO = join(import.meta.dirname, '..');
 const CSS_DIR = join(REPO, 'css');
-// Exactly the three theme-defence declarations on the dialog radios: module CSS ranks above
-// layer(system) in normal order, and !important is what inverts it. Everything else was
-// proven removable against the baselines (the noborder pair, 2026-08-15).
+// 3 theme-defence declarations on the dialog radios need !important: module CSS outranks
+// layer(system) in normal order, and !important is what inverts that.
 const IMPORTANT_CEILING = 3;
 
 const stylesheets = readdirSync(CSS_DIR)
@@ -98,10 +90,9 @@ describe('css guards', () => {
   });
 });
 
-// The bundle is where the guard can be evaded: Svelte emits a component's <style> block
-// unlayered, so a scoped block that forgets its `@layer system` wrapper leaves css/ green and
-// still outranks every layered rule in the application. Skipped without a build so CI stays
-// green; `npm run build` arms it.
+// Svelte emits a component's <style> block unlayered, so a scoped block missing its own
+// `@layer system` wrapper leaves css/ green while still outranking every layered rule. Skipped
+// without a build; `npm run build` arms it.
 const distCss = join(REPO, 'dist', 'mothershiprpg.css');
 const noDist = !existsSync(distCss);
 

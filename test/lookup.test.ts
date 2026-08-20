@@ -36,8 +36,6 @@ describe('lookup', () => {
     expect(fromUuid).toHaveBeenCalledWith('Compendium.mothershiprpg.rolltables_1e.RollTable.abc');
   });
 
-  // Audit RC8: a bare id used to be looked for by scanning every compendium index and then every
-  // world collection in turn. The type says which collection holds it, so it is one get.
   it('takes a bare id straight to the collection its type names', async () => {
     const document = { name: 'World Table' };
     const items = { get: vi.fn() };
@@ -48,8 +46,8 @@ describe('lookup', () => {
     expect(items.get).not.toHaveBeenCalled();
   });
 
-  // A UUID names its own collection, and `fromUuid` answers with whatever it names. Asking for a
-  // RollTable and being handed an Actor is a miss, not a table that behaves strangely later.
+  // fromUuid answers with whatever the UUID names — a type mismatch must be a miss, not a document
+  // that misbehaves later.
   it('refuses a UUID that names a different kind of document', async () => {
     (globalThis as Globals).foundry = {
       utils: { fromUuid: async () => ({ documentName: 'Actor', name: 'Sarah' }) },
@@ -75,8 +73,8 @@ describe('lookup', () => {
     await expect(lookup('abc', 'RollTable')).resolves.toEqual({ found: true, document });
   });
 
-  // Audit F18: `fromIdUuid` returned null and the roll path dereferenced it, so a stale id in a
-  // setting surfaced as "Cannot read properties of null" halfway through a roll.
+  // A null return would let the roll path dereference it and throw mid-roll; report the miss as
+  // a value instead.
   it('reports a miss as a value, naming what was asked for', async () => {
     world({ tables: {} });
 

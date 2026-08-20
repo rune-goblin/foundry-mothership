@@ -12,11 +12,10 @@
     'Gunshot', 'Gunshot [-]', 'Gunshot [+]',
   ];
 
-  // The scoped block below owns the damage-mode rows and nothing else: `item-armor-grid` and both
-  // `circle-statwrapper-*` wrappers stay in css/mothership.css, because Armor.svelte hand-writes
-  // all three and a scoped block would reach only half of each look.
-  //
-  // `store` is absent in the design gallery, which mounts every body from a plain system object.
+  // Scoped styles below own only the damage-mode rows; `item-armor-grid`/`circle-statwrapper-*`
+  // stay in css/mothership.css since Armor.svelte hand-writes them too.
+
+  // `store` is absent in the design gallery, which mounts bodies from a plain system object.
   let { system, store = null } = $props();
 
   const RANGE_CHOICES = WEAPON_RANGES.map((range) => ({
@@ -24,8 +23,8 @@
     label: localize(`Mothership.RangeBand.${range}`),
   }));
 
-  // Rendered from the snapshot, which is what re-renders; written from the document, so a second
-  // edit in the same tick sees what the first wrote. ClassSheet reads its lists the same way.
+  // Rendered from the snapshot (what re-renders); written from the document, so a second edit in
+  // the same tick sees what the first one wrote.
   const rows = $derived(system.damageModes ?? []);
 
   const stored = () => store?.document.system.damageModes ?? rows;
@@ -37,8 +36,8 @@
   const removeMode = (index) => save(stored().filter((_, i) => i !== index));
 
   /**
-   * These carry no `name`, so the write is this handler's. Stopping the event keeps the sheet from
-   * also submitting the form around it, which would re-render the row out from under the edit.
+   * No `name` attribute, so this handler owns the write. stopPropagation keeps the surrounding
+   * form from submitting and re-rendering the row mid-edit.
    */
   const edit = (index, field) => (event) => {
     event.stopPropagation();
@@ -137,7 +136,6 @@
 <!-- PSG 2 — the Combat Shotgun deals 4d10 up close and 1d10 at Long Range, and which applies is
      the table's call, so the weapon carries both. -->
 <div class="damage-modes">
-  <!-- The heading carries the add control, so a weapon with no second damage costs one row. -->
   <div class="damage-modes-heading">
     <span class="resource-label">{localize('Mothership.DamageModes')}</span>
     <button type="button" class="damage-mode-add" onclick={addMode}>
@@ -173,8 +171,7 @@
 </div>
 
 <style>
-  /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
-     application; @layer system puts these in the slot the rest of the system occupies. */
+  /* @layer system outranks Svelte's unlayered component CSS. */
   @layer system {
     .damage-modes {
       --weapon-modes-gap: var(--space-4);

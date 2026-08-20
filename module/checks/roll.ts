@@ -1,9 +1,3 @@
-/**
- * The one place a spec becomes dice on the table. `rolls/` stays pure — it lexes and it judges —
- * so the `new Roll(...)` every flow needs lives here, once, with the semantics of the kind being
- * rolled applied to the result rather than restated at each call site.
- */
-
 import type { PostableRoll } from '../chat/cards.ts';
 import { themed, toFormula } from '../rolls/parse.ts';
 import { resolveOutcome, type EvaluatedRoll, type Outcome } from '../rolls/resolve.ts';

@@ -1,13 +1,7 @@
 <script>
-  /**
-   * One row per choice: a name, an optional rank word, an optional number, and — on the chosen row
-   * only — its description. Four dialogs used to draw this list four ways, each with its own
-   * `grid-template-columns` string written inline on the markup.
-   *
-   * The rows are `role="radio"` buttons rather than `<input type="radio">`. The dialog shell tier
-   * styles every radio inside `.macro-popup-dialog` at (0,3,1), which no scoped block here can
-   * outrank, so owning the mark outright is the only way this component can own its appearance.
-   */
+  // Rows are `role="radio"` buttons, not `<input type="radio">`: the dialog shell tier styles
+  // every radio inside `.macro-popup-dialog` at specificity (0,3,1), which no scoped block here
+  // can outrank, so owning the mark outright is the only way to control its appearance.
   let { options, value, onchange, lines = 2, label = '' } = $props();
 
   let group = $state(null);
@@ -17,9 +11,8 @@
   const STEPS = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
 
   function keydown(event) {
-    // Enter belongs to the dialog, not to the list. DialogV2 marks its default button `autofocus`
-    // and the form submits through it, but a focused `<button>` answers Enter with a click of its
-    // own — so a row that had been clicked would swallow the one keystroke the window promises.
+    // A focused row `<button>` answers Enter with its own click, swallowing the keystroke the
+    // dialog's default (autofocus) button is meant to get — so Enter is forwarded here instead.
     if (event.key === 'Enter') {
       const primary = group?.closest('form')?.querySelector('.form-footer button[autofocus]');
       if (!primary) return;
@@ -66,8 +59,6 @@
 </div>
 
 <style>
-  /* Svelte emits component CSS unlayered, which would outrank every layered rule; @layer system
-     puts these in the slot the rest of the system occupies. */
   @layer system {
     .choice-list {
       --choice-list-gap: var(--space-4);
@@ -87,7 +78,6 @@
       --choice-list-row-hover-surface: var(--color-neutral-200);
       --choice-list-row-border-width: var(--border-width-1);
       --choice-list-row-border-color: var(--color-transparent);
-      /* The chosen row is the one lifted off the list onto the page, and marked at its inner edge. */
       --choice-list-row-selected-surface: var(--surface-neutral-paper);
       --choice-list-row-selected-border-color: var(--border-neutral-medium);
       --choice-list-row-selected-marker-width: var(--border-width-3);
@@ -98,9 +88,8 @@
       align-items: center;
       column-gap: var(--choice-list-row-gap);
       width: 100%;
-      /* Foundry pins every `button` to `height: var(--button-size)` — 28px — which a row carrying a
-         second line silently overflows: the description lays itself out below the box the button
-         paints. A row is sized by what is in it. */
+      /* Overrides Foundry's `height: var(--button-size)` (28px) on every button, which a row
+         carrying a second line would otherwise overflow. */
       height: auto;
       min-height: 0;
       margin: var(--space-0);
@@ -182,7 +171,6 @@
       color: var(--choice-list-name-text);
     }
 
-    /* The row that adds nothing — "No Skill". It is an option, not an achievement. */
     .choice.muted .choice-name {
       --choice-list-name-font-weight: var(--font-weight-normal);
       --choice-list-name-text: var(--text-secondary);
@@ -199,9 +187,8 @@
       white-space: nowrap;
     }
 
-    /* The number the row is worth: a skill's bonus, or a stat's value. One neutral treatment for
-       every rank — red carries "a condition is acting on this roll" everywhere else in the window,
-       and a Master skill is not that. */
+    /* Neutral, not red: red means "a condition is acting on this roll" everywhere else in the
+       window, and this value isn't that. */
     .choice-value:not(:empty) {
       --choice-list-value-font-family: var(--font-display);
       --choice-list-value-font-size: var(--font-size-lg);
@@ -223,15 +210,13 @@
       border-radius: var(--radius-sm);
     }
 
-    /* The slot is a fixed number of lines whether the chosen row needs them or not, so the rows
-       below never move as the selection travels. Two lines holds every skill description the book
-       ships (longest 114 characters); the Stat and Save examples ask for three (longest 125). */
+    /* Fixed height regardless of content, so rows below never move as the selection travels.
+       2 lines fits the longest skill description (114 chars); callers with longer text pass 3. */
     .choice-description {
       --choice-list-description-font-size: var(--font-size-sm);
       --choice-list-description-text: var(--color-neutral-800);
-      /* Whole pixels, not a ratio. The slot is a multiple of this, and `--line-height-tight` times
-         13.6px is 18.36 — a fractional slot lands on a different pixel depending on where the row
-         above it happens to end, which is a row that shifts by one under itself. */
+      /* Whole pixels, not a ratio: a fractional line-height rounds to a different pixel depending
+         on where the row above happens to end, so the slot below shifts by one under itself. */
       --choice-list-description-line-height: 18px;
       --choice-list-description-lines: 2;
 
@@ -251,8 +236,8 @@
       margin-top: var(--space-2);
     }
 
-    /* Skill descriptions arrive enriched, so they come wrapped in a paragraph the row did not
-       write and whose margins would push the second line out of the slot. */
+    /* Enriched descriptions arrive wrapped in a <p> whose margins would push the second line
+       out of the fixed-height slot above. */
     .choice-description :global(p) {
       margin: var(--space-0);
     }

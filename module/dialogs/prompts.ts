@@ -1,9 +1,3 @@
-/**
- * The prompts the system asks, each a typed function returning what the user answered — or `null`
- * when they closed the window. Nothing here decides anything: `checks/` asks only for what it is
- * missing, and every one of these resolves exactly once (audit F6).
- */
-
 import { asset } from '../chat/cards.ts';
 import { enrich } from '../enrich.ts';
 import { format, localize } from '../i18n.ts';
@@ -25,11 +19,8 @@ const DIALOG_WIDTH = 600;
 /** Wide enough for the list and the roll rail side by side. */
 const RAIL_WIDTH = 660;
 
-/**
- * The book's own marks. `[+]` and `[−]` are what the PSG prints, so they are notation rather than
- * language and `css/mothership.css` draws them from these classes; a plain roll is the absence of a
- * mark, and keeps the empty column so the three labels align.
- */
+/** `css/mothership.css` draws the `[+]`/`[−]` marks from these classes; a plain roll gets the
+ *  empty `roll-mark` class so the three labels still align in the empty column. */
 const ICONS: Readonly<Record<Advantage, string>> = {
   advantage: 'roll-mark roll-mark-advantage',
   none: 'roll-mark',
@@ -42,17 +33,12 @@ const LABELS: Readonly<Record<Advantage, string>> = {
   disadvantage: 'Mothership.Disadvantage',
 };
 
-/** Normal leads: it is the roll nobody has to think about, and the one Enter fires. */
 const ORDER: readonly Advantage[] = ['none', 'advantage', 'disadvantage'];
 
-/** The class `css/mothership.css` paints the preselected button with. */
 const PRESELECT = 'condition-preselect';
 
-/**
- * The three roll-type buttons. Normal is the default, so a window opened and dismissed with Enter
- * rolls the plain roll. A condition that names this roll takes that default and preselects the
- * button it argues for instead, which DialogV2 autofocuses — a default, never a decision (§34).
- */
+/** Normal is the default (Enter rolls it) unless a condition names this roll, in which case
+ *  its own button is preselected — and DialogV2 autofocuses — instead. */
 function advantageButtons<V, T>(
   preselect: Advantage | null,
   answer: (advantage: Advantage, value: V) => T,
@@ -83,7 +69,6 @@ interface StatRow {
   readonly example: string;
 }
 
-/** The four stats a Skill Check can be rolled against, as the dialog lists them. */
 const ATTRIBUTES: readonly StatRow[] = [
   { key: 'strength', label: 'Mothership.Strength', example: 'Mothership.StrengthSkillExample' },
   { key: 'speed', label: 'Mothership.Speed', example: 'Mothership.SpeedSkillExample' },
@@ -91,10 +76,8 @@ const ATTRIBUTES: readonly StatRow[] = [
   { key: 'combat', label: 'Mothership.Combat', example: 'Mothership.CombatSkillExample' },
 ];
 
-/** The keys the Stat picker offers, so a caller can price them before it asks. */
 export const ATTRIBUTE_KEYS: readonly StatKey[] = ATTRIBUTES.map((row) => row.key);
 
-/** PSG 22's three Saves. The same picker, a different list — the hotbar's Save macro asks with it. */
 const SAVES: readonly StatRow[] = [
   { key: 'sanity', label: 'Mothership.Sanity', example: 'Mothership.SanitySaveExample' },
   { key: 'fear', label: 'Mothership.Fear', example: 'Mothership.FearSaveExample' },
@@ -107,15 +90,12 @@ export interface ChosenAttribute {
 }
 
 export interface AttributePrompt {
-  /** Whether the roll type is still open; when it is not, one Next button closes the window. */
+  /** When false, one Next button closes the window instead of the three roll-type buttons. */
   readonly advantage: boolean;
-  /**
-   * What each Stat is worth on this actor — `value + mod`, the number `d100Check` rolls under. A
-   * Save asked before its actor is settled has none, and the window states no total rather than
-   * a wrong one.
-   */
+  /** Each Stat's `value + mod`, the number `d100Check` rolls under. Omitted for a Save asked
+   *  before its actor is settled, so the window shows no total rather than a wrong one. */
   readonly values?: Readonly<Record<string, number>>;
-  /** The Skill already chosen, when the click that opened this window was a Skill's. */
+  /** Set when the click that opened this window was a Skill's. */
   readonly skill?: SkillRow | null;
 }
 
@@ -170,7 +150,6 @@ export async function chooseAttribute(options: AttributePrompt): Promise<ChosenA
     {
       title: localize('Mothership.ChooseAStat'),
       heading: localize('Mothership.AgainstWhichStat'),
-      // The window can name what was clicked, which the paragraph it replaces never could.
       intro:
         skill === null
           ? localize('Mothership.AddASkillNext')
@@ -180,7 +159,6 @@ export async function chooseAttribute(options: AttributePrompt): Promise<ChosenA
   );
 }
 
-/** Which Save to roll. Legacy asked with 40 lines of hand-written HTML inside a macro document. */
 export async function chooseSave(): Promise<ChosenAttribute | null> {
   return await pickStat(
     SAVES,
@@ -193,14 +171,13 @@ export async function chooseSave(): Promise<ChosenAttribute | null> {
   );
 }
 
-/** A skill as the prompt lists it, and as a check reads it back. */
 export interface SkillRow {
   readonly id: string;
   readonly name: string;
   readonly img: string;
   readonly bonus: number;
   readonly description: string;
-  /** The word the book gives the bonus — `Trained`, `Expert`, `Master` — or null for a rank it does not name. */
+  /** `Trained`/`Expert`/`Master`, or null for a rank the book does not name. */
   readonly rank: string | null;
 }
 
@@ -215,16 +192,14 @@ export interface SkillPrompt {
   readonly note: string;
   readonly preselect: Advantage | null;
   readonly advantage: boolean;
-  /** The skill the dialog opens with checked — a default, never a decision (§34). */
+  /** The skill the dialog opens with checked. */
   readonly defaultSkill: SkillRow | null;
-  /** The Stat this check is rolled against, and the number it contributes to the total. */
   readonly stat: { readonly label: string; readonly amount: number };
 }
 
-/** The row that adds nothing. An empty key, because no skill can hold one. */
+/** Empty, since no real skill id is the empty string. */
 const NO_SKILL = '';
 
-/** Every skill description the book ships fits two lines here; the longest is 114 characters. */
 const SKILL_DESCRIPTION_LINES = 2;
 
 export async function chooseSkill(options: SkillPrompt): Promise<ChosenSkill | null> {
@@ -274,7 +249,7 @@ export async function chooseSkill(options: SkillPrompt): Promise<ChosenSkill | n
 }
 
 export interface AdvantagePrompt {
-  /** The name of what is being rolled — a stat's roll label, or the table's own name (audit F2). */
+  /** A stat's roll label, or a table's own name. */
   readonly title: string;
   readonly note: string;
   readonly preselect: Advantage | null;
@@ -293,7 +268,6 @@ export async function chooseAdvantage(options: AdvantagePrompt): Promise<Advanta
   });
 }
 
-/** Whether to reload. Legacy's version resolved nothing at all and reloaded from its own callback. */
 export async function askReload(): Promise<boolean> {
   const answer = await svelteDialog<null, boolean, { message: string }>({
     component: MessagePrompt,
@@ -308,11 +282,9 @@ export async function askReload(): Promise<boolean> {
   return answer === true;
 }
 
-/**
- * Which damage a weapon that deals more than one is dealing. Nothing in the system knows the range
- * a shot was taken at, so a Combat Shotgun's 4d10 and its 1d10 at Long Range can only be told
- * apart by asking — which is what auto-rolling that weapon's damage has to do first.
- */
+/** Nothing in the system knows the range a shot was taken at, so a weapon with more than one
+ *  damage formula (e.g. a Combat Shotgun's 4d10 vs. its 1d10 at Long Range) can only be told
+ *  apart by asking. */
 export async function chooseDamageMode(
   weapon: string,
   modes: readonly { label: string; formula: string }[],
@@ -378,7 +350,6 @@ export async function chooseCover(current: Cover, armor: CoverPromptArmor): Prom
   });
 }
 
-/** Which way the Stress prompt runs. One procedure, one argument — never two functions. */
 export type StressDirection = 'gain' | 'relieve';
 
 interface StressPromptText {
@@ -409,14 +380,10 @@ const STRESS_PROMPTS: Readonly<Record<StressDirection, StressPromptText>> = {
   },
 };
 
-/** PSG 20 — Stress moves one at a time, two at a time, or on the die the fiction names. */
 const STRESS_STEPS = ['1', '2', '1d5'] as const;
 
-/**
- * How much Stress, and whether it is rolled for. The answer is an `Amount` because that is what
- * `modify` takes: the prompt states the change, and the mutation engine remains the one place a
- * change is applied.
- */
+/** Returns an `Amount` — what `modify` takes — rather than applying the change itself, so the
+ *  mutation engine stays the one place a change is applied. */
 export async function chooseStress(direction: StressDirection): Promise<Amount | null> {
   const text = STRESS_PROMPTS[direction];
   const heading = localize(text.title);
@@ -459,14 +426,9 @@ const WOUND_ICONS: Readonly<Record<string, string>> = {
   gunshot: 'wounds_gunshot.png',
 };
 
-/** The table the prompt opens on, the way the legacy Wound Roll dialog opened on it. */
 const DEFAULT_WOUND: TableKey = 'blunt-force';
 
-/**
- * Which Wound table, and how to roll it. Legacy's version hard-coded the five table ids into a
- * macro's command string, where no reference check could see them (audit C2) — these are the keys
- * `tables/` resolves, so a GM's re-pointed table is honoured here too.
- */
+/** Uses the keys `tables/` resolves, so a GM's re-pointed table is honoured here too. */
 export async function chooseWound(): Promise<ChosenWound | null> {
   const tables = WOUND_TABLE_KEYS.map((key) => ({
     key,
@@ -490,7 +452,6 @@ export async function chooseWound(): Promise<ChosenWound | null> {
   });
 }
 
-/** Nothing to run the macro on. The window says which setting decides that, and who can change it. */
 export async function noCharacter(target: string): Promise<void> {
   await svelteDialog<null, null, { target: string }>({
     component: NoCharacter,

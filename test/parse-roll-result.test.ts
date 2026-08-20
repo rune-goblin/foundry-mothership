@@ -9,9 +9,7 @@ beforeEach(() => {
   };
 });
 
-// Foundry's Roll exposes `total` as a getter over `_total`, and parseRollResult writes the
-// one and reads the other — so the stub has to keep that relationship. Entries in `dice`
-// are DiceTerms, which carry their own formula/total/results; the chat HTML reads all three.
+// Foundry's Roll exposes `total` as a getter over `_total`; the stub must keep that relationship.
 function roll(dice: number[], formula: string, faces: number) {
   return {
     formula,
@@ -57,9 +55,6 @@ function aimOf(o: Case): Aim {
   return (o.comparison ?? '<').startsWith('>') ? 'high' : 'low';
 }
 
-// These cases are legacy's `parseRollResult` contract, kept verbatim through the swap that deleted
-// it: R0 ran them against both implementations, and they now hold `rolls/resolve.ts` to the
-// verdicts the shipped system has always reached.
 const resolve = (o: Case): Judgement =>
   resolveOutcome(roll(o.dice, o.formula ?? o.rollString, facesOf(o.rollString)), {
     spec: parseRollSpec(o.rollString, aimOf(o)),
@@ -187,9 +182,7 @@ describe('resolveOutcome — how a roll is judged', () => {
     });
   });
 
-  // The blocks above cover roll-under checks, where parseRollString pairs [+] with kl. Rolling
-  // over (damage) pairs [+] with kh and [-] with kl, which is a separate arm of the same
-  // logic — a mutation to it survived the roll-under specs entirely.
+  // Rolling over (damage) pairs [+] with kh and [-] with kl — a separate arm from roll-under checks.
   describe('advantage [+] on a roll-over check', () => {
     const adv = (dice: number[]) =>
       resolve({ rollString: '1d100[+]', formula: '{1d100,1d100}kh', dice, rollTarget: 50, comparison: '>', checkCrit: true });

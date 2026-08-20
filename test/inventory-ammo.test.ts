@@ -55,8 +55,6 @@ describe('planFire', () => {
     });
   });
 
-  // Audit F5: the ammo pipeline has exactly one entry point, and it spends only on the way in.
-  // Nothing here can be reached by asking for damage — the caller decides to fire.
   it('spends nothing on any answer but a fired shot', () => {
     const refused = [
       planFire(weapon({ curShots: 0, ammo: 12 })),

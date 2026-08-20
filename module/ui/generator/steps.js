@@ -11,29 +11,15 @@ import { format, localize } from '../../i18n.ts';
 
 const K = 'Mothership.CharacterGenerator.Wizard';
 
-/**
- * The wizard's spine: every step it walks, in the book's order, and the only list of them. The
- * rail, the counter, the gate and the pane on screen are all read off this, so a step is added,
- * reordered or dropped here and nowhere else.
- *
- * `done` is a step's whole contract with the draft. It both ticks the rail marker and unlocks the
- * step after it, so a half-answered question cannot be walked past by either route. `blocked` is
- * what the nav says while `done` is false — a step asking more than its title names says something
- * better than the default.
- *
- * The book's steps 5 and 6 are not here: neither asks the player anything — Stress starts at 2 for
- * everyone, and the Trauma Response is whatever the class prints — so the class step shows the one
- * and `apply` writes the other. `adjustments` is the wizard's own rather than the book's: step 3
- * asks two things, and "where does the class's free +5 go" is decided against the stat ledger, not
- * against the class cards that answered the question before it.
- */
+// Single source of truth for the rail, counter, gate and pane — add/reorder/drop steps only here.
+// `done` gates the next step and ticks the rail; `blocked` is the nav message while `done` is false.
+// Book steps 5-6 aren't here (fixed values, applied elsewhere); `adjustments` is the wizard's own.
 export const STEPS = [
   {
     id: 'intro',
-    // The front matter asks nothing, so it is the one step the rail stars instead of numbering.
+    // Asks nothing, so it's the one step the rail stars instead of numbering.
     numbered: false,
-    // It is a composed page rather than a stack of controls: the prose is set over the cover, and
-    // the cover runs to the pane's own edge. `test/e2e/actor-generator.spec.ts` pins that edge.
+    // Cover runs to the pane's own edge; test/e2e/actor-generator.spec.ts pins that edge.
     bleed: true,
     title: `${K}.Intro.Title`,
     pane: IntroPane,
@@ -113,7 +99,7 @@ export const STEP_TOTAL = NUMBERED.length;
 
 export const stepNumber = (step) => NUMBERED.indexOf(step) + 1;
 
-/** A field the draft may answer for itself: a lang key, or a function returning the finished text. */
+// value is either a lang key or a function of the draft returning the finished text.
 const resolve = (value, draft) => (typeof value === 'function' ? value(draft) : localize(value));
 
 export const stepTitle = (step, draft) => resolve(step.title, draft);

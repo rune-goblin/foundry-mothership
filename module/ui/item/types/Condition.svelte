@@ -6,9 +6,8 @@
 
   let { system } = $props();
 
-  // Read-only: the modifiers come from the book via the content build, and Foundry's form handling
-  // has no shape for editing an array of objects. Editing is booked with the Svelte architecture
-  // audit (docs/plans/design-system.md).
+  // Read-only: modifiers come from the book via content build, and Foundry's form handling has no
+  // shape for editing an array of objects.
   const modifiers = $derived(
     (system.modifiers ?? []).map((m) => `${localize(`Mothership.RollScope.${m.scope}`)} ${SIGN[m.modifier]}`),
   );
@@ -30,13 +29,8 @@
 {/if}
 
 <style>
-  /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
-     application; @layer system puts these in the slot the rest of the system occupies.
-     One name is here, and nothing else in the system writes it. The rest of this file's markup
-     wears vocabulary css/mothership.css keeps declaring: `circle-statwrapper-horizontal`, which
-     all five item bodies hand-write, and `resource-label`, which eleven components do.
-     The `resource` wrapper carries no rule that reaches this file: Field declares its own slots
-     on that name, scoped to itself. */
+  /* @layer system outranks Svelte's unlayered component CSS. Only `.condition-modifiers` is
+     scoped here — `circle-statwrapper-horizontal`/`resource-label` stay in the shared tier. */
   @layer system {
     .condition-modifiers {
       --condition-modifiers-margin-block-start: var(--space-2);

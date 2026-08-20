@@ -1,13 +1,8 @@
 import { type Page } from '@playwright/test';
 import { test, expect } from './fixtures/foundry-clients.ts';
 
-// The rolltable config window (module/ui/settings/) edits 7 world settings directly -- there is
-// no document behind it, so game.settings is what has to round-trip. It is also the one window
-// in this system registered with game.settings.registerMenu rather than opened from a sheet, so
-// the real risk is that path: Foundry constructs the class itself (`new menu.type()`) and calls
-// `render(true)` on it. This drives that exact path through the Settings UI rather than
-// constructing RolltableConfigApp directly.
-
+// The real risk is Foundry's own construction path (`registerMenu` -> `new menu.type()` ->
+// `render(true)`), so this drives the window open through the Settings UI rather than constructing it directly.
 const openViaMenu = async (page: Page) => {
   await page.evaluate(() => (window as any).game.settings.sheet.render(true));
   const settingsConfig = page.locator('#settings-config');

@@ -1,10 +1,6 @@
 import { type Page } from '@playwright/test';
 import { test, expect, waitForGameReady } from './fixtures/foundry-clients.ts';
 
-// audit T1: one executed macro per verb family, against a real actor, reading the write back —
-// this is exactly the tier that would have caught C1 (a macro that throws on click), RC3 (an item
-// macro that throws on `.id`) and RC5 (a macro naming a method defined nowhere).
-
 const TRIGGERED = `mothershiprpg.macros_triggered_1e`;
 
 const create = (page: Page, system: Record<string, unknown> = {}, name = '__e2e_remake') =>
@@ -25,11 +21,8 @@ const stored = (page: Page, uuid: string, path: string) =>
     { u: uuid, p: path },
   );
 
-/**
- * A compendium macro, executed the way a player clicking it in the hotbar would. `Macro#execute`
- * runs the command as an async function whose body never awaits, so this resolves as soon as the
- * call is *made* — every assertion below polls, and every prompt is answered separately.
- */
+// `Macro#execute` runs the command as an async function whose body never awaits, so this resolves
+// as soon as the call is *made* -- every assertion below polls, and every prompt answered separately.
 const runMacro = (page: Page, pack: string, name: string) =>
   page.evaluate(
     async ({ pk, n }: { pk: string; n: string }) => {
@@ -47,7 +40,7 @@ const runMacro = (page: Page, pack: string, name: string) =>
     { pk: pack, n: name },
   );
 
-/** Answer whatever prompt the call opened. Every check a character makes offers a skill first. */
+// Every check a character makes offers a skill first, hence the prompt this answers.
 const answer = async (page: Page, action: string) => {
   const dialog = page.locator('dialog[open].macro-popup-dialog').last();
   await expect(dialog).toBeVisible();
@@ -55,12 +48,8 @@ const answer = async (page: Page, action: string) => {
   await expect(dialog).toHaveCount(0);
 };
 
-/**
- * Forces every die to read `n`. `DiceTerm#_roll` is the one fulfillment point every die type
- * shares — `Die` does not override it — so patching it leaves `roll()`'s own bookkeeping intact.
- * `unrigDie` puts the real method back rather than deleting the patch: `gmPage` is worker-scoped,
- * so a prototype left without `_roll` would break every later die in the worker.
- */
+// `DiceTerm#_roll` is the one fulfillment point every die type shares, so patching it forces every
+// die to read `n` while leaving `roll()`'s bookkeeping intact; `gmPage` is worker-scoped, so unrigDie restores rather than deletes the patch.
 const rigDie = (page: Page, n: number) =>
   page.evaluate((result: number) => {
     const w = window as any;
@@ -102,7 +91,7 @@ test.describe('the remade core, executed live', () => {
 
     await runMacro(gmPage, TRIGGERED, 'Strength Check');
     // No dialog: the macro states its modifier and this actor holds no Skill to offer, so there is
-    // nothing left to ask. It used to open a window whose only control was Next.
+    // nothing left to ask.
     await expect(gmPage.locator('dialog[open].macro-popup-dialog')).toHaveCount(0);
 
     await expect.poll(() => stored(gmPage, uuid, 'system.other.stress.value')).toBe(3);
@@ -137,8 +126,6 @@ test.describe('the remade core, executed live', () => {
     await expect.poll(severity).toBe(1);
   });
 
-  // audit T2: a roll all the way to the ChatMessage it posts, for each outcome a Stat Check can
-  // reach — the verdict line `chat/cards.ts`'s `outcomeHtml` renders, read back from the log.
   for (const [label, roll, verdict] of [
     ['succeeds', 5, 'SUCCESS!'],
     ['crits', 11, 'CRITICAL SUCCESS!'],
@@ -164,11 +151,8 @@ test.describe('the remade core, executed live', () => {
     await expect.poll(() => lastMessageText(gmPage)).toContain('HEART ATTACK');
   });
 
-  /**
-   * Only a real Foundry can check this: an enricher renders the button and a hook-bound listener
-   * routes its click, and binding that listener to the chat *log* left every button in the
-   * notification copy of the same card dead. Nothing below the DOM can see it.
-   */
+  // Only a real Foundry can check this: an enricher renders the button and a hook-bound listener
+  // routes its click; binding that listener to the chat *log* left the notification copy's button dead.
   test('a damage button offered by a card rolls the damage in that card', async ({ gmPage }) => {
     await gmPage.evaluate(async () => {
       await (window as any).game.settings.set('mothershiprpg', 'autoRollDamagePlayers', false);
@@ -206,13 +190,12 @@ test.describe('the remade core, executed live', () => {
     await expect(offered).toBeVisible();
     await offered.click();
 
-    // The offer became the result, in the card that made it.
     await expect.poll(() => lastMessageText(gmPage)).toContain('points of damage');
     expect(await lastMessageText(gmPage)).not.toContain('Roll the damage you deal');
     expect(await messages()).toBe(before);
 
-    // Whose offer it is, asked of Foundry rather than assumed: `ownsCard` is this call, and it
-    // reads OWNER for the message's author and for any GM. A real User document, no second session.
+    // Whose offer it is, asked of Foundry rather than assumed: reads OWNER for the message's
+    // author and for any GM, against a real User document rather than a second session.
     const verdicts = await gmPage.evaluate(async () => {
       const w = window as any;
       const player = await w.User.create({ name: '__e2e_player', role: 1 });
@@ -233,8 +216,8 @@ test.describe('the remade core, executed live', () => {
     });
   });
 
-  // RC1: `preCreateActor` wrote token-bar and vision fields the schema discarded, so every created
-  // actor shipped with broken bars and no sight. A created character's own prototype proves it.
+  // `preCreateActor` wrote token-bar and vision fields the schema discarded, so every created
+  // actor shipped with broken bars and no sight.
   test('a created character gets working health bars and vision on its token', async ({ gmPage }) => {
     const uuid = await create(gmPage);
 

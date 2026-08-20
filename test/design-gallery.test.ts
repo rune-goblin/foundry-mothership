@@ -1,13 +1,4 @@
 // @vitest-environment jsdom
-//
-// The companion app (design/, `npm run design`) mounts the system's own components with sample
-// props. That makes every specimen a contract with a prop list the compiler cannot check: rename a
-// prop and the component keeps rendering, silently, with the old name arriving as undefined.
-//
-// These specs mount every specimen the catalog registers and fail on the first error Svelte throws,
-// so a prop rename breaks here rather than in a browser nobody opened. The catalog's own coverage
-// check runs too: the gallery says it shows every component in module/ui, and this is what keeps
-// that true as components are added.
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -55,8 +46,7 @@ describe('the gallery catalog', () => {
 describe('every specimen mounts', () => {
   for (const entry of cases) {
     it(`${entry.group} — ${entry.title}`, () => {
-      // Svelte reports a failed prop read by throwing; jsdom has no console worth reading, so the
-      // assertion is that mounting produced markup at all.
+      // Svelte reports a failed prop read by throwing, so markup at all is the assertion.
       const target = render(entry.component as Component);
       expect(target.innerHTML.length, entry.path).toBeGreaterThan(0);
     });
@@ -85,8 +75,7 @@ describe('the skill selector specimen', () => {
     expect(reasonOf('sk-zoology')).toBe(undefined);
   });
 
-  // Clicking a row that cannot be taken has to leave the page as it found it — a focus ring left
-  // sitting on the row reads as a selection that was never made.
+  // A focus ring left on a row that can't be taken would read as a selection never made.
   it('refuses the press that would focus a skill it will not let you choose', () => {
     const entry = cases.find((candidate) => candidate.title === 'SkillSelector')!;
     const target = render(entry.component as Component);
@@ -118,22 +107,17 @@ describe('the skill selector specimen', () => {
 });
 
 describe('the three pages render', () => {
-  // The scope is the node whose computed values the token pages read. jsdom computes nothing from
-  // a stylesheet it never loaded, so what this proves is that the pages survive empty values --
-  // which is also what they do in a browser before the stylesheet arrives.
+  // jsdom computes nothing from a stylesheet it never loaded, so this proves the pages
+  // survive empty values — same as a browser before the stylesheet arrives.
   const scope = () => document.createElement('div');
 
-  // Each scale gets the layout that scale reads in, so a token is one of six shapes rather than
-  // one row class. Every token must land in exactly one of them — a kind with no branch would
-  // otherwise drop its whole group silently.
+  // A token is one of six row shapes; a kind with no branch here would drop its whole group silently.
   const ROW = '.ds-swatch-col, .ds-bar-row, .ds-radius-item, .ds-specimen-row, .ds-card, .ds-row';
 
   it('theme tokens — every token drawn exactly once', () => {
     const page = render(ThemeTokens as Component, { scope: scope(), clip: clipboard() });
     const groups = remainingBlocks.filter((block) => !block.heading);
 
-    // The colour half is laid out by family, the rest by the scale each group is; between them
-    // every token is drawn, and none twice.
     expect(page.querySelectorAll(ROW).length).toBe(themeTokenCount);
     expect(page.querySelectorAll('.ds-family').length).toBe(families.length);
     expect(page.querySelectorAll('.ds-group').length).toBe(groups.length);
@@ -144,8 +128,7 @@ describe('the three pages render', () => {
     expect(page.querySelectorAll('.ds-alias').length).toBe(componentTokenCount);
     expect(page.querySelectorAll('.ds-owner').length).toBe(componentTokens.length);
 
-    // The style-block comments run to a paragraph each; they belong behind the info button, not
-    // above every card. One button per component that wrote one, and no note printed inline.
+    // A note prints behind the info button, never inline above the card.
     const noted = componentTokens.filter((component) => component.note).length;
     expect(page.querySelectorAll('.ds-info-btn').length).toBe(noted);
     expect(page.querySelector('.ds-info-panel')).toBeNull();
@@ -158,8 +141,6 @@ describe('the three pages render', () => {
   });
 });
 
-// The user-facing half of the redesign: nothing is set below 14px, and nothing shouts. Both were
-// wrong in the first cut — 10px eyebrows in small caps — and neither has a compiler.
 describe('the chrome typography', () => {
   const shell = readFileSync(join(import.meta.dirname, '..', 'design', 'shell.css'), 'utf8');
 
@@ -175,8 +156,8 @@ describe('the chrome typography', () => {
     expect(shell).not.toMatch(/letter-spacing:\s*0?\.\d+em/);
   });
 
-  // The chrome's own palette, held to WCAG AA. The file states its measurements in a comment;
-  // this recomputes them, so the comment can never quietly stop being true.
+  // shell.css states its contrast measurements in a comment; this recomputes them so
+  // that comment can never quietly stop being true.
   it('clears 4.5:1 for every ink on every ground it is printed on', () => {
     const value = (name: string) => {
       const hit = new RegExp(`${name}:\\s*(#[0-9a-f]{6})`, 'i').exec(shell);
@@ -215,7 +196,6 @@ describe('the token readers', () => {
   it('parses css/tokens.css into groups with tokens in them', () => {
     expect(themeTokenCount).toBeGreaterThan(300);
     expect(themeTokens.filter((block) => block.tokens.length).length).toBeGreaterThan(10);
-    // Every name is a custom property, and no group ran away with the file's whole tail.
     for (const block of themeTokens) {
       for (const token of block.tokens) expect(token.name, token.name).toMatch(/^--[\w-]+$/);
     }
@@ -229,9 +209,7 @@ describe('the token readers', () => {
     }
   });
 
-  // The naming law: a component's tokens carry its own id, in either the squashed spelling
-  // (`--itemcell-*`) or the kebab one (`--pip-track-*`). Nothing borrows a neighbour's namespace
-  // today, and the design-system page shows this as a per-token tag — this is what keeps it empty.
+  // A component's tokens carry its own id, squashed (`--itemcell-*`) or kebab (`--pip-track-*`).
   it('regroups the colour half by family, losing and duplicating nothing', () => {
     const inFamilies = families.flatMap((f) => f.scales.flatMap((s) => s.tokens.map((t) => t.name)));
     const inRest = remainingBlocks.flatMap((b) => b.tokens.map((t) => t.name));
@@ -241,7 +219,6 @@ describe('the token readers', () => {
     expect(inFamilies.length + inRest.length).toBe(themeTokenCount);
     expect(inFamilies.filter((name) => inRest.includes(name))).toEqual([]);
 
-    // Every family carries its ramp first and its derived roles after, in the palette's order.
     for (const family of families) {
       expect(family.scales[0].title, family.name).toBe('Palette');
       expect(family.scales.map((s) => s.title), family.name).toEqual(

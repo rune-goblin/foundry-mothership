@@ -1,8 +1,5 @@
-// The twelve RollTables: five wound tables, panic, death, trinkets, patches, and one loadout table
-// per class.
-//
-// Every table's die is zero-based except panic, because the book prints its d10 and d100 tables
-// starting at 0 — hence the `-1` on the formula, matching the ranges the catalogs carry.
+// Every table's die is zero-based except panic — the book's d10/d100 tables start at 0, hence
+// the `-1` on each formula, matching the catalogs' ranges.
 import { formatAction } from '../../../../module/chat/enrichers.ts';
 import { CLASSES } from '../../../../content/books/psg/classes.ts';
 import { CONDITIONS } from '../../../../content/books/psg/conditions.ts';
@@ -90,11 +87,7 @@ function panicHeading(result: PanicResult): string {
     : voiceSpan('human', result.name.toUpperCase()) + voiceSpan('android', result.androidName.toUpperCase());
 }
 
-/**
- * A panic result that grants a Condition names the action that raises it, so the Warden clicks
- * once — `@Apply[coward]`, not a macro id (audit C2, C10). The other results name nothing — S8 is
- * where the rest of the table starts doing work.
- */
+/** A result granting a Condition names the action that raises it (`@Apply[coward]`), so the Warden clicks once. */
 function panicDescription(result: PanicResult): string {
   const body = `<strong>${panicHeading(result)}.</strong> ${result.effect}`;
   if (!result.grantsCondition) return body;
@@ -103,9 +96,8 @@ function panicDescription(result: PanicResult): string {
   return `${body}<br><br>${formatAction({ verb: 'apply', condition: condition.id, count: 1 })}`;
 }
 
-// "Panic Check", not the old "Panic Check (Stress, Normal)": the Calm and android variants went
-// with §25, and actor.js derives its flavour-text key from the table's name — `Mothership.table.panic_check`
-// is the key that has always been there.
+// actor.js derives its flavour-text key from this table's name — `Mothership.table.panic_check` —
+// so the name can't casually change.
 const panic = (): ContentRecord => ({
   contentId: 'panic-check-stress-normal',
   name: 'Panic Check',
@@ -158,11 +150,7 @@ const flavour = (
   provenance: { source: `${SOURCE}/${file}`, sourceId: table.id, page: table.source.page },
 });
 
-/**
- * The loadout row, with its items as links rather than the free text the book prints. This is what
- * the mapping in gear.ts exists for: the generator adds what the row grants, and until now that
- * path had no data at all.
- */
+/** Turns the loadout row's free-text items into links — what the gear.ts mapping exists for. */
 function loadoutDescription(text: string, items: readonly string[], ids: IdLookup): string {
   const links = items.flatMap((item) => {
     const refs: readonly GearRef[] = LOADOUT_ITEMS[item as LoadoutItemText];

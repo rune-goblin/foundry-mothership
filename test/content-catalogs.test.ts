@@ -1,7 +1,3 @@
-// The book is the only source now, so a transcription error ships. TypeScript pins the joins —
-// a prerequisite or a granted skill that names nothing is a compile error — but it cannot count
-// rows or notice a gap in a table. That is what this file is for, and it is what replaced the
-// JSON Schemas when the datasets became typed catalogs.
 import { describe, expect, it } from 'vitest';
 import type { RollRange } from '../content/books/common.ts';
 import { ARMOR } from '../content/books/psg/armor.ts';
@@ -106,8 +102,8 @@ describe('the classes', () => {
     }
   });
 
-  // The Android's -10 and the Scientist's +5 are the only adjustments the player chooses. Every
-  // other one names its target, and S3's mapping onto base_adjustment depends on that.
+  // The Android's -10 and the Scientist's +5 are the only adjustments the player chooses;
+  // every other one names its target.
   it('leaves a target unnamed only where the player picks one', () => {
     const open = CLASSES.flatMap((c) =>
       c.adjustments.filter((a) => a.target === null && a.kind !== 'max-wounds').map((a) => `${c.id}: ${a.raw}`),

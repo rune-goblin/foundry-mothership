@@ -1,16 +1,3 @@
-// The loadout tables name their items in free text, not by id, so nothing joins them to the price
-// lists. This file closes that gap two ways:
-//
-//   1. LOADOUT_ARMOR / LOADOUT_GEAR — gear the loadout tables print and the price lists never do.
-//      The book is still the source; it just never gave these a price. Cost is null, not invented.
-//   2. LOADOUT_ITEMS — one row per distinct item string across the four tables, mapping it onto
-//      real documents. `Record<LoadoutItemText, ...>` is what makes it exhaustive: a string left
-//      unmapped fails to compile, and so does a key no table prints any more.
-//
-// Three rules decided the 99 rows, in this order:
-//   - the parenthetical names the item to use — "Screwdriver (as Assorted Tools)" is Assorted Tools;
-//   - a near-miss maps to the priced entry — "Oxygen Tank with Filter Mask" is an Oxygen Tank;
-//   - anything left, the loadout tables are the source for, and it becomes a document here.
 import type { ArmorId } from './armor.ts';
 import type { EquipmentId } from './equipment.ts';
 import { LOADOUTS } from './loadouts.ts';
@@ -33,8 +20,8 @@ export interface LoadoutGear {
   source: Source;
 }
 
-// Every one of these is printed with its AP in a loadout row. Two of them are AP 2, which no armor
-// in the price list provides — folding them into Standard Crew Attire would quietly halve them.
+// Two of these are AP 2, which no armor in the price list provides — don't fold them into
+// Standard Crew Attire, that would quietly halve them.
 export const LOADOUT_ARMOR = [
   {
     id: 'civilian-clothes',
@@ -246,10 +233,7 @@ export const LOADOUT_GEAR = [
 export type LoadoutArmorId = (typeof LOADOUT_ARMOR)[number]['id'];
 export type LoadoutGearId = (typeof LOADOUT_GEAR)[number]['id'];
 
-/**
- * Which document a loadout row grants. `kind` is not decoration — it decides which compendium the
- * emitted `@UUID` points into, and `crowbar` is both an EquipmentId and a WeaponId.
- */
+/** `kind` decides which compendium the emitted `@UUID` points into — `crowbar` is both an EquipmentId and a WeaponId. */
 export type GearRef =
   | { kind: 'weapon'; id: WeaponId; quantity?: number }
   | { kind: 'armor'; id: ArmorId | LoadoutArmorId; quantity?: number }
@@ -258,6 +242,9 @@ export type GearRef =
 /** Every distinct item string the four loadout tables print. */
 export type LoadoutItemText = (typeof LOADOUTS)[number]['results'][number]['items'][number];
 
+// Mapping rules, in priority order: a parenthetical names the item to use ("Screwdriver (as
+// Assorted Tools)" is Assorted Tools); a near-miss maps to the priced entry ("Oxygen Tank with
+// Filter Mask" is an Oxygen Tank); anything else becomes a document here.
 export const LOADOUT_ITEMS = {
   'Advanced Battle Dress (AP 10)': [{ kind: 'armor', id: 'advanced-battle-dress' }],
   'Automed (x5)': [{ kind: 'item', id: 'automed' }],
@@ -275,8 +262,7 @@ export const LOADOUT_ITEMS = {
   'Combat Shotgun (2 rounds)': [{ kind: 'weapon', id: 'combat-shotgun' }],
   'Combat Shotgun (4 rounds)': [{ kind: 'weapon', id: 'combat-shotgun' }],
   'Corporate Attire (AP 1)': [{ kind: 'armor', id: 'corporate-attire' }],
-  // The price list carries the Crowbar twice; only the weapon is emitted, and it keeps the
-  // Strength-check advantage the equipment entry described.
+  // The price list carries the Crowbar twice; only the weapon document is emitted.
   Crowbar: [{ kind: 'weapon', id: 'crowbar' }],
   'Cybernetic Diagnostic Scanner': [{ kind: 'item', id: 'cybernetic-diagnostic-scanner' }],
   Defibrillator: [{ kind: 'item', id: 'defibrillator' }],

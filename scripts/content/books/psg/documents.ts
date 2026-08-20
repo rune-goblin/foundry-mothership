@@ -19,8 +19,8 @@ const CONDITIONS_PACK: PackDefinition = {
         kind: 'Item',
         type: 'condition',
         system: {
-          // The action renders as a button by itself (chat/enrichers.ts) — its label comes from
-          // `actionLabel` at render time, so the book's macro-name restatement (audit C10) is gone.
+          // The action renders as a button by itself; its label comes from `actionLabel` at
+          // render time, so this doesn't restate the macro name.
           description: html(condition.text, ...condition.actions.map(formatAction)),
           severity: 1,
           treatment: { value: 0 },
@@ -45,8 +45,8 @@ const TRIGGERED: PackDefinition = {
         kind: 'Macro',
         type: 'script',
         scope: 'global',
-        // The slug is the whole address: `applyCondition` resolves it through `CONDITION_IDS`, so
-        // no macro command carries a bare document id any more (audit C2).
+        // The slug is the whole address: applyCondition resolves it through CONDITION_IDS, so
+        // no macro command carries a bare document id.
         command: isConditionMacro(macro)
           ? `game.mothershiprpg.applyCondition('${macro.condition}', ${macro.severity});`
           : macro.command,

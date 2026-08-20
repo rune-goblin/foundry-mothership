@@ -25,8 +25,8 @@ function options(rollString: string, aim: Aim, extra: Partial<ResolveOptions> = 
 }
 
 describe('resolveOutcome — the record, not the roll', () => {
-  // The evaluated Roll is Foundry's, and it is what gets persisted to the chat message: the
-  // translation to a zero-based face belongs to the outcome, not to the dice (audit F19).
+  // The Roll is Foundry's and gets persisted to chat; the zero-based translation must live in
+  // the outcome, not mutate the dice.
   it('never writes to the roll it reads', () => {
     const roll = frozenRoll([100], 100);
     const outcome = resolveOutcome(roll, options('1d100', 'low', { zeroBased: true }));

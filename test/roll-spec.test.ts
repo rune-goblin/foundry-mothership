@@ -91,9 +91,8 @@ describe('CHECK_SEMANTICS — how each kind of check is judged', () => {
     });
   });
 
-  // PSG 24 states the 90+ rule of the d100 Check or Save. Legacy compared every roll it made
-  // against 90 whatever the die, and no reachable roll differed — a d20 against Stress cannot
-  // reach 90 — so the scope is written down here rather than left to the next die size.
+  // PSG 24's 90+ rule applies only to d100 checks and saves — a d20 against Stress can never
+  // reach 90, so the scope is pinned here explicitly.
   it('auto-fails at 90 only where the book says so: the d100 checks and saves', () => {
     const autoFails = Object.entries(CHECK_SEMANTICS)
       .filter(([, semantics]) => semantics.autoFail)

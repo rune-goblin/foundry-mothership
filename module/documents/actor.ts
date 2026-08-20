@@ -1,16 +1,3 @@
-/**
- * The actor document. Two things live here and nothing else: **derivation**, which is the
- * document's own work, and **thin named methods** that hand the work to a service. Legacy's
- * 2,394-line class held the roll engine, six dialogs, the chat renderer and the mutation engine
- * besides (audit F1); every one of those now has a module, and what is left is the surface a
- * sheet, a macro or a chat button calls by name.
- *
- * The legacy-named methods at the bottom are the compatibility surface: macros users have already
- * imported into worlds call `modifyActor`, `takeBleedingDamage`, `chooseCover` and
- * `printDescription` on the actor directly. They keep their old signatures and are implemented
- * over the same services as everything else.
- */
-
 import { gain } from '../checks/actions.ts';
 import {
   cardSource,
@@ -42,12 +29,12 @@ import { COVER_BONUS, STR_CAPACITY_DIVISOR, XP_PIPS, type Cover } from '../rules
 import type { TableKey } from '../tables/tables.ts';
 import type { MothershipItem } from './item.ts';
 
-/** The embedded items, as this class reads them: the whole document, never a JSON clone (RC3). */
+// Returns the live document, never a JSON clone.
 interface ActorItems extends Iterable<MothershipItem> {
   get(id: string): MothershipItem | undefined;
 }
 
-/** The part of Foundry's `Actor` this class uses; the global supplies the rest at runtime. */
+// A subset of Foundry's `Actor`; the global supplies the rest at runtime.
 interface ActorDocument {
   readonly id: string | null;
   readonly name: string;
@@ -72,18 +59,13 @@ const WEAPON = 'weapon';
 const GEAR = 'item';
 const CONDITION = 'condition';
 
-/** PSG 28 — the condition the sheet totals. Matched by name, exactly as legacy matched it. */
+// Matched by name, not id — a fragile link if this Condition is ever renamed.
 const BLEEDING = 'Bleeding';
 
-/** The dice a damage string leads with — `2d10`, and the `2` a swarm multiplies. */
+// The dice a damage string leads with — `2d10`, and the `2` a swarm multiplies.
 const DAMAGE_DICE = /(\d+)(d\d+)/i;
 
-/**
- * The system as derivation writes it. The schema declares every pod read here; `total` and
- * `weight` are derived-only and exist nowhere else, which is why they are written but never
- * stored. The pre-DataModel `??=` guards legacy carried are gone — the schema is what supplies
- * these fields now (audit F25).
- */
+// `total` and `weight` are derived-only: computed here, never stored in the schema.
 interface DerivedSystem {
   readonly stats: {
     armor: { value?: number; mod: number; total: number; damageReduction: number };
@@ -107,10 +89,6 @@ function number(value: unknown): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-/**
- * Worn armour, totalled. The character and the creature each carried their own copy of this, of
- * net HP, and of Bleeding — three verbatim blocks in two methods (audit F25).
- */
 function deriveArmor(items: Iterable<CheckItem>, system: DerivedSystem): void {
   let armorPoints = 0;
   let damageReduction = 0;
@@ -129,7 +107,7 @@ function deriveArmor(items: Iterable<CheckItem>, system: DerivedSystem): void {
   armor.damageReduction = damageReduction;
 }
 
-/** Wounds and health as one pool: every Wound still in hand is worth a full bar. */
+// Wounds and health as one pool: every Wound still in hand is worth a full bar.
 function deriveNetHP(system: DerivedSystem): void {
   const healthMax = number(system.health.max);
   system.netHP.value =
@@ -146,34 +124,25 @@ function deriveBleeding(items: Iterable<CheckItem>, system: DerivedSystem): void
   system.bleeding.value = severity;
 }
 
-/** How many attacks a swarm still has in it: one per Wound it has not taken. */
 function swarmSize(system: DerivedSystem): number {
   return number(system.hits.max) - number(system.hits.value);
 }
 
-/** A rolled amount is read the way damage is: what it says on the dice, top face and all. */
+// modify() reuses weapon-damage roll semantics for a generic amount.
 const AMOUNT_KIND = 'weapon-damage';
 
-/**
- * Legacy's two mutation parameters as one amount. It took the value when there was one and the
- * roll string otherwise — `if (modValue)`, so a zero meant "not given" — and a call carrying
- * neither reached `new Roll(undefined)`. That last case is a change of nothing now.
- */
+// A truthy value wins over dice, so a modValue of 0 falls through to the roll string.
 export function legacyAmount(value: number | null, dice: string | null): Amount {
   if (value) return { kind: 'amount', amount: Number(value) };
   return dice ? { kind: 'roll', dice: String(dice) } : { kind: 'amount', amount: 0 };
 }
 
 export interface CardOptions {
-  /**
-   * Whether this posts a card. A check that narrates its own Stress does not, and neither does
-   * the generator, which hands out a class, a loadout and a skill list in one pass.
-   */
   readonly message?: boolean;
 }
 
 export interface WeaponOptions extends CheckOptions {
-  /** Which half of the attack this is. Damage never touches the magazine (audit F5). */
+  // Damage never touches the magazine.
   readonly roll?: 'attack' | 'damage';
 }
 
@@ -215,11 +184,8 @@ export class MothershipActor extends Actor {
     }
   }
 
-  /**
-   * A swarm attacks once per remaining Wound, so its weapon rolls that many damage dice. A weapon
-   * whose damage names no dice is left alone, and so is a creature that is not a swarm — both
-   * answer `null`, which is what "roll the weapon's own damage" means to `rollWeapon`.
-   */
+  // Returns null for "roll the weapon's own damage" — a non-swarm creature, or a weapon whose
+  // damage names no dice.
   swarmDamage(itemId: string): string | null {
     const system = this.system as DerivedSystem;
     if (system.swarm?.enabled !== true) return null;
@@ -230,11 +196,8 @@ export class MothershipActor extends Actor {
     return damage.replace(DAMAGE_DICE, `${number(dice[1]) * swarmSize(system)}$2`);
   }
 
-  /**
-   * The swarm toggle. Turning it on stashes the creature's own Combat and stores the multiplied
-   * number derivation will keep recomputing; turning it off puts the stashed one back. The read is
-   * `toObject()` because `system.stats.combat.value` is where derivation writes that product.
-   */
+  // Reads via toObject(): this.system.stats.combat.value is derived (prepareDerivedData
+  // mutates it in place), so the live value is already the multiplied product.
   async setSwarm(enabled: boolean): Promise<unknown> {
     const system = this.toObject().system as DerivedSystem;
     const combat = number(system.stats.combat?.value);
@@ -248,15 +211,10 @@ export class MothershipActor extends Actor {
     });
   }
 
-  /* -------------------------------------------- */
-  /*  Rolls                                       */
-  /* -------------------------------------------- */
-
   async rollStat(stat: StatKey, options: CheckOptions = {}): Promise<CheckOutcome | null> {
     return await runCheck(this, { kind: 'stat', stat }, options);
   }
 
-  /** The check whose stat nobody has named — what legacy's broken `rollStatMacro` meant (RC5). */
   async promptCheck(options: CheckOptions = {}): Promise<CheckOutcome | null> {
     return await promptCheck(this, options);
   }
@@ -284,14 +242,7 @@ export class MothershipActor extends Actor {
     return await runTable(this, key, options);
   }
 
-  /* -------------------------------------------- */
-  /*  Changes                                     */
-  /* -------------------------------------------- */
-
-  /**
-   * Change one tracked number. The address stays a dotted string because that is what macros
-   * carry; everything past `mutation/` is typed (audit F12).
-   */
+  // The address stays a dotted string because that is what macros carry.
   async modify(address: string, amount: Amount, options: CardOptions = {}): Promise<MutationResult> {
     let spec: RollSpec | null = null;
     let rollOutcome: Outcome | null = null;
@@ -320,10 +271,7 @@ export class MothershipActor extends Actor {
     return result;
   }
 
-  /**
-   * Give this actor an item — a Condition, mostly, which is what every `+N` macro is for. The
-   * write is `mutation/items.ts`; the card is here, because a card is not a mutation.
-   */
+  // The write lives in mutation/items.ts; the card stays here since a card is not a mutation.
   async applyItem(
     document: GrantDocument,
     count = 1,
@@ -361,11 +309,7 @@ export class MothershipActor extends Actor {
     return arrival === '' ? changed : `${arrival} ${changed}`;
   }
 
-  /**
-   * The same grant for a caller holding only a reference: the generator's loadout rows are UUIDs,
-   * and a macro names a Condition by id. Resolution is `lookup`'s, so a stale reference is a
-   * notification rather than a crash.
-   */
+  // A stale reference resolves to a notification, not a crash.
   async applyItemRef(
     ref: string,
     count = 1,
@@ -379,11 +323,7 @@ export class MothershipActor extends Actor {
     return await this.applyItem(found.document, count, options);
   }
 
-  /**
-   * Move along the XP track. `rules.ts` states its length once, so the clamp and the pips a sheet
-   * draws are the same number — the sheets clamped at 16 over a 15-pip track, which stored a
-   * sixteenth state nothing could draw (audit U14).
-   */
+  // XP_PIPS is the single source for track length, so the clamp and the sheet's pip count agree.
   async stepXp(delta: number): Promise<unknown> {
     const current = number(fields(fields(this.system).xp).value);
     return await this.update({
@@ -391,7 +331,6 @@ export class MothershipActor extends Actor {
     });
   }
 
-  /** Refill a weapon's magazine from the rounds carried, and say so in chat. */
   async reloadWeapon(itemId: string): Promise<ReloadOutcome | null> {
     const item = this.items.get(itemId);
     if (item === undefined) {
@@ -404,7 +343,6 @@ export class MothershipActor extends Actor {
     return outcome;
   }
 
-  /** Post an item's description to chat. The document keeps its accessors — nothing is cloned. */
   async printDescription(itemId: string): Promise<unknown> {
     const item = this.items.get(itemId);
     if (item === undefined) {
@@ -416,15 +354,8 @@ export class MothershipActor extends Actor {
     });
   }
 
-  /* -------------------------------------------- */
-  /*  The compatibility surface                   */
-  /* -------------------------------------------- */
-
-  /**
-   * Ask which cover this actor is behind, and remember the answer. The write goes direct rather
-   * than through `mutation/`: cover is one of four words, and that module's whole contract is
-   * that what it writes is a number.
-   */
+  // Writes directly rather than through mutation/: cover is one of four words, and that
+  // module's contract is that what it writes is a number.
   async chooseCover(): Promise<Cover | null> {
     const armor = fields(fields(fields(this.system).stats).armor);
     const stored = armor.cover;
@@ -441,7 +372,7 @@ export class MothershipActor extends Actor {
     return chosen;
   }
 
-  /** PSG 28 — Bleeding costs its severity in Health, and says so in the card every gain does. */
+  // PSG 28: Bleeding costs its severity in Health.
   async takeBleedingDamage(): Promise<void> {
     await gain(this, {
       verb: 'gain',
@@ -451,7 +382,7 @@ export class MothershipActor extends Actor {
     });
   }
 
-  /** Legacy's mutation entry: a flat value, or a roll string when the value is null. */
+  // Legacy entry point: a flat value, or a roll string when the value is null.
   async modifyActor(
     fieldAddress: string,
     modValue: number | null,

@@ -1,8 +1,5 @@
 import { test, expect } from './fixtures/foundry-clients.ts';
 
-// Phase 4's safety net, and now its receipt: both actor sheets are ApplicationV2 + Svelte, and
-// these specs still assert only that a sheet opens and shows its actor. The per-sheet suites
-// (character-sheet, creature-sheet) carry the detail.
 test.describe('sheets render', () => {
   test.afterEach(async ({ gmPage }) => {
     await gmPage.evaluate(async () => {

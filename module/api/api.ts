@@ -1,15 +1,4 @@
-/**
- * `game.mothershiprpg` — what a macro, a hotbar button or another module may call. Legacy spread
- * this across the entry module, which was also the boot script, a dialog, a document resolver and
- * a number formatter (audit RC7); here the API is a module of its own that imports downward and
- * registers nothing. `init.ts` is what puts it on `game`.
- *
- * Every verb answers *what* to do; **who to** is one question, answered once. Legacy repeated the
- * same twenty-line read-setting/branch/warn/loop block at five call sites and the shipped content
- * restated it thirteen times more (audit RC6, F24) — so a change to targeting meant a runtime
- * edit in five places plus a content regeneration. `forTargetActors` is that block, stated once
- * and exported, so future content calls the abstraction rather than copying it.
- */
+/** `game.mothershiprpg` — what a macro, a hotbar button or another module may call. `init.ts` puts it on `game`. */
 
 import { registerChatAction } from '../chat/actions.ts';
 import { registerCheckActions } from '../checks/actions.ts';
@@ -82,10 +71,7 @@ function controlledActors(): MothershipActor[] {
     .filter((actor): actor is MothershipActor => actor !== null && actor !== undefined);
 }
 
-/**
- * The actors this call is aimed at. Nothing selected is not an error — it is a window telling the
- * player which setting decides that and how to satisfy it (divergence R3-3).
- */
+/** Nothing selected is not an error — it opens a dialog naming the setting that decides targeting. */
 export async function targetActors(): Promise<readonly MothershipActor[]> {
   const target = macroTarget();
   const actors = target === 'token' ? controlledActors() : assignedCharacter();
@@ -97,11 +83,7 @@ export async function targetActors(): Promise<readonly MothershipActor[]> {
   return actors;
 }
 
-/**
- * Run one call against every targeted actor, in order, each awaited before the next. Legacy fired
- * them off unawaited inside a `forEach`, so a failure surfaced only as an unhandled rejection
- * (audit RC12).
- */
+/** Each actor is awaited before the next call starts, so a rejected call surfaces instead of becoming an unhandled rejection. */
 export async function forTargetActors<T>(
   fn: (actor: MothershipActor) => Promise<T> | T,
 ): Promise<T[]> {
@@ -110,15 +92,10 @@ export async function forTargetActors<T>(
   return results;
 }
 
-/* -------------------------------------------- */
-/*  The verbs                                   */
-/* -------------------------------------------- */
-
 export async function rollStat(stat: StatKey, options: CheckOptions = {}): Promise<(CheckOutcome | null)[]> {
   return await forTargetActors((actor) => actor.rollStat(stat, options));
 }
 
-/** The stat picker. Legacy published this as `rollStatMacro` and it threw (audit RC5). */
 export async function promptCheck(options: CheckOptions = {}): Promise<(CheckOutcome | null)[]> {
   return await forTargetActors((actor) => actor.promptCheck(options));
 }
@@ -147,15 +124,7 @@ export async function modify(address: string, amount: Amount): Promise<MutationR
   return await forTargetActors((actor) => actor.modify(address, amount));
 }
 
-/* -------------------------------------------- */
-/*  The verbs that ask first                    */
-/* -------------------------------------------- */
-
-/**
- * The three hotbar entry points whose argument is the player's, not the caller's. Each is one
- * prompt from `dialogs/` followed by the verb above it — the 40-to-120-line dialogs those macros
- * used to carry are gone, and the procedure is stated here where a sheet or a module can call it.
- */
+/** The player supplies the argument via a `dialogs/` prompt, not the caller. */
 export async function promptStress(direction: StressDirection): Promise<MutationResult[]> {
   const amount = await chooseStress(direction);
   return amount === null ? [] : await modify(addressOf('stress'), amount);
@@ -171,12 +140,7 @@ export async function promptWound(): Promise<(TableResult | null)[]> {
   return chosen === null ? [] : await rollTable(chosen.key, { advantage: chosen.advantage });
 }
 
-/**
- * The item a hotbar macro names. Legacy cloned the item through `duplicate()` — which keeps `_id`
- * and drops the `id` accessor — and then asked for `item.id`, so every gear, armour, ability and
- * condition macro threw instead of posting its card (audit RC3). The document is passed whole,
- * and the warning comes before the dereference, not after it (RC4).
- */
+/** The warning fires before `item.id` is dereferenced, not after — a missing item must not throw. */
 export async function rollItem(itemName: string): Promise<unknown[]> {
   return await forTargetActors(async (actor) => {
     const item = itemNamed(actor, itemName);
@@ -202,11 +166,7 @@ export function itemNamed(actor: MothershipActor, name: string): MothershipItem 
   return null;
 }
 
-/**
- * `@Apply[coward]`'s half of the identity the tables already have (audit C2, RC13) — `../conditions.ts`
- * is the one leaf both this module and `checks/actions.ts` read it from, rather than the two-file
- * cycle importing it from here created.
- */
+/** `../conditions.ts` is the one leaf both this module and `checks/actions.ts` read, avoiding a two-file import cycle. */
 export function conditionRef(condition: string): string {
   return CONDITION_IDS[condition]?.id ?? condition;
 }
@@ -222,10 +182,6 @@ export async function applyCondition(condition: string, count = 1): Promise<Gran
   return await forTargetActors((actor) => actor.applyItem(found.document, count));
 }
 
-/* -------------------------------------------- */
-/*  The card a button was clicked in            */
-/* -------------------------------------------- */
-
 export interface CardOrigin {
   readonly actor: MothershipActor | null;
   readonly itemId: string | null;
@@ -233,13 +189,9 @@ export interface CardOrigin {
   readonly messageId: string | null;
 }
 
-/**
- * The one place targeting is *not* the macro-target setting's business: the card names the actor
- * that rolled and the weapon it rolled with. The token comes first, because an unlinked one shares
- * its base actor's id with every other copy on the scene.
- */
+/** The token is checked first — an unlinked token shares its base actor's id with every other copy on the scene. */
 export function cardOrigin(button: Element | null): CardOrigin {
-  // Foundry's wrapper, not ours: the card's root sits inside it.
+  // data-message-id is Foundry's own attribute, not this system's.
   const messageId = button?.closest<HTMLElement>('[data-message-id]')?.dataset.messageId ?? null;
   const card = button?.closest<HTMLElement>('[data-actor-id]') ?? null;
   if (card === null) return { actor: null, itemId: null, messageId };
@@ -255,14 +207,6 @@ export function cardOrigin(button: Element | null): CardOrigin {
   };
 }
 
-/* -------------------------------------------- */
-/*  Registration                                */
-/* -------------------------------------------- */
-
-/**
- * Bind the four action verbs to the services, all aimed by the same resolver the macros use. One
- * targeting decision serves macros, sheets and the buttons enriched text renders.
- */
 export function registerActions(): void {
   registerCheckActions(targetActors);
   registerChatAction('apply', async (action) => {
@@ -270,8 +214,7 @@ export function registerActions(): void {
     await applyCondition(action.condition, action.count);
   });
 
-  // The button carries the expression the attack earned, crit rule already applied, and the offer
-  // is the card's to take: a player clicking the Warden's creature card is told no.
+  // The button's formula already has the crit rule applied — don't recompute it here.
   registerChatAction('damage', async (action, context) => {
     debug('action', `damage ${action.formula}`);
     const { actor, itemId, messageId } = cardOrigin(context.button);

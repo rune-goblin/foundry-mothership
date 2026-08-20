@@ -38,7 +38,6 @@
   const skills = $derived(doc.items.filter((item) => item.type === 'skill'));
   const weapons = $derived(doc.items.filter((item) => item.type === 'weapon'));
 
-  // AppV1 opened on a tab named "character", which no panel declares, so the body started blank.
   let tab = $state('skills');
 
   const tabs = $derived([
@@ -70,7 +69,6 @@
     }))
   );
 
-  // The pips are XP_MILESTONES' — this only turns its lang keys into the captions.
   const xpMilestones = Object.fromEntries(
     Object.entries(XP_MILESTONES).map(([pip, key]) => [pip, localize(key)]),
   );
@@ -135,7 +133,7 @@
       <ArmorBlock armor={system.stats.armor} onroll={() => actor.chooseCover()} />
     </div>
 
-    <!-- `<br></br>` in the old template parsed as two breaks, not one. -->
+    <!-- Deliberate: two breaks of spacing, not one. -->
     <br /><br />
 
     <Editor
@@ -532,23 +530,9 @@
 {/snippet}
 
 <style>
-  /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
-     application; @layer system puts these in the slot the rest of the system occupies.
-     Eleven names are here, each written by this file and nothing else. The component has no
-     single root -- the header grid and the description grid are siblings -- and `whiteline` is
-     drawn inside both, so the slots are declared on the pair and inherit down.
-     What css/mothership.css keeps declaring: `creaturestat` and `darkgrey`, which this sheet
-     also writes alone but hands to RollableStat and ItemControl as class props, where a scoped
-     block can never reach the element (the `savetext` case); `mainstatwrapper` and the shared
-     stat vocabulary around `creature-mainstat`; `profile`, `skill_training_frame` and
-     `textarea-input-grey` (CharacterSheet writes all three); `skill-stat`, `item`,
-     `item-header`, `sheet-body`, `noborder`, the `.grid*`/`.flex*` set, and the
-     `list-roll`/`rollable` hover group. `resource` beside `creature-mainstat` carries no rule
-     anywhere -- Field declares its own slots on that name, scoped to itself.
-     That hover group is the tie to preserve. `:where(.mothership) .list-roll:hover` weighs
-     (0,2,0) and so does the scoped `.creature-ability-title`, which sets `color` too; the
-     component sheet loads after css/mothership.css, so an ability title stays white on the dark
-     panel when hovered, which is the survival DS7 chose deliberately. */
+  /* @layer system: Svelte emits component CSS unlayered, which would outrank the rest of the
+     application's layered rules. The header grid and description grid are siblings (no single
+     root), so `whiteline`'s slots are declared on the pair and inherit down. */
   @layer system {
     .creature-header-grid,
     .creature-description-grid {
@@ -564,20 +548,18 @@
       --creaturesheet-name-font-size: var(--font-size-2xl);
       --creaturesheet-name-padding-inline-start: var(--space-12);
 
-      /* The creature's stat pair is narrower than MainStat's `1fr 5em`. A grid template, not a
-         spacing value: the scale governs neither side of it. */
+      /* Narrower than MainStat's `1fr 5em`; a grid template, not a spacing-scale value. */
       --creaturesheet-stat-columns: 1fr 3em;
       --creaturesheet-stat-gap: var(--space-0);
 
       --creaturesheet-rule-border-width: var(--border-width-3);
       --creaturesheet-rule-color: var(--border-neutral-paper);
-      /* RolltableConfig's `greyline` twin holds the same three: the two rules were one. */
+      /* Mirrors RolltableConfig's `greyline` — keep the two in sync. */
       --creaturesheet-rule-margin-block-start: var(--space-6);
       --creaturesheet-rule-margin-block-end: var(--space-10);
       --creaturesheet-rule-margin-inline: var(--space-16);
 
-      /* A grid template and a fixed box the editor scrolls inside: both are measurements of
-         this sheet, which no scale governs. */
+      /* Grid template and scroll-box height: measurements of this sheet, not scale steps. */
       --creaturesheet-body-columns: 1fr 15em;
       --creaturesheet-description-height: 400px;
       --creaturesheet-description-padding: var(--space-10);
@@ -643,8 +625,8 @@
       width: 100%;
     }
 
-    /* `grid-area` places the first of the two; the one inside the ability panel receives it
-       inertly, the way Cover's captions receive the character sheet's. */
+    /* `grid-area` places the first of two `.whiteline` elements; the second (in the ability
+       panel) receives it inertly. */
     .whiteline {
       grid-area: line;
       border-top: var(--creaturesheet-rule-border-width) solid var(--creaturesheet-rule-color);
@@ -665,9 +647,8 @@
       overflow-y: auto;
     }
 
-    /* ProseMirror's own element and the div inside it, both rendered by Editor.svelte: :global
-       reaches across that boundary, and the `.creaturedescription` ancestor keeps the pair at
-       the (0,3,0) they carry today. The pane above does the scrolling for all three. */
+    /* :global reaches ProseMirror's own markup, rendered by Editor.svelte and outside this
+       component's scoped styles. .creaturedescription does the scrolling for all three. */
     .creaturedescription :global(.editor) {
       overflow: visible;
     }
@@ -693,6 +674,8 @@
       margin-left: var(--creaturesheet-ability-margin-inline-start);
     }
 
+    /* Same specificity as `.list-roll:hover` in css/mothership.css; this file loads after it,
+       so the title's color wins on hover instead of reverting to the shared hover color. */
     .creature-ability-title {
       color: var(--creaturesheet-ability-title-text);
       font-family: var(--creaturesheet-ability-title-font-family);

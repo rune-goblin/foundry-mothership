@@ -2,13 +2,7 @@ import { svelteDialog } from '../../dialogs/svelte-dialog.ts';
 import { localize } from '../../i18n.ts';
 import NewCharacter from '../../dialogs/NewCharacter.svelte';
 
-/**
- * The question a freshly created character raises. The character sheet stops its first render
- * before Foundry builds a frame, then uses this answer to open either the wizard or the blank
- * sheet. Dismissing the dialog retains the old meaning of choosing the blank sheet.
- *
- * Resolves `'wizard'` only when the player asked for it.
- */
+// Resolves 'wizard' only when chosen; dismissing falls through to the caller's blank-sheet path.
 export async function chooseCreationMode() {
   return await svelteDialog({
     component: NewCharacter,

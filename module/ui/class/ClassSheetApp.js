@@ -1,15 +1,6 @@
 import { MothershipItemSheet } from '../item/ItemSheetApp.js';
 import ClassSheet from './ClassSheet.svelte';
 
-/**
- * The class sheet stores its skills as UUID strings — the granted list and every choose_skill_or
- * option's from_list — so they have to be resolved before the component can name them. `fromUuid`
- * is async, which is why that happens here.
- *
- * The AppV1 sheet resolved them onto `data.system` during render, which is what kept
- * base_adjustment a free-form ObjectField: a SchemaField would have cleaned the derived keys off.
- * Nothing is written back to the document now; the resolved names travel beside it.
- */
 export class MothershipClassSheet extends MothershipItemSheet {
   static COMPONENT = ClassSheet;
 
@@ -17,7 +8,7 @@ export class MothershipClassSheet extends MothershipItemSheet {
     position: { width: 820, height: 820 },
   };
 
-  /** A UUID that no longer resolves keeps its row and shows itself raw, as on the skill sheet. */
+  /** A UUID that no longer resolves keeps its row, shown raw. */
   async #resolve(uuids) {
     return Promise.all(
       uuids.map(async (uuid, index) => ({

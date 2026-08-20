@@ -1,10 +1,5 @@
-// Build, then copy a clean, link-free system into Foundry's systems/ — the same shape the
-// release zip ships. Unlike `npm run setup`, which symlinks back to the repo for live editing,
-// this leaves a real directory that works without the repo present, so it is what to test a
-// release against. Override the target with FOUNDRY_DATA.
-//
-// The file list mirrors .github/workflows/release.yml deliberately: if the two drift, `deploy`
-// stops being a rehearsal of what ships.
+// FILES/DIRS mirrors .github/workflows/release.yml deliberately — if the two drift, this stops
+// rehearsing what actually ships.
 import {
   existsSync, lstatSync, unlinkSync, rmSync, mkdirSync, cpSync, copyFileSync,
 } from 'node:fs';
@@ -41,8 +36,7 @@ if (existing?.isSymbolicLink()) {
 }
 mkdirSync(dest, { recursive: true });
 
-// LevelDB lock/journal files and macOS cruft never belong in a deployed copy; _source is the
-// tracked JSON that packs/ is built from, not a compendium.
+// LevelDB lock/journal files and macOS cruft never belong in a deployed copy.
 function keep(src: string): boolean {
   const name = basename(src);
   if (name === '_source' || name === '.DS_Store') return false;
@@ -57,9 +51,7 @@ for (const file of FILES) {
     continue;
   }
   const to = join(dest, file);
-  // Deploying over a `setup` install would otherwise copy *through* its symlink and back into
-  // the repo, leaving the "link-free" copy still pointing at the working tree. rmSync drops
-  // the link itself, not its target.
+  // rmSync drops a `setup` symlink itself rather than copying through it back into the repo.
   rmSync(to, { force: true });
   copyFileSync(from, to);
   console.log(`  ${file}`);

@@ -5,14 +5,10 @@ import { createDocumentStore } from '../document-store.svelte.js';
 const { DocumentSheetV2 } = foundry.applications.api;
 
 /**
- * The ApplicationV2 shell for the eight simple item types, and the base for the item sheets that
- * need more than they do. It owns the window; the Svelte component owns everything inside it.
- *
- * Fields keep their `name="system.…"` attributes and Foundry's own form handling persists them,
- * exactly as the AppV1 sheet did with `submitOnChange: true` -- no per-field update calls.
+ * Fields keep `name="system.…"` attributes; Foundry's form handling (submitOnChange) persists
+ * them — no per-field update calls needed.
  */
 export class MothershipItemSheet extends DocumentSheetV2 {
-  /** Subclasses swap the component and extend `_context()`; the shell itself is unchanged. */
   static COMPONENT = ItemSheet;
 
   static DEFAULT_OPTIONS = {
@@ -24,7 +20,7 @@ export class MothershipItemSheet extends DocumentSheetV2 {
     form: { submitOnChange: true, closeOnSubmit: false },
   };
 
-  /** AppV1's ItemSheet titled the window with the bare item name; keep that. */
+  /** Title the window with the bare item name, not Foundry's default sheet title. */
   get title() {
     return this.document.name;
   }
@@ -33,7 +29,6 @@ export class MothershipItemSheet extends DocumentSheetV2 {
   #root;
   #store;
 
-  /** Everything the component needs that is not on the document, re-read on every render. */
   async _context() {
     const { TextEditor } = foundry.applications.ux;
     return {
@@ -45,10 +40,7 @@ export class MothershipItemSheet extends DocumentSheetV2 {
     };
   }
 
-  /**
-   * AppV2 calls this on every render. Mount once and return the cached node, so a re-render
-   * neither leaks a second component nor discards Svelte's state -- refresh the store instead.
-   */
+  /** Mount once; re-render refreshes the store instead, so Svelte state isn't discarded. */
   async _renderHTML() {
     const context = await this._context();
     if (this.#component) {

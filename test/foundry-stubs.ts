@@ -1,11 +1,5 @@
-/**
- * The Foundry globals the new runtime reaches for at call time: the localizer, `Roll`, the
- * settings, chat, and DialogV2. Stubbing them here keeps every spec asserting on `Mothership.*` keys
- * rather than on English, which is the point of routing user-visible strings through `i18n.ts`.
- *
- * Each installer merges into the same `game`/`foundry` object, so a spec can install exactly the
- * globals its flow touches without the last one wiping the first.
- */
+// Installers merge into the same game/foundry globals, so a spec can install only
+// the pieces its flow touches without one installer wiping another.
 
 type Globals = Record<string, unknown>;
 
@@ -27,7 +21,7 @@ function foundryStub(): Globals {
   return branch(globalThis as Globals, 'foundry');
 }
 
-/** Reads a `{key}` template the way `game.i18n.format` does, so specs see the data substituted. */
+/** Mimics `game.i18n.format`'s `{key}` substitution. */
 function interpolate(template: string, data: Record<string, string | number>): string {
   return Object.entries(data).reduce(
     (text, [key, value]) => text.replaceAll(`{${key}}`, String(value)),
@@ -50,15 +44,11 @@ export function installSettings(values: Record<string, unknown>): void {
 
 export interface RollLog {
   readonly formulas: string[];
-  /** Every message posted through a roll, which is how the dice reach chat. */
   readonly messages: object[];
 }
 
-/**
- * Every `new Roll(...)` returns the same prepared dice. The total is Foundry's arithmetic for the
- * formula it was asked for: a pool keeps one die, so summing them all would make `{1d100,1d100}kl`
- * report 130 and any caller reading `roll.total` — a rolled amount, a damage total — believe it.
- */
+// Total must match Foundry's kh/kl arithmetic: a pool keeps one die, so summing
+// them all would make `{1d100,1d100}kl` report 130 instead of the kept die.
 export function installRoll(dice: readonly RolledDie[]): RollLog {
   const log: RollLog = { formulas: [], messages: [] };
   const results = dice.map((die) => die.result);
@@ -100,12 +90,10 @@ export interface PostedCard {
 }
 
 export interface ChatLog {
-  /** Every card rendered, in order. A card posted through a roll also shows in the roll log. */
   readonly cards: PostedCard[];
   readonly created: object[];
 }
 
-/** Renders a card by recording it: the template it chose and the data it handed over. */
 export function installChat(): ChatLog {
   const log: ChatLog = { cards: [], created: [] };
 
@@ -139,7 +127,6 @@ export interface DialogButtonStub {
   callback: () => unknown;
 }
 
-/** A dialog that is open right now, and the three things a user can do to it. */
 export interface OpenDialog {
   readonly title: string;
   readonly classes: readonly string[];
@@ -147,7 +134,6 @@ export interface OpenDialog {
   readonly element: HTMLElement;
   press(action: string): Promise<void>;
   dismiss(): void;
-  /** Render again, as ApplicationV2 does over a window's life. */
   render(): void;
 }
 
@@ -160,10 +146,8 @@ interface DialogConfig {
   close?: (event: unknown, dialog: { element: HTMLElement }) => unknown;
 }
 
-/**
- * `DialogV2.wait`'s own semantics: a button's callback result is the answer, and a dismissal
- * answers whatever `close` returned — `null` when it returned nothing. Needs jsdom.
- */
+// Matches DialogV2.wait: a button's callback result is the answer, and a dismissal
+// answers whatever `close` returned, or null if it returned nothing. Needs jsdom.
 export function installDialogV2(): OpenDialog[] {
   const opened: OpenDialog[] = [];
 
@@ -205,7 +189,6 @@ export function installDialogV2(): OpenDialog[] {
   return opened;
 }
 
-/** Compendium packs by id, each answering `getDocuments()` with the documents given here. */
 export function installPacks(packs: Record<string, readonly object[]>): void {
   gameStub().packs = {
     get: (id: string) =>

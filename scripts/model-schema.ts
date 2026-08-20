@@ -1,6 +1,6 @@
-// The model modules read foundry.data.fields at module scope. Rather than import Foundry, stub
-// each field class to record the default it would produce, then walk the real schema. Callers
-// therefore check the shipped schema itself, not a restatement of it.
+// The model modules read foundry.data.fields at module scope. Stub each field class to record
+// the default it would produce, then walk the real schema — callers check the shipped schema
+// itself, not a restatement of it.
 export type Stub = {
   initial?: unknown;
   schema?: Record<string, Stub>;
@@ -20,9 +20,8 @@ export function installFoundryFieldStubs(): void {
     data: {
       fields: {
         NumberField: class extends Recorded { constructor(o: { initial: number }) { super(o.initial); } },
-        // `choices` is kept so the content build can check emitted values against the enum, not
-        // just the key against the schema -- an off-list string is discarded on load just as
-        // silently as an undeclared key. `blank` rides along because Foundry lets "" through
+        // `choices` lets the content build catch an off-list string, which Foundry discards on
+        // load as silently as an undeclared key. `blank` tracks that Foundry lets "" through
         // ahead of the choices check, but only where the field asks for it.
         StringField: class extends Recorded {
           choices?: readonly string[];
@@ -36,8 +35,8 @@ export function installFoundryFieldStubs(): void {
         BooleanField: class extends Recorded { constructor(o?: { initial?: boolean }) { super(o?.initial ?? false); } },
         HTMLField: class extends Recorded { constructor(o?: { initial?: string }) { super(o?.initial ?? ''); } },
         FilePathField: class extends Recorded { constructor(o?: { initial?: string }) { super(o?.initial ?? ''); } },
-        // The element field is kept so undeclaredKeys can reach the shape inside a list --
-        // class.selected_adjustment.choose_skill_or is an array of arrays of SchemaFields.
+        // Kept so undeclaredKeys can reach the shape inside a list, e.g. an array of arrays of
+        // SchemaFields (class.selected_adjustment.choose_skill_or).
         ArrayField: class extends Recorded {
           element: Stub;
           constructor(element: Stub) { super([]); this.element = element; }

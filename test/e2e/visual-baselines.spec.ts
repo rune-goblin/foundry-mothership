@@ -1,43 +1,14 @@
 import { type Locator, type Page } from '@playwright/test';
 import { test, expect, waitForGameReady } from './fixtures/foundry-clients.ts';
 
-/**
- * The visual baselines the CSS work is verified against (docs/plans/design-system.md, DS3).
- * Nothing here asserts behaviour — the per-window suites do that. What it captures is every
- * surface `css/mothership.css` paints: the seven windows, the dialog the checks open, and the six
- * chat card templates, each built from documents this file creates, so no pixel depends on what
- * the world happens to hold.
- *
- * Determinism is the whole job, and it is bought in six places:
- *
- *  - The world runs with **no modules**: `scripts/setup-test-env.ts` arms Foundry's own safeMode
- *    on the cloned world, and the first test here asserts the result. A single enabled module —
- *    a timer, in the run that found this — hangs its own `position: fixed` box over the screen.
- *  - `playwright.config.ts` pins the viewport, `maxDiffPixels: 0`, `animations: 'disabled'`,
- *    `caret: 'hide'`, `scale: 'css'` and the capture-only stylesheet (`screenshot.css`).
- *  - `capture()` parks the pointer where no captured element can pick up a hover state, drops
- *    focus, and waits on `document.fonts.ready` — the self-hosted faces are `font-display: swap`,
- *    so a capture taken too early renders in the fallback and every later run disagrees.
- *  - Every die is rigged (`rigDie`) before anything rolls, so a card shows one fixed result.
- *  - The message mode is pinned to public — Foundry paints a whispered card on a different
- *    background — and chat is emptied between tests, which is also what makes "the only message"
- *    a sound way to find the card that was just posted.
- *  - The timestamp Foundry re-renders as "2 minutes ago" is masked. It is the one region in
- *    these captures that cannot be made to hold still.
- *
- * Element screenshots, not page screenshots: a window's own rectangle is what the design system
- * owns, and clipping to it makes the window's position on screen irrelevant.
- */
-
 const VIEWPORT = { width: 1440, height: 900 };
 
-/** The top-right corner: no window reaches it, and the sidebar's tab strip is not captured. */
+// The top-right corner: no window reaches it, and the sidebar's tab strip is not captured.
 const POINTER_PARK = { x: VIEWPORT.width - 1, y: 0 };
 
-/* -------------------------------------------- */
-/*  Capture                                     */
-/* -------------------------------------------- */
-
+// Element screenshots so a window's position on screen is irrelevant. Parks the pointer and drops
+// focus so nothing holds a hover/focus state, and waits on `document.fonts.ready` -- the
+// self-hosted faces are `font-display: swap`, so an early capture renders in the fallback.
 async function capture(page: Page, target: Locator, name: string, mask: Locator[] = []): Promise<void> {
   await expect(target).toBeVisible();
   await page.mouse.move(POINTER_PARK.x, POINTER_PARK.y);
@@ -49,12 +20,8 @@ async function capture(page: Page, target: Locator, name: string, mask: Locator[
   await expect(target).toHaveScreenshot(`${name}.png`, { mask });
 }
 
-/**
- * Puts a frame on whole pixels. Foundry centres a window on its measured height, and the skill
- * dialog's is 306.09px — so its top lands on a fraction, and which fraction depends on what was
- * opened before it. The element clip then rounds to 307px or 308px from the same layout: the one
- * capture here whose rectangle is decided by anything other than its own content.
- */
+// Foundry centres a window on its measured height, and the skill dialog's is 306.09px, so its top
+// lands on a fraction that depends on what was opened before it -- this pins the frame to whole pixels.
 const pinFrame = (page: Page, selector: string, top: number, left: number) =>
   page.evaluate(
     ({ sel, t, l }: { sel: string; t: number; l: number }) => {
@@ -66,17 +33,9 @@ const pinFrame = (page: Page, selector: string, top: number, left: number) =>
     { sel: selector, t: top, l: left },
   );
 
-/* -------------------------------------------- */
-/*  World state                                 */
-/* -------------------------------------------- */
-
-/**
- * Close the windows, and only the windows. `foundry.applications.instances` holds *every*
- * rendered ApplicationV2 — Foundry's sidebar, chat log, hotbar, players list and scene controls
- * among them, each declared `window: {frame: false}`. Closing those leaves a black page with no
- * chat log for a card to render into, which is why `hasFrame` decides here. AppV1's registry
- * only ever held windows, so it needs no filter.
- */
+// `foundry.applications.instances` holds *every* rendered ApplicationV2 -- sidebar, chat log,
+// hotbar and scene controls included, each declared `window: {frame: false}` -- so `hasFrame`
+// is what keeps this from closing the UI a card needs to render into.
 const closeWindows = (page: Page) =>
   page.evaluate(async () => {
     const w = window as any;
@@ -102,11 +61,8 @@ const clearChat = (page: Page) =>
     if (ids.length) await g.messages.documentClass.deleteDocuments(ids);
   });
 
-/**
- * Forces every die to read `n` — the same patch remake.spec.ts uses, restated rather than
- * imported: importing another spec file would register its tests into this one. `DiceTerm#_roll`
- * is the one fulfilment point every die type shares, so `roll()`'s own bookkeeping stays intact.
- */
+// Restated rather than imported from remake.spec.ts: importing another spec file would register
+// its tests into this one.
 const rigDie = (page: Page, n: number) =>
   page.evaluate((result: number) => {
     const w = window as any;

@@ -1,5 +1,3 @@
-// Where Foundry keeps its Data directory. Shared by setup.ts and deploy.ts so a dev install
-// and a deployed copy can never disagree about the target.
 import { existsSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
@@ -23,12 +21,7 @@ export function detectFoundryData(): string | undefined {
   return undefined;
 }
 
-/**
- * A system is inherently active in every world built on it, so a dev install cannot be
- * disabled the way a module can: opening a world here runs whatever is in the working tree,
- * and a schema change mid-edit will migrate that world. Point FOUNDRY_DATA at a scratch data
- * directory when doing schema work.
- */
+/** A system can't be disabled like a module — opening a world here runs the working tree live. */
 export function warnIfWorldsPresent(data: string): void {
   const worlds = join(data, 'worlds');
   if (!existsSync(worlds)) return;

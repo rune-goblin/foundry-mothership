@@ -1,8 +1,5 @@
 import { test, expect, SYSTEM_ID } from './fixtures/foundry-clients.ts';
 
-// The 0e removal was a repair as much as a simplification: five `table0e*` settings still pointed
-// at rolltables phase 3 had deleted with the 0e compendia, so the 0e panic check and death save
-// rolled against nothing. This pins the invariant — every rolltable the system can select exists.
 test('every rolltable setting resolves to a real document', async ({ gmPage }) => {
   const { checked, unresolved } = await gmPage.evaluate(async () => {
     const g = (window as any).game;
@@ -26,9 +23,7 @@ test('every rolltable setting resolves to a real document', async ({ gmPage }) =
   expect(checked).toBe(7);
 });
 
-// Proves the pack pipeline end to end: JSON in packs/_source → scripts/packs.sh → LevelDB →
-// Foundry actually reading the documents back. A pack missing its .ldb opens as an empty
-// database rather than failing, so counts are the assertion that matters.
+// A pack missing its .ldb opens as an empty database rather than failing, so counts are the assertion that matters.
 const EXPECTED = {
   skills_1e: 42,
   classes_1e: 4,
@@ -69,9 +64,6 @@ test.describe('compendium packs', () => {
     expect(commands.plus).not.toBe(commands.minus);
   });
 
-  // The android panic macros this used to cover were cut with the Calm/android variants (§25).
-  // The invariant it protected -- a macro must read the rolltable *setting*, never a hardcoded id,
-  // which is how the deleted _macros/ copies had drifted -- still matters for every macro left.
   test('no triggered macro hardcodes a rolltable id', async ({ gmPage }) => {
     const offenders = await gmPage.evaluate(async () => {
       const g = (window as any).game;

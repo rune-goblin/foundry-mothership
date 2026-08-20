@@ -1,15 +1,6 @@
-// Scaffolds Data/systems/mothership as a real directory whose entries symlink back to this
-// repo, so edits are live in Foundry. Deliberately NOT a whole-repo symlink: that would
-// expose node_modules/ and .git to the server.
-//
-// packs/ is the exception: it is COPIED, not linked. Foundry takes an exclusive LevelDB lock
-// on every pack it can see and compacts them in place, and a system cannot be disabled the way
-// a module can. Linking therefore let a running Foundry mutate gitignored build output and
-// block `packs.sh` while it was open. Copying costs a `npm run setup` after each
-// `packs.sh pack`, and buys back the ability to rebuild packs without closing Foundry.
-//
-// For a link-free install matching the release zip, use `npm run deploy`.
-
+// Not a whole-repo symlink (would expose node_modules/ and .git). packs/ is COPIED, not linked —
+// Foundry locks every pack it can see and a system can't be disabled like a module — so re-run
+// this after every `packs.sh pack`. For a link-free copy matching the release zip, use `npm run deploy`.
 import { existsSync, lstatSync, mkdirSync, readdirSync, rmSync, symlinkSync, cpSync } from 'node:fs';
 import { basename, join, resolve } from 'node:path';
 import { detectFoundryData, SYSTEM_ID, warnIfWorldsPresent } from './foundry-data.ts';

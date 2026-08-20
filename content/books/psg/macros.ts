@@ -1,17 +1,3 @@
-// The macros the shipped tables, sheets and conditions call. Macros are user interface, not the
-// system: every command here is a one-liner into
-// `game.mothershiprpg`. Nothing in this file draws a dialog — the prompts that choose an amount,
-// a Save or a Wound table are the system's own, in `module/dialogs/`, so they are translated and
-// a sheet can open the same ones.
-//
-// The stat/save, wound-table and modify families are GENERATED from short lists (audit C9) rather
-// than transcribed one entry at a time — 700 lines of hand-unrolled cross-product used to hide the
-// one typo that shipped a broken Death Save (audit C1). A generator cannot make that mistake twice.
-//
-// A macro that raises a Condition cannot hold that Condition's id: the id is minted by the build.
-// Those rows name the condition by slug instead, and `applyCondition` resolves it at runtime
-// through `CONDITION_IDS` — so unlike every other family here, the loader writes this one's call.
-
 import type { Advantage, StatKey } from '../../../module/rolls/spec.ts';
 import type { TableKey } from '../../../module/tables/tables.ts';
 
@@ -42,10 +28,6 @@ const IMG = 'icons/svg/d10-grey.svg';
 function capitalize(word: string): string {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
-
-/* -------------------------------------------------------------------------------------------- */
-/*  The stat/save × advantage cross-product, and the tables' — one line, one verb, one argument.  */
-/* -------------------------------------------------------------------------------------------- */
 
 interface AdvantageVariant {
   readonly suffix: string;
@@ -132,18 +114,10 @@ function panicMacro(contentId: string, name: string, advantage: Advantage): Comm
   return { contentId, name, img: IMG, command: `game.mothershiprpg.rollPanic({ advantage: '${advantage}' });` };
 }
 
-/**
- * A Panic Check is a Check, not a table (`chat/enrichers.ts`) — `rollPanic`, never `rollTable`.
- * Same shape as the rest, minus the bare entry, which the content-referenced `roll-on-panic-table`
- * macro already supplies below.
- */
+/** A Panic Check is a Check, not a table — `rollPanic`, never `rollTable`. */
 const PANIC_CROSS_PRODUCT: readonly CommandMacro[] = VARIANTS.filter((v) => v.advantage !== 'none').map(
   (variant) => panicMacro(`panic-check${variant.suffix}`, `Panic Check${variant.label}`, variant.advantage),
 );
-
-/* -------------------------------------------------------------------------------------------- */
-/*  The `initModifyActor` family — one flat address, one amount, no per-variant function.         */
-/* -------------------------------------------------------------------------------------------- */
 
 type ModifyAmount = { readonly kind: 'amount'; readonly amount: number } | { readonly kind: 'roll'; readonly dice: string };
 
@@ -205,10 +179,6 @@ const MODIFY_MACROS: readonly CommandMacro[] = [
   modifyMacro('plus-2d10-strength', '+2d10 Strength', stat('strength'), roll('2d10')),
 ];
 
-/* -------------------------------------------------------------------------------------------- */
-/*  The `initModifyItem` family — a Condition and how much of it, nothing else.                   */
-/* -------------------------------------------------------------------------------------------- */
-
 const CONDITION_MACROS: readonly ConditionMacro[] = [
   { contentId: 'plus-1-bleeding', name: '+1 Bleeding', img: IMG, condition: 'bleeding', severity: 1 },
   { contentId: 'plus-1-coward', name: '+1 Coward', img: IMG, condition: 'coward', severity: 1 },
@@ -233,15 +203,7 @@ const CONDITION_MACROS: readonly ConditionMacro[] = [
   { contentId: 'plus-7-bleeding', name: '+7 Bleeding', img: IMG, condition: 'bleeding', severity: 7 },
 ];
 
-/* -------------------------------------------------------------------------------------------- */
-/*  The four bespoke triggered macros — a genuine procedure each, not a cross-product member.     */
-/* -------------------------------------------------------------------------------------------- */
-
-/**
- * "Set the field to N" reads the current value and asks `modify` for the difference — the one
- * thing this API states as a change, never an absolute (audit C3: this used to be a 35-line
- * function per macro, with two of its four parameters always null).
- */
+/** Reads the current value and asks `modify` for the difference — the API states changes, never absolutes. */
 function setFieldMacro(contentId: string, name: string, address: string, target: number, floor = false): CommandMacro {
   const clamp = floor ? `Math.max(0, ${target} - current)` : `${target} - current`;
   return {
@@ -256,7 +218,6 @@ function setFieldMacro(contentId: string, name: string, address: string, target:
   };
 }
 
-/** `'system.a.b.c'` read the way a macro already reads it — a plain property chain off the actor. */
 function addressGet(address: string): string {
   return `actor.${address}`;
 }
@@ -274,7 +235,6 @@ const BESPOKE_TRIGGERED: readonly CommandMacro[] = [
   setFieldMacro('raise-maximum-stress-to-85', 'Raise Maximum Stress to 85', MAX_STRESS, 85, true),
 ];
 
-/** Called by table results and condition descriptions. */
 export const TRIGGERED_MACROS: readonly MacroRecord[] = [
   ...STAT_CROSS_PRODUCT,
   ...REST_SAVE_CROSS_PRODUCT,
@@ -288,13 +248,8 @@ export const TRIGGERED_MACROS: readonly MacroRecord[] = [
 
 export type TriggeredMacroId = (typeof TRIGGERED_MACROS)[number]['contentId'];
 
-/* -------------------------------------------------------------------------------------------- */
-/*  The hotbar macros — one per procedure the book asks a player to run. Targeting is `modify`'s  */
-/*  problem now (`forTargetActors` asks when nothing is selected), so none of these read a        */
-/*  setting or branch on `game.user.character` — the ~30-line wrapper every one of these used to   */
-/*  open with is simply gone.                                                                      */
-/* -------------------------------------------------------------------------------------------- */
-
+// Targeting is forTargetActors' job (it asks when nothing is selected) — none of these read a
+// setting or branch on game.user.character.
 export const HOTBAR_MACROS: readonly CommandMacro[] = [
   {
     contentId: 'cover',
@@ -306,21 +261,21 @@ export const HOTBAR_MACROS: readonly CommandMacro[] = [
     contentId: 'death-save',
     name: 'Death Save',
     img: 'systems/mothershiprpg/images/icons/ui/rolltables/death_save.png',
-    // Advantage absent opens the roll prompt — the system's own dialog replaces the embedded one.
+    // Advantage absent opens the roll prompt.
     command: "game.mothershiprpg.rollTable('death');",
   },
   {
     contentId: 'gain-stress',
     name: 'Gain Stress',
     img: 'systems/mothershiprpg/images/icons/ui/macros/gain_stress.png',
-    // The amount chooser is `dialogs/Amount.svelte` now, translated and shared with its opposite.
+    // The amount chooser (dialogs/Amount.svelte) is shared with 'relieve-stress'.
     command: "game.mothershiprpg.promptStress('gain');",
   },
   {
     contentId: 'panic-check',
     name: 'Panic Check',
     img: 'systems/mothershiprpg/images/icons/ui/rolltables/panic_check.png',
-    // Advantage absent opens the roll prompt — the same trade as Death Save, above.
+    // Advantage absent opens the roll prompt.
     command: 'game.mothershiprpg.rollPanic();',
   },
   {
@@ -333,7 +288,6 @@ export const HOTBAR_MACROS: readonly CommandMacro[] = [
     contentId: 'rest-save',
     name: 'Rest Save',
     img: 'systems/mothershiprpg/images/icons/ui/macros/rest_save.png',
-    // rollRestSave() opens the same skill-and-advantage prompt every Rest Save offers a character.
     command: 'game.mothershiprpg.rollRestSave();',
   },
   {
@@ -347,14 +301,13 @@ export const HOTBAR_MACROS: readonly CommandMacro[] = [
     contentId: 'stat-check',
     name: 'Stat Check',
     img: 'systems/mothershiprpg/images/icons/ui/macros/stat_check.png',
-    // promptCheck() opens the same four-stat picker this macro's dialog used to draw by hand.
     command: 'game.mothershiprpg.promptCheck();',
   },
   {
     contentId: 'wound-roll',
     name: 'Wound Roll',
     img: 'systems/mothershiprpg/images/icons/ui/macros/wound_roll.png',
-    // The five table keys are `tables/`'s, so this macro carries no document id at all (audit C2).
+    // No document id — the five table keys live in tables/, not content.
     command: 'game.mothershiprpg.promptWound();',
   },
 ];

@@ -1,18 +1,12 @@
 import { MothershipItemSheet } from '../item/ItemSheetApp.js';
 import SkillSheet from './SkillSheet.svelte';
 
-/**
- * The skill sheet adds one thing to the item shell: its prerequisites are stored as UUID strings,
- * so they have to be resolved before the component can render them. `fromUuid` is async, which is
- * why this happens here rather than in the component.
- */
 export class MothershipSkillSheet extends MothershipItemSheet {
   static COMPONENT = SkillSheet;
 
   /**
-   * `item` is null for a UUID that no longer resolves; the component renders those as removable.
-   * `key` carries the index because the AppV1 sheet appended without a duplicate check, so a
-   * stored list can hold the same UUID twice and the UUID alone is not unique.
+   * `item` is null when a UUID no longer resolves — rendered as removable. `key` includes the
+   * index because a stored list can hold the same UUID twice.
    */
   async _context() {
     const context = await super._context();

@@ -1,11 +1,6 @@
-// content/books/** + content/ids.json -> packs/_source/**, then ./scripts/packs.sh pack as today.
-//
-//   node scripts/build-content.ts [--allocate] [--out DIR] [--manifest PATH]
-//
-// A record with no id in content/ids.json fails the build. --allocate mints one and rewrites the
-// registry, which must then be committed: ids are never derived from a record's name or content,
-// so the committed file is the only thing keeping an installed world's documents identifiable
-// across a rebuild.
+// --allocate mints an id for any record missing one in content/ids.json and rewrites the
+// registry — commit it, since ids are never derived from a record's name or content and the
+// registry is the only thing keeping an installed world's documents identifiable across a rebuild.
 import { join } from 'node:path';
 import { BOOKS } from './content/books.ts';
 import { build } from './content/pipeline.ts';

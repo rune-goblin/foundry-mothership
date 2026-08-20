@@ -32,20 +32,9 @@
 </header>
 
 <style>
-  /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
-     application; @layer system puts these in the slot the rest of the system occupies.
-     One class is here because one class is this component's own: `sheet-header-profile`,
-     renamed off the Shipbreaker's-Toolkit prefix no other file ever wore. Everything else
-     the markup wears is shared vocabulary css/mothership.css keeps declaring — Generator
-     and CharacterSheet hand-write `header`, `headerinputtext` and `headerinputfield`;
-     those two and CreatureSheet write `noborder`; CreatureSettings writes
-     `sheet-header`; forty sites write `grid`.
-     The image also carried an inline `height: auto` saying what the rule already said;
-     one copy survives, here. */
   @layer system {
     header {
-      /* The portrait's own width — a measurement of this component, which no scale governs. */
-      --sheet-header-profile-width: 100px;
+      --sheet-header-profile-width: 100px; /* measurement, not a spacing-scale step */
       --sheet-header-profile-padding: var(--space-10);
       --sheet-header-profile-border-width: var(--border-width-0);
     }

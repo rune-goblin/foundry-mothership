@@ -15,9 +15,8 @@
   import { localize } from '../../i18n.ts';
   import { rankChoices } from './ranks.js';
 
-  // No <style> block: `skill-name` is the black pill this file, ClassSheet and OptionDraft
-  // hand-write inside a list, and ItemCell's `name` variant builds — shared tier. `sheet-body`
-  // belongs to five sheets, and `items` carries no rule at all.
+  // No <style> block: `skill-name`, `sheet-body`, and `items` are all shared tier — no class
+  // here has a scoped rule to reach.
   let { store } = $props();
 
   const doc = $derived(store.current);
@@ -103,9 +102,8 @@
       {#each doc.prerequisites as { key, uuid, item } (key)}
         <ItemRow itemId={uuid} draggable={false}>
           <ItemImage src={item?.img} title={item?.name} />
-          <!-- A prerequisite whose skill has been deleted still has to be removable, so it shows
-               its raw UUID rather than being dropped from the list behind the user's back. The
-               title is what makes that legible: .skill-name clips, and a UUID does not fit. -->
+          <!-- A deleted prerequisite stays removable rather than silently dropped, so it shows its
+               raw UUID; the title attr carries it since .skill-name clips. -->
           <ItemCell variant="name" title={item?.name ?? uuid}>{item?.name ?? uuid}</ItemCell>
           <ItemCell>{item?.system.rank ?? ''}</ItemCell>
           <ItemCell>{item?.system.bonus ?? ''}</ItemCell>

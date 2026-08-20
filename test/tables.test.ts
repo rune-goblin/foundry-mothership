@@ -26,8 +26,8 @@ const ids = JSON.parse(
 afterEach(clearFoundryStubs);
 
 describe('table identity is data, not a display name', () => {
-  // Audit RC13: the seven settings defaults were bare ids with nothing tying them to the registry
-  // that mints them. This join is that tie: re-mint an id and this fails before a world does.
+  // Ties the settings defaults to the registry that mints them: re-mint an id and this fails
+  // before a world does.
   it('every key names the document content/ids.json minted for it', () => {
     for (const key of TABLE_KEYS) {
       expect(ids.packs.rolltables.documents[TABLES[key].contentId]?.id).toBe(TABLES[key].id);
@@ -62,8 +62,7 @@ describe('table identity is data, not a display name', () => {
     expect(tableId('panic')).toBe(TABLES.panic.id);
   });
 
-  // Audit F2: a table asked for without a roll string got a dialog titled "Panic Check" and a
-  // d20, whatever table it was. The die belongs to the table, so there is nothing left to guess.
+  // The die belongs to the table, not the dialog that asks for it — there is nothing left to guess.
   it('asks for the die the book gives the table, aimed the way that table is read', () => {
     expect(tableSpec('panic', 'advantage')).toMatchObject({ dice: '1d20', aim: 'high', advantage: 'advantage' });
     expect(tableSpec('gunshot')).toMatchObject({ dice: '1d10', aim: 'low', advantage: 'none' });
@@ -126,9 +125,8 @@ describe('rollOnTable', () => {
     expect(draw.outcome.total).toBe(1);
   });
 
-  // Audit F13: legacy decided a table was a Wound table by the last five letters of its *name*,
-  // and that it was the Panic Check by comparing the whole name. Renaming a table — or shipping a
-  // translated one — changed the game. Identity is the key now, so the name is only ever printed.
+  // Identity is the key; the name is only ever printed, so renaming or translating a table
+  // cannot change how it behaves.
   it('behaves the same when the table is renamed', async () => {
     installRoll([{ faces: 10, result: 0 }]);
     const renamed = await rollOnTable(table('Tabela de Ferimentos'), {
@@ -158,8 +156,8 @@ describe('rollOnTable', () => {
     expect(wound.outcome.success).toBe(false);
   });
 
-  // Audit F22: the android line was chosen by reading `system.class.value` on any actor, so a
-  // creature that panicked to 19 threw instead of reading its result.
+  // Reading system.class.value on any actor would throw for a creature panicking to 19 instead
+  // of reading its result.
   it('keeps one half of the Panic 19 result, and lets a creature through', async () => {
     const draw = async (robotic: boolean) => {
       installRoll([{ faces: 20, result: 19 }]);
@@ -182,8 +180,6 @@ describe('rollOnTable', () => {
     expect(androidSubstitution('You freeze up.', true, ANDROID_PANIC_RESULT)).toBe('You freeze up.');
   });
 
-  // The old version matched the active locale's English against text baked in at build time, so a
-  // translated world's Panic 19 never substituted (it only ever worked by English coincidence).
   it('substitutes by the voice marker, not by matching English text — a translated row still works', () => {
     const translated =
       '<span data-mothership-voice="human">ATAQUE CARDÍACO</span><span data-mothership-voice="android">CURTO-CIRCUITO</span>. Ai.';
@@ -223,9 +219,8 @@ describe('isRobotic', () => {
     expect(isRobotic(marine)).toBe(false);
   });
 
-  // The generator embeds the class item as of R7, so this is the pre-R7 character and the one
-  // filled in by hand. It is why the fallback is still here: deleting it would turn every Android
-  // already in a world back into a human on Panic 19, with no migration to grant them the item.
+  // Covers a hand-built character with no embedded class item: deleting this fallback would turn
+  // every Android already in a world back into a human on Panic 19, with no migration to fix it.
   it('falls back to the stored class name when no class item is embedded', () => {
     expect(isRobotic(character({ class: { value: 'Android' } }))).toBe(true);
     expect(isRobotic(character({ class: { value: 'Teamster' } }))).toBe(false);

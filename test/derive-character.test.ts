@@ -21,10 +21,6 @@ type DerivedSystem = {
   weight: { current: number; capacity: number };
 };
 
-/**
- * The answers legacy's `_deriveCharacter` gave, kept verbatim through the swap that deleted it:
- * R0 ran every case below against both implementations.
- */
 const derive = (actor: { items: Item[]; system: DerivedSystem }): void =>
   MothershipActor.prototype._deriveCharacter.call(actor as unknown as MothershipActor);
 
@@ -43,8 +39,7 @@ function fixture(opts: {
     health: opts.health ?? { value: 10, max: 10 },
     hits: opts.hits ?? { value: 0, max: 2 },
     bleeding: { value: 0 },
-    // The schema declares netHP (`actor-models.js`'s baseSchema), so the new derivation stops
-    // defending against its absence — the `??=` guards were pre-DataModel fossils (audit F25).
+    // The schema always declares netHP, so derivation doesn't guard against its absence.
     netHP: { value: 0, min: 0, max: 0, label: 'Net HP' },
   } as unknown as DerivedSystem;
 }
@@ -80,8 +75,7 @@ describe('_deriveCharacter', () => {
     });
   });
 
-  // Net HP flattens wounds and health into one pool: each wound still available is worth a
-  // full health bar, plus whatever is left in the current one.
+  // Each wound still available is worth a full health bar, plus what's left in the current one.
   describe('net HP', () => {
     it('is a full pool at full health with no wounds taken', () => {
       const s = run({ health: { value: 10, max: 10 }, hits: { value: 0, max: 2 } });
@@ -131,8 +125,6 @@ describe('_deriveCharacter', () => {
     });
   });
 
-  // The sheet used to compute these during render and write them onto the document. They are
-  // derived now, so the numbers are the same whether or not anyone has the sheet open.
   describe('carried weight', () => {
     const gear = (weight: number, quantity: number): Item =>
       ({ type: 'item', system: { weight, quantity } });

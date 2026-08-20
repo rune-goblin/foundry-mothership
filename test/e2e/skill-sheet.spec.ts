@@ -1,12 +1,6 @@
 import { type Page } from '@playwright/test';
 import { test, expect } from './fixtures/foundry-clients.ts';
 
-// The skill sheet is ApplicationV2 + Svelte (module/ui/skill/). Beyond the fields it shares with
-// the other item sheets it owns the prerequisite list: UUID strings the sheet resolves for
-// display, added by dropping a skill and removed by the row's delete control. Deleting never
-// worked on the AppV1 sheet -- it filtered the UUID list by the resolved skill's _id -- so the
-// removal assertions here are the regression net for that fix.
-
 const openSkill = async (page: Page, system: Record<string, unknown> = {}) =>
   page.evaluate(async (s: Record<string, unknown>) => {
     const doc = await (window as any).Item.create({ name: '__e2e_skill', type: 'skill', system: s });
@@ -132,7 +126,6 @@ test.describe('skill sheet', () => {
     await dropSkillOn(gmPage, `#${appId} .tab[data-tab="skills.prerequisite"]`, prerequisite);
     await expect.poll(() => storedIds(gmPage, uuid)).toEqual([prerequisite]);
 
-    // The AppV1 sheet filtered the UUID list by the resolved skill's _id, which never matched.
     await sheet.locator(`li.item[data-item-id="${prerequisite}"] a.item-control`).click();
 
     await expect.poll(() => storedIds(gmPage, uuid)).toEqual([]);
@@ -199,8 +192,7 @@ test.describe('skill sheet', () => {
 
     await sheet.locator('a.tab-select[data-tab="skills.prerequisite"]').click();
     const row = sheet.locator(`li.item[data-item-id="${prerequisite}"]`);
-    // The old sheet pushed the null straight into the list, giving a blank row with a delete
-    // control that could not match anything. The raw UUID is what identifies it now.
+    // A row for a missing skill is identified by the raw UUID, not a resolved id.
     await expect(row).toContainText(prerequisite);
 
     await row.locator('a.item-control').click();

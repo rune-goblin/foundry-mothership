@@ -3,10 +3,6 @@ import { localize } from '../../i18n.ts';
 import StatOption from './StatOption.svelte';
 import { CHOOSABLE_STATS } from './choosable-stats.js';
 
-/**
- * Ask for one `selected_adjustment.choose_stat` entry: a value, and the stats it may be spent on.
- * Resolves to the entry, or to null if the dialog is cancelled or names fewer than two stats.
- */
 export async function promptStatOption() {
   const entry = await svelteDialog({
     component: StatOption,

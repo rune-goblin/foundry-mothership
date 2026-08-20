@@ -1,13 +1,5 @@
-/**
- * A drawn RollTable reduced to the text to show and the documents to hand out.
- *
- * The emitted loadout rows are `text` results whose description is the printed list followed by
- * one `@UUID` link per item, so one row yields several documents; trinket
- * and patch rows carry no link at all. The AppV1 generator matched `/(.*)(@UUID.*)/` and kept the
- * last link only, so a three-item loadout arrived as one item — and a linkless row matched
- * nothing, then threw on `match[1]`, which is why rolling a patch stopped working the moment the
- * generated tables shipped.
- */
+// A loadout row's description can carry several @UUID links (one per item); trinket and patch
+// rows carry none. Parse every link rather than matching a single trailing one.
 
 const LINK = /@UUID\[([^\]]+)\](?:\{([^}]*)\})?/g;
 const TRAILING_BREAKS = /(?:<br\s*\/?>\s*)+$/i;

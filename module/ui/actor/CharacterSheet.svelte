@@ -39,8 +39,6 @@
   const skills = $derived(doc.items.filter((item) => item.type === 'skill'));
   const weapons = $derived(doc.items.filter((item) => item.type === 'weapon'));
 
-  // AppV1 named "character" as the initial tab, which no panel declares; Foundry's Tabs falls
-  // back to the first nav entry, so Skills is what the sheet has always opened on.
   let tab = $state('skills');
 
   const tabs = $derived([
@@ -52,9 +50,8 @@
     { id: 'notes', label: localize('Mothership.Notes') },
   ]);
 
-  // The header's five free-text fields differ only by path and caption. The path is spelled out
-  // rather than built from a key, because test/sheet-bindings.test.ts checks these against the
-  // schema and it can only do that for a literal.
+  // Paths are literal strings, not built from a key: test/sheet-bindings.test.ts checks each
+  // against the schema and can only do that for a literal.
   const IDENTITY = [
     { name: 'system.credits.value', label: 'Mothership.Credits' },
     { name: 'system.class.value', label: 'Mothership.CLASS' },
@@ -76,7 +73,6 @@
     { key: 'body', label: 'Mothership.Body' },
   ];
 
-  // The pips are XP_MILESTONES' — this only turns its lang keys into the captions.
   const xpMilestones = Object.fromEntries(
     Object.entries(XP_MILESTONES).map(([pip, key]) => [pip, localize(key)]),
   );
@@ -566,28 +562,13 @@
 {/snippet}
 
 <style>
-  /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
-     application; @layer system puts these in the slot the rest of the system occupies.
-     Only the eight names nothing else emits are here, and all eight sit inside the header --
-     which is why the slots are declared on it. The rest of this sheet's markup wears shared
-     vocabulary css/mothership.css keeps declaring: `char-header`, `header-fields` and `header`
-     (Generator hand-writes all three), `headerinputtext`/`headerinputfield`/`noborder`
-     (Generator and SheetHeader), `profile` (CreatureSheet),
-     `textarea-input-grey` and `skill_training_frame` (CreatureSheet),
-     `resource-label`, `sheet-body` (five sheets), the modifier pair `mainstatmod-input`/
-     `mainstatmod-title` (this sheet alone since the generator dropped its modifier pill, so
-     both can follow `mainsavemod-input` here), the `.grid*`/`.flex*`/`widegap` set and the
-     `list-roll`/`rollable` hover group.
-     `savetext` stays there despite this sheet being its only writer: RollableStat renders the
-     element the class lands on, so a scoped block here can never reach it -- and its
-     `color: white` only beats the hover group because it sits later in that one file, the tie
-     `mainstattext` documents. Moving it would move it out of the order it wins on. */
+  /* @layer system: Svelte emits component CSS unlayered, which would outrank the rest of the
+     application's layered rules. */
   @layer system {
     .char-header {
       --charactersheet-header-grid-gap: var(--space-10);
       --charactersheet-header-grid-padding: var(--space-2);
-      /* A grid template: the two fixed tracks measure this header, and no spacing scale
-         governs the width of a column. */
+      /* Fixed-px tracks measure this header; no spacing-scale step governs them. */
       --charactersheet-header-grid-columns: 238px auto 100px;
 
       --charactersheet-identity-gap: var(--space-4);
@@ -617,9 +598,7 @@
       --charactersheet-save-modifier-font-size: var(--font-size-sm);
       --charactersheet-save-modifier-font-weight: var(--font-weight-bold);
       --charactersheet-save-modifier-text: var(--color-danger-300);
-      /* `lightgrey` was #d3d3d3, on no step; the highest surface tier is the nearest one that
-         exists. It arrived as the second of two `background` declarations, the first of which
-         (white) never rendered; the dead one is gone. */
+      /* `lightgrey` (#d3d3d3) maps to the nearest existing surface tier; no exact token. */
       --charactersheet-save-modifier-surface: var(--surface-neutral-highest);
       --charactersheet-save-modifier-radius: var(--radius-md);
       --charactersheet-save-modifier-border-width: var(--border-width-0);
@@ -632,9 +611,8 @@
       --charactersheet-save-modifier-offset-inline: var(--space-12);
     }
 
-    /* The header carries both classes, so this reaches the inner grid only -- keep the chain.
-       `centercol` and `mobilehealth` are claimed by `.mothership .health` in css/mothership.css,
-       which Cover also writes and this block therefore cannot take. */
+    /* Selector must stay chained: `centercol`/`mobilehealth` are claimed by
+       `.mothership .health` in css/mothership.css, which this block cannot take. */
     .char-header .header-grid {
       display: grid;
       grid-template-areas:
@@ -666,8 +644,7 @@
       grid-column: 1/-2;
     }
 
-    /* (0,2,0), the same weight `.mothership .grid` gives `padding: 0` on this element: the
-       component sheet loads after css/mothership.css, so these two paddings keep winning. */
+    /* Same specificity as `.mothership .grid`'s `padding: 0`; wins on load order only. */
     .savebackground {
       border-radius: var(--charactersheet-saves-radius);
       background: var(--charactersheet-saves-surface);
@@ -691,9 +668,8 @@
       text-align: center;
     }
 
-    /* The padding is zeroed for the reason the stat modifier's twin still records in
-       css/mothership.css: a two-digit bonus overflows the 28px pill under an ApplicationV2
-       window's input padding, which is wider than AppV1's. */
+    /* Padding zeroed: a two-digit bonus overflows the 28px pill under ApplicationV2's
+       wider default input padding. */
     .mainsavemod-input {
       font-family: var(--charactersheet-save-modifier-font-family);
       height: var(--charactersheet-save-modifier-height);

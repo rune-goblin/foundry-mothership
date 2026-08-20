@@ -1,8 +1,6 @@
-// The sign must survive. Macros come in pairs — "+1 Stress" vs "-1 Stress", "Panic Check [+]"
-// vs "[-]" — and a naive slug collapses each pair onto one string, losing which is which. A
-// mid-word hyphen is not a sign, so "Well-Rested" stays "well-rested". These are the rules
-// scripts/packs.sh already applies to filenames, in the `[a-z0-9-]` idiom mothership-data uses
-// for its record ids.
+// The sign must survive: "+1 Stress" vs "-1 Stress", "Panic Check [+]" vs "[-]" — a naive slug
+// collapses each pair onto one string. A mid-word hyphen is not a sign, so "Well-Rested" stays
+// "well-rested".
 export function slug(name: string): string {
   const s = name
     .trim()

@@ -1,7 +1,5 @@
 import { test, expect, SYSTEM_ID } from './fixtures/foundry-clients.ts';
 
-// The base smoke: the built bundle actually loads and registers what it claims to. If this
-// fails, nothing else in the suite is meaningful.
 test.describe('system loads', () => {
   test('the built esmodule initialised and exposed its API', async ({ gmPage }) => {
     const api = await gmPage.evaluate(() => {
@@ -20,9 +18,8 @@ test.describe('system loads', () => {
     expect(api.actorClass).toBe('MothershipActor');
   });
 
-  // v14 injects package styles as `@import "…" layer(system)` inside an inline <style>, not as
-  // a <link>. Rules behind an @import are not in the parent sheet's cssRules, so counting them
-  // means descending into each CSSImportRule.
+  // v14 injects package styles as `@import "…" layer(system)`, not as a <link>, and rules behind
+  // an @import are not in the parent sheet's cssRules -- counting them means descending into each CSSImportRule.
   test('the built stylesheet is imported into the system layer and its rules are live', async ({ gmPage }) => {
     const css = await gmPage.evaluate(() => {
       const imports: string[] = [];
@@ -38,7 +35,7 @@ test.describe('system loads', () => {
           } else if (scoped((rule as CSSStyleRule).selectorText)) {
             scopedRules += 1;
           } else if (rule instanceof CSSGroupingRule) {
-            // DS7 wrapped the sheet in @layer system; the rules live one level down now.
+            // The sheet is wrapped in @layer system, so scoped rules live one level down.
             for (const nested of Array.from(rule.cssRules)) {
               if (scoped((nested as CSSStyleRule).selectorText)) scopedRules += 1;
             }
@@ -50,8 +47,7 @@ test.describe('system loads', () => {
     });
 
     expect(css.imports.some((h) => h.includes(`systems/${SYSTEM_ID}/dist/mothershiprpg.css`))).toBe(true);
-    // DS8 drains scoped rules into component styles by design, so this proves liveness, not
-    // size: the import resolved and a non-trivial scoped rule set is in force.
+    // Scoped rules drain into component styles by design, so this proves liveness, not size.
     expect(css.scopedRules).toBeGreaterThan(30);
   });
 

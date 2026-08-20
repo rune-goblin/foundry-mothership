@@ -39,8 +39,6 @@ function outcome(spec: string, results: number[], target: number | null, kind: '
 }
 
 describe('asset paths', () => {
-  // Audit F4: two condition cards embedded `systems/foundry-mothership/…`, the id this system
-  // stopped using at the rename, so a shipped macro posted broken images.
   it('name the system this system actually is', () => {
     expect(SYSTEM_ID).toBe('mothershiprpg');
     expect(asset('images/icons/ui/attributes/health.png')).toBe(
@@ -312,8 +310,6 @@ describe('the mutation card', () => {
     expect(data<Record<string, string>>(relieved).msgImgPath).toBe(asset('images/icons/ui/macros/relieve_stress.png'));
   });
 
-  // The ledger's owed decision: of the two health-at-zero strings legacy's duplicated branches had
-  // drifted between, the one naming the refilled bar is the one that survives (audit F7).
   it('names the health the bar came back with when a Wound is spent', async () => {
     installI18n(FLAVOR);
     const result = await mutate(actor(character()), 'system.health.value', { kind: 'amount', amount: -13 });
@@ -336,8 +332,8 @@ describe('the mutation card', () => {
     );
   });
 
-  // PSG 20: Stress over the maximum is spent reducing a Stat or Save. Legacy's "already at
-  // maximum" branch shadowed the half of the rule that says so (divergence R2-1).
+  // PSG 20: Stress over the maximum is spent reducing a Stat or Save, even once Stress is
+  // already sitting at maximum — not only while it overflows.
   it('always says what the Stress that did not fit costs', async () => {
     installI18n(FLAVOR);
     const overflowing = await mutate(actor(character()), 'system.other.stress.value', { kind: 'amount', amount: 4 });
@@ -390,9 +386,8 @@ describe('the description card', () => {
     roll: null,
   };
 
-  // Legacy swapped the name and the description when the description was exactly `<p>Trinket</p>`
-  // or `<p>Patch</p>` — items only the AppV1 generator made. Nothing has created one since S5 and
-  // no shipped document carries such a description, so the card shows the item's own name.
+  // Guards against swapping the item's name for its description text on a `<p>Trinket</p>`-style
+  // body — a quirk of the old AppV1 generator that no shipped document still triggers.
   it('shows the item’s own name, whatever its description says', () => {
     const card = descriptionCard(item, {}, SOURCE);
 

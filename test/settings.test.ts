@@ -87,11 +87,8 @@ describe('the settings the GM sees', () => {
     ]);
   });
 
-  /**
-   * `macroTarget` answers "whose sheet do my macros act on", which is a per-player preference.
-   * World-scoped, the dialog that tells a *player* to change it pointed at a door only the GM
-   * could open (audit RC14).
-   */
+  // World-scoped, the dialog telling a player to change macroTarget pointed at a door only the
+  // GM could open.
   it('scopes the macro target to the client and everything else to the world', () => {
     expect(of('macroTarget').scope).toBe('client');
     for (const key of ['critDamage', 'damageDiceTheme', 'panicDieTheme', 'hideWeight', 'autoStress']) {
@@ -116,8 +113,8 @@ describe('the settings the GM sees', () => {
 describe('the hidden table settings', () => {
   beforeEach(() => registerSettings(class {}));
 
-  // Their defaults are document ids the content pipeline minted; `test/tables.test.ts` holds
-  // those to content/ids.json, so a re-minted id fails CI rather than panic rolls (audit RC13).
+  // Their defaults are document ids the content pipeline minted; test/tables.test.ts holds
+  // those to content/ids.json, so a re-minted id fails CI rather than panic rolls.
   it('registers the seven table ids from the table definitions', () => {
     const hidden = registered.filter((entry) => entry.data.config === false);
 

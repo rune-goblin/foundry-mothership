@@ -45,25 +45,9 @@
 </div>
 
 <style>
-  /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
-     application; @layer system puts these in the slot the rest of the system occupies.
-     Four names, all four written by this file alone. `circlestattitle` is the naming trap in
-     the set: it reads like a caption belonging to `circle-statwrapper`, and it never was one --
-     no stat circle in the system writes it, and CircleStat.svelte was deleted with no consumer.
-     `black` is the modifier the window heading wears over it.
-     What css/mothership.css keeps declaring for this window: `circle-statwrapper`, which the
-     skill sheet's CircleStats mounts too; `resource-label`, hand-written by eleven files; the
-     `.grid*` set, whose column count this markup builds by interpolation (`grid-{n}col`) --
-     the audit's dynamic channel is what keeps those alive. `resource` and `close-button` carry
-     no rule anywhere: the first is markup habit, the second is rolltable-config.spec.ts's
-     locator for the bar below.
-     There is no single root to hang the slots off -- the heading, the rule and the three group
-     panels are siblings under the mount div -- so they are declared on the elements that read
-     them, the way CreatureSheet declares them on its pair of grids.
-     The tie to preserve is the FINISH bar's: `.mothership .button-white`'s `color` and
-     `:where(.mothership) .list-roll:hover`'s both weigh (0,2,0), and the bar kept its dark
-     label under the cursor only because it sat later in css/mothership.css. Scoped, it weighs
-     the same (0,2,0) and the component sheet loads after that file, so the survival holds. */
+  /* `resource-label`, the `.grid*` classes, `resource`, and `close-button` used in the markup
+     above are unstyled here — they're still declared in css/mothership.css (shared, or a
+     test locator), not migrated. */
   @layer system {
     .circlestattitle,
     .greyline,
@@ -75,17 +59,13 @@
 
       --rolltableconfig-rule-border-width: var(--border-width-3);
       --rolltableconfig-rule-color: var(--border-neutral);
-      /* CreatureSheet's `whiteline` twin holds the same three values: the two rules were
-         identical byte for byte apart from the colour, and stay so through the scale. */
       --rolltableconfig-rule-margin-block-start: var(--space-6);
       --rolltableconfig-rule-margin-block-end: var(--space-10);
       --rolltableconfig-rule-margin-inline: var(--space-16);
 
       --rolltableconfig-button-text: var(--text-primary);
       --rolltableconfig-button-surface: var(--surface-neutral-paper);
-      /* 16px against a rem scale: nothing in the application sets a root font-size -- neither
-         foundry2.css nor any runtime setter in foundry.mjs -- so 1rem is the same 16px. The
-         call ItemCell's `medium` took. */
+      /* Assumes 1rem == 16px: nothing in the application sets a root font-size. */
       --rolltableconfig-button-font-size: var(--font-size-lg);
       --rolltableconfig-button-font-weight: var(--font-weight-bold);
       --rolltableconfig-button-radius: var(--radius-xl);
@@ -95,6 +75,8 @@
       --rolltableconfig-button-border-color: var(--border-neutral-ink);
     }
 
+    /* Misleadingly named: reads like a caption for `circle-statwrapper` but isn't one — no
+       stat circle uses it. */
     .circlestattitle {
       width: 100%;
       color: var(--rolltableconfig-title-text);
@@ -104,15 +86,14 @@
       text-transform: uppercase;
     }
 
-    /* Equal specificity with the rule above, which it overrides on source order alone -- the
-       order it had in css/mothership.css. Keep it below. */
+    /* Same specificity as `.circlestattitle` above; overrides it on source order alone. Keep
+       this rule below that one. */
     .black {
       color: var(--rolltableconfig-heading-text);
     }
 
-    /* `grid-area` is inert here: the mount div is a column flex container (css/mothership.css
-       gives every Svelte root that layout), so this line is a flex item and never a grid one.
-       It is what `whiteline` still needs on the creature sheet, and the two rules were one. */
+    /* `grid-area` is inert here — the mount div is a flex container, so this is a flex item,
+       not a grid one. */
     .greyline {
       grid-area: line;
       border-top: var(--rolltableconfig-rule-border-width) solid var(--rolltableconfig-rule-color);
@@ -122,6 +103,8 @@
       margin-right: var(--rolltableconfig-rule-margin-inline);
     }
 
+    /* `color` here and css/mothership.css's `.list-roll:hover` are equal specificity (0,2,0);
+       the FINISH label stays dark on hover only because this scoped block loads after that file. */
     .button-white {
       margin-left: var(--rolltableconfig-button-margin-inline-start);
       padding: var(--rolltableconfig-button-padding);

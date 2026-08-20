@@ -1,11 +1,6 @@
 import { type Page } from '@playwright/test';
 import { test, expect } from './fixtures/foundry-clients.ts';
 
-// The creature sheet is ApplicationV2 + Svelte (module/ui/creature/). It is the first consumer of
-// the shared sections in module/ui/parts/sections/, so these specs cover the frame the character
-// sheet inherits in S7 as much as the creature's own parts: the stat header the settings window
-// gates, the item panels, and the two pip tracks that used to be HTML strings on the document.
-
 const open = async (page: Page, system: Record<string, unknown> = {}, name = '__e2e_creature') => {
   const opened = await page.evaluate(
     async ({ s, n }: { s: Record<string, unknown>; n: string }) => {
@@ -45,7 +40,7 @@ const itemField = (page: Page, uuid: string, itemId: string, path: string) =>
     { u: uuid, i: itemId, p: path },
   );
 
-/** Playwright's drag helpers carry no dataTransfer, and Foundry reads the payload out of one. */
+// Playwright's drag helpers carry no dataTransfer, and Foundry reads the payload out of one.
 const dropOn = (page: Page, selector: string, documentUuid: string) =>
   page.evaluate(
     async ({ sel, u }: { sel: string; u: string }) => {
@@ -107,7 +102,6 @@ test.describe('creature sheet', () => {
     const { appId } = await open(gmPage);
     const sheet = gmPage.locator(`#${appId}`);
 
-    // AppV1 opened on a tab named "character", which no panel declares, so the body was blank.
     await expect(sheet.locator('.tab[data-tab="skills"]')).toBeVisible();
     await sheet.locator('a.tab-select[data-tab="weapons"]').click();
     await expect(sheet.locator('.tab[data-tab="weapons"]')).toBeVisible();
@@ -115,7 +109,6 @@ test.describe('creature sheet', () => {
   });
 
   test('the notes tab shows bio and notes together', async ({ gmPage }) => {
-    // AppV1 enriched description and biography but never notes, so this tab always rendered empty.
     const { appId } = await open(gmPage, {
       notes: '<p>ate the away team</p>',
       biography: '<p>found drifting near the derelict</p>',
@@ -270,8 +263,7 @@ test.describe('creature sheet', () => {
     const { appId } = await open(gmPage);
     const sheet = gmPage.locator(`#${appId}`);
 
-    // AppV1 put this in the title bar; ApplicationV2 files header controls under the ellipsis,
-    // and renders them as a context menu whose entries are identified only by their label.
+    // Header controls render as a context menu whose entries are identified only by their label.
     await sheet.locator('.header-control[data-action="toggleControls"]').click();
     await gmPage.locator('.context-item', { hasText: 'Creature Settings' }).click();
 

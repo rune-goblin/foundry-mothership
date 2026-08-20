@@ -9,9 +9,8 @@ export type Comparison = '<' | '<=' | '>' | '>=';
 export type Keep = 'kh' | 'kl';
 
 /**
- * One roll, lexed once. `dice` is the expression advantage duplicates — `1d100`, `2d10+1`,
- * `Str/10` — and `count`/`faces` are filled in only when that expression is a plain NdX, which
- * is what the zero-based and crit rules need to know.
+ * `dice` is the expression advantage duplicates — `1d100`, `2d10+1`, `Str/10`. `count`/`faces`
+ * are filled in only when that expression is a plain NdX, which the zero-based and crit rules need.
  */
 export interface RollSpec {
   readonly dice: string;
@@ -31,11 +30,7 @@ export type CheckKind =
   | 'panic'
   | 'table';
 
-/**
- * The stats and saves a check can target — the key space `system.stats` uses. The first seven are
- * the character's, and are also the scopes a condition may name; `instinct` and `loyalty` belong
- * to creatures, which roll checks no condition reaches.
- */
+/** `instinct` and `loyalty` belong to creatures; the other seven are also the scopes a condition may name. */
 export type StatKey =
   | 'strength'
   | 'speed'
@@ -79,11 +74,7 @@ export const CHECK_SEMANTICS: Readonly<Record<CheckKind, CheckSemantics>> = {
   table: { aim: 'low', comparison: '<', crits: false, zeroBased: true, autoFail: false },
 };
 
-/**
- * Which die of the pair the formula keeps. Advantage keeps the die that helps, and what helps
- * depends on the direction of the check — so the same modifier inverts between rolling under
- * and rolling over.
- */
+/** Advantage keeps the die that helps — which face that is inverts between rolling under and rolling over. */
 export function keepOf(spec: RollSpec): Keep | null {
   if (spec.advantage === 'none') return null;
   const helpful = spec.aim === 'low' ? 'kl' : 'kh';

@@ -1,12 +1,6 @@
 import { type Page } from '@playwright/test';
 import { test, expect } from './fixtures/foundry-clients.ts';
 
-// The class sheet is ApplicationV2 + Svelte (module/ui/class/). It was the last AppV1 item sheet,
-// and it is the one that made base_adjustment a free-form ObjectField: the old getData() resolved
-// skill names onto system while rendering. Those keys are a real SchemaField now, so what needs
-// proving here is that every field it binds still round-trips, and that the lists it owns -- the
-// granted skills, the stat options and the choose_skill_or groups -- add and delete.
-
 const openClass = async (page: Page, system: Record<string, unknown> = {}) =>
   page.evaluate(async (s: Record<string, unknown>) => {
     const doc = await (window as any).Item.create({ name: '__e2e_class', type: 'class', system: s });
@@ -73,8 +67,7 @@ test.describe('class sheet', () => {
     );
   });
 
-  // base_adjustment is a SchemaField as of S4. A binding it did not declare would be accepted by
-  // the sheet and cleaned off on the way in, so read the stored source back rather than the input.
+  // A binding the schema doesn't declare gets cleaned off silently, so read the stored value back rather than the input.
   test('editing an adjustment persists it as a number', async ({ gmPage }) => {
     const { appId, uuid } = await openClass(gmPage);
     const combat = gmPage.locator(`#${appId} input[name="system.base_adjustment.combat"]`);
@@ -177,8 +170,6 @@ test.describe('class sheet', () => {
       await (await (window as any).fromUuid(u)).sheet.render(false);
     }, uuid);
 
-    // The AppV1 sheet pushed the null from fromUuid straight into its render list, giving a blank
-    // row; worse, an unresolvable entry in a choose_skill_or option threw and blanked the sheet.
     await sheet.locator('a.tab-select[data-tab="skills.fixed"]').click();
     const row = sheet.locator(`li.item[data-item-id="${skill}"]`);
     await expect(row).toContainText(skill);
@@ -230,8 +221,7 @@ test.describe('class sheet', () => {
     await draft.locator('input').nth(1).fill('2');
     await draft.locator('a.skills-group-option-createnew').click();
 
-    // The old sheet read these back out of the DOM and stored the raw strings; the counts are
-    // numbers, as the generated classes store them.
+    // Counts are stored as numbers, matching how generated classes store them.
     await expect
       .poll(() => stored(gmPage, uuid, 'system.selected_adjustment.choose_skill_or'))
       .toEqual([

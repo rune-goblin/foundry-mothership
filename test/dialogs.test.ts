@@ -1,9 +1,4 @@
 // @vitest-environment jsdom
-//
-// Audit F6: five of legacy's dialogs wrapped DialogV2 in `new Promise(resolve => …)` and never
-// called `resolve` from any button, so every `await` on them parked for good. The proof that they
-// are gone is a test, not a review note: each prompt below is awaited, on a button and on a
-// dismissal, and every one of them comes back.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushSync, mount, unmount } from 'svelte';
 
@@ -139,7 +134,6 @@ describe('svelteDialog', () => {
     await expect(answer).resolves.toBeNull();
   });
 
-  // A button may answer with nothing meaningful; that is still an answer, not a dismissal.
   it('keeps an answer of null distinct from a dismissal', async () => {
     const dismissed = vi.fn();
     const answer = svelteDialog<null, null, typeof props>({
@@ -278,7 +272,6 @@ describe('the prompts', () => {
     await expect(answer).resolves.toBe('disadvantage');
   });
 
-  // §34 — the condition names the roll, and the dialog opens on the button it argues for.
   it('chooseAdvantage opens on the button a condition preselects, and says why', async () => {
     const answer = chooseAdvantage({
       title: 'Rest Save',
@@ -325,8 +318,7 @@ describe('the prompts', () => {
     await expect(answer).resolves.toEqual({ skill: ATHLETICS, advantage: 'advantage' });
   });
 
-  // The window is about a number, so it states it: the Stat it opened on, and what the chosen
-  // Skill does to it. `d100Check` totals the same two.
+  // Mirrors what `d100Check` totals: the Stat the window opened on plus the chosen Skill.
   it('chooseSkill totals the roll it is about to make', async () => {
     const answer = chooseSkill({
       title: 'Body Save',
@@ -485,7 +477,7 @@ describe('the prompts', () => {
       expect(img.getAttribute('src')).not.toContain('undefined');
     }
 
-    // Legacy's Wound Roll dialog opened on Blunt Force; nothing about the key order says so.
+    // Blunt Force is preselected; the (alphabetical) key order gives no reason why.
     expect(only().element.querySelector<HTMLInputElement>('#wound-blunt-force')!.checked).toBe(true);
 
     only().element.querySelector<HTMLInputElement>('#wound-gunshot')!.click();
@@ -602,8 +594,6 @@ describe('the components themselves', () => {
     expect(changes).toEqual(['sk1']);
   });
 
-  // Only the chosen row prints its description, so the name is written once and the sum beneath has
-  // nothing to do but add up.
   it('CheckPrompt gives its description to the chosen row alone', () => {
     const target = render(CheckPrompt as never, {
       heading: 'Add a Skill?',
@@ -622,8 +612,6 @@ describe('the components themselves', () => {
     expect(target.querySelector('.check-readout-total')?.textContent).toBe('60');
   });
 
-  // The slot is a fixed number of lines whether the chosen row needs them or not, so the rows below
-  // never move as the selection travels.
   it('CheckPrompt reserves the description slot the caller asked for', () => {
     const target = render(CheckPrompt as never, {
       heading: 'Against which Stat?',

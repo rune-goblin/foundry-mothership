@@ -1,9 +1,6 @@
-// The five Item packs the price lists and the class/skill tables become.
-//
-// The runtime schema is not reshaped to match the
-// book, so this file is the adapter. Where the two disagree — a book `tier` against a runtime
-// `rank`, a wound reference against the `woundEffect` string actor.js parses — the book form is
-// translated here and the DataModel guard checks the result.
+// The runtime schema isn't reshaped to match the book, so this file is the adapter — a book
+// `tier` against a runtime `rank`, a wound reference against the `woundEffect` string actor.js
+// parses — translated here, with the DataModel guard checking the result.
 import { ARMOR } from '../../../../content/books/psg/armor.ts';
 import { CLASSES, type ClassId } from '../../../../content/books/psg/classes.ts';
 import { EQUIPMENT } from '../../../../content/books/psg/equipment.ts';
@@ -28,11 +25,7 @@ const ICON = {
   item: 'icons/svg/item-bag.svg',
 } as const;
 
-/**
- * The generator's class pane is four cards side by side, and four copies of the same silhouette
- * tell a player nothing. Foundry core ships no class art, so each takes the core icon nearest its
- * trade: the Marine's rifle, the Android's clockwork, the Scientist's pill, the Teamster's cargo.
- */
+/** Foundry core ships no class art, so each class takes the core icon nearest its trade. */
 const CLASS_ICON: Record<ClassId, string> = {
   marine: 'icons/svg/sword.svg',
   android: 'icons/svg/clockwork.svg',
@@ -81,8 +74,8 @@ const skills: PackDefinition = {
           description: html(skill.description),
           rank: RANK[skill.tier],
           bonus: skill.bonus,
-          // The generator compares these against the UUIDs a class granted, so they are UUIDs and
-          // not ids — see actor-generator.js's showSkillDialog.
+          // UUIDs, not ids: actor-generator.js's showSkillDialog compares these against the
+          // UUIDs a class granted.
           prerequisite_ids: skill.prerequisites.map((id) => uuid(ids, 'skills', id)),
         },
       },
@@ -91,9 +84,8 @@ const skills: PackDefinition = {
 };
 
 /**
- * The book's `adjustments` against the runtime's flat `base_adjustment` / `selected_adjustment`.
- * Three rules and one choice: a named target is a key (stats and saves share the key space),
- * `all` fans out, and a null target is something the player picks.
+ * Maps the book's `adjustments` onto the runtime's flat `base_adjustment` / `selected_adjustment`:
+ * a named target is a key, `all` fans out across stats or saves, a null target is player-picked.
  */
 function adjustments(klass: (typeof CLASSES)[number], ids: IdLookup) {
   const base: Record<string, number | string[]> = {
@@ -125,8 +117,7 @@ type Picks = ReturnType<typeof noPicks>;
 
 /**
  * A pick the book qualifies with "and an Expert and Trained Skill prerequisite" is the runtime's
- * *_full_set — the dialog that walks the whole prerequisite chain. That is the Scientist's Master
- * Skill, and it is the one class adjustment the plan left open.
+ * *_full_set — the dialog that walks the whole prerequisite chain (the Scientist's Master Skill).
  */
 function addPick(into: Picks, tier: keyof typeof RANK, count: number, withPrerequisites = false): void {
   const key = withPrerequisites && tier !== 'trained' ? (`${tier}_full_set` as keyof Picks) : tier;

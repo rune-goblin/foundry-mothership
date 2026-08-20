@@ -31,10 +31,7 @@
 </nav>
 
 <style>
-  /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
-     application; @layer system puts these in the slot the rest of the system occupies.
-     The bar's flex row, gap and line-height come from Foundry's own `nav.tabs` block, which
-     is why the class stays on the markup — only what css/mothership.css held is here. */
+  /* nav.tabs's flex row, gap and line-height come from Foundry's own core CSS, not this file. */
   @layer system {
     nav {
       --tabs-bar-surface: var(--surface-neutral-lowest);

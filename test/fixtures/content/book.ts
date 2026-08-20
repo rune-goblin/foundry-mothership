@@ -8,9 +8,8 @@ import { QUIPS } from './books/fixture/quips.ts';
 export const FIXTURE_ROOT = join(import.meta.dirname, '.');
 const SOURCE = 'test/fixtures/content/books/fixture';
 
-// `modifiers` is deliberately not mapped into `system`: MothershipConditionModel declares no such field, so
-// emitting it is the exact defect the DataModel guard exists to catch. S8 adds the field; until
-// then test/content-pipeline.test.ts uses it as the negative case.
+// `modifiers` is deliberately not mapped into `system`: MothershipConditionModel declares no
+// such field, so emitting it is the exact defect the DataModel guard exists to catch.
 const gadgets: PackDefinition = {
   pack: 'gadgets',
   compendium: 'fixture_gadgets_1e',

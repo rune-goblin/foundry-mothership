@@ -1,15 +1,7 @@
 /**
- * The nine conditions the system can apply, and what counts as "this actor already has it" — the
- * one leaf both `api.ts` (targeting `@Apply`) and `checks/actions.ts` (reading `@Gain[health
- * -bleeding]`'s severity) import, so a two-file cycle between them never has to exist.
- *
- * Granting a condition writes through `createEmbeddedDocuments({keepId: true})` now
- * (`mutation/items.ts`), so the compendium id survives that one path. It does not survive a
- * condition dragged straight from the compendium onto a sheet — Foundry's own drop handler mints
- * a fresh id and never touches this system's code at all. An id match and an exact name match are
- * both real identity, and only their union covers both paths; the loose, case-folded name
- * comparison this replaced covered neither reliably (a rename or a translation could still slip
- * past it, silently).
+ * A dragged-in condition (Foundry's own drop handler, not this system's code) mints a fresh id, so
+ * it never matches by id — only by exact name. Both `id` and `name` count as identity because
+ * granting through `applyCondition` keeps the compendium id but dragging doesn't.
  */
 
 /** The canonical name and document id `content/ids.json` minted for each condition slug. */

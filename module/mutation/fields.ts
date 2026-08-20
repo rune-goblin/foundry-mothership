@@ -1,12 +1,7 @@
-/**
- * The names content uses for the numbers it changes. `address.ts` keeps taking the dotted string
- * because 39 shipped macros carry it; this is the short vocabulary written *into* content — the
- * book's word, not the schema's, which is why the Wound track is `wounds` here and `hits` there.
- * One map, so a renamed pod is one edit rather than a search through prose.
- */
-
 import type { PodLeaf } from './address.ts';
 
+// Content's own vocabulary, not the schema's — e.g. `wounds` here is `system.hits`, the
+// book's word rather than the field's.
 const PODS = {
   health: 'system.health',
   wounds: 'system.hits',

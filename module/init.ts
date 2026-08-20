@@ -1,13 +1,3 @@
-/**
- * Boot. Hooks and registration, nothing else: this module imports downward and exports only the
- * handlers it registers, so importing it is what wires the system up and nothing else can pull a
- * registration in by accident. Legacy's entry was the boot script, the public API, a dialog, a
- * document resolver and a number formatter at once, and `actor.js` imported it back — a cycle that
- * worked by hoisting accident (audit RC7).
- *
- * Nothing here decides anything about the game. Every handler is a call into a service.
- */
-
 import { compare } from './compare.js';
 import { ACTOR_MODELS } from './data/actor-models.js';
 import { ITEM_MODELS } from './data/item-models.js';
@@ -77,14 +67,10 @@ interface MacroDocument {
 /** PSG 24 — everything is settled on the percentile die, initiative included. */
 const INITIATIVE = { formula: '1d100', decimals: 2 };
 
-/**
- * The token bars a new actor gets. `TokenDocument#getBarAttribute` resolves the path against
- * `actor.system`, so these are bare — the old hook wrote `system.health` with a comment claiming
- * the opposite, and every actor created since has had two dead bars (audit RC1).
- */
+/** Bare paths, not `system.health` etc: `TokenDocument#getBarAttribute` resolves against
+ *  `actor.system` itself, so a `system.`-prefixed path silently leaves the bar dead. */
 export const TOKEN_BARS = { bar1: 'health', bar2: 'hits' } as const;
 
-/** The three Dice So Nice colorsets, named by the settings that select them (audit RC15). */
 export const DICE_COLORSETS = [
   {
     name: 'roll',
@@ -194,19 +180,15 @@ export function onPreCreateActor(document: CreatedActor, createData: { type?: st
     ...(character
       ? {
           'prototypeToken.actorLink': true,
-          // `vision` was replaced by this in v10; the schema discarded the old key silently (RC1).
+          // Replaces the `vision` key removed in v10: the schema now discards that key silently.
           'prototypeToken.sight.enabled': true,
         }
       : {}),
   });
 }
 
-/**
- * Per **message**, not per chat log. Foundry renders a card twice — the sidebar's copy, and a
- * second one `#postNotification` puts in the notification element over the canvas, which is not
- * inside the log. A listener on the log left every button in that copy dead, and that copy is what
- * a player with a collapsed sidebar clicks. Binding twice adds nothing: it is the same function.
- */
+/** Hooked per message, not per chat log: Foundry's `#postNotification` copy over the canvas is
+ *  not inside the log, so a log-level listener leaves that copy's buttons dead. */
 export function onRenderChatMessage(message: CardMessage, element: HTMLElement): void {
   bindChatActions(element);
   guardCardActions(element, ownsCard(message, game?.user));
@@ -228,11 +210,6 @@ interface DroppedItem {
   readonly img: string;
 }
 
-/**
- * The macro a dropped item becomes. Legacy rebuilt the actor by splitting the UUID on dots and
- * assuming an `Actor.<id>.Item.<id>` shape — a token actor's item threw — and placed its "you can
- * only do this with owned items" warning after the expression that had already thrown (audit RC4).
- */
 export async function createItemMacro(data: DropData, slot: number): Promise<void> {
   const found = await lookup<DroppedItem>(data.uuid ?? '', 'Item');
   if (!found.found) {

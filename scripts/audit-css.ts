@@ -1,22 +1,12 @@
-// Which class selectors in css/ still style something? The stylesheet is a contract no compiler
-// checks, so a class outlives the markup that wore it silently — 67 were claimed dead by a hand
-// audit that also called `sbt-profile` dead while SheetHeader.svelte was still emitting it
-// (docs/plans/design-system.md §1.3). Hence a script: it re-runs before any deletion, and
-// `--assert-none` makes it a guard once the dead list is empty.
-//
-// Aliveness is deliberately generous: a class survives on a mention anywhere in the corpus
-// below, on a prefix/suffix a template literal could interpolate into it, or on the core
-// allowlist — keeping a dead rule costs nothing and deleting a live one costs pixels. Only
-// mentions written where a class can actually go count as `used`; the rest are reported as
-// `loose` for a human to settle, which is how `dropdown` (prose in three comments) and `white`
-// (an item description) were told apart from real markup.
+// Aliveness is deliberately generous: a class survives on a mention anywhere in the corpus below,
+// on a prefix/suffix a template literal could interpolate into it, or on the core allowlist —
+// keeping a dead rule costs nothing and deleting a live one costs pixels.
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 
 const REPO = resolve(import.meta.dirname, '..');
 
-// Foundry's own DOM wears these and our stylesheet targets them, so no Mothership source has to
-// mention them. Verified against the installed v14 build's templates and client sources.
+// Foundry's own DOM wears these; no Mothership source has to mention them.
 const CORE_CLASSES = new Set([
   'application', // the ApplicationV2 frame
   'window-header',
@@ -106,7 +96,7 @@ const corpus = [
   ...filesUnder(join(REPO, 'packs/_source'), ['.json']),
   ...filesUnder(join(REPO, 'content'), ['.ts']),
   ...filesUnder(join(REPO, 'lang'), ['.json']),
-  // Pack macros carry HTML inside JSON strings, where every quote arrives escaped.
+  // Pack macros carry HTML inside JSON strings, with every quote escaped.
 ].map((path) => ({ path, text: readFileSync(path, 'utf8').replace(/\\"/g, '"') }));
 
 /** token → the files that mention it, capped: this is evidence to eyeball, not an index. */
@@ -159,11 +149,10 @@ for (const { path, text } of corpus) {
   }
 }
 
-// `class={[`skill-${variant}`, …]}` and `class="grid grid-{n}col"` build names no grep can see.
-// Each interpolation contributes the static word on its left and the one on its right; a class
-// completes the pair when it starts with the first and ends with the second. Requiring both
-// halves of one interpolation is what keeps this from matching every name ending in a common
-// syllable — a bare suffix counts only when it opens with a hyphen, the `${x}-col` idiom.
+// `class={[`skill-${variant}`, …]}` builds names no grep can see: a class matches when it starts
+// with the word left of the interpolation and ends with the word right of it. A bare suffix (no
+// prefix) only counts when it opens with a hyphen — the `${x}-col` idiom — else it would match
+// any name sharing a common syllable.
 type Pattern = { prefix: string; suffix: string; site: string };
 const patterns: Pattern[] = [];
 
@@ -225,8 +214,7 @@ for (const name of [...declared.keys()].sort()) {
   else if (dynamic) {
     alive.push({ name, why: 'dynamic', where: `${dynamic.prefix}…${dynamic.suffix} ${dynamic.site}`, sites });
   }
-  // The name occurs, but never where a class is written — a comment, an identifier, prose in a
-  // pack description. Too weak to delete on and too weak to trust: a human decides.
+  // Occurs, but never where a class is written — too weak to delete on or trust; a human decides.
   else if (seen) alive.push({ name, why: 'loose', where: seen.join(' '), sites });
   else dead.push({ name, why: 'dead', where: '', sites });
 }

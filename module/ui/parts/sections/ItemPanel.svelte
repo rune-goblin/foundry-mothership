@@ -7,12 +7,6 @@
   import ItemControl from '../ItemControl.svelte';
   import { localize } from '../../../i18n.ts';
 
-  // One item-list block. What both actor sheets share byte for byte is the frame -- the list,
-  // the header row, the create control and the row wrapper carrying the item id. What differs
-  // per taxonomy is the columns, so `headers` is data and `row` is a snippet the caller owns.
-  //
-  // No <style> block: the section writes no class of its own. Every name in the rendered markup
-  // belongs to the ItemList family, which took its rules home already.
   let { headers, items, row, create, style } = $props();
 </script>
 

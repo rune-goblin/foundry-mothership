@@ -1,22 +1,8 @@
-/**
- * One prompt, one promise. Five of legacy's dialogs wrapped `DialogV2` in `new Promise(resolve =>
- * …)` and never called `resolve` from any button, so every `await` on them parked for good and
- * the flows worked only because the callbacks acted on their own (audit F6). `DialogV2.wait`
- * already returns a real promise; this mounts a Svelte component as the dialog's content and
- * keeps that promise's contract: it resolves with the answer on every button, and with `null`
- * when the dialog is dismissed. The component is unmounted either way.
- *
- * The component owns what the user picked and reports it through `onchange`; the buttons turn
- * that value into the answer. So a dialog whose buttons *are* the answer needs no state at all,
- * and one that picks a row plus a modifier needs no second dialog.
- */
-
 import { mount, unmount, type Component } from 'svelte';
 
 import DialogBody from './DialogBody.svelte';
 
 export interface AnswerProps<V> {
-  /** What the component starts on. */
   readonly value: V;
   readonly onchange: (value: V) => void;
 }
@@ -27,7 +13,7 @@ export interface DialogButton<V, T> {
   readonly label: string;
   readonly icon?: string;
   readonly class?: string;
-  /** DialogV2 autofocuses the button carrying this — the condition preselect (§34). */
+  /** DialogV2 autofocuses the button carrying this. */
   readonly default?: boolean;
   readonly answer: (value: V) => T;
 }
@@ -39,11 +25,8 @@ export interface SvelteDialogOptions<V, T, P extends object> {
   readonly initial: V;
   readonly buttons: readonly DialogButton<V, T>[];
   readonly width?: number;
-  /**
-   * Stand the buttons down the right of the window instead of along its foot. They stay DialogV2's
-   * own `.form-footer` buttons — only the form's tracks move — so the default button keeps its
-   * `autofocus` and Enter still submits through it.
-   */
+  /** Stands the buttons down the right of the window instead of along its foot; they stay
+   *  DialogV2's own `.form-footer` buttons, so `autofocus`/Enter still work. */
   readonly rail?: boolean;
 }
 
@@ -75,10 +58,10 @@ declare const foundry:
   | { readonly applications: { readonly api: { readonly DialogV2: { wait(options: DialogV2Options): Promise<unknown> } } } }
   | undefined;
 
-/** The class the legacy dialogs carry, so `css/mothership.css` styles these the same way. */
+/** `css/mothership.css` styles dialogs by these classes — renaming them needs a CSS change too. */
 const CLASSES = ['mothership', 'macro-popup-dialog'] as const;
 
-/** The class that turns the form's one column into two and stands the footer up as the rail. */
+/** Turns the form's one column into two and stands the footer up as the rail; styled in CSS. */
 const RAIL_CLASS = 'macro-popup-rail';
 
 /** A mount point, not a surface: no rule in either stylesheet selects it, so its rename is code. */
@@ -109,13 +92,11 @@ export async function svelteDialog<V, T, P extends object>(
     rejectClose: false,
     render: (_event, dialog) => {
       const target = dialog.element.querySelector(`.${MOUNT_CLASS}`);
-      // ApplicationV2 renders more than once, usually into the node the component already holds.
-      // A re-render that replaces that node would otherwise leave the component mounted on a
-      // detached element and the dialog empty, so a new node is a remount, not a second mount.
+      // ApplicationV2 can re-render into a new node; treat that as a remount, not a second mount,
+      // or the component ends up mounted on a detached element and the dialog goes empty.
       if (target === null || target === mounted) return;
       if (component !== null) void unmount(component);
 
-      // A remount picks up where the last one left off, so a re-render is invisible to the user.
       const props = {
         component: options.component,
         props: options.props,

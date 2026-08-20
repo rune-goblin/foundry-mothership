@@ -1,12 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-/**
- * The roll methods are the whole named surface a sheet, a macro or a chat button calls, and each
- * is one line: the value they add is the *dispatch* — which `Check` the union gets. Legacy took
- * seven positional parameters and re-read three of them as sentinels, so a damage roll and a Rest
- * Save were the same method as a Stat Check (audit F9, F14). These specs pin the translation.
- */
-
 const services = vi.hoisted(() => ({
   runCheck: vi.fn(async () => null),
   promptCheck: vi.fn(async () => null),
@@ -64,8 +57,6 @@ describe('the roll methods', () => {
     expect(services.runCheck).toHaveBeenCalledWith(sarah, { kind: 'weapon-attack', itemId: 'wpn1' }, {});
   });
 
-  // Audit F5: the damage roll used to reach the ammunition block on its way past. Damage is a
-  // different kind of check now, and only the attack kind can spend a shot.
   it('rolls damage as its own kind, carrying an override the caller states', async () => {
     const sarah = actor();
     await sarah.rollWeapon('wpn1', { roll: 'damage', damage: '3d10' });
@@ -88,7 +79,6 @@ describe('the roll methods', () => {
     });
   });
 
-  // Table identity is a key, never a munged display name or a raw document id (audit F13).
   it('rolls a table by key', async () => {
     const sarah = actor();
     await sarah.rollTable('gunshot', { advantage: 'disadvantage' });

@@ -5,12 +5,8 @@ import { expandSlots, packageCounts, PICK_KINDS } from './picks.js';
 import { CLASS_ICONS } from './labels.js';
 import { localize, format } from '../../i18n.ts';
 
-/**
- * The draft store. The generator is a wizard, not a sheet: the actor
- * is read once when the window opens and written once on save, so the state lives here rather than
- * in the form. The AppV1 window had no state at all — every step reached into the DOM with
- * `this._element.find(...)`, and `getData()` wrote its render scaffolding onto the live actor.
- */
+// The generator is a wizard, not a sheet: the actor is read once when the window opens and
+// written once on save, so the state lives here rather than in the form.
 
 const STATS = ['strength', 'speed', 'intellect', 'combat'];
 const SAVES = ['sanity', 'fear', 'body'];

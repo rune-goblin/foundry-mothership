@@ -3,23 +3,12 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { SYSTEM_ID, joinAsFirstGm, preflight } from './fixtures/foundry-clients.ts';
 
-/**
- * Prove the harness is pointed at the world, system and content we meant to test, before any spec
- * runs. `reuseExistingServer` is on locally, so a stray Foundry on this port would otherwise be
- * reused silently and every result would be about the wrong target.
- *
- * A system needs no activation step — unlike a module, it is inherently active in a world built on
- * it — so what is left to check is the *content*. `dist/` reaches the harness through a symlink and
- * is always current, but **packs are copied**: repo → live data dir (`npm run setup`) → test tree
- * (every boot). A pack that has not been through that sequence is invisible here, and packing never
- * deletes, so a removed document lingers as a ghost. Both have cost whole cycles of green runs
- * against content that was not the content under test; the count check below is what says so.
- */
+// Packs are copied repo -> live data dir (`npm run setup`) -> test tree on every boot, and packing
+// never deletes, so a removed document lingers as a ghost -- the count check below catches it.
 
 const repo = new URL('../../', import.meta.url);
 const local = (path: string) => fileURLToPath(new URL(path, repo));
 
-/** pack directory → compendium name, from the registry that owns the mapping. */
 function expectedPackSizes(): Record<string, number> {
   const registry = JSON.parse(readFileSync(local('content/ids.json'), 'utf8')) as {
     packs: Record<string, { compendium: string }>;

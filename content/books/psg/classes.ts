@@ -137,6 +137,3 @@ export const CLASSES = [
     source: psg(42),
   },
 ] as const satisfies readonly CharacterClass[];
-
-// `granted` is typed `readonly SkillId[]`, so a class granting a skill the catalog does not define
-// fails to compile. That join was 0-unresolved when measured, and stays that way by construction.

@@ -5,9 +5,8 @@ import { fileURLToPath } from 'node:url';
 import { CONDITIONS } from '../content/books/psg/conditions.ts';
 import { CONDITION_IDS, isCondition } from '../module/conditions.ts';
 
-// Audit RC13's join, the way test/tables.test.ts re-derives TABLES from the same registry: a
-// re-minted id fails here rather than breaking `@Apply[coward]` in every world running on the
-// shipped conditions.
+// Re-derived from the same registry as test/tables.test.ts — a re-minted id fails here rather
+// than breaking `@Apply[coward]` in shipped worlds.
 const ids = JSON.parse(
   readFileSync(fileURLToPath(new URL('../content/ids.json', import.meta.url)), 'utf8'),
 ) as { packs: { conditions: { documents: Record<string, { id: string }> } } };
@@ -38,9 +37,8 @@ describe('isCondition', () => {
     expect(isCondition({ id: 'pxtF1NfletmoFFGV', name: 'Renamed by a GM' }, 'bleeding')).toBe(true);
   });
 
-  // The sheet-drop path: dragging a condition from the compendium onto an actor never touches
-  // `mutation/items.ts`, so the embedded item keeps whatever fresh id Foundry's own handler
-  // minted — only the name it copied from the compendium is still the condition's identity.
+  // Dragging a condition onto an actor never touches `mutation/items.ts`, so the embedded item
+  // keeps whatever fresh id Foundry's own handler minted — only the copied name is still identity.
   it('matches by the exact canonical name alone, when the id is a fresh one — the sheet-drop path', () => {
     expect(isCondition({ id: 'aFreshRandomId01', name: 'Bleeding' }, 'bleeding')).toBe(true);
   });

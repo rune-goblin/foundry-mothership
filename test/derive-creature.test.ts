@@ -2,14 +2,6 @@ import { describe, it, expect } from 'vitest';
 
 import { MothershipActor } from '../module/documents/actor.ts';
 
-/**
- * The creature derivation had no unit test at all (audit T8), though it carries the one derived
- * number with real consequences at the table: a swarm's Combat, scaled by the Wounds it has left.
- * The armour, net HP and Bleeding blocks below are the same three the character derives — they
- * were verbatim copies in legacy (F25) and are shared functions now, so they are asserted here
- * too: the sharing is the change.
- */
-
 type Item = { type: string; name?: string; system: Record<string, unknown> };
 
 const armour = (armorPoints: number, damageReduction = 0, equipped = true): Item =>
@@ -85,8 +77,6 @@ describe('_deriveCreature', () => {
     });
   });
 
-  // The rule with teeth: a swarm hits as hard as it is numerous, so what is left of its Wounds
-  // multiplies its Combat. A sign error here survives every other tier.
   describe('a swarm’s combat', () => {
     it('is the swarm value times the wounds still standing', () => {
       const s = run({ combat: 30, hits: { value: 0, max: 3 }, swarm: { enabled: true, combat: 10 } });

@@ -5,13 +5,6 @@ import { createDocumentStore } from '../document-store.svelte.js';
 
 const { ActorSheetV2 } = foundry.applications.sheets;
 
-/**
- * The creature sheet. ActorSheetV2 brings the drag-and-drop the AppV1 sheet configured by hand:
- * rows drag from `.draggable` (which `ItemRow` emits) and a dropped Item is created on the actor.
- *
- * Fields keep their `name="system.…"` attributes and Foundry's own form handling persists them,
- * exactly as the AppV1 sheet did with `submitOnChange: true`.
- */
 export class MothershipCreatureSheet extends ActorSheetV2 {
   static DEFAULT_OPTIONS = {
     // css/mothership.css paints the content white and has no dark variant, so pin the light theme.
@@ -32,7 +25,6 @@ export class MothershipCreatureSheet extends ActorSheetV2 {
     actions: { configureCreature: MothershipCreatureSheet.#onConfigureCreature },
   };
 
-  /** AppV1's ActorSheet titled the window with the bare actor name; keep that. */
   get title() {
     return this.document.name;
   }
@@ -55,20 +47,17 @@ export class MothershipCreatureSheet extends ActorSheetV2 {
   #root;
   #store;
 
-  /** Everything the component needs that is not on the document, re-read on every render. */
   async _context() {
     const { TextEditor } = foundry.applications.ux;
     const enrich = (html) =>
       TextEditor.implementation.enrichHTML(html ?? '', { relativeTo: this.document });
 
     return {
-      // The gear list's weight column is a world setting, not actor data. AppV1 wrote it onto
-      // `system.settings`, a branch no schema declares, on every render.
+      // World setting, not actor data — kept off system.settings, which no schema declares.
       hideWeight: game.settings.get('mothershiprpg', 'hideWeight'),
       enriched: {
         description: await enrich(this.document.system.description),
         biography: await enrich(this.document.system.biography),
-        // AppV1 never enriched this one, so the notes tab rendered empty however much was stored.
         notes: await enrich(this.document.system.notes),
       },
       items: this.document.items.map((item) => ({
@@ -81,15 +70,8 @@ export class MothershipCreatureSheet extends ActorSheetV2 {
     };
   }
 
-  /**
-   * AppV2 calls this on every render. Mount once and return the cached node, so a re-render
-   * neither leaks a second component nor discards Svelte's state -- refresh the store instead.
-   *
-   * ActorSheetV2 binds its drag handlers to whatever `.draggable` elements exist when
-   * `_onRender` runs, so a row added by this render has to be in the DOM by then. Svelte's own
-   * microtask flush does land first today -- AppV2 awaits twice in between -- but that is
-   * incidental scheduling, and the flush makes the ordering the code's own.
-   */
+  // ActorSheetV2 binds drag handlers to `.draggable` elements present when _onRender runs;
+  // flushSync guarantees a newly rendered row is in the DOM by then.
   async _renderHTML() {
     const context = await this._context();
     if (this.#component) {

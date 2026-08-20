@@ -1,17 +1,5 @@
-// Every `name="system.x"` a sheet binds must exist in that type's schema. A SchemaField cleans
-// off keys it does not declare, so a binding to a missing field is not an error -- the edit is
-// accepted and silently discarded. That is how the DataModel migration stopped armour from
-// equipping: `equipped` was bound by the sheet, read by _deriveCharacter, and in no schema.
-//
-// Only unprefixed names are checked. `armor.system.equipped` and friends on the actor sheets
-// address an *embedded item*, not the actor, and are handled by click handlers rather than the
-// form -- checking them against the actor schema would be wrong.
-//
-// A Svelte sheet passes the name down as a prop (`rightName="system.health.max"`), builds some
-// of them from a key (`name="system.stats.{stat.key}.value"`), and drives repeated fields off a
-// table of paths (`{ name: 'system.credits.value', … }`). So any attribute *or property* whose
-// literal value is a `system.` path counts, and an interpolated segment stands for any key at
-// that level.
+// A SchemaField cleans off keys it does not declare, so a binding to a missing field is not an
+// error — the edit is accepted and silently discarded.
 import { describe, it, expect } from 'vitest';
 import { readFileSync, existsSync, globSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -65,6 +53,8 @@ const SOURCES: Record<string, Record<string, string[]>> = {
   },
 };
 
+// Only names whose literal value starts with `system.` count, so `armor.system.equipped` (an
+// embedded item, checked against a click handler, not the form) is excluded by construction.
 const BOUND =
   /(^|[\s{])[A-Za-z][A-Za-z0-9_-]*\s*[:=]\s*(?:"(system\.[^"]*)"|'(system\.[^']*)'|\{`(system\.[^`]*)`\})/g;
 

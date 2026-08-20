@@ -1,10 +1,4 @@
-/**
- * Finding the document a setting, a macro or a piece of content names. `fromIdUuid` scanned every
- * compendium on every call and returned `null` on a miss, which the roll path then dereferenced
- * (audit RC8, F18). Here a UUID resolves as a UUID, a bare id is one keyed collection lookup, the
- * compendium scan is the last resort it was always meant to be, and a miss is a value the caller
- * has to read rather than a null that flows on.
- */
+/** A miss is a value the caller must read, not a `null` that flows on and gets dereferenced downstream. */
 
 import { format } from './i18n.ts';
 
@@ -82,12 +76,7 @@ async function compendiumGet(ref: string, type: CollectionName): Promise<unknown
   return null;
 }
 
-/**
- * Whether the document found is the kind that was asked for. The keyed and compendium paths pick
- * their collection by type, so they cannot answer with anything else; a UUID names its own
- * collection, and `Actor.xxx` resolved a perfectly good Actor for a caller wanting a RollTable.
- * A document always names itself — a value that does not is a caller's own stub, not a document.
- */
+/** A UUID names its own collection, so `Actor.xxx` can resolve a valid Actor for a caller that wanted a RollTable. */
 function isType(document: unknown, type: CollectionName): boolean {
   const named = (document as { documentName?: unknown }).documentName;
   return typeof named !== 'string' || named === type;

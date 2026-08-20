@@ -4,13 +4,7 @@ export const ZERO_BASED_FACES: ReadonlySet<number> = new Set([10, 100]);
 /** Doubles are criticals — 00, 11, 22 … 99. */
 export const CRIT_DOUBLES: ReadonlySet<number> = new Set([0, 11, 22, 33, 44, 55, 66, 77, 88, 99]);
 
-/**
- * PSG 24 — a d100 Check or Save of 90 or more fails however high the target. It is a rule about
- * the percentile die, so `CHECK_SEMANTICS` carries which kinds it judges: the d100 checks and
- * saves, not the Panic Die or a table's d10. Legacy compared every roll it made against 90, and
- * no reachable roll differed — a d20 Panic Check against Stress cannot reach 90 — so the scope is
- * stated here rather than discovered at the next die size the system gains.
- */
+/** PSG 24 — a d100 Check or Save of 90 or more fails however high the target. Applies only to d100 checks and saves, not the Panic Die or a table's d10. */
 export const AUTOFAIL_AT = 90;
 
 /** PSG 24 — every Stat Check, Save and attack is rolled on this. */
@@ -31,14 +25,10 @@ export const DEATH_DIE = '1d10';
 /** Health reduced to zero costs this many Wounds; the surplus damage carries into the refilled bar. */
 export const WOUND_ROLLOVER = 1;
 
-/** The XP track's length. The clamp and the pip count are the same number (audit U14). */
+/** The XP track's length; the clamp uses this same number. */
 export const XP_PIPS = 15;
 
-/**
- * PSG 22 — the pip each rank is reached on, and the string that captions it. Both actor sheets
- * hand-wrote this map, each with its own hand-measured nudge per label; the pips are the rule and
- * belong here once. The values are lang keys because the caption is user-visible text.
- */
+/** PSG 22 — the pip each rank is reached on. Values are lang keys, not captions, since the caption is user-visible text. */
 export const XP_MILESTONES: Readonly<Record<number, string>> = {
   5: 'Mothership.SkillRankTrained',
   10: 'Mothership.SkillRankExpert',
@@ -57,12 +47,7 @@ export const RANK_BONUS: Readonly<Record<SkillRank, number>> = {
 /** The three ranks, weakest first — the order a picker offers them in. */
 export const SKILL_RANKS: readonly SkillRank[] = Object.keys(RANK_BONUS) as SkillRank[];
 
-/**
- * The one place a stored rank becomes a rank. `item-models.js` initializes `rank` to `'Trained'`
- * and the new-skill dialog writes the same capitalized words, so every reader would otherwise
- * carry its own case convention — which is how `ui/actor/items.js` came to hold a second bonus
- * table. An unrecognized rank is an error, never a silent zero.
- */
+/** The one place a stored rank (capitalized, e.g. `'Trained'`) becomes a `SkillRank`. An unrecognized rank throws rather than silently defaulting. */
 export function skillRank(stored: string): SkillRank {
   const key = String(stored ?? '').trim().toLowerCase();
   if (!Object.hasOwn(RANK_BONUS, key)) throw new Error(`Unknown skill rank: ${JSON.stringify(stored)}`);

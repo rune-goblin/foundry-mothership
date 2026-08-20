@@ -7,10 +7,8 @@
 </ol>
 
 <style>
-  /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
-     application; @layer system puts these in the slot the rest of the system occupies.
-     `items-list` stays on the markup even though nothing here selects it: css/mothership.css
-     still hangs the row thumbnail rules off it, and ItemControls gates its width on it. */
+  /* `items-list` class stays even though nothing here selects it: ItemImage and ItemControls
+     gate their own rules on `:global(.items-list)`. */
   @layer system {
     ol {
       --itemlist-margin-block: var(--space-8);

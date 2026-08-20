@@ -2,9 +2,6 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { test, expect } from './fixtures/foundry-clients.ts';
 
-// The unit tests prove the schemas match template.json on paper. This proves a real document,
-// created by a real Foundry against the registered DataModel, is stamped with those same
-// defaults -- the half that only a live world can answer.
 const template = JSON.parse(
   readFileSync(fileURLToPath(new URL('../../template.json', import.meta.url)), 'utf8'),
 ) as { Actor: Record<string, any>; Item: Record<string, any> };

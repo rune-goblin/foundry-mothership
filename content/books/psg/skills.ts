@@ -8,7 +8,7 @@ export interface Skill {
   tier: SkillTier;
   bonus: 10 | 15 | 20;
   description: string | null;
-  /** Skill ids; `_PREREQUISITES_RESOLVE` below is what makes them compile-checked. */
+  /** Skill ids, checked against this catalog's own ids at the bottom of this file. */
   prerequisites: readonly string[];
   /** Whether the book states the prerequisite outright, or the transcriber inferred it. */
   prerequisiteSource?: 'traced' | 'reviewed';
@@ -424,7 +424,6 @@ export const SKILLS = [
 
 export type SkillId = (typeof SKILLS)[number]['id'];
 
-// Every prerequisite names a skill this catalog defines. A typo is a compile error here, which is
-// the whole reason the book is TypeScript and not JSON. `Skill.prerequisites` cannot say so itself
-// — `SkillId` is derived from the very array being checked.
+// A prerequisite naming a skill this catalog doesn't define is a compile error — the reason
+// this book is TypeScript, not JSON.
 SKILLS.flatMap((skill) => skill.prerequisites) satisfies readonly SkillId[];

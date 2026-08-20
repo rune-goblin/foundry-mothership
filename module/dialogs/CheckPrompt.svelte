@@ -1,14 +1,4 @@
 <script>
-  /**
-   * The body of every check dialog: what is being decided, the number it decides, the list of
-   * choices, and the arithmetic. Two windows used to draw this — one asking which Skill to add to a
-   * known Stat, one asking which Stat a known Skill applies to — and they are the same window with
-   * the halves swapped, so `picks` says which half the list supplies and the other arrives as
-   * `fixed`.
-   *
-   * A check is one Stat plus at most one Skill however it was reached, so the sum reads in that
-   * order in both directions rather than in the order the two windows happen to ask.
-   */
   import { format, localize } from '../i18n.ts';
   import ChoiceList from './ChoiceList.svelte';
 
@@ -32,8 +22,8 @@
   const stat = $derived(picks === 'stat' ? chosen : fixed);
   const skill = $derived(picks === 'stat' ? fixed : chosen);
 
-  // A Save is asked before its actor is settled, so no Stat has a number yet. The window states no
-  // total rather than a wrong one.
+  // A Save asked before its actor is settled has no Stat number yet, so no total shows rather
+  // than a wrong one.
   const totalled = $derived(typeof stat?.amount === 'number');
 
   const working = $derived(
@@ -81,9 +71,8 @@
 
 <style>
   @layer system {
-    /* The head spans the window; the list and the roll rail share the row beneath it. The two
-       tracks are the dialog form's, declared in css/mothership.css, because the rail is Foundry's
-       own `.form-footer` and no scoped block can reach it. */
+    /* The two tracks beneath this row are declared in css/mothership.css, not here: the roll
+       rail is Foundry's own `.form-footer`, which no scoped block can reach. */
     .check-head {
       --check-prompt-head-gap: var(--space-20);
       --check-prompt-head-rule-width: var(--border-width-2);
@@ -129,9 +118,6 @@
       font-weight: var(--font-weight-semibold);
     }
 
-    /* The number the whole window is about. The book names no term for it — the one phrase the
-       lang file held was "giving you a higher number to roll under", so the label is that phrase
-       said once. */
     .check-readout {
       --check-prompt-readout-gap: 0.4em;
       --check-prompt-readout-label-font-size: var(--font-size-lg);
@@ -168,8 +154,6 @@
       min-width: 0;
     }
 
-    /* The working, alone. The chosen row carries its own description, so the name is written once
-       and the sum has nothing to do but add up. */
     .check-sum {
       --check-prompt-sum-surface: var(--color-neutral-100);
       --check-prompt-sum-font-size: var(--font-size-md);
@@ -202,8 +186,8 @@
       color: var(--check-prompt-sum-total-text);
     }
 
-    /* `condition-modifier` is the shell tier's, written by ChooseAdvantage too — one writer of
-       two, so its colour and emphasis stay there and only the spacing is ours. */
+    /* `condition-modifier`'s colour and emphasis live in the shell tier (shared with
+       ChooseAdvantage) — only the spacing here is this component's. */
     .check-note {
       margin: var(--space-0);
       font-size: var(--font-size-md);

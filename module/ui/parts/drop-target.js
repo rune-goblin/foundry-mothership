@@ -1,7 +1,6 @@
-// AppV1 wired drops through `options.dragDrop` with a `.dropitem` selector, re-bound on every
-// render. A Svelte component mounts once while ApplicationV2 re-renders many times, so
-// re-binding by selector would stack duplicate listeners on the same node. An attachment binds
-// to the node it is written on and tears itself down with it.
+// A Svelte component mounts once but ApplicationV2 re-renders many times; binding by selector
+// on each render would stack duplicate listeners. This attachment binds once to its node and
+// tears down with it.
 export function dropTarget(onDrop) {
   return (node) => {
     const dragover = (event) => event.preventDefault();

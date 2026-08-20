@@ -1,14 +1,13 @@
 import { psg, type Source } from './source.ts';
 
-// The record the wizard is measured against, not the copy it prints: the panes carry their own
-// strings, and only step 5 kept its `text`, because a test reads STARTING_STRESS out of it.
+// Only step 5 kept its `text` — a test reads STARTING_STRESS out of it.
 export interface CreationStep {
   id: string;
   number: number;
   title: string;
   instruction: string | null;
   text?: readonly string[];
-  /** The step's dice, where it has any. `formula` is what the generator rolls. */
+  /** `formula` is what the generator rolls; `raw` is display text. */
   roll: { raw: string; formula: string } | null;
   source: Source;
 }

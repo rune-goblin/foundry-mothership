@@ -4,9 +4,8 @@ const MODIFIER = /\[([+-])\]/;
 const PLAIN_DIE = /^-?(\d*)d(\d+)$/i;
 
 /**
- * Lex the roll mini-language — `1d100`, `1d10 [+]`, `-1d10`, `[-]` — into the record the rest of
- * the pipeline reads. `fallbackDice` supplies the die when the string carries only a modifier,
- * which is how the Panic Check is asked for: the table names the die, the caller names the odds.
+ * Lexes the roll mini-language — `1d100`, `1d10 [+]`, `-1d10`, `[-]`. `fallbackDice` supplies the
+ * die when the string carries only a modifier, as with the Panic Check: the table names the die.
  */
 export function parseRollSpec(rollString: string, aim: Aim, fallbackDice = ''): RollSpec {
   const text = String(rollString ?? '').trim();
@@ -45,9 +44,8 @@ export function rollFormula(rollString: string, aim: Aim, fallbackDice = ''): st
 }
 
 /**
- * A formula wearing a Dice So Nice colorset. Foundry reads the suffix as flavour on the term and
- * the module reads that flavour as the name of a dice theme, which is how the two shipped theme
- * settings reach the table.
+ * A formula wearing a Dice So Nice colorset — Foundry reads the bracket suffix as flavour on the
+ * term, and Dice So Nice reads that flavour as the theme name.
  */
 export function themed(formula: string, colorset: string): string {
   return colorset.trim() === '' ? formula : `${formula}[${colorset.trim()}]`;

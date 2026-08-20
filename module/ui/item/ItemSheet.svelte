@@ -6,9 +6,8 @@
   import { ITEM_BODIES, ITEM_EXTRA_TABS } from './types.js';
   import { localize } from '../../i18n.ts';
 
-  // No <style> block: the shell writes `sheet-body`, which five sheets share, and hands `ranges`
-  // to TabPanel, where no rule keys off it. Everything else on screen belongs to the parts this
-  // file mounts or to the type body it renders.
+  // No <style> block: `sheet-body` is shared across five sheets, and `ranges` (handed to
+  // TabPanel) has no rule keyed off it here.
   let { store } = $props();
 
   const doc = $derived(store.current);

@@ -1,6 +1,3 @@
-// A missing face falls back to the browser default and every sheet still renders, so nothing
-// else in any tier notices. Both halves of the link are checked: the stylesheet's URLs against
-// the files on disk, and the four include-lists that decide whether fonts/ ships at all.
 import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';

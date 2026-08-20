@@ -1,8 +1,6 @@
-/* Chakra Petch (display) and Barlow (text), self-hosted: SIL OFL 1.1, see
-   fonts/OFL-chakrapetch.txt and fonts/OFL-barlow.txt. Foundry serves fonts/ from disk,
-   so these are absolute like the image URLs below — Vite leaves them alone. */
+/* Self-hosted under SIL OFL 1.1 (fonts/OFL-*.txt). Paths are absolute — Foundry serves
+   fonts/ from disk, so Vite leaves them alone. */
 
-/* latin */
 @font-face {
   font-family: 'Chakra Petch';
   font-style: normal;
@@ -12,7 +10,6 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* latin-ext */
 @font-face {
   font-family: 'Chakra Petch';
   font-style: normal;
@@ -22,7 +19,6 @@
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* latin */
 @font-face {
   font-family: 'Chakra Petch';
   font-style: normal;
@@ -32,7 +28,6 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* latin-ext */
 @font-face {
   font-family: 'Chakra Petch';
   font-style: normal;
@@ -42,7 +37,6 @@
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* latin */
 @font-face {
   font-family: 'Barlow';
   font-style: normal;
@@ -52,7 +46,6 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* latin-ext */
 @font-face {
   font-family: 'Barlow';
   font-style: normal;
@@ -62,7 +55,6 @@
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* latin */
 @font-face {
   font-family: 'Barlow';
   font-style: italic;
@@ -72,7 +64,6 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* latin-ext */
 @font-face {
   font-family: 'Barlow';
   font-style: italic;
@@ -82,7 +73,6 @@
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* latin */
 @font-face {
   font-family: 'Barlow';
   font-style: normal;
@@ -92,7 +82,6 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* latin-ext */
 @font-face {
   font-family: 'Barlow';
   font-style: normal;
@@ -102,7 +91,6 @@
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* latin */
 @font-face {
   font-family: 'Barlow';
   font-style: normal;
@@ -112,7 +100,6 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* latin-ext */
 @font-face {
   font-family: 'Barlow';
   font-style: normal;
@@ -122,12 +109,9 @@
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* Foundry reserves cascade layer 8 for systems. In production the server injects this file as
-   `@import … layer(system)` already, so the wrap nests it at system.system; the Vite dev server
-   loads it unlayered through the esmodule graph, and the wrap is what makes dev match production.
-   The font faces above stay outside: a font definition is not a cascade participant. */
+/* @layer system: production injects this file already wrapped in `layer(system)`; the Vite
+   dev server loads it unlayered, so this wrap is what makes dev match production. */
 @layer system {
-  /* Branding */
   #logo {
     content: url("/systems/mothershiprpg/images/icons/ui/system/logo.webp");
     width: 100px;
@@ -155,12 +139,10 @@
     padding-left: var(--space-6);
   }
 
-  /* Paragraph */
   .mothership p {
     margin: var(--space-0);
   }
 
-  /* Global styles */
   .mothership.application {
     font-family: "Barlow", sans-serif;
   }
@@ -169,8 +151,8 @@
     background: var(--surface-neutral-paper);
   }
 
-  /* AppV1 sheets sized .sheet-body from setPosition(); a V2 window has no such hook, so the
-     Svelte root has to carry the column layout the height:100% rules below assume. */
+  /* AppV1 sized .sheet-body from setPosition(); V2 has no such hook, so the Svelte root
+     carries the column layout the height:100% rules below assume. */
   .mothership.application .window-content > .mothership-sheet-root {
     display: flex;
     flex-direction: column;
@@ -199,9 +181,6 @@
   .mothership .darkgrey{
     color: var(--color-neutral-700);
   }
-  /* .chat-message, #chat-form, .textarea{
-    background: white;
-  } */
 
   .mothership .dice-tooltip .dice-rolls .roll.max {
     color: var(--color-success-500);
@@ -229,7 +208,6 @@
     grid-column: span 2 / span 2;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-2);
-    /* margin: 10px 0; */
     padding: 0;
   }
   .mothership .grid-1col {
@@ -266,7 +244,6 @@
     align-items: center;
     text-align: center;
     padding: var(--space-4);
-    /* border: 1px solid #999; */
   }
 
   .mothership .flex-group-left {
@@ -294,7 +271,6 @@
   }
 
 
-  /* Styles limited to mothership sheets */
   .mothership input {
     font-weight: inherit;
     font-family: "Barlow", sans-serif;
@@ -318,9 +294,6 @@
 
   .mothership .char-header {
     -webkit-box-flex: 0;
-    /* -ms-flex: 0 0 610px;
-    flex: 0 0 610px; */
-    /* overflow: hidden; */
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -337,19 +310,15 @@
 
 
 
-  /* shared tier: CharacterSheet alone since the generator became the wizard, which writes neither
-     name. It stays declared here rather than moving: `header-fields` has a second writer in
-     CreatureSettings, which deliberately wears it without a `char-header` ancestor. The header
-     grid CharacterSheet lays out inside them — with the areas the two rules below place into —
-     moved into CharacterSheet.svelte. */
+  /* shared tier: CharacterSheet; CreatureSettings also writes header-fields, without a
+     char-header ancestor. */
   .mothership .char-header .header-fields {
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
   }
 
-  /* shared tier: CharacterSheet's centre column, and Cover's two readout captions — which sit
-     under a `mothership` ancestor of their own and so are reached by this rule too. */
+  /* shared tier: CharacterSheet, Cover. */
   .mothership .health {grid-area: centercol;}
   @container (max-width: 610px) {
     .mothership .health {grid-area: mobilehealth;}
@@ -372,8 +341,6 @@
     font-weight: 400;
     padding: var(--space-8);
   }
-  /* `.skill_training_text` moved into PipTrack, which is the only thing that ever wrote it. The
-     frame above stays: both actor sheets hand-write it around the track. */
 
   /* shared tier: Field, CheckField, MinMaxField, ArmorBlock, CreatureSettings, RolltableConfig,
      Condition, Weapon, ArmorExtra, ClassSheet, CharacterSheet. */
@@ -382,13 +349,6 @@
     margin-bottom: var(--space-4);
     text-align: center;
   }
-
-  /* The list frame — `.items-list`, the row, its header variant, the control column, the plain
-     `.skill-stat` cell — and the row thumbnail with its border moved into
-     ItemList/ItemRow/ItemCell/ItemControls/ItemImage — the black `.skill-name` pill with them,
-     once the five sites that hand-wrote it started mounting ItemCell. No rule here needs
-     `.items-list` any more, though ItemControls still gates its width on it; `.item` is now
-     needed by nothing in this file. */
 
   .mothership .roll-image {
     -webkit-box-flex: 0;
@@ -401,36 +361,12 @@
     border: var(--border-width-1) solid var(--border-neutral-ink);
   }
 
-  /* `skill-name` is absent here on purpose: SkillSheet, ClassSheet (three) and OptionDraft
-     hand-wrote the black pill inside a list, and all five of those sites mount ItemCell now, so
-     the rule went with it. The class sheet's sixth `skill-name`, the wrapper around its Add Group
-     button, sits outside any `.items-list` and this rule never reached it — dropped there. */
+  /* Shared stat vocabulary (below): read by MainStat, RollableStat, RollBox, CircleStats,
+     Wizard, CreatureSheet — hand-written, so it can't dissolve into scoped <style> blocks.
+     Several rules share equal specificity and depend on source order; do not reorder them. */
 
-  /* `button-white` — the FINISH bar — moved into RolltableConfig.svelte, the only window that
-     ever drew a button out of this file. It sat here below the hover group on purpose: its
-     `color` and `:where(.mothership) .list-roll:hover`'s both weigh (0,2,0), so the bar keeps
-     its dark label under the cursor only by being later. The scoped block is later still. */
-
-
-  /* ==========================================================================================
-     SHARED STAT VOCABULARY — every rule tagged `shared tier` below.
-
-     Six components read these names: MainStat, RollableStat, RollBox, CircleStats, Wizard,
-     CreatureSheet. Several hand-write the class instead of mounting the component, and a Svelte
-     <style> block only reaches its own component's markup — so none of these can dissolve into
-     one (DS8's per-component model does not fit them). They stay here, declared as a tier.
-     Converting the hand-written call sites is the S9 audit's last work item; the literals are
-     tokenized, so what stays literal below is a width, a height or a grid track — measurements
-     of a box, which no spacing scale governs.
-
-     They are deliberately NOT gathered into one block: `.circle-statwrapper-horizontal`'s
-     background and `.transparentBackground`'s both weigh (0,2,0) in the same layer, so the
-     transparent variant wins on source order alone. Reordering these changes what renders.
-     ========================================================================================== */
-
-  /* shared tier: CharacterSheet.
-     A two-digit bonus overflows the 28px pill under an ApplicationV2 window's input padding,
-     which is wider than AppV1's. Every other input in this file already zeroes it. */
+  /* shared tier: CharacterSheet. Padding stays zeroed — ApplicationV2's wider input padding
+     overflows the 28px pill on a two-digit bonus. */
   .mothership .mainstatmod-input {
     font-family: "Chakra Petch", sans-serif;
     height: 26px;
@@ -450,10 +386,6 @@
     position: relative;
     background: var(--surface-neutral-highest);
   }
-
-  /* The save's twin of the rule above moved into CharacterSheet.svelte, which is its only
-     writer. The generator dropped its modifier pill, so this pair has one writer too and can
-     follow it there. */
 
   /* shared tier: CharacterSheet. */
   .mothership .mainstatmod-title {
@@ -493,8 +425,7 @@
     color: var(--color-highlight);
   }
 
-  /* Field's own wrappers and their input moved into Field.svelte; `.minmaxwrapper` below is the
-     twin MinMaxField, ArmorBlock and Cover share, so it stays. */
+  /* `.minmaxwrapper` below is shared by MinMaxField, ArmorBlock, Cover. */
 
   /* shared tier: CheckField, CreatureSettings (the swarm toggle, hand-written for its onchange). */
   .mothership .blankstat{
@@ -613,10 +544,6 @@
     background: transparent;
   }
 
-  /* `creature-mainstat` was never tagged into this tier and never belonged to it: CreatureSheet
-     writes the narrower stat grid on a div of its own, so it moved into CreatureSheet.svelte.
-     Its wrapper and its contents stay — `mainstatwrapper` and `mainstattext` are tier names, and
-     `creaturestat` below is the class prop RollableStat renders. */
   /* shared tier: MainStat. */
   .mothership .mainstatlabel {
     border-top-left-radius: var(--radius-3xl);
@@ -628,10 +555,8 @@
     height: 35px;
   }
 
-  /* shared tier: MainStat's plain caption and RollableStat's span — which MainStat
-     renders through a class prop, so the name crosses a component boundary. Its `color: white`
-     also beats `:where(.mothership) .rollable:hover` at equal specificity by sitting later;
-     DS7 chose that, so this rule must stay below the hover group. */
+  /* shared tier: MainStat (plain caption), RollableStat (via class prop). Must stay below the
+     `:where(.mothership) .rollable:hover` rule — same specificity, order decides. */
   .mothership .mainstattext {
     font-family: "Chakra Petch", sans-serif;
     width: 100%;
@@ -642,13 +567,6 @@
     text-align: left;
   }
 
-
-  /* `circlestattitle` and `black` moved into RolltableConfig.svelte. Neither was ever tagged
-     into the tier it sat inside, and neither belonged to it: the first reads like
-     `circle-statwrapper`'s caption, but no stat circle anywhere writes it — the rolltable
-     window's group headings and its own heading are the only markup that ever did — and `black`
-     is the modifier that one heading wears over it. They travelled together, and they keep the
-     order they had here: equal specificity, so `black` wins only by sitting later. */
 
   /* shared tier: MainStat, RollBox, Wizard — which writes the class on the readonly circles it
      fills in itself. */
@@ -667,9 +585,7 @@
     z-index: 5;
   }
 
-  /* `textarea-input` is absent here on purpose: it had exactly two writers, the character sheet's
-     trauma response and the class sheet's, and both are TextareaField now — the rule went with it.
-     Its grey twin below keeps two writers of its own and stays. */
+  /* shared tier: CreatureSheet, ClassSheet. */
   .mothership .textarea-input-grey {
     font-family: "Barlow", sans-serif;
     border: 0;
@@ -683,11 +599,8 @@
   }
 
 
-  /* CharacterSheet took `square-input` — the save's value box, which nothing else writes.
-     `savetext` below is the save's caption and cannot follow it: RollableStat renders the
-     element the class prop lands on. Its `color: white` also beats
-     `:where(.mothership) .rollable:hover` at equal specificity by sitting later in this file,
-     the same tie `mainstattext` carries, so it must stay below the hover group. */
+  /* shared tier: RollableStat (via class prop). Must stay below the
+     `:where(.mothership) .rollable:hover` rule — same specificity, order decides. */
   .mothership .savetext {
     font-family: "Chakra Petch", sans-serif;
     display: block;
@@ -699,15 +612,12 @@
     text-align: center;
   }
 
-  /* shared tier: CharacterSheet and SheetHeader — the two writers of the black title bar left
-     once the generator became the wizard, which has no title bar. The panel behind the saves, which only this sheet
-     writes, moved into CharacterSheet.svelte. */
+  /* shared tier: CharacterSheet, SheetHeader. */
   .mothership .header {
     grid-area: header;
     background-color: var(--surface-neutral-lowest);
     display: grid;
     grid-template-columns: 0.25fr 1fr;
-    /* gap: 1.25rem; */
     align-items: center;
     grid-column: 1/-1;
     background: var(--surface-neutral-lowest);
@@ -717,25 +627,15 @@
     border-radius: var(--radius-lg);
   }
 
-  /* The creature sheet's two top-level grids, the black bar across the header and the ability
-     panel beside the description — `creature-header-grid`, `creature-header`,
-     `creature-description-grid` and `creature-abilities`, written by CreatureSheet alone — moved
-     into CreatureSheet.svelte. */
-
-  /* shared tier: Weapon, Armor — both hand-write this grid as their body's root, so a scoped
-     block in either file reaches only its own half. The same pair shares
-     `circle-statwrapper-vertical` and `transparentBackground` above for the same reason;
-     unifying the two bodies is S9 call-site work. */
+  /* shared tier: Weapon, Armor — each hand-writes this grid as its body's root, so a scoped
+     block in either file reaches only its own half. */
   .mothership .item-armor-grid {
     display: grid;
     grid-template-columns: 1fr 12em;
     gap: var(--space-10);
   }
 
-  /* `greyline` followed its twin `whiteline` out: that one went to CreatureSheet.svelte, this one
-     to RolltableConfig.svelte, each to its only writer. The two rules were byte-identical apart
-     from the border colour. */
-
+  /* shared tier: SheetHeader, CharacterSheet. */
   .mothership .headerinputfield {
     margin: calc(var(--space-2) * -1);
     height: auto;
@@ -743,20 +643,15 @@
     padding-left: var(--space-12);
     border: var(--border-width-2) solid var(--border-neutral-ink);
     background-color: var(--surface-neutral-paper);
-    /* 3em was 48px, which --radius-4xl holds exactly. Not --radius-full: the generator's list
-       panels wear this class at 150px tall, where 48px is a corner and 999px is a stadium. */
+    /* Not --radius-full: the generator's list panels wear this class at 150px tall, where
+       48px rounds a corner and 999px would round a stadium. */
     border-radius: var(--radius-4xl);
     font-size: var(--font-size-lg);
     margin-right: var(--space-16);
   }
 
-  /* `creaturename` moved into CreatureSheet.svelte. The `headerinputfield` above stays: it is the
-     name field every other sheet wears, written by SheetHeader and CharacterSheet. */
-
-  /* CreatureSheet is this class's only writer and still cannot own it: it hands it to
-     RollableStat as a class prop, and a scoped block only reaches its own component's markup —
-     the `savetext` case. The plain input beside the label wears it too, so splitting the rule
-     would split one look across two files. */
+  /* Stays here: CreatureSheet hands this to RollableStat as a class prop, but the plain input
+     beside the label wears it too — a scoped block can't reach both. */
   .mothership .creaturestat {
     margin-left: var(--space-4);
     height: auto;
@@ -765,12 +660,6 @@
     font-family: "Chakra Petch", sans-serif;
     color:white;
   }
-
-  /* The description pane with the two overflow rules that let its editor grow, and the three
-     names an ability entry wears — all written by CreatureSheet alone — moved into
-     CreatureSheet.svelte. `creature-ability-title` keeps winning the hover tie there: it and
-     `:where(.mothership) .list-roll:hover` both weigh (0,2,0), and the component sheet loads
-     after this file, so the title stays white on the dark panel exactly as DS7 left it. */
 
   .mothership .editor {
     height: 100%;
@@ -791,13 +680,6 @@
     margin-right: var(--space-10);
     margin-top: var(--space-4);
   }
-
-  /* The identity grid inside the header and the cell its name field spans — `headergrid` and
-     `headernamegrid`, written by CharacterSheet alone — moved into CharacterSheet.svelte.
-     The `headerinputtext` and `headerinputfield` rules above stay: three sheets write them. */
-
-  /* The pip and its filled twin moved into PipTrack. Nothing else emits either name; the e2e
-     specs count them, which is why both stay on that markup. */
 
   .mothership .profile {
     width: 140px;
@@ -826,17 +708,14 @@
     font-weight: bold;
     text-transform: uppercase;
     background: var(--surface-neutral-lowest);
-    /* border-bottom-right-radius: 1.5em; */
     color: var(--text-inverted);
     padding: var(--space-6);
     flex: auto;
     width: 70%;
   }
 
-  /* The rollCheck card's tier: every rule below replaced an inline style in
-     templates/chat/rollCheck.html or in module/chat/cards.ts, which writes `card-verdict` and
-     `card-dice`. Each has one reader and could move into a scoped block the day the cards stop
-     being Handlebars. The other five templates are untouched. */
+  /* Below: rules for templates/chat/rollCheck.html / module/chat/cards.ts — can't scope
+     until the cards stop being Handlebars. */
 
   .mothership .card-header {
     margin-bottom: var(--space-4);
@@ -863,8 +742,8 @@
     color: var(--text-primary);
   }
 
-  /* The same ink as a success: the word says which it is, and the PSG's cards are monochrome.
-     Only the auto-failure is coloured, being a rule firing rather than a roll losing. */
+  /* Same ink as success — PSG cards are monochrome; only auto-failure gets color, since
+     that's a rule firing rather than a roll losing. */
   .mothership .card-verdict-failure {
     color: var(--text-primary);
   }
@@ -886,8 +765,6 @@
     margin-bottom: var(--space-16);
   }
 
-  /* Was a three-column grid with two hand-drawn borders, and an untranslated literal
-     "DESCRIPTION" in the damage branch. */
   .mothership .card-rule {
     display: flex;
     align-items: center;
@@ -921,8 +798,7 @@
     margin-top: var(--space-4);
   }
 
-  /* The buttons `chat/enrichers.ts` renders. They are `content-link`s, so Foundry's own styling
-     carries them; this adds the room to sit several in a row. */
+  /* content-links Foundry already styles; this adds room to sit several in a row. */
   .mothership .mothership-action {
     margin: var(--space-2) var(--space-2) var(--space-2) var(--space-0);
     font-family: "Barlow", sans-serif;
@@ -930,42 +806,20 @@
     cursor: pointer;
   }
 
-  /* `guardCardActions` disables these for everyone but the card's author and the Warden. The
-     button stays rather than vanishing: a sentence ending in nothing reads worse. */
+  /* guardCardActions disables these for non-authors/non-Warden; stays visible rather than
+     vanishing, so the sentence doesn't end in nothing. */
   .mothership .mothership-action:disabled {
     color: var(--text-disabled);
     cursor: default;
   }
 
 
-  /* Every rule this file carried under `form.actor-generator` had already moved into the
-     generator's own <style> block, and went with it when the single page became Wizard.svelte.
-     Six of the eight names went too — `ulinputfield`, `smalltext`, `generator-header-grid-1col`,
-     `element-group`, `credit-img`, `checkbox-round` belonged to a layout that no longer exists,
-     and no rule anywhere declares them now. The two that land on markup a scoped block cannot
-     reach survive in the wizard as `:global()` escapes under its own form: MainStat renders the
-     `fulllabel` div from a class prop, and RollBox writes `clicable-item`. What the wizard
-     borrows from this file is the shared stat tier and `circle-input`, tagged where each is
-     declared. */
-
-  /* Dialog V2 — the shell tier. Everything below is keyed on the class `svelte-dialog.ts` puts
-     on the frame, and none of it is ownable by a component, for two separate reasons. The chrome
-     selectors — the frame itself, `.window-header`, `.window-content`, the two `standard-form`
-     gaps, `.form-footer button` — match elements Foundry renders, which no <style> block can
-     reach. The body vocabulary — `macro_window`, `macro_desc`, the radios and their labels,
-     `condition-modifier` — is hand-written by eleven components mounted into this one shell: the
-     eight in module/dialogs plus StatOption, NewSkill and PickFromPack. A scoped block in any one
-     of them would reach a fraction of the writers.
-     This is what §4.1's "they stay until dialogs are restyled" resolves to: the bodies unify at
-     the call site (S9) or not at all.
-
-     `macro_img` and `macro_prompt` are absent below on purpose: both rules were empty declaration
-     blocks, contributing nothing to any element's cascade, and were deleted. (The build kept
-     them; emptiness, not absence from the bundle, is the proof.) `macro_prompt` stays on the
-     markup because test/dialogs.test.ts locates by it; `macro_img` styled nothing and named
-     nothing, and is gone from the six wrappers that wore it. */
-
-  /* Base dialog styling */
+  /* Dialog V2 shell tier: keyed on the class svelte-dialog.ts puts on the frame. The chrome
+     selectors (.window-header, .window-content, .form-footer button, …) match elements Foundry
+     renders, which no <style> block can reach; the body vocabulary (macro_window, macro_desc,
+     condition-modifier, …) is hand-written by eleven components mounted into this one shell, so
+     no scoped block reaches more than a fraction of the writers. `macro_prompt` stays on the
+     markup — test/dialogs.test.ts locates by it. */
   .mothership.application.dialog.macro-popup-dialog {
   	background: var(--surface-neutral-paper);
   	font-family: "Barlow", sans-serif;
@@ -1019,13 +873,6 @@
     margin-bottom: var(--space-8);
   }
 
-  /* The dialog's three `grid-*col` copies are all gone now. Each declared exactly what its
-     `.mothership .grid-*col` twin above declares; `grid-1col` and `grid-3col` had no tie to
-     settle, and `grid-2col`'s only remaining job was to outweigh `.mothership .widegap` on
-     BonusOption's row — a tie that row lost by wearing a class it never received. BonusOption
-     owns that gap now. */
-
-  /* update buttons to look more old school */
   .mothership.macro-popup-dialog .form-footer button {
     background: var(--color-neutral-200);
     color: var(--color-neutral-850);
@@ -1045,68 +892,64 @@
     border-color: var(--border-neutral-ink);
   }
 
-  /* Custom radio: kill native + theme accents */
   .mothership.macro-popup-dialog input[type="radio"] {
     appearance: none;
     -webkit-appearance: none;
-    accent-color: initial;             /* ignore theme accent */
+    accent-color: initial;
     box-sizing: border-box;
     width: 16px;
     height: 16px;
-    border: var(--border-width-2) solid var(--color-neutral-600);            /* medium grey ring */
+    border: var(--border-width-2) solid var(--color-neutral-600);
     border-radius: 50%;
-    background: var(--surface-neutral-paper);                  /* white center when unchecked */
-    display: inline-flex;              /* center the pseudo-dot */
+    background: var(--surface-neutral-paper);
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     line-height: 0;
     margin: var(--space-0) var(--space-8) var(--space-0) var(--space-2);
     vertical-align: middle;
 
-    /* nuke any theme glow/orange */
+    /* !important: overrides Foundry's core theme glow/orange accent. */
     box-shadow: none !important;
     outline: none;
   }
 
-  /* The inner dot (hidden until checked) */
   .mothership.macro-popup-dialog input[type="radio"]::before {
     content: "";
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--surface-neutral-lowest);                  /* dot color */
+    background: var(--surface-neutral-lowest);
     transform: scale(0);
     transition: transform 120ms ease-in-out;
   }
 
-  /* Checked = show the dot */
   .mothership.macro-popup-dialog input[type="radio"]:checked::before {
     transform: scale(1);
   }
 
-  /* Checked = show the dot */
   .mothership.macro-popup-dialog input[type="radio"]:checked::after {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     transform: scale(0);
-    background: var(--surface-neutral-paper);    
+    background: var(--surface-neutral-paper);
   }
 
-  /* Hover/focus states (accessible, non-orange) */
   .mothership.macro-popup-dialog input[type="radio"]:hover { border-color: #5c5c5c; }
   .mothership.macro-popup-dialog input[type="radio"]:focus-visible {
     outline: var(--border-width-2) solid var(--color-neutral-400);
     outline-offset: var(--space-2);
   }
 
-  /* If your theme highlights the whole row via :has(input:checked), strip it here */
+  /* !important: strips a theme's :has(input:checked) row highlight. */
   .mothership.macro-popup-dialog label:has(input[type="radio"]:checked) {
     background: inherit !important;
     box-shadow: none !important;
   }
-  /* A condition is preselecting this roll type: the button DialogV2 autofocused, and the line
-     naming the conditions responsible. */
+
+  /* Applied when a condition is preselecting this roll — border/glow marks the autofocused
+     choice. */
   .mothership.macro-popup-dialog .form-footer button.condition-preselect {
     border-color: var(--color-danger-500);
     box-shadow: var(--ring-danger);
@@ -1118,10 +961,8 @@
     margin-bottom: var(--space-6);
   }
 
-  /* The book's marks for the two modifiers. `[+]` and `[-]` are what the PSG prints, so they are
-     notation rather than language and belong in the stylesheet; a plain roll carries the bare
-     `roll-mark`, which holds the column open so the three labels align down the rail. Font Awesome
-     drew a chevron pair and a dash here, three symbol systems for a book that uses one. */
+  /* [+]/[-] are PSG notation, not language — belongs in CSS, not lang/en.json. A plain roll
+     carries the bare `roll-mark`, holding the column open so the three labels align down the rail. */
   .mothership.macro-popup-dialog .form-footer button i.roll-mark {
     flex: 0 0 auto;
     width: 2em;
@@ -1143,10 +984,9 @@
     color: var(--color-neutral-300);
   }
 
-  /* The roll rail. The buttons stay DialogV2's own — only the form's tracks move — so the default
-     button keeps the `autofocus` Foundry stamps on it and Enter still submits through it. That is
-     why `.dialog-content` and the mount point stand aside with `display: contents`: the body's head
-     has to span both tracks, and the footer has to be able to take the second one. */
+  /* Only the grid tracks move — buttons stay DialogV2's own, so Foundry's `autofocus` and
+     Enter-submit keep working. `.dialog-content`/mount point use `display: contents` so the
+     body can span both tracks. */
   .mothership.macro-popup-rail .dialog-form.standard-form {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 164px;
@@ -1181,8 +1021,8 @@
     letter-spacing: var(--letter-spacing-wide);
   }
 
-  /* The roll nobody has to think about, filled. Foundry stamps `autofocus` on the default button,
-     so the mark that says "Enter does this" is the same attribute that makes it true. */
+  /* Foundry stamps `autofocus` on the default button — the same attribute makes Enter submit
+     it and marks it here as the default. */
   .mothership.macro-popup-rail .form-footer button[autofocus] {
     background: var(--color-neutral-850);
     color: var(--text-inverted);
@@ -1209,7 +1049,4 @@
     opacity: 0.65;
   }
 
-  /* The condition sheet's modifier list moved into Condition.svelte, the only thing that ever
-     writes it. `condition-modifier` above is the dialog's single line and stays with the dialog
-     it is drawn in. */
 }

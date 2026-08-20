@@ -1,11 +1,6 @@
 import { type Page } from '@playwright/test';
 import { test, expect } from './fixtures/foundry-clients.ts';
 
-// The whole S8 chain, end to end in a live world: a condition document carries a scoped modifier,
-// the actor holds the condition, and the roll dialog it names opens with that button preselected.
-// The unit specs prove the resolution; only a real DialogV2 can prove the preselect reaches a
-// button, because `default` is Foundry's own autofocus contract.
-
 const CONDITIONS = 'mothershiprpg.conditions_1e';
 
 /** Fires the roll and leaves its dialog open — the call awaits the player, so nothing is awaited. */
@@ -83,8 +78,7 @@ test.describe('conditions preselect the roll they name', () => {
     await expect(dialog.locator('button[data-action="advantage"]')).not.toHaveAttribute('autofocus', '');
   });
 
-  // Preselect, not force: whichever button the player presses is the roll that happens. The posted
-  // message carries the formula, which is where the choice stops being reversible.
+  // Preselect, not force: whichever button the player presses is the roll that happens.
   for (const [action, expected] of [
     ['none', '1d100'],
     ['disadvantage', '{1d100,1d100}kh'],
@@ -131,8 +125,7 @@ test.describe('conditions preselect the roll they name', () => {
     const dialog = await roll(gmPage, uuid, 'restSave');
 
     await expect(dialog.locator('.condition-modifier')).toHaveCount(0);
-    // Normal is the default now, so Enter on an untouched window rolls the plain roll. Advantage
-    // only ever carried the autofocus because it happened to be the first button.
+    // Normal is the default now — Advantage previously had autofocus only because it was the first button.
     await expect(dialog.locator('button[data-action="none"]')).toHaveAttribute('autofocus', '');
   });
 });

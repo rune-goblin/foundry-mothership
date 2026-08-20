@@ -23,7 +23,6 @@ export interface ChangePlan {
   readonly bound: Bound | null;
 }
 
-/** Clamp a change to the pod's own bounds, reporting what would not fit. */
 export function planChange(from: number, amount: number, bounds: Bounds): ChangePlan {
   const wanted = from + amount;
   const floored = bounds.min !== null && wanted < bounds.min ? bounds.min : wanted;
@@ -50,16 +49,12 @@ export interface WoundChange {
 }
 
 export interface HealthPlan extends ChangePlan {
-  /**
-   * The wound track before and after. `applied` stays the health delta, so it does not account
-   * for the damage the wounds absorbed — `amount` and this pair together do.
-   */
+  // applied stays the health delta only; it and amount together account for wound damage.
   readonly wounds: WoundChange | null;
-  /** Damage arriving with no Wound left to spend; `overflow` says how much went unabsorbed. */
+  // No Wound left to spend; overflow says how much went unabsorbed.
   readonly dead: boolean;
 }
 
-/** A pod as the arithmetic reads it: a number and whatever bounds it declares. */
 export interface Tracked {
   readonly value: number;
   readonly bounds: Bounds;
@@ -111,29 +106,24 @@ export function planHealthChange(health: Tracked, wounds: Tracked, amount: numbe
   };
 }
 
-/** What a mutation changes by, as a caller states it: a flat number, or dice to roll for it. */
+// What a caller asks for: a flat number, or dice yet to roll.
 export type Amount =
   | { readonly kind: 'amount'; readonly amount: number }
   | { readonly kind: 'roll'; readonly dice: string };
 
-/** The same change once the dice have been rolled — what this module applies. */
+// The same request once its dice, if any, are rolled — what this module applies.
 export type Change =
   | { readonly kind: 'amount'; readonly amount: number }
   | { readonly kind: 'roll'; readonly roll: EvaluatedRoll };
 
-/**
- * What the change is worth. A roll contributes Foundry's own arithmetic — `2d10+1` sums, `-1d10`
- * is negative — not the kept die an `Outcome` reports, which is a rule about checks, not damage.
- */
+// Uses Foundry's own roll arithmetic (2d10+1 sums, -1d10 is negative), not the kept die an
+// Outcome reports — that's a rule about checks, not damage.
 export function changeAmount(change: Change): number {
   return change.kind === 'amount' ? change.amount : Number(change.roll.total) || 0;
 }
 
-/**
- * The document surface a mutation needs. It reads `toObject()` rather than `system` because
- * derivation rewrites `system` in place — a swarm creature's Combat is multiplied there — and
- * adding to a derived number would persist the derivation.
- */
+// Reads toObject() rather than system: prepareDerivedData rewrites system in place (e.g. a
+// swarm creature's Combat), and adding to a derived number would persist the derivation.
 export interface MutableDocument {
   toObject(): { readonly system: unknown };
   update(data: Record<string, number>): Promise<unknown>;
@@ -146,7 +136,7 @@ export interface MutatedField {
   readonly to: number;
 }
 
-/** What the mutation did, for the chat layer to narrate. No strings of its own, no rendering. */
+// No strings, no rendering — the chat layer narrates this record.
 export interface MutationResult {
   readonly amount: number;
   readonly roll: EvaluatedRoll | null;
@@ -158,18 +148,13 @@ export interface MutationResult {
 }
 
 const HEALTH = 'system.health.value';
-/** The wound track is stored as `hits` and labelled Wounds — the schema's name, not the book's. */
+// Stored as `hits`, labelled Wounds — the schema's name, not the book's.
 const WOUNDS = 'system.hits.value';
 
 function mutated(field: FieldRef, change: WoundChange): MutatedField {
   return { address: field.address, label: field.label, from: change.from, to: change.to };
 }
 
-/**
- * The one mutation engine: resolve the amount, clamp it, roll health into wounds, and write the
- * result as a single awaited update (audit F7, F10). It never reads `game`, renders nothing, and
- * posts nothing — the returned record is what the chat layer narrates.
- */
 export async function mutate(
   doc: MutableDocument,
   address: string,

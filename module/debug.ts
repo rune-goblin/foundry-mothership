@@ -1,13 +1,4 @@
-/**
- * The one logger. Legacy narrates every roll, dialog exit and API call to the console
- * unconditionally — 47 `console.log` sites between `actor.js` and `mosh.js` (audit F26, RC12) —
- * so a production console fills with internal state while real errors have nowhere to go.
- *
- * Here nothing prints unless a developer asks for it: `CONFIG.debug.mothershiprpg = true` in the
- * console opens the channel, the way Foundry's own `CONFIG.debug.hooks` works. A deprecation is
- * the exception — it is addressed to whoever wrote the macro, so it says so once per name, and
- * every later call is a debug line.
- */
+/** Nothing prints unless `CONFIG.debug.mothershiprpg = true`, the way Foundry's own `CONFIG.debug.hooks` works. */
 
 import { SYSTEM_ID } from './chat/cards.ts';
 

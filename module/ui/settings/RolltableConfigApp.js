@@ -3,12 +3,8 @@ import RolltableConfig from './RolltableConfig.svelte';
 
 const { ApplicationV2 } = foundry.applications.api;
 
-/**
- * The seven `table1e*` world settings, grouped and labelled the way the AppV1 template laid them
- * out. This is the single source both the component's markup and the submit handler read, so
- * the two can never drift the way `getData()`/`_updateObject()`'s hand-written lists could.
- * `null` marks a blank grid cell (the Death Save row centers its one field in a 4-column grid).
- */
+// The single source both the component's markup and the submit handler read, so the two can't
+// drift apart. `null` marks a blank grid cell (Death Save centers its one field in a 4-column grid).
 export const ROLLTABLE_GROUPS = [
   {
     label: 'Panic Check',
@@ -41,19 +37,16 @@ export const ROLLTABLE_KEYS = ROLLTABLE_GROUPS.flatMap((group) =>
   group.fields.filter(Boolean).map((field) => field.key),
 );
 
-/**
- * Registered as a `game.settings.registerMenu` type (`module/settings.js`), so Foundry
- * constructs it with no arguments and calls `render(true)` -- unlike the document sheets, there
- * is no document backing this window; `game.settings` itself is the model.
- */
+// Registered as a `game.settings.registerMenu` type, so Foundry constructs it with no arguments
+// and calls `render(true)` -- there is no document backing this window; `game.settings` is the model.
 export class RolltableConfigApp extends ApplicationV2 {
   static DEFAULT_OPTIONS = {
     id: 'rolltable-modifiers',
-    // A top-level <form> tag is what makes ApplicationV2 wire up the change/submit listeners
-    // the `form` config below expects -- see DocumentSheetV2, which does the same.
+    // A top-level <form> tag makes ApplicationV2 wire up the change/submit listeners the `form`
+    // config below expects.
     tag: 'form',
-    // css/mothership.css paints the content white with no dark variant, so pin the light theme (see
-    // MothershipItemSheet) or the window renders dark text-on-dark against those light boxes.
+    // css/mothership.css paints the content white with no dark variant, so pin the light theme
+    // or the window renders dark text-on-dark against those light boxes.
     classes: ['mothership', 'themed', 'theme-light'],
     window: { title: 'Rolltable Configuration', icon: 'fa-solid fa-list', resizable: false },
     position: { width: 800, height: 'auto' },

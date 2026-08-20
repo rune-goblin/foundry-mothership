@@ -1,10 +1,5 @@
-/**
- * A weapon's magazine, as `module/data/item-models.js` stores it: `shots` is how much the
- * magazine holds, `curShots` what is in it, `ammo` the reserve behind it, and `shotsPerFire`
- * what one pull of the trigger costs. The arithmetic is here, pure; `documents/item.ts` is the
- * only thing that writes it (audit F15).
- */
-
+// shots: magazine capacity. curShots: what's loaded. ammo: reserve behind it.
+// shotsPerFire: cost of one trigger pull.
 export interface AmmoState {
   readonly useAmmo: boolean;
   readonly shots: number;
@@ -15,7 +10,7 @@ export interface AmmoState {
 
 export interface FireOutcome {
   readonly status: 'fired' | 'needs-reload' | 'out-of-ammo';
-  /** Shots taken from the magazine — zero unless the weapon fired and tracks ammunition. */
+  // Zero unless the weapon fired and tracks ammunition.
   readonly spent: number;
   readonly curShots: number;
 }
@@ -24,7 +19,6 @@ export interface ReloadOutcome {
   readonly status: 'reloaded' | 'already-full' | 'out-of-ammo' | 'untracked';
   readonly curShots: number;
   readonly ammo: number;
-  /** Rounds moved into the magazine. */
   readonly loaded: number;
 }
 
@@ -44,7 +38,6 @@ export function ammoState(system: unknown): AmmoState {
   };
 }
 
-/** One pull of the trigger. A weapon that tracks no ammunition fires and spends nothing. */
 export function planFire(state: AmmoState): FireOutcome {
   const { useAmmo, curShots, ammo, shotsPerFire } = state;
 

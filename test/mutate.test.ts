@@ -24,8 +24,7 @@ describe('planChange — the clamp', () => {
     expect(planChange(3, -3, { min: 0, max: 10 })).toMatchObject({ to: 0, overflow: 0, bound: 'floor' });
   });
 
-  // Stress past its maximum is the surplus the book turns into a stat reduction, so the number
-  // the bound refused has to survive the clamp.
+  // Stress past its max becomes a stat reduction, so the refused amount must survive the clamp.
   it('reports the surplus a bound refused', () => {
     expect(planChange(18, 5, { min: 2, max: 20 })).toMatchObject({ to: 20, applied: 2, overflow: 3 });
     expect(planChange(2, -4, { min: 2, max: 20 })).toMatchObject({ to: 2, applied: 0, overflow: -4 });
@@ -58,7 +57,6 @@ describe('planHealthChange — the wound rollover', () => {
     });
   });
 
-  // The surplus is the point: 8 damage against 3 Health costs a Wound and 5 off the new bar.
   it('carries the surplus into the refilled bar', () => {
     expect(planHealthChange(bounded(3, 0, 10), bounded(0, 0, 2), -8)).toMatchObject({
       from: 3, to: 5, overflow: 0, wounds: { from: 0, to: 1 }, dead: false,
@@ -168,9 +166,6 @@ describe('mutate — one engine, one update', () => {
     expect(result.wounds).toMatchObject({ label: 'Wounds', from: 0, to: 1 });
   });
 
-  // Legacy ran the whole pipeline twice, once per kind of change, and the copies drifted (F7):
-  // one narrated the refilled health with a message key that never mentioned it. There is one
-  // path now, so a constant and a roll worth the same cannot describe the same event differently.
   it('treats a rolled amount and a constant amount identically', async () => {
     const flat = actor(character());
     const rolled = actor(character());

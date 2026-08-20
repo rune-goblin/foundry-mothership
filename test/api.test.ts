@@ -12,12 +12,6 @@ import {
   type Notifications,
 } from './foundry-stubs.ts';
 
-/**
- * The public API, and the one question every entry point asks first: who is this for. Legacy
- * repeated that block at five call sites and the shipped content restated it thirteen times more
- * (audit RC6, F24) — copies that had already drifted apart.
- */
-
 const prompts = vi.hoisted(() => ({
   chooseAdvantage: vi.fn(),
   chooseAttribute: vi.fn(),
@@ -131,8 +125,6 @@ describe('forTargetActors', () => {
     await expect(api.forTargetActors((target) => target.name)).resolves.toEqual(['Token']);
   });
 
-  // The window names the setting that decides this and how to satisfy it (divergence R3-3); it
-  // is not a warning about a world setting the player cannot reach (audit RC14).
   it('opens the prompt and does nothing when no character is assigned', async () => {
     const ran = vi.fn();
 
@@ -153,8 +145,6 @@ describe('forTargetActors', () => {
     expect(api.macroTarget()).toBe('character');
   });
 
-  // Legacy fired the calls off inside a forEach without awaiting any of them, so a failure
-  // surfaced only as an unhandled rejection (audit RC12).
   it('awaits each actor before starting the next', async () => {
     installSettings({ macroTarget: 'token' });
     control([actor('One'), actor('Two')]);
@@ -191,8 +181,6 @@ describe('the verbs', () => {
     expect(sarah[method]).toHaveBeenCalledWith(...args);
   });
 
-  // The four hotbar macros whose argument is the player's: each is one prompt, then the verb
-  // above it — no dialog of their own any more (divergence R4b-1's last clause).
   describe('the verbs that ask first', () => {
     it('promptStress applies the amount the prompt answered with', async () => {
       const sarah = actor('Sarah');
@@ -283,8 +271,6 @@ describe('rollItem', () => {
     expect(sarah.rollWeapon).toHaveBeenCalledWith('w1');
   });
 
-  // Legacy dereferenced the item before the guard that was meant to catch its absence, so the
-  // designed warning was unreachable and the user got a stack trace (audit RC4).
   it('warns before it dereferences anything, when no such item is carried', async () => {
     const sarah = actor('Sarah');
     assign(sarah);
@@ -421,7 +407,6 @@ describe('registerActions', () => {
       expect(notifications.warnings).toEqual(['This card names no actor and weapon.']);
     });
 
-    // One message per attack, and the offer cannot be taken twice.
     it('rewrites the card it was clicked in, rather than posting a second one', async () => {
       const sarah = actor('Sarah', [weapon]);
       const message = posted();
@@ -443,8 +428,7 @@ describe('registerActions', () => {
       expect(sarah.rollWeapon).not.toHaveBeenCalled();
     });
 
-    // Refused outright: posting the damage as a card of their own would be the same roll by the
-    // back door.
+    // Posting a card of their own would just be the same roll by the back door.
     it('refuses a card this user does not own, rather than rolling it elsewhere', async () => {
       const sarah = actor('Sarah', [weapon]);
       globals.game = { ...(globals.game as Globals), actors: { get: () => sarah } };

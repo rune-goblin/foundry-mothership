@@ -1,17 +1,3 @@
-/**
- * The seven tables the system rolls on, as data. Legacy dispatched on the table's *display name*
- * — `tableName.slice(-5) === 'Wound'`, `tableName === 'Panic Check'` — so renaming a table, or
- * translating one, silently changed the game (audit F13). Here identity is a `TableKey`: the
- * settings key a GM can repoint, the id the content pipeline minted, the die the book gives it,
- * and whether it costs a Wound. Nothing downstream reads a name.
- *
- * The ids are the ones `content/ids.json` holds — `test/tables.test.ts` re-derives every one of
- * them from that registry, so a re-minted id fails CI instead of breaking panic rolls in every
- * world running on the defaults (audit RC13). They are written out here rather than imported
- * because the runtime does not import the content pipeline's artifacts, and because the registry
- * is 38 KB of bookkeeping no player needs shipped.
- */
-
 import { lookup, type LookupResult } from '../lookup.ts';
 import { parseRollSpec, themed, toFormula } from '../rolls/parse.ts';
 import { resolveOutcome, type EvaluatedRoll, type Outcome } from '../rolls/resolve.ts';
@@ -49,6 +35,8 @@ const define = (
   wound: boolean,
 ): TableDefinition => ({ key, setting, contentId, id, die, wound });
 
+// Ids are written out here, not imported from content/ids.json — the runtime doesn't import the
+// content pipeline's artifacts. test/tables.test.ts re-derives every id from that registry.
 export const TABLES: Readonly<Record<TableKey, TableDefinition>> = {
   panic: define('panic', 'table1ePanicStressNormal', 'panic-check-stress-normal', 'ypcoikqHLhnc9tNs', PANIC_DIE, false),
   death: define('death', 'table1eDeath', 'death-save', 'W36WFIpCfMknKgHy', DEATH_DIE, false),
@@ -159,11 +147,9 @@ export interface RollOnTableOptions {
 declare const Roll: new (formula: string) => { evaluate(): Promise<RollDocument> };
 
 /**
- * PSG 21.1 — result 19 names both outcomes in one row, and only one of them happened. The content
- * pipeline wraps each half in a `data-mothership-voice` span (`scripts/content/books/psg/tables.ts`); a
- * translated row carries the same markers, so this selects by structure rather than by matching
- * the current locale's English against baked-in text (audit-adjacent — the old version only ever
- * matched a world running in English).
+ * PSG 21.1 — result 19 names both outcomes in one row, only one of which happened. Selects by the
+ * `data-mothership-voice` span the content pipeline wraps each half in, not by matching baked-in
+ * English text, so a translated row still selects correctly.
  */
 const VOICE = /<span data-mothership-voice="(human|android)">(.*?)<\/span>/g;
 
@@ -183,11 +169,7 @@ function range(value: readonly number[] | undefined): readonly [number, number] 
   return value === undefined || value.length < 2 ? null : [value[0], value[1]];
 }
 
-/**
- * Roll the table and read the row it lands on. The evaluation goes through `rolls/`, so a table
- * roll is judged by the same code every other roll is; the result is a record, and applying what
- * the row says — a Wound, a Condition — belongs to the caller.
- */
+/** Returns a record only — applying what the row says (a Wound, a Condition) belongs to the caller. */
 export async function rollOnTable(
   table: TableDocument,
   options: RollOnTableOptions,
@@ -241,15 +223,9 @@ interface ActorLike {
 }
 
 /**
- * Whether this actor reads its Panic result as a machine. Creatures have no class at all, which
- * is what made a creature rolling a 19 throw (audit F22): the answer for them is no, not a
- * missing field. A character answers with its class item's `robotic` flag — the generator embeds
- * that item as of R7, so every character made from here on has one.
- *
- * A character carrying no class item at all still falls back to the stored class name, because
- * that is the only thing a sheet filled in by hand — or generated before R7 — knows. The fallback
- * is English-only and retires the day a migration grants those characters their class item; until
- * then, deleting it would silently turn every existing Android back into a human on Panic 19.
+ * A creature has no class at all, so the answer for it is false, not a missing field. A character
+ * without a class item falls back to its stored (English-only) class name — deleting that
+ * fallback would silently turn every such Android back into a human on Panic 19.
  */
 export function isRobotic(actor: unknown): boolean {
   const doc = (typeof actor === 'object' && actor !== null ? actor : {}) as ActorLike;

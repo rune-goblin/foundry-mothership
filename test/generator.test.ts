@@ -1,5 +1,3 @@
-// The generator's pure halves, testable outside Foundry because the draft store took them out of
-// the DOM. `test/e2e/actor-generator.spec.ts` drives the window itself.
 import { afterEach, beforeEach, describe, it, expect } from 'vitest';
 
 import { readFileSync } from 'node:fs';
@@ -34,8 +32,6 @@ const loadoutRow = {
 };
 
 describe('table results', () => {
-  // The bug S3 found and S5 fixes: the AppV1 generator matched /(.*)(@UUID.*)/ and pushed one bare
-  // id, so a three-item loadout row handed out one item.
   it('takes every linked document out of a loadout row', () => {
     const { entries } = parseResults([loadoutRow]);
     expect(entries.map((e) => e.uuid)).toEqual([
@@ -56,8 +52,6 @@ describe('table results', () => {
     );
   });
 
-  // A trinket or patch row carries no @UUID at all. The AppV1 regex matched nothing and then
-  // indexed the null, so rolling either one threw the moment the generated tables shipped.
   it('reads a row that links nothing', () => {
     const drawn = parseResults([
       { type: 'text', description: 'Manual: PANIC: Harbinger of Catastrophe', range: [0, 0] },
@@ -109,9 +103,7 @@ describe('skill candidates', () => {
 describe('the steps the wizard walks', () => {
   const K = 'Mothership.CharacterGenerator.Wizard';
 
-  // The wizard's spine is one table, so this walks that table rather than a copy of it. Two of its
-  // steps are the wizard's own — the front matter and the class adjustments — and the rest answer
-  // a step of the book; this is what stops the shell rewording the book on the way.
+  // Walks the same table the wizard renders, so the shell can't reword the book on the way.
   const BOOK = {
     stats: 'step-1-roll-stats',
     saves: 'step-2-roll-saves',
@@ -133,10 +125,8 @@ describe('the steps the wizard walks', () => {
     expect(fromBook.map((step) => en.get(step.title as string))).toEqual(walked.map((step) => step.title));
   });
 
-  // A step is a question. The book's steps 5 and 6 ask nothing — Stress starts at 2 for everyone
-  // and the Trauma Response is whatever the class prints — so the wizard shows both where they land
-  // rather than stopping on them. Nothing else may be dropped on that argument: every step it skips
-  // must be one the book states rather than rolls for.
+  // Steps 5 and 6 ask nothing (Stress starts at 2, Trauma Response is class-printed), so the
+  // wizard shows both without stopping on them — every other skipped step must be book-stated, not rolled.
   it('stops on every step the book asks something in, and on no other', () => {
     const skipped = CHARACTER_CREATION.steps.filter(
       (step) => !Object.values(BOOK).includes(step.id),
@@ -171,7 +161,6 @@ describe('the steps the wizard walks', () => {
 describe('what a step counts as answered', () => {
   const drafted = () => new CharacterDraft({ name: '' });
 
-  // The same predicates the rail ticks and the walk gates on, read off the spine the wizard reads.
   const answers = (draft: CharacterDraft) => STEPS.map((step) => step.done(draft));
 
   it('answers nothing but the front matter on an untouched draft', () => {
@@ -187,10 +176,8 @@ describe('what a step counts as answered', () => {
     expect(draft.statsRolled).toBe(true);
   });
 
-  // Step 3 is two questions on two cards: the class is chosen on one, and everything it leaves the
-  // player is settled on the next. An unspent -10 walked past would be dropped from every card that
-  // reads the stats, and an unchosen bonus leaves the picker counting picks the class has not handed
-  // out, so the second card gates as hard as the first.
+  // Step 3 is two questions on two cards: class, then everything the class leaves to the player.
+  // An unspent bonus or unchosen pick must gate the second card as hard as the first.
   it('holds step 3 open until the class is chosen and everything it hands over is settled', () => {
     const draft = drafted();
     draft.statChoices = [{ modification: -10, stats: ['strength', 'speed'], chosen: null }];
@@ -221,8 +208,7 @@ describe('what a step counts as answered', () => {
 });
 
 describe('creation rules the generator applies', () => {
-  // The generator imports these formulas rather than repeating them; this pins the sentence the
-  // one prose rule comes from, so STARTING_STRESS in draft.svelte.js cannot drift from the book.
+  // Pins the prose rule STARTING_STRESS in draft.svelte.js reads, so the two can't drift.
   it('states starting Stress in prose, and states it as 2', () => {
     const step = CHARACTER_CREATION.steps.find((s) => s.id === 'step-5-gain-stress')!;
     expect(step.roll).toBeNull();
@@ -392,8 +378,7 @@ describe('the skills a class hands out', () => {
     },
   };
 
-  // The one class the book grants a set: "1 Master Skill, and an Expert and Trained Skill
-  // prerequisite", plus a Trained skill of its own.
+  // The book's own wording: "1 Master Skill, and an Expert and Trained Skill prerequisite".
   const SCIENTIST = {
     uuid: 'Item.scientist',
     name: 'Scientist',
@@ -453,8 +438,7 @@ describe('the skills a class hands out', () => {
     expect(draft.skillsPicked).toBe(false);
   });
 
-  // The either/or is a benefit of the class, answered on the adjustments pane, so the draft reports
-  // it apart from the picks it eventually funds.
+  // The either/or is answered on the adjustments pane, apart from the picks it funds.
   it('holds the class\u2019s either/or bonus open until a package is taken', async () => {
     const draft = await drafted();
     expect(draft.skillGroupsChosen).toBe(false);
@@ -474,19 +458,17 @@ describe('the skills a class hands out', () => {
     ]);
 
     draft.chooseSkillOption(0, 1);
-    // A set's slots run bottom up: its Expert is gated, so nothing can fill it until its Trained
-    // slot is answered.
+    // A set's slots run bottom up: its Expert is gated until its Trained slot is answered.
     expect(keys(draft)).toEqual([
       'class:expert:0:Expert',
       'group-0:expert_full_set:0:Trained',
       'group-0:expert_full_set:0:Expert',
     ]);
-    // The package brings a skill of its own, and it arrives with the package.
     expect(named(draft)).toEqual(['Linguistics', 'Rimwise']);
   });
 
-  // The book gates a bare Expert pick on already owning a prerequisite; a set hands out the chain
-  // itself, so its Expert slot is not gated.
+  // A bare Expert pick needs an owned prerequisite; a set hands out the chain itself, so its
+  // Expert slot is not gated.
   it('offers a gated pick only what a skill already held unlocks', async () => {
     const draft = await drafted();
     draft.chooseSkillOption(0, 0);
@@ -520,9 +502,8 @@ describe('the skills a class hands out', () => {
     expect(states()).toMatchObject({ Mathematics: 'picked', Cybernetics: 'available' });
   });
 
-  // The picker prints the two apart, because they read as the same grey row and only one of them is
-  // a rule about the skill: a spent rank is answered by taking a pick back, a gate by taking its
-  // prerequisite.
+  // A spent rank is answered by taking a pick back, a gate by taking its prerequisite — the
+  // picker distinguishes the two even though they render as the same grey row.
   it('says whether an unavailable skill wants a prerequisite or a free pick', async () => {
     const draft = await drafted();
     draft.chooseSkillOption(0, 0);
@@ -546,8 +527,7 @@ describe('the skills a class hands out', () => {
     draft.toggleSkill('sk-mathematics');
     draft.toggleSkill('sk-cybernetics');
     draft.toggleSkill('sk-rimwise');
-    // Granted first, then the slots in the order the pane shows them: the class's own pick, then
-    // the package's.
+    // Granted first, then slots in pane order: the class's own pick, then the package's.
     expect(named(draft)).toEqual(['Linguistics', 'Cybernetics', 'Mathematics', 'Rimwise']);
     expect(draft.skillsPicked).toBe(true);
 
@@ -557,8 +537,7 @@ describe('the skills a class hands out', () => {
     expect(draft.skillsPicked).toBe(false);
   });
 
-  // The picker is a list to browse, not a list of names: the book prints a sentence under every
-  // skill and the pick is made from it. Descriptions are stored as HTML and printed as text.
+  // Descriptions are stored as HTML and printed as text, for the sentence under each skill.
   it('carries the sentence and the bonus the book prints with each skill', async () => {
     const draft = await drafted();
     draft.chooseSkillOption(0, 0);
@@ -569,8 +548,8 @@ describe('the skills a class hands out', () => {
     });
   });
 
-  // The selected-class detail panel needs both fixed adjustments and the set a flexible choice may
-  // be spent on; promising a save the next pane will not offer is the bug this shape prevents.
+  // Carries both fixed adjustments and the set a flexible choice may spend, so the pane never
+  // promises a choice it can't offer.
   it('loads the details the class pane shows after a class is chosen', async () => {
     const draft = new CharacterDraft({ name: 'Rook Vance' });
     await draft.load();
@@ -593,7 +572,6 @@ describe('the skills a class hands out', () => {
           ]],
         },
       },
-      // A class that leaves nothing to place offers the pane no choices to print.
       {
         uuid: 'Item.scientist',
         name: 'Scientist',
@@ -604,8 +582,7 @@ describe('the skills a class hands out', () => {
         choices: [],
         skills: {
           granted: [],
-          // The book's own order, widest promise first — the Master set is the headline of the
-          // Scientist's card and its extra Trained skill is the footnote.
+          // Book order, widest promise first: Master set headline, Trained skill footnote.
           picks: [
             { label: 'Mothership.CharacterGenerator.Pick.MasterSet', count: 1 },
             { label: 'Mothership.CharacterGenerator.Pick.Trained', count: 1 },
@@ -616,10 +593,8 @@ describe('the skills a class hands out', () => {
     ]);
   });
 
-  // The Scientist's Master pick is not three free picks: the book hands it a Master "and an Expert
-  // and Trained Skill prerequisite". Gating the set's upper slots is the whole rule — a Scientist
-  // could otherwise finish with a Master, an unrelated Expert and an unrelated Trained skill, and
-  // the wizard called that character complete.
+  // The Master pick is not three free picks: gating the set's upper slots is the whole rule,
+  // otherwise a Scientist could finish with an unrelated Expert and Trained skill instead of the chain.
   describe('a full set', () => {
     const scientist = async () => {
       const draft = new CharacterDraft({ name: 'Rook Vance' });
@@ -664,10 +639,8 @@ describe('the skills a class hands out', () => {
       expect(draft.skillsPicked).toBe(true);
     });
 
-    // Xenobiology is a terminal Expert: nothing in the catalog stands on it. Taking it would spend
-    // the set's one Expert pick and leave the Master pick above it unfillable, so the picker never
-    // offers it — the alternative is a player walking into a dead end and having to work out for
-    // themselves that the way out is to take the pick back.
+    // Xenobiology is a terminal Expert: taking it would spend the set's one Expert pick and leave
+    // the Master slot above it unfillable, so the picker refuses it rather than stranding the player.
     it('refuses an Expert that would leave the Master pick standing on nothing', async () => {
       const draft = await scientist();
       draft.toggleSkill('sk-linguistics');
@@ -680,9 +653,8 @@ describe('the skills a class hands out', () => {
       expect(named(draft)).toEqual(['Linguistics']);
     });
 
-    // The rule reads the slots rather than the class: a second Expert pick can still buy the
-    // Master's prerequisite, so it must not refuse the first one a legal skill. Worlds carry
-    // homebrew classes, and the class sheet will write exactly this shape.
+    // The rule reads the slots, not the class: a second Expert pick can still buy the Master's
+    // prerequisite, so the first Expert pick must not be refused. Homebrew classes write this shape.
     it('allows a terminal Expert while another Expert pick can still feed the Master', async () => {
       const globals = globalThis as unknown as { game: { items: unknown[] } };
       globals.game.items = [...WORLD, {

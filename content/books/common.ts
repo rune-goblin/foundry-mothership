@@ -1,13 +1,6 @@
-// Value types every book's catalogs share. A book's own datasets live under its directory and
-// name it; nothing here is PSG-specific.
-
 export type Modifier = 'advantage' | 'disadvantage';
 
-/**
- * The roll a modifier names. The stats and saves are the flat key space `rollCheck` dispatches on;
- * `restSave` and `panicCheck` are its two special rolls. Spelled as the runtime spells them, so
- * nothing has to translate between the catalog and the code that reads it.
- */
+/** Spelled as `rollCheck` spells them, so nothing translates between catalog and runtime. */
 export type RollScope =
   | 'strength'
   | 'speed'
@@ -19,7 +12,6 @@ export type RollScope =
   | 'restSave'
   | 'panicCheck';
 
-/** A modifier and the one roll it applies to. A condition that says "[-] on Rest Saves" is this. */
 export interface ScopedModifier {
   modifier: Modifier;
   scope: RollScope;

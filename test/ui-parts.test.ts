@@ -1,35 +1,8 @@
 // @vitest-environment jsdom
 //
-// The shared primitives are hybrid by decision: they emit the *global*
-// class names from the hand-authored css/mothership.css rather than owning their styling. That makes
-// every class name below a contract with a stylesheet the compiler never sees -- rename one in a
-// component and the sheet silently loses its styling with every tier still green.
-//
-// These specs mount each primitive and assert the selector the stylesheet actually keys off,
-// plus the behaviour of the interactive ones.
-//
-// A primitive that owns its styles in a scoped <style> block has no such contract, and its
-// class-name pin retires with the move (design-system.md decision 5) -- Tabs is the first,
-// ItemControls the second, ItemImage the third. The rest keep theirs: the stat vocabulary
-// (.circle-input, .mainstat*, .circle-statwrapper*) is read by six components, so no scoped
-// block can reach it and css/mothership.css declares it as a shared tier. The list primitives
-// keep theirs for a second reason -- .items-list still gates ItemControls' width, .skill-name
-// is shared with four sheets that hand-write it, and the e2e specs locate rows, headers,
-// controls and stat cells by name.
-//
-// Field keeps its pin for a third: half its names are shared vocabulary, and the two it now
-// owns are built at runtime (`class={inputClass}`), where the compiler cannot prune or warn.
-// Rename a static class and svelte-check reports an unused selector; rename a runtime-built
-// one and every tier stays silent, so the pin is the only check it has.
-//
-// PipTrack owns its three names and keeps its pin for both of Field's reasons at once: the
-// e2e specs count `.pip.filled` and read `.pip-caption`, and a pip's state classes are built at
-// runtime from `filled` and `milestone`. MinMaxField and RollableStat own nothing --
-// ArmorBlock hand-writes the first's wrapper, and no rule anywhere keys off the second's
-// `ability-mod`/`stat-roll` -- so their pins are the whole contract. The three sections own
-// nothing either: HealthBlock and ItemPanel write no class at all, and ArmorBlock's remaining
-// names are MinMaxField's. `whiteText`/`highlightText` and the black bar around them are
-// ArmorBar's now, shared by ArmorBlock and the Cover dialog.
+// The shared primitives emit global class names from the hand-authored css/mothership.css
+// rather than owning their styling, so each class asserted below is a stylesheet contract the
+// compiler cannot check — rename one in a component and the sheet silently loses its styling.
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { mount, unmount, flushSync, createRawSnippet, type Component } from 'svelte';
 
@@ -53,8 +26,7 @@ import ItemPanel from '../module/ui/parts/sections/ItemPanel.svelte';
 import { onActivate } from '../module/ui/parts/activate.js';
 import { dropTarget } from '../module/ui/parts/drop-target.js';
 
-// The sections caption themselves; the primitives take their labels as props. `i18n.ts` reads
-// game.i18n, which jsdom has no reason to provide -- echo the key back.
+// i18n.ts reads game.i18n, which jsdom has no reason to provide -- echo the key back.
 (globalThis as any).game = { i18n: { localize: (key: string) => key } };
 
 const mounted: Array<Record<string, unknown>> = [];
@@ -78,8 +50,7 @@ const text = (content: string) =>
 const press = (node: Element, key: string) =>
   node.dispatchEvent(new window.KeyboardEvent('keydown', { key, bubbles: true }));
 
-// Svelte stamps a `svelte-<hash>` class on every element of a component that owns styles. It is
-// compiler output, not a contract, so the pins strip it and keep asserting the exact set.
+// Svelte stamps a svelte-<hash> class on styled elements; strip it before asserting the exact set.
 const classes = (node: Element) => [...node.classList].filter((c) => !c.startsWith('svelte-'));
 
 describe('ItemList', () => {
@@ -431,8 +402,7 @@ describe('PipTrack', () => {
     ]);
   });
 
-  // The caption is centred by transform, so a milestone is a label and nothing else — the three
-  // hand-measured `left` nudges the map used to carry are gone.
+  // The caption is centred by transform, so it carries no inline style.
   it('captions a milestone pip and marks the pip that carries it', () => {
     const target = render(PipTrack, { count: 5, value: 5, milestones: { 5: 'Trained' } });
     const caption = target.querySelector('.pip-caption')! as HTMLElement;
@@ -566,9 +536,6 @@ describe('CircleStats', () => {
   });
 });
 
-// The sections are the tier above the primitives: shared between the two actor sheets, composed
-// out of the parts above, and captioned from lang/. Decision 1's falsifier is the prop count --
-// a section needing more than about three divergence props should be split back apart.
 describe('ItemPanel', () => {
   const items = [
     { id: 'aaa', name: 'Wrench' },
@@ -679,10 +646,8 @@ describe('ArmorBar', () => {
     expect(el.querySelector('.slant')).not.toBeNull();
   });
 
-  // `spread` is the difference between the two hand-written copies this component replaced: Cover
-  // put `maxhealth-input` on the value div too, and its `margin: auto` pushes the value and its
-  // bonus to opposite ends of the cell. Only the character sheet's form has a baseline, so the
-  // difference is pinned rather than resolved — dropping it is a reviewed pixel change.
+  // `spread` puts maxhealth-input on the value div too, whose margin: auto pushes the value and
+  // its bonus to opposite cell ends — a pinned pixel difference, not a bug.
   it('spreads a value from its bonus only when asked', () => {
     expect(bar({ left: 4, right: 2 }).querySelector('.whiteText.maxhealth-input')).toBeNull();
     expect(bar({ left: 4, right: 2, spread: true }).querySelectorAll('.whiteText.maxhealth-input')).toHaveLength(2);

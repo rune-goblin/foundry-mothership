@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
-//
+
 // The one item sheet that edits a list: its rows carry no `name`, so the writes are the
-// component's own rather than Foundry's form handling. The e2e baseline shows the block empty.
+// component's own rather than Foundry's form handling.
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { mount, unmount, flushSync } from 'svelte';
 

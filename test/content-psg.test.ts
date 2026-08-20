@@ -1,6 +1,3 @@
-// What the PSG build actually emits. The machinery is proven against the fixture in
-// content-pipeline.test.ts; this file drives the real book, because the book is now the only
-// source and a transcription error ships.
 import { beforeAll, describe, expect, it } from 'vitest';
 import { mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -31,11 +28,10 @@ describe('what the PSG ships', () => {
       skills: 42,
       classes: 4,
       weapons: 22,
-      // 5 priced suits, plus the 10 outfits the loadout tables print with an AP the price list
-      // never lists — two of them AP 2, which no priced armor provides.
+      // 5 priced suits plus 10 loadout-only outfits the price list never lists.
       armor: 15,
-      // 44 equipment records less the Crowbar, which the weapons list carries with damage, plus
-      // the 22 loadout-only items the book prints without a price.
+      // 44 equipment records less the Crowbar (carried by the weapons list instead),
+      // plus 22 loadout-only items the book prints without a price.
       equipment: 65,
       conditions: 9,
       rolltables: 13,
@@ -58,8 +54,6 @@ describe('what the PSG ships', () => {
   });
 });
 
-// The character generator has never had data: it scans every compendium for `type: "skill"` and
-// `type: "class"` and has always found none. These are the documents that change that.
 describe('the generator finally has data', () => {
   const system = (pack: string, contentId: string): Record<string, unknown> =>
     built.emitted.find((d) => d.pack === pack && d.contentId === contentId)!.document.system as Record<
@@ -76,8 +70,8 @@ describe('the generator finally has data', () => {
     }
   });
 
-  // stats and saves share one flat key space, `all` fans out, and a target the book leaves open is
-  // a choice the player makes — the three rules the plan measured, on the class that shows each.
+  // Stats and saves share one flat key space, `all` fans out, and a target the book
+  // leaves open becomes a player choice.
   it('maps the book’s adjustments onto base_adjustment', () => {
     expect(system('classes', 'marine').base_adjustment).toMatchObject({
       combat: 10,
@@ -94,8 +88,6 @@ describe('the generator finally has data', () => {
     ]);
   });
 
-  // "1 Master Skill, and an Expert and Trained Skill prerequisite" was the one class adjustment
-  // the plan left open. The runtime already had the shape: master_full_set walks the whole chain.
   it('turns the Scientist’s qualified Master pick into a full set', () => {
     expect((system('classes', 'scientist').selected_adjustment as Record<string, unknown>).choose_skill_and)
       .toEqual({ trained: 1, expert: 0, expert_full_set: 0, master: 0, master_full_set: 1 });
@@ -125,8 +117,8 @@ describe('the generator finally has data', () => {
   });
 });
 
-// The loadout step has never worked: the generator splits `system.class.loadout.uuid` on commas
-// and adds what it finds, and the tables shipped free text. Every row now links documents.
+// The generator splits `system.class.loadout.uuid` on commas, so a row needs real
+// UUID links, not free text.
 describe('loadouts link real documents', () => {
   const rows = () => built.emitted.filter((d) => d.pack === 'rolltables' && d.contentId.startsWith('loadout-'));
 
@@ -177,8 +169,7 @@ describe('the conditions', () => {
     ]);
   });
 
-  // Each of the three states its roll in the book. Scoping is the whole point: a bare
-  // "disadvantage" would reach every roll the character makes, which no PSG line supports.
+  // A bare "disadvantage" would reach every roll the character makes, which no PSG line supports.
   it('scopes each seeded modifier to the roll its text names', () => {
     const scoped = Object.fromEntries(
       CONDITIONS.filter((c) => c.modifiers.length).map((c) => [c.id, c.modifiers]),

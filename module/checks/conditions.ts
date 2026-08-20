@@ -1,10 +1,3 @@
-/**
- * What an actor's conditions have to say about one named roll (§34). Only the roll a condition
- * names counts — Nightmares reaches a Rest Save and nothing else, which is how the book states
- * it — and opposed modifiers cancel to a normal roll. The answer preselects a dialog button
- * rather than forcing the roll, so the table's call always wins.
- */
-
 import type { CheckScope } from '../chat/enrichers.ts';
 import { format } from '../i18n.ts';
 import type { Advantage } from '../rolls/spec.ts';
@@ -55,6 +48,7 @@ export function conditionModifier(
     }
   }
 
+  // Opposed modifiers cancel to a normal roll rather than picking a winner.
   if (named.advantage.length > 0 && named.disadvantage.length > 0) return null;
   if (named.disadvantage.length > 0) return { advantage: 'disadvantage', names: named.disadvantage };
   if (named.advantage.length > 0) return { advantage: 'advantage', names: named.advantage };

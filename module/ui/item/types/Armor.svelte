@@ -3,9 +3,8 @@
   import CheckField from '../../parts/CheckField.svelte';
   import { localize } from '../../../i18n.ts';
 
-  // No <style> block: Weapon.svelte hand-writes `item-armor-grid` and both `circle-statwrapper-*`
-  // wrappers exactly as this file does, so a scoped block here would reach only half of each look.
-  // All three stay declared in css/mothership.css as a shared tier.
+  // No <style> block: `item-armor-grid` and both `circle-statwrapper-*` wrappers are hand-written
+  // here and in Weapon.svelte too — shared tier in css/mothership.css.
   let { system } = $props();
 </script>
 

@@ -19,11 +19,7 @@ export interface ResolveOptions {
   readonly comparison: Comparison;
   readonly crits: boolean;
   readonly zeroBased: boolean;
-  /**
-   * Whether a 90 or more fails whatever the target. Legacy applied it to every comparison it
-   * made, whatever the die; the book states it of the d100 (`AUTOFAIL_AT`). Defaults to legacy's
-   * blanket rule so a caller that has not thought about it keeps the old answer.
-   */
+  /** Whether a 90 or more auto-fails regardless of target — the book scopes this to the d100 only. Defaults to true. */
   readonly autoFail?: boolean;
 }
 
@@ -76,10 +72,9 @@ function extreme(dice: readonly DieOutcome[], keep: 'kh' | 'kl'): number {
 }
 
 /**
- * Which die the check keeps. The pool's own keep is the starting point; a critical outranks a
- * merely better number, in the direction the modifier points — advantage takes a critical success
- * and ducks a critical failure, disadvantage does the reverse. A Panic Check ignores that
- * preference and takes the pool's answer.
+ * A critical outranks a merely better number, in the direction the modifier points — advantage
+ * takes a critical success and ducks a critical failure, disadvantage the reverse. A Panic Check
+ * ignores that preference and takes the pool's own answer.
  */
 function pick(dice: readonly DieOutcome[], options: ResolveOptions): number {
   if (dice.length === 0) return -1;

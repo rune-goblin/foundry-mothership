@@ -1,15 +1,3 @@
-/**
- * What happens when someone rolls something. The `Check` union is the whole dispatch: legacy took
- * seven positional parameters, back-filled the null ones from dialogs, and then re-read three of
- * them as sentinels — `attribute === 'damage'`, `attribute === 'restSave'`, `tableId ===
- * 'panicCheck'` — so a damage roll and a Rest Save were the same 434-line method as a Stat Check
- * (audit F9, F14). Here each kind states its own arguments, and this module asks only for what
- * the caller did not say.
- *
- * A check reads the **derived** system: the armour, the swarm multiplier and the condition tally
- * derivation computes are exactly what the roll must be judged against.
- */
-
 import {
   asset,
   checkCard,
@@ -66,11 +54,7 @@ const SAVES: readonly StatKey[] = ['sanity', 'fear', 'body'];
 const SCOPES: ReadonlySet<string> = new Set(CHECK_SCOPES);
 
 export interface CheckOptions {
-  /**
-   * The modifier the caller already knows. `null` or absent opens the prompt — which is where a
-   * condition preselects the button it argues for (§34), so content naming no modifier still
-   * lets the conditions speak.
-   */
+  /** `null` or absent opens the prompt, where a condition can preselect the button it argues for. */
   readonly advantage?: Advantage | null;
   /** A damage expression that is not the weapon's own: a swarm's scaled dice. */
   readonly damage?: string | null;
@@ -96,7 +80,6 @@ export interface DamageResult {
 
 export type CheckOutcome = CheckResult | DamageResult | TableResult;
 
-/** Which roll a condition would have to name to reach this check. */
 export function checkScope(check: Check): CheckScope | null {
   switch (check.kind) {
     case 'stat':
@@ -175,11 +158,7 @@ function skillRows(actor: CheckActor): SkillRow[] {
   return rows;
 }
 
-/**
- * PSG 22 — a character may add a relevant skill to what they roll, so every check a character
- * makes opens with the offer. A creature holds no skills to offer, and a check that already
- * names its skill has nothing to ask.
- */
+/** PSG 22 — a character may add a relevant skill to any check; a creature has none to offer. */
 function offersSkill(actor: CheckActor, check: Check): boolean {
   if (!isCharacter(actor)) return false;
   return check.kind === 'stat' || check.kind === 'weapon-attack' || check.kind === 'rest-save';
@@ -190,16 +169,13 @@ interface Chosen {
   readonly advantage: Advantage;
 }
 
-/**
- * PSG 2's weapon table gives every weapon a range — Adjacent is the melee band, everything past
- * it is fired. A default only: the player can still pick a different skill, or none.
- */
+/** PSG 2 — Adjacent range is melee, everything else is fired. A default only; the player can override it. */
 function defaultCombatSkill(weapon: CheckItem, rows: readonly SkillRow[]): SkillRow | null {
   const name = (weapon.system as { range?: unknown }).range === 'adjacent' ? 'Hand-to-Hand Combat' : 'Firearms';
   return rows.find((row) => row.name === name) ?? null;
 }
 
-/** Ask for what the caller did not say — in one dialog, where one dialog carries both answers. */
+/** Asks only for what the caller didn't already say — skill and advantage, in one dialog. */
 async function ask(
   actor: CheckActor,
   check: Check,
@@ -247,11 +223,7 @@ function weaponOf(actor: CheckActor, itemId: string): CheckItem | null {
   return item;
 }
 
-/**
- * One attack costs what the weapon says it costs, and only an attack asks: a damage roll has no
- * route to this call (audit F5). A weapon that cannot fire says so, and the attack does not
- * happen — the reload it offers is the shot's replacement, not its prelude.
- */
+/** A weapon that cannot fire does not attack — the reload it offers replaces the shot, not precedes it. */
 async function spendShot(actor: CheckActor, item: CheckItem): Promise<boolean> {
   const outcome = await item.fire();
   if (outcome.status === 'fired') return true;
@@ -274,10 +246,7 @@ function headerOf(check: Check, stat: StatValue, weapon: CheckItem | null): { ti
   return { title: stat.rollLabel, image: asset(`images/icons/ui/attributes/${stat.key}.png`) };
 }
 
-/**
- * Several damages cannot be settled without asking: the range a shot was taken at is the table's
- * business and no field records it. `null` is the question dismissed.
- */
+/** `null` means the dialog was dismissed, not that there's no damage. */
 async function settleDamage(weapon: CheckItem, override: string | null): Promise<string | null> {
   const modes = damageModes(weapon, override);
   if (modes.length <= 1) return modes[0]?.formula ?? '';
@@ -389,7 +358,6 @@ async function damageOnly(
   return { kind: 'damage', card };
 }
 
-/** The one entry: what is rolled is the check, never a parameter that means two things. */
 export async function runCheck(
   actor: CheckActor,
   check: Check,
@@ -411,7 +379,7 @@ export async function runCheck(
   }
 }
 
-/** What each Stat is worth on this actor: `value + mod`, the two numbers `d100Check` totals. */
+/** value + mod — must match what d100Check totals. */
 function statValues(actor: CheckActor): Record<string, number> {
   const values: Record<string, number> = {};
   for (const key of ATTRIBUTE_KEYS) {
@@ -421,14 +389,7 @@ function statValues(actor: CheckActor): Record<string, number> {
   return values;
 }
 
-/**
- * The check whose stat nobody has named — the Skill Check the hotbar offers. Choosing the stat is
- * one dialog and adding a skill is the next.
- *
- * The roll type is **not** asked here. It used to be, which meant committing to Advantage on the
- * Stat window and then meeting the Skill list with a lone Next — a choice made before its own
- * grounds were known. The last window before the dice owns it, and here that is the Skill window.
- */
+/** The roll type is asked in the last window before the dice — the Skill window — not committed early. */
 export async function promptCheck(
   actor: CheckActor,
   options: CheckOptions = {},
@@ -438,11 +399,7 @@ export async function promptCheck(
   return await runCheck(actor, { kind: 'stat', stat: chosen.stat }, options);
 }
 
-/**
- * The opposite gap: the skill is known — it was clicked — and the stat it applies to is not. PSG
- * 22 leaves that to the moment, so this asks for the stat and nothing else; the skill list the
- * plain check offers has already been answered by the click.
- */
+/** The skill is already known (it was clicked); this asks only for the stat it applies to. */
 export async function promptSkillCheck(
   actor: CheckActor,
   skillId: string,
@@ -455,8 +412,6 @@ export async function promptSkillCheck(
   }
 
   const bonus = skillBonus(item.system);
-  // This window is the last before the dice, so it owns the roll type — and it can name the Skill
-  // that opened it, which is what the total on show is adding.
   const chosen = await chooseAttribute({
     advantage: (options.advantage ?? null) === null,
     values: statValues(actor),

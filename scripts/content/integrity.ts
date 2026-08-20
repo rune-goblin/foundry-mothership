@@ -71,12 +71,9 @@ const FORBIDDEN_INIT_CALL = /\bmothershiprpg\.init[A-Z]\w*\s*\(/;
 const FORBIDDEN_BARE_ID = /(['"`])[A-Za-z0-9]{16}\1/;
 
 /**
- * Macros are user interface now, not the system: every
- * emitted command routes through `game.mothershiprpg`'s new entry points, which resolve targeting,
- * tables and conditions themselves. This is the structural fix for two shipped bugs a content
- * change could otherwise reintroduce — a `game.settings.get` namespace typo no tier caught until a
- * player was dying (audit C1), and a wound-table id embedded past every reference check's reach
- * (audit C2) — plus the retired `init*` verbs those bugs lived in.
+ * Guards against two bugs that shipped silently before macros routed through
+ * `game.mothershiprpg`: a `game.settings.get` namespace typo no tier caught until a player was
+ * dying, and a wound-table id embedded past every reference check's reach.
  */
 export function checkMacroCommands(emitted: Emitted[]): string[] {
   const errors: string[] = [];
@@ -98,10 +95,9 @@ export function checkMacroCommands(emitted: Emitted[]): string[] {
 }
 
 /**
- * The rolltable settings default to bare `_id`s; each must still name a registered table. The
- * defaults are read from the runtime's own table definitions rather than scraped out of the
- * registration source, which is what the swap deleted — `tables/tables.ts` is where a table's
- * identity lives now (audit F13, RC13).
+ * The rolltable settings default to bare `_id`s; each must still name a registered table. Reads
+ * the defaults from `tables/tables.ts`, the runtime's own table definitions, not a scrape of the
+ * registration source.
  */
 export function checkSettingsDefaults(registry: Registry): string[] {
   const known = allIds(registry);

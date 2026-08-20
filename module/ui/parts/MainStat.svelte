@@ -1,18 +1,6 @@
 <script>
   import RollableStat from './RollableStat.svelte';
 
-  // The label-plus-circle pair the class sheet, the generator and both actor sheets use for a
-  // stat: a black label bar beside the circle. Its class names (.mainstatwrapper / .mainstat /
-  // .mainstatlabel / .mainstattext / .circle-input) are the shared stat tier in
-  // css/mothership.css, hand-written by call sites this component never renders, which is why
-  // they cannot move into a scoped <style> block here.
-  //
-  // `control` replaces the plain input where the circle is something else — the generator swaps a
-  // clickable die for the rolled value — and `after` holds what sits beside it inside the wrapper,
-  // which is where the +bonus input goes. The generator's table rows carry no wrapper at all.
-  //
-  // `onroll` makes the caption the roll: the character sheet's four stats are clicked to check
-  // them, and RollableStat adds the classes and the keyboard twin that turns a span into a button.
   let {
     name,
     value,

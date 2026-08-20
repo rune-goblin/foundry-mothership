@@ -6,7 +6,6 @@ import {
   updateData,
 } from '../module/mutation/address.ts';
 
-// The three pod shapes module/data/actor-models.js builds, as a document holds them.
 const system = {
   health: { value: 7, min: 0, max: 10, label: 'Health' },
   hits: { value: 1, min: 0, max: 2, label: 'Wounds' },
