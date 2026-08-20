@@ -296,7 +296,7 @@ test.describe('character generator', () => {
     await expect(gmPage.locator('button[data-action="next"]')).toBeEnabled();
   });
 
-  test('generates a Marine, and its three-item loadout row becomes three items', async ({ gmPage }) => {
+  test('generates a Marine, and its three-item loadout row becomes three items plus Unarmed', async ({ gmPage }) => {
     // Stress starts pre-drifted here so the test can tell whether the generator writes it or leaves the schema default.
     const uuid = await openGenerator(
       gmPage,
@@ -370,7 +370,10 @@ test.describe('character generator', () => {
     await goTo(gmPage, 'gear');
     await gmPage.click('button[data-roll="all"]');
     await expect(gmPage.locator('input[data-value="loadout"]')).toHaveValue('0');
-    await expect(gmPage.locator('ul[data-list="loadout"] li')).toHaveCount(3);
+    // The row's three items, and the Unarmed the draw adds to every loadout.
+    await expect(gmPage.locator('ul[data-list="loadout"] li')).toHaveText([
+      /Tank Top and Camo Pants/, /Combat Knife/, /Stimpak/, 'Unarmed',
+    ]);
 
     await goTo(gmPage, 'finish');
     await gmPage.fill('form.character-wizard input[name="name"]', '');
@@ -409,12 +412,13 @@ test.describe('character generator', () => {
     // tells the Panic table android from human.
     expect(carried.filter((i) => i.type === 'class').map((i) => i.name)).toEqual(['Marine']);
 
-    // The row links armour, a weapon and equipment under the book's names; all three must arrive as resolved documents.
+    // The row links armour, a weapon and equipment under the book's names; all three must arrive as
+    // resolved documents, and Unarmed rides in with them.
     const gear = carried
       .filter((i) => i.type !== 'skill' && i.type !== 'class')
       .map((i) => i.name)
       .sort();
-    expect(gear).toEqual(['Scalpel', 'Stimpak', 'Tank Top and Camo Pants']);
+    expect(gear).toEqual(['Scalpel', 'Stimpak', 'Tank Top and Camo Pants', 'Unarmed']);
   });
 
   test('a class replaces the one before it rather than stacking on it', async ({ gmPage }) => {

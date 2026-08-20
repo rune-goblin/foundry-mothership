@@ -5,9 +5,10 @@ import { fileURLToPath } from 'node:url';
 
 import { parseResults, drawnRow } from '../module/ui/generator/table-result.js';
 import { candidates } from '../module/ui/generator/skills.js';
-import { CharacterDraft } from '../module/ui/generator/draft.svelte.js';
+import { CharacterDraft, UNARMED } from '../module/ui/generator/draft.svelte.js';
 import { STEPS, STEP_TOTAL, stepNumber } from '../module/ui/generator/steps.js';
 import { CHARACTER_CREATION } from '../content/books/psg/character-creation.ts';
+import { WEAPONS } from '../content/books/psg/weapons.ts';
 
 function lang(file: string): Map<string, string> {
   const flatten = (value: unknown, prefix: string): [string, string][] =>
@@ -289,20 +290,24 @@ describe('the portrait and the two longform fields', () => {
 
   const applied = async (fill: (draft: CharacterDraft) => void) => {
     let written: Record<string, unknown> = {};
+    const granted: [string, number][] = [];
     const draft = new CharacterDraft({
       name: 'Rook Vance',
       items: [],
       update: async (update: Record<string, unknown>) => {
         written = update;
       },
+      applyItemRef: async (ref: string, count: number) => {
+        granted.push([ref, count]);
+      },
     });
     fill(draft);
     await draft.apply();
-    return written;
+    return { written, granted };
   };
 
   it('writes the framed portrait, and the two fields as the HTML the sheet reads', async () => {
-    const written = await applied((draft) => {
+    const { written } = await applied((draft) => {
       draft.portrait = 'worlds/crew/rook.webp';
       draft.biography = 'Signed on at Prospero.\nOwed money.\n\nNever says why.';
       draft.notes = 'Owes <Nostromo> money & says nothing.';
@@ -316,13 +321,84 @@ describe('the portrait and the two longform fields', () => {
   });
 
   it('leaves a blank field alone rather than erasing what the actor carries', async () => {
-    const written = await applied((draft) => {
+    const { written } = await applied((draft) => {
       draft.biography = '   \n\n  ';
     });
 
     expect(written).not.toHaveProperty('system.biography');
     expect(written).not.toHaveProperty('system.notes');
     expect(written).not.toHaveProperty('img');
+  });
+
+  it('hands out the loadout the draw brought, Unarmed included', async () => {
+    const { granted } = await applied((draft) => {
+      (draft as unknown as { loadout: unknown }).loadout = {
+        roll: 0,
+        text: 'Scalpel',
+        entries: [{ uuid: 'Compendium.mothershiprpg.weapons_1e.Item.scalpel', name: 'Scalpel' }, UNARMED],
+      };
+    });
+
+    expect(granted).toEqual([
+      ['Compendium.mothershiprpg.weapons_1e.Item.scalpel', 1],
+      [UNARMED.uuid, 1],
+    ]);
+  });
+
+  // The wizard names the document rather than scanning the compendium for it, so both halves have
+  // to be what the content build emits.
+  it('names the Unarmed the content build emits', () => {
+    const registry = JSON.parse(
+      readFileSync(fileURLToPath(new URL('../content/ids.json', import.meta.url)), 'utf8'),
+    ) as {
+      packs: Record<
+        string,
+        { compendium: string; documentType: string; documents: Record<string, { id: string }> }
+      >;
+    };
+    const weapons = registry.packs.weapons;
+
+    expect(UNARMED.name).toBe(WEAPONS.find((weapon) => weapon.id === 'unarmed')?.name);
+    expect(UNARMED.uuid).toBe(
+      `Compendium.mothershiprpg.${weapons.compendium}.${weapons.documentType}.${weapons.documents.unarmed.id}`,
+    );
+  });
+});
+
+describe('the gear the loadout draw brings', () => {
+  const SCALPEL = 'Compendium.mothershiprpg.weapons_1e.Item.scalpel';
+
+  beforeEach(() => {
+    const globals = globalThis as Record<string, unknown>;
+    globals.fromUuid = async () => ({
+      draw: async () => ({
+        results: [
+          { type: 'text', description: `Scalpel<br><br>@UUID[${SCALPEL}]{Scalpel}`, range: [0, 0] },
+        ],
+      }),
+    });
+    globals.ui = { notifications: { warn: () => {}, error: () => {} } };
+  });
+
+  afterEach(() => {
+    const globals = globalThis as Record<string, unknown>;
+    delete globals.fromUuid;
+    delete globals.ui;
+  });
+
+  const drawn = async (kind: 'loadout' | 'trinket') => {
+    const draft = new CharacterDraft({ name: 'Rook Vance' });
+    draft.classUuid = 'Item.marine';
+    await draft.rollTable(kind);
+    return (draft[kind] as unknown as { entries: { name: string }[] }).entries.map((entry) => entry.name);
+  };
+
+  it('rolls Unarmed in with the loadout, so the pane lists everything the character will carry', async () => {
+    expect(await drawn('loadout')).toEqual(['Scalpel', 'Unarmed']);
+  });
+
+  it('leaves the other draws as the table wrote them', async () => {
+    expect(await drawn('trinket')).toEqual(['Scalpel']);
   });
 });
 

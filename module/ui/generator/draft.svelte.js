@@ -1,4 +1,5 @@
 import { CHARACTER_CREATION } from '../../../content/books/psg/character-creation.ts';
+import { WEAPONS } from '../../../content/books/psg/weapons.ts';
 import { parseResults, drawnRow } from './table-result.js';
 import { loadSkills, loadClasses } from './skills.js';
 import { expandSlots, packageCounts, PICK_KINDS } from './picks.js';
@@ -30,6 +31,14 @@ export const STARTING_STRESS = 2;
 
 // Wounds are 2 plus whatever the class adds; the schema default says the same thing.
 const BASE_WOUNDS = 2;
+
+// Every character can throw a punch (PSG 2), so the loadout draw brings the weapon with it rather
+// than leaving each player to fetch it off the compendium afterwards. The id is the content
+// registry's (content/ids.json); test/generator.test.ts pins this pair against the book and it.
+export const UNARMED = {
+  uuid: 'Compendium.mothershiprpg.weapons_1e.Item.dceGyb1yjTLxdSSi',
+  name: WEAPONS.find((weapon) => weapon.id === 'unarmed').name,
+};
 
 const ROLLS = {
   strength: { formula: FORMULA.stats, label: 'Mothership.Strength' },
@@ -189,6 +198,7 @@ export class CharacterDraft {
     }
     const draw = await table.draw({ displayChat: true });
     this[kind] = { roll: drawnRow(draw), ...parseResults(draw.results) };
+    if (kind === 'loadout') this.loadout.entries.push(UNARMED);
   }
 
   /**
