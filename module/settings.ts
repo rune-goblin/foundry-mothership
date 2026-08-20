@@ -53,6 +53,18 @@ export const SETTINGS: readonly SettingDefinition[] = [
   { key: 'panicDieTheme', scope: 'world', type: 'string', default: SETTING_DEFAULTS.panicDieTheme },
   { key: 'hideWeight', scope: 'world', type: 'boolean', default: HIDE_WEIGHT_DEFAULT },
   { key: 'autoStress', scope: 'world', type: 'boolean', default: SETTING_DEFAULTS.autoStress },
+  {
+    key: 'autoRollDamagePlayers',
+    scope: 'world',
+    type: 'boolean',
+    default: SETTING_DEFAULTS.autoRollDamagePlayers,
+  },
+  {
+    key: 'autoRollDamageCreatures',
+    scope: 'world',
+    type: 'boolean',
+    default: SETTING_DEFAULTS.autoRollDamageCreatures,
+  },
 ];
 
 /** The menu that opens the rolltable chooser; the window itself is the UI layer's. */

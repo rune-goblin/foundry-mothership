@@ -13,9 +13,10 @@
 
 import { registerChatAction } from '../chat/actions.ts';
 import { registerCheckActions } from '../checks/actions.ts';
+import { rollDamageInCard } from '../checks/damage.ts';
 import { type CheckOptions, type CheckOutcome } from '../checks/checks.ts';
 import { type TableOptions, type TableResult } from '../checks/tables.ts';
-import { SYSTEM_ID } from '../chat/cards.ts';
+import { SYSTEM_ID, type CardMessage } from '../chat/cards.ts';
 import { CONDITION_IDS } from '../conditions.ts';
 import { debug } from '../debug.ts';
 import {
@@ -25,7 +26,7 @@ import {
   noCharacter,
   type StressDirection,
 } from '../dialogs/prompts.ts';
-import { format } from '../i18n.ts';
+import { format, localize } from '../i18n.ts';
 import { lookup, notifyMiss } from '../lookup.ts';
 import { addressOf } from '../mutation/fields.ts';
 import type { GrantDocument, GrantResult } from '../mutation/items.ts';
@@ -39,11 +40,18 @@ declare const game:
   | {
       readonly settings?: { get(namespace: string, key: string): unknown };
       readonly user?: { readonly character?: unknown };
+      readonly actors?: { get(id: string): unknown };
+      readonly messages?: { get(id: string): CardMessage | undefined };
     }
   | undefined;
 
 declare const canvas:
-  | { readonly tokens?: { readonly controlled?: readonly { readonly actor?: unknown }[] } }
+  | {
+      readonly tokens?: {
+        readonly controlled?: readonly { readonly actor?: unknown }[];
+        get?(id: string): { readonly actor?: unknown } | undefined;
+      };
+    }
   | undefined;
 
 declare const ui: { readonly notifications?: { warn(message: string): unknown } } | undefined;
@@ -215,6 +223,39 @@ export async function applyCondition(condition: string, count = 1): Promise<Gran
 }
 
 /* -------------------------------------------- */
+/*  The card a button was clicked in            */
+/* -------------------------------------------- */
+
+export interface CardOrigin {
+  readonly actor: MothershipActor | null;
+  readonly itemId: string | null;
+  /** The message the card is in, so a button can rewrite the card it sits in. */
+  readonly messageId: string | null;
+}
+
+/**
+ * The one place targeting is *not* the macro-target setting's business: the card names the actor
+ * that rolled and the weapon it rolled with. The token comes first, because an unlinked one shares
+ * its base actor's id with every other copy on the scene.
+ */
+export function cardOrigin(button: Element | null): CardOrigin {
+  // Foundry's wrapper, not ours: the card's root sits inside it.
+  const messageId = button?.closest<HTMLElement>('[data-message-id]')?.dataset.messageId ?? null;
+  const card = button?.closest<HTMLElement>('[data-actor-id]') ?? null;
+  if (card === null) return { actor: null, itemId: null, messageId };
+
+  const { actorId = '', itemId = '', tokenId = '' } = card.dataset;
+  const token = tokenId === '' ? undefined : canvas?.tokens?.get?.(tokenId);
+  const actor = token?.actor ?? (actorId === '' ? null : (game?.actors?.get(actorId) ?? null));
+
+  return {
+    actor: (actor as MothershipActor | null) ?? null,
+    itemId: itemId === '' ? null : itemId,
+    messageId,
+  };
+}
+
+/* -------------------------------------------- */
 /*  Registration                                */
 /* -------------------------------------------- */
 
@@ -227,6 +268,31 @@ export function registerActions(): void {
   registerChatAction('apply', async (action) => {
     debug('action', `apply ${action.condition} ×${action.count}`);
     await applyCondition(action.condition, action.count);
+  });
+
+  // The button carries the expression the attack earned, crit rule already applied, and the offer
+  // is the card's to take: a player clicking the Warden's creature card is told no.
+  registerChatAction('damage', async (action, context) => {
+    debug('action', `damage ${action.formula}`);
+    const { actor, itemId, messageId } = cardOrigin(context.button);
+    if (actor === null || itemId === null) {
+      if (typeof ui !== 'undefined') ui?.notifications?.warn(localize('Mothership.Errors.NoDamageSource'));
+      return;
+    }
+
+    const message = messageId === null ? undefined : game?.messages?.get(messageId);
+    const item = actor.items.get(itemId);
+    if (message !== undefined && item !== undefined) {
+      const outcome = await rollDamageInCard(message, game?.user, actor, item, action.formula);
+      if (outcome === 'rewritten') return;
+      if (outcome === 'forbidden') {
+        if (typeof ui !== 'undefined') ui?.notifications?.warn(localize('Mothership.Errors.NotYourCard'));
+        return;
+      }
+    }
+
+    // `unrecorded`: nothing to rewrite, so the damage arrives one message further down.
+    await actor.rollWeapon(itemId, { roll: 'damage', damage: action.formula });
   });
 }
 

@@ -978,7 +978,9 @@
       "NoTokenSelected": "As macros são direcionadas aos tokens selecionados na cena. Clique em um token, ou arraste uma caixa em volta de vários.",
       "NoItemNamed": "{actor} não possui um item chamado {name}.",
       "ItemMacroNotOwned": "Você só pode criar botões de macro para itens que pertencem a um ator.",
-      "UnknownArgument": "Uma macro pediu por {argument}, algo que este sistema não sabe interpretar."
+      "UnknownArgument": "Uma macro pediu por {argument}, algo que este sistema não sabe interpretar.",
+      "NoDamageSource": "Este cartão não nomeia um ator e uma arma para rolar o dano.",
+      "NotYourCard": "Somente o jogador que fez esta rolagem, ou o Mestre, pode rolar o dano dela."
     },
     "Chat": {
       "Success": "SUCESSO!",
@@ -1001,7 +1003,12 @@
       "SufferLabel": "Sofrer Dano de {condition}",
       "ActionUnavailable": "Essa ação ainda não está disponível.",
       "DamageDealt": "Você inflige {damage} pontos de dano.",
-      "UnarmedDamage": "Você golpeia seu alvo causando {damage} de dano."
+      "UnarmedDamage": "Você golpeia seu alvo causando {damage} de dano.",
+      "DamageLabel": "Rolar {damage}",
+      "DamageModeLabel": "Rolar {damage} · {mode}",
+      "RollDamageOffer": "Role o dano que você causa: {damage}",
+      "CheckSentence": "Você {verb} {comparison} seu {attribute}.",
+      "CheckSentenceSkill": "Você {verb} {comparison} seu {attribute} mais o bônus da perícia {skill}."
     },
     "Table": {
       "panic": "Cheque de Pânico",
@@ -1058,7 +1065,20 @@
         "Name": "Configuração das Tabelas",
         "Label": "Escolher Tabelas",
         "Hint": "Personalize quais tabelas de rolagem o sistema usa."
+      },
+      "autoRollDamagePlayers": {
+        "Name": "Rolar o Dano dos Jogadores Automaticamente",
+        "Hint": "Rola o dano de um personagem junto com o ataque. Desligado, o cartão oferece um botão para cada dano da arma."
+      },
+      "autoRollDamageCreatures": {
+        "Name": "Rolar o Dano das Criaturas Automaticamente",
+        "Hint": "Rola o dano de uma criatura junto com o ataque. Desligado, o cartão oferece um botão para cada dano da arma."
       }
-    }
+    },
+    "WhichDamageApplies": "Qual dano {weapon} causa?",
+    "DamageModes": "Dano por Alcance",
+    "AddDamageMode": "Adicionar um dano",
+    "RemoveDamageMode": "Remover este dano",
+    "DamageModeLabelField": "Quando"
   }
 }

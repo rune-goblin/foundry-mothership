@@ -1,5 +1,5 @@
 import { type Page } from '@playwright/test';
-import { test, expect } from './fixtures/foundry-clients.ts';
+import { test, expect, waitForGameReady } from './fixtures/foundry-clients.ts';
 
 // audit T1: one executed macro per verb family, against a real actor, reading the write back —
 // this is exactly the tier that would have caught C1 (a macro that throws on click), RC3 (an item
@@ -162,6 +162,75 @@ test.describe('the remade core, executed live', () => {
     await answer(gmPage, 'none');
 
     await expect.poll(() => lastMessageText(gmPage)).toContain('HEART ATTACK');
+  });
+
+  /**
+   * Only a real Foundry can check this: an enricher renders the button and a hook-bound listener
+   * routes its click, and binding that listener to the chat *log* left every button in the
+   * notification copy of the same card dead. Nothing below the DOM can see it.
+   */
+  test('a damage button offered by a card rolls the damage in that card', async ({ gmPage }) => {
+    await gmPage.evaluate(async () => {
+      await (window as any).game.settings.set('mothershiprpg', 'autoRollDamagePlayers', false);
+    });
+
+    // This file's cleanup closes every ApplicationV2 there is, the sidebar included, so by now
+    // there is no chat UI left to click a button in.
+    await gmPage.reload();
+    await waitForGameReady(gmPage);
+
+    const uuid = await create(gmPage, { stats: { combat: { value: 90 } } });
+    await gmPage.evaluate(async (u: string) => {
+      const actor = await (window as any).fromUuid(u);
+      await actor.createEmbeddedDocuments('Item', [
+        { name: '__e2e_gun', type: 'weapon', system: { damage: '2d10', range: 'close', useAmmo: false } },
+      ]);
+      // Collapsed, so the card is posted as a notification into `#chat-notifications`, which sits
+      // in the UI's right column rather than inside the chat log. That copy is the one under test.
+      (window as any).ui.sidebar.collapse();
+    }, uuid);
+
+    await rigDie(gmPage, 5); // 5 against Combat 90: a hit, so the card carries the damage offer.
+    await gmPage.evaluate(async (u: string) => {
+      const actor = await (window as any).fromUuid(u);
+      void actor.rollWeapon(actor.items.find((i: any) => i.type === 'weapon').id);
+    }, uuid);
+    await answer(gmPage, 'none');
+
+    await expect.poll(() => lastMessageText(gmPage)).toContain('Roll the damage you deal');
+
+    const messages = () => gmPage.evaluate(() => (window as any).game.messages.contents.length as number);
+    const before = await messages();
+
+    const offered = gmPage.locator('#chat-notifications .chat-message .mothership-action').first();
+    await expect(offered).toBeVisible();
+    await offered.click();
+
+    // The offer became the result, in the card that made it.
+    await expect.poll(() => lastMessageText(gmPage)).toContain('points of damage');
+    expect(await lastMessageText(gmPage)).not.toContain('Roll the damage you deal');
+    expect(await messages()).toBe(before);
+
+    // Whose offer it is, asked of Foundry rather than assumed: `ownsCard` is this call, and it
+    // reads OWNER for the message's author and for any GM. A real User document, no second session.
+    const verdicts = await gmPage.evaluate(async () => {
+      const w = window as any;
+      const player = await w.User.create({ name: '__e2e_player', role: 1 });
+      const message = w.game.messages.contents.at(-1);
+      try {
+        return {
+          author: message.canUserModify(w.game.user, 'update'),
+          other: message.canUserModify(player, 'update'),
+        };
+      } finally {
+        await player.delete();
+      }
+    });
+    expect(verdicts).toEqual({ author: true, other: false });
+
+    await gmPage.evaluate(async () => {
+      await (window as any).game.settings.set('mothershiprpg', 'autoRollDamagePlayers', true);
+    });
   });
 
   // RC1: `preCreateActor` wrote token-bar and vision fields the schema discarded, so every created

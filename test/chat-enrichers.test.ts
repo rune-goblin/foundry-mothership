@@ -91,6 +91,21 @@ describe('parsing', () => {
     expect(formatAction({ verb: 'apply', condition: 'bleeding', count: 2 })).toBe('@Apply[bleeding 2]');
   });
 
+  // A damage expression is one argument that keeps its spaces and its braces: `critFormula`
+  // writes `1d10 * 2` and `{1d10,1d10}kh`, and a card's damage button carries whichever the GM's
+  // crit rule produced.
+  it('reads a damage expression whole, spaces and all', () => {
+    for (const formula of ['4d10', '1d10 * 2', '{1d10,1d10}kh', 'floor(45/10)', '1']) {
+      expect(parsed(`@Damage[${formula}]`)).toEqual({ verb: 'damage', formula });
+      expect(formatAction({ verb: 'damage', formula })).toBe(`@Damage[${formula}]`);
+    }
+  });
+
+  it('refuses a damage naming no dice and no number, so a typo stays text', () => {
+    expect(parseAction('@Damage[lots]')).toMatchObject({ ok: false, fault: 'argument' });
+    expect(parseAction('@Damage[]')).toMatchObject({ ok: false, fault: 'argument' });
+  });
+
   it('takes a label the way `@UUID` does', () => {
     const result = parseAction('@Gain[health -bleeding]{Take Bleeding Damage}');
 
@@ -142,6 +157,7 @@ describe('the button', () => {
       'Mothership.Minimum': 'Minimum',
       'Mothership.Stress': 'Stress',
       'Mothership.Table.gunshot': 'Gunshot Wound',
+      'Mothership.Chat.DamageLabel': 'Roll {damage}',
     });
 
     expect(actionLabel(parsed('@Check[fear -]'))).toBe('Fear Save [-]');
@@ -150,6 +166,7 @@ describe('the button', () => {
     expect(actionLabel(parsed('@Gain[health -bleeding]'))).toBe('Take Bleeding Damage');
     expect(actionLabel(parsed('@Apply[loss-of-confidence]'))).toBe('+1 Loss Of Confidence');
     expect(actionLabel(parsed('@Table[gunshot]'))).toBe('Gunshot Wound');
+    expect(actionLabel(parsed('@Damage[4d10]'))).toBe('Roll 4d10');
     expect(actionButton(parsed('@Apply[coward]'), '+1 Coward').textContent).toBe('+1 Coward');
   });
 });

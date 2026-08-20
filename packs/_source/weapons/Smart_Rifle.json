@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 3,
     "damage": "4d10",
+    "damageModes": [],
     "description": "<p>[-] on Combat Check when fired at Close Range.<br><br>Rolls at [-].</p>",
     "range": "extreme",
     "shots": 3,

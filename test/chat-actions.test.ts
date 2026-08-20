@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   bindChatActions,
   clearChatActions,
+  guardCardActions,
   registerChatAction,
   runChatAction,
   unbindChatActions,
@@ -116,5 +117,46 @@ describe('bindChatActions', () => {
     root.querySelector('button')?.click();
 
     expect(gain).not.toHaveBeenCalled();
+  });
+});
+
+// Disabling the other verbs would stop a player rolling their own Fear Save off a card someone
+// else posted.
+describe('guardCardActions', () => {
+  const card = (...expressions: string[]) => {
+    const root = document.createElement('div');
+    for (const text of expressions) root.append(actionButton(action(text)));
+    return root;
+  };
+
+  const disabled = (root: HTMLElement) =>
+    [...root.querySelectorAll('button')].map((button) => button.disabled);
+
+  it('disables a damage button on a card this user does not own', () => {
+    installI18n({ 'Mothership.Errors.NotYourCard': 'That roll is not yours to make.' });
+    const root = card('@Damage[4d10]');
+
+    guardCardActions(root, false);
+
+    expect(disabled(root)).toEqual([true]);
+    expect(root.querySelector('button')?.title).toBe('That roll is not yours to make.');
+  });
+
+  it('leaves every other verb pressable, because those act on whoever clicked them', () => {
+    installI18n({});
+    const root = card('@Check[fear -]', '@Table[gunshot]', '@Gain[stress 1]', '@Apply[coward]');
+
+    guardCardActions(root, false);
+
+    expect(disabled(root)).toEqual([false, false, false, false]);
+  });
+
+  it('leaves the damage button alone on a card this user does own', () => {
+    installI18n({});
+    const root = card('@Damage[4d10]');
+
+    guardCardActions(root, true);
+
+    expect(disabled(root)).toEqual([false]);
   });
 });

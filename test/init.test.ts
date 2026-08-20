@@ -137,7 +137,7 @@ afterEach(clearChatActions);
 describe('the hooks it claims when imported', () => {
   it('registers each hook exactly once, and only the ones it handles', () => {
     expect(once.map((entry) => entry.hook)).toEqual(['init', 'ready', 'diceSoNiceReady']);
-    expect(on.map((entry) => entry.hook)).toEqual(['preCreateActor', 'renderChatLog']);
+    expect(on.map((entry) => entry.hook)).toEqual(['preCreateActor', 'renderChatMessageHTML']);
   });
 
   it('registers the handlers it exports, so a spec drives the same code Foundry does', () => {
@@ -325,10 +325,18 @@ describe('dropping an item on the hotbar', () => {
   });
 });
 
-describe('the chat log', () => {
-  it('binds the delegated action listener to whatever the log rendered into', () => {
+// Per message, not per log: the notification copy of a card is not inside the log, and a listener
+// on the log left every button in it dead.
+describe('a rendered chat message', () => {
+  const message = (owns: boolean) =>
+    ({ canUserModify: () => owns, getFlag: () => undefined, update: async () => undefined }) as never;
+
+  it('binds the delegated action listener to whatever the message rendered into', () => {
     const listeners: string[] = [];
-    init.onRenderChatLog(null, { addEventListener: (type: string) => listeners.push(type) } as never);
+    init.onRenderChatMessage(message(true), {
+      addEventListener: (type: string) => listeners.push(type),
+      querySelectorAll: () => [],
+    } as never);
 
     expect(listeners).toEqual(['click']);
   });

@@ -16,7 +16,7 @@ import CheckPrompt from './CheckPrompt.svelte';
 import ChooseAdvantage from './ChooseAdvantage.svelte';
 import CoverPrompt from './Cover.svelte';
 import NoCharacter from './NoCharacter.svelte';
-import ReloadPrompt from './Reload.svelte';
+import MessagePrompt from './Reload.svelte';
 import WoundTable from './WoundTable.svelte';
 import { svelteDialog, type DialogButton } from './svelte-dialog.ts';
 
@@ -296,7 +296,7 @@ export async function chooseAdvantage(options: AdvantagePrompt): Promise<Advanta
 /** Whether to reload. Legacy's version resolved nothing at all and reloaded from its own callback. */
 export async function askReload(): Promise<boolean> {
   const answer = await svelteDialog<null, boolean, { message: string }>({
-    component: ReloadPrompt,
+    component: MessagePrompt,
     props: { message: localize('Mothership.OutOfAmmoNeedReload') },
     title: localize('Mothership.WeaponIssue'),
     initial: null,
@@ -308,9 +308,37 @@ export async function askReload(): Promise<boolean> {
   return answer === true;
 }
 
+/**
+ * Which damage a weapon that deals more than one is dealing. Nothing in the system knows the range
+ * a shot was taken at, so a Combat Shotgun's 4d10 and its 1d10 at Long Range can only be told
+ * apart by asking — which is what auto-rolling that weapon's damage has to do first.
+ */
+export async function chooseDamageMode(
+  weapon: string,
+  modes: readonly { label: string; formula: string }[],
+): Promise<string | null> {
+  return await svelteDialog<null, string, { message: string }>({
+    component: MessagePrompt,
+    props: { message: format('Mothership.WhichDamageApplies', { weapon }) },
+    title: localize('Mothership.Damage'),
+    initial: null,
+    width: DIALOG_WIDTH,
+    buttons: modes.map((mode, index) => ({
+      action: `damage-${index}`,
+      label:
+        mode.label === ''
+          ? format('Mothership.Chat.DamageLabel', { damage: mode.formula })
+          : format('Mothership.Chat.DamageModeLabel', { damage: mode.formula, mode: mode.label }),
+      icon: 'fas fa-burst',
+      ...(index === 0 ? { default: true } : {}),
+      answer: () => mode.formula,
+    })),
+  });
+}
+
 export async function outOfAmmo(): Promise<void> {
   await svelteDialog<null, null, { message: string }>({
-    component: ReloadPrompt,
+    component: MessagePrompt,
     props: { message: localize('Mothership.OutOfAmmo') },
     title: localize('Mothership.WeaponIssue'),
     initial: null,

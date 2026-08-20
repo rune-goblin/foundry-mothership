@@ -13,7 +13,7 @@ import {
   LOADOUT_GEAR,
 } from '../../../../content/books/psg/gear.ts';
 import { SKILLS } from '../../../../content/books/psg/skills.ts';
-import { WEAPONS } from '../../../../content/books/psg/weapons.ts';
+import { WEAPONS, type Damage } from '../../../../content/books/psg/weapons.ts';
 import type { Cost, Modifier, WoundType } from '../../../../content/books/common.ts';
 import type { ContentRecord, IdLookup, PackDefinition } from '../../record.ts';
 import { html, PACKS, uuid } from './uuid.ts';
@@ -56,6 +56,10 @@ const WOUND_NAME: Record<WoundType, string> = {
 const SIGN: Record<Modifier, string> = { advantage: ' [+]', disadvantage: ' [-]' };
 
 const credits = (cost: Cost | null): number => cost?.value ?? 0;
+
+/** The catalog is `as const`, so the modes are read through the interface rather than the union. */
+const damageModes = (damage: Damage | null): { label: string; formula: string }[] =>
+  damage?.modes?.map((mode) => ({ label: mode.label, formula: mode.formula })) ?? [];
 
 function modifierNote(modifiers: readonly Modifier[]): string | null {
   if (!modifiers.length) return null;
@@ -203,6 +207,7 @@ const weapons: PackDefinition = {
           antiArmor: weapon.damage?.antiArmor ?? false,
           // Unarmed's "Str/10" is not a formula, and actor.js branches on that exact string.
           damage: weapon.damage ? (weapon.damage.formula ?? weapon.damage.raw.replace(/\s*DMG$/, '')) : '',
+          damageModes: damageModes(weapon.damage),
           ammo: weapon.shots ?? 0,
           shots: weapon.shots ?? 0,
           curShots: weapon.shots ?? 0,

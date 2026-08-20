@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 3,
     "damage": "1",
+    "damageModes": [],
     "description": "<p>Body Save or become stuck. Strength Check [-] to escape.<br><br>Rolls at [-].</p>",
     "range": "close",
     "shots": 3,

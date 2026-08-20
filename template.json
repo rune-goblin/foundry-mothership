@@ -247,6 +247,7 @@
       ],
       "antiArmor": false,
       "damage": "1d10",
+      "damageModes": [],
       "ammo": 10,
       "shots": 1,
       "curShots": 0,

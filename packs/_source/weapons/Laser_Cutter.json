@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 6,
     "damage": "1d100",
+    "damageModes": [],
     "description": "<p>Two-handed. Heavy. 1 round recharge between shots.</p>",
     "range": "long",
     "shots": 6,

@@ -833,6 +833,110 @@
     width: 70%;
   }
 
+  /* The rollCheck card's tier: every rule below replaced an inline style in
+     templates/chat/rollCheck.html or in module/chat/cards.ts, which writes `card-verdict` and
+     `card-dice`. Each has one reader and could move into a scoped block the day the cards stop
+     being Handlebars. The other five templates are untouched. */
+
+  .mothership .card-header {
+    margin-bottom: var(--space-4);
+  }
+
+  .mothership .card-header-image {
+    text-align: right;
+  }
+
+  /* The template asks for this: CSS cannot shrink type to fit. */
+  .mothership .card-title-long {
+    font-size: var(--font-size-sm);
+    padding-top: var(--space-8);
+  }
+
+  .mothership .card-verdict {
+    margin-top: calc(var(--space-8) * -1);
+    margin-bottom: var(--space-4);
+    font-size: var(--font-size-lg);
+    letter-spacing: var(--body-md-letter-spacing);
+  }
+
+  .mothership .card-verdict-success {
+    color: var(--text-primary);
+  }
+
+  /* The same ink as a success: the word says which it is, and the PSG's cards are monochrome.
+     Only the auto-failure is coloured, being a rule firing rather than a roll losing. */
+  .mothership .card-verdict-failure {
+    color: var(--text-primary);
+  }
+
+  .mothership .card-sentence {
+    margin-bottom: var(--space-8);
+  }
+
+  .mothership .card-dice {
+    margin-bottom: var(--space-10);
+  }
+
+  .mothership .high-failure {
+    color: var(--text-danger);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .mothership .card-body {
+    margin-bottom: var(--space-16);
+  }
+
+  /* Was a three-column grid with two hand-drawn borders, and an untranslated literal
+     "DESCRIPTION" in the damage branch. */
+  .mothership .card-rule {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    margin: var(--space-12) var(--space-0) var(--space-8);
+    color: var(--text-tertiary);
+  }
+
+  .mothership .card-rule::before,
+  .mothership .card-rule::after {
+    content: "";
+    flex: 1;
+    border-bottom: var(--border-width-1) solid var(--border-neutral-medium);
+  }
+
+  .mothership .card-rule::before {
+    flex: 0 0 var(--space-10);
+  }
+
+  .mothership .card-rule-label {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--body-sm-letter-spacing);
+  }
+
+  .mothership .card-note {
+    margin-top: var(--space-8);
+  }
+
+  .mothership .card-wound {
+    margin-top: var(--space-4);
+  }
+
+  /* The buttons `chat/enrichers.ts` renders. They are `content-link`s, so Foundry's own styling
+     carries them; this adds the room to sit several in a row. */
+  .mothership .mothership-action {
+    margin: var(--space-2) var(--space-2) var(--space-2) var(--space-0);
+    font-family: "Barlow", sans-serif;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+  }
+
+  /* `guardCardActions` disables these for everyone but the card's author and the Warden. The
+     button stays rather than vanishing: a sentence ending in nothing reads worse. */
+  .mothership .mothership-action:disabled {
+    color: var(--text-disabled);
+    cursor: default;
+  }
+
 
   /* Every rule this file carried under `form.actor-generator` had already moved into the
      generator's own <style> block, and went with it when the single page became Wizard.svelte.

@@ -27,6 +27,7 @@ const prompts = vi.hoisted(() => ({
   chooseAdvantage: vi.fn(),
   chooseAttribute: vi.fn(),
   chooseSkill: vi.fn(),
+  chooseDamageMode: vi.fn(),
   askReload: vi.fn(),
   outOfAmmo: vi.fn(),
   chooseCover: vi.fn(),
@@ -486,6 +487,90 @@ describe('an attack', () => {
     expect(prompts.outOfAmmo).toHaveBeenCalledTimes(1);
     expect(gun.reload).not.toHaveBeenCalled();
     expect(rolls.formulas).toEqual([]);
+  });
+
+  it('offers the damage instead of rolling it when the GM turned auto-rolling off', async () => {
+    stubs([{ faces: 100, result: 20 }], { autoRollDamagePlayers: false });
+    installI18n({ 'Mothership.Chat.RollDamageOffer': 'Roll the damage you deal: {damage}' });
+
+    await runCheck(character([weapon()]), { kind: 'weapon-attack', itemId: 'wpn1' });
+
+    expect(cardData().flavorText).toBe('Roll the damage you deal: @Damage[1d10]');
+    expect(prompts.chooseDamageMode).not.toHaveBeenCalled();
+  });
+
+  it('reads the players’ setting for a character and the creatures’ for a creature', async () => {
+    stubs([{ faces: 100, result: 20 }], { autoRollDamagePlayers: false, autoRollDamageCreatures: true });
+    installI18n({
+      'Mothership.Chat.DamageDealt': 'You inflict {damage} points of damage.',
+      'Mothership.Chat.RollDamageOffer': 'Roll the damage you deal: {damage}',
+    });
+
+    await runCheck(character([weapon()]), { kind: 'weapon-attack', itemId: 'wpn1' });
+    await runCheck(creature([weapon()]), { kind: 'weapon-attack', itemId: 'wpn1' });
+
+    expect(cardData(0).flavorText).toBe('Roll the damage you deal: @Damage[1d10]');
+    expect(cardData(1).flavorText).toBe('You inflict [[1d10]] points of damage.');
+  });
+
+  // No field records the range a shot was taken at, so auto-rolling one of two has to ask which.
+  const shotgun = () =>
+    weapon({
+      damage: '4d10',
+      range: 'close',
+      damageModes: [{ label: 'Long Range', formula: '1d10' }],
+    });
+
+  it('asks which damage applies before rolling one of several', async () => {
+    stubs([{ faces: 100, result: 20 }]);
+    installI18n({
+      'Mothership.RangeBand.close': 'Close',
+      'Mothership.Chat.DamageDealt': 'You inflict {damage} points of damage.',
+    });
+    prompts.chooseDamageMode.mockResolvedValue('1d10');
+
+    await runCheck(character([shotgun()]), { kind: 'weapon-attack', itemId: 'wpn1' });
+
+    expect(prompts.chooseDamageMode).toHaveBeenCalledWith('Revolver', [
+      { label: 'Close', formula: '4d10' },
+      { label: 'Long Range', formula: '1d10' },
+    ]);
+    expect(cardData().flavorText).toBe('You inflict [[1d10]] points of damage.');
+  });
+
+  it('offers every damage rather than losing one when that question is dismissed', async () => {
+    stubs([{ faces: 100, result: 20 }]);
+    installI18n({
+      'Mothership.RangeBand.close': 'Close',
+      'Mothership.Chat.RollDamageOffer': 'Roll the damage you deal: {damage}',
+      'Mothership.Chat.DamageModeLabel': 'Roll {damage} · {mode}',
+    });
+    prompts.chooseDamageMode.mockResolvedValue(null);
+
+    await runCheck(character([shotgun()]), { kind: 'weapon-attack', itemId: 'wpn1' });
+
+    expect(cardData().flavorText).toBe(
+      'Roll the damage you deal: @Damage[4d10]{Roll 4d10 · Close} @Damage[1d10]{Roll 1d10 · Long Range}',
+    );
+  });
+
+  it('never asks for a damage the caller already named — a swarm’s scaled dice', async () => {
+    stubs([{ faces: 100, result: 20 }]);
+    await runCheck(character([shotgun()]), { kind: 'weapon-attack', itemId: 'wpn1' }, { damage: '8d10' });
+
+    expect(prompts.chooseDamageMode).not.toHaveBeenCalled();
+    expect(cardData().flavorText).toBe('You inflict [[8d10]] points of damage.');
+  });
+
+  it('asks on a damage roll too, and posts nothing when the question is dismissed', async () => {
+    stubs([{ faces: 100, result: 20 }]);
+    installI18n({ 'Mothership.RangeBand.close': 'Close' });
+    prompts.chooseDamageMode.mockResolvedValue(null);
+
+    expect(
+      await runCheck(character([shotgun()]), { kind: 'weapon-damage', itemId: 'wpn1', damage: null }),
+    ).toBeNull();
+    expect(chat.cards).toHaveLength(0);
   });
 
   it('reports a weapon that is not there instead of dereferencing it', async () => {

@@ -20,8 +20,8 @@ import { RolltableConfigApp } from './ui/settings/RolltableConfigApp.js';
 
 import { NEW_API, registerActions } from './api/api.ts';
 import { LEGACY_API } from './api/legacy.ts';
-import { bindChatActions } from './chat/actions.ts';
-import { SYSTEM_ID } from './chat/cards.ts';
+import { bindChatActions, guardCardActions } from './chat/actions.ts';
+import { ownsCard, SYSTEM_ID, type CardMessage } from './chat/cards.ts';
 import { registerEnrichers } from './chat/enrichers.ts';
 import { SETTING_DEFAULTS } from './checks/settings.ts';
 import { debug } from './debug.ts';
@@ -201,9 +201,15 @@ export function onPreCreateActor(document: CreatedActor, createData: { type?: st
   });
 }
 
-/** One delegated listener for every button an enricher rendered; binding twice adds nothing. */
-export function onRenderChatLog(_app: unknown, element: EventTarget): void {
+/**
+ * Per **message**, not per chat log. Foundry renders a card twice — the sidebar's copy, and a
+ * second one `#postNotification` puts in the notification element over the canvas, which is not
+ * inside the log. A listener on the log left every button in that copy dead, and that copy is what
+ * a player with a collapsed sidebar clicks. Binding twice adds nothing: it is the same function.
+ */
+export function onRenderChatMessage(message: CardMessage, element: HTMLElement): void {
   bindChatActions(element);
+  guardCardActions(element, ownsCard(message, game?.user));
 }
 
 interface DropData {
@@ -254,4 +260,4 @@ Hooks.once('init', onInit);
 Hooks.once('ready', onReady);
 Hooks.once('diceSoNiceReady', onDiceSoNiceReady as (...args: never[]) => unknown);
 Hooks.on('preCreateActor', onPreCreateActor as (...args: never[]) => unknown);
-Hooks.on('renderChatLog', onRenderChatLog as (...args: never[]) => unknown);
+Hooks.on('renderChatMessageHTML', onRenderChatMessage as (...args: never[]) => unknown);

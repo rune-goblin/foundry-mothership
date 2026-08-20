@@ -26,7 +26,9 @@
 <SheetHeader documentName={doc.name} img={doc.img} />
 <br />
 
-<Body system={doc.system} />
+<!-- `store` is for the bodies that edit a list: Foundry's form handling persists a named field,
+     but an array's rows are added and removed rather than typed into. -->
+<Body system={doc.system} {store} />
 <br />
 
 <Tabs {tabs} bind:active={tab} />

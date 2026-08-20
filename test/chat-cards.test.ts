@@ -93,7 +93,11 @@ describe('the dice block', () => {
 
 describe('the check card', () => {
   it('gives the template every key it reads', () => {
-    installI18n({ 'Mothership.Chat.Rolled': 'rolled', 'Mothership.Chat.LessThan': 'less than' });
+    installI18n({
+      'Mothership.Chat.Rolled': 'rolled',
+      'Mothership.Chat.LessThan': 'less than',
+      'Mothership.Chat.CheckSentenceSkill': 'You {verb} {comparison} your {attribute} plus {skill} skill bonus.',
+    });
     const card = checkCard({
       source: SOURCE,
       outcome: outcome('1d100', [30], 40),
@@ -112,15 +116,57 @@ describe('the check card', () => {
       actor: { _id: 'actor1', img: 'actor.png' },
       tokenId: null,
       msgHeader: 'Body Save',
-      specialRoll: '',
       attribute: 'Body',
       skill: 'Athletics',
       skillValue: 10,
-      outcomeVerb: 'rolled',
-      comparisonText: 'less than',
+      // Assembled here, not glued together in the template, which `pt-BR` could not reach.
+      checkSentence: 'You rolled less than your <strong>Body</strong> plus <strong>Athletics</strong> skill bonus.',
+      showCheck: true,
+      showWeapon: false,
       needsDesc: false,
       critFail: false,
     });
+  });
+
+  it('names a long header long, so the header pill can shrink its type', () => {
+    const long = (header: string) =>
+      data<{ longHeader: boolean }>(
+        checkCard({
+          source: SOURCE,
+          outcome: outcome('1d100', [30], 40),
+          spec: parseRollSpec('1d100', 'low'),
+          comparison: '<',
+          header,
+          image: 'stat.png',
+          attribute: 'Body',
+        }),
+      ).longHeader;
+
+    expect(long('Body Save')).toBe(false);
+    expect(long('Advanced Battle Dress Save')).toBe(true);
+  });
+
+  // A miss has nothing to describe.
+  it('shows the weapon’s text on a hit and on a damage card, never on a miss', () => {
+    const weapon = { _id: 'w1', name: 'Pulse Rifle', img: 'weapon.png', system: { description: '<p>Loud.</p>' } };
+    const show = (hit: boolean, damage: boolean) =>
+      data<{ showWeapon: boolean }>(
+        checkCard({
+          source: SOURCE,
+          outcome: outcome('1d100', [hit ? 30 : 90], 40),
+          spec: parseRollSpec('1d100', 'low'),
+          comparison: '<',
+          header: 'Pulse Rifle',
+          image: 'weapon.png',
+          attribute: 'Combat',
+          weapon,
+          damage,
+        }),
+      ).showWeapon;
+
+    expect(show(true, false)).toBe(true);
+    expect(show(false, false)).toBe(false);
+    expect(show(false, true)).toBe(true);
   });
 
   it('marks a damage-only card, and asks for a description area when the weapon has one', () => {
@@ -136,7 +182,7 @@ describe('the check card', () => {
       weapon: { _id: 'w1', name: 'Pulse Rifle', img: 'weapon.png', system: { description: '<p>Loud.</p>' } },
     });
 
-    expect(data<Record<string, unknown>>(card)).toMatchObject({ specialRoll: 'damage', needsDesc: true });
+    expect(data<Record<string, unknown>>(card)).toMatchObject({ showCheck: false, needsDesc: true });
   });
 });
 

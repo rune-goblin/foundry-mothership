@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 0,
     "damage": "",
+    "damageModes": [],
     "description": "<p>Per magazine/container.</p>",
     "range": "none",
     "shots": 0,

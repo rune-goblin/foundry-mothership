@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 0,
     "damage": "Str/10",
+    "damageModes": [],
     "description": "",
     "range": "adjacent",
     "shots": 0,

@@ -1,9 +1,3 @@
-// Replaces the Item half of template.json, which v14 deprecates (removed in v16). A
-// registered dataModel wins over template.json, so types migrate one at a time.
-//
-// Every schema here reproduces its template.json defaults exactly -- test/item-models.test.ts
-// asserts that field-for-field, so a typo fails CI instead of silently changing a default.
-
 const { fields } = foundry.data;
 
 const num = (initial, integer = false) =>
@@ -15,24 +9,11 @@ const bool = (initial = false) => new fields.BooleanField({ required: true, init
 
 const uuidList = () => new fields.ArrayField(new fields.StringField());
 
-/**
- * What a weapon's range can be: the PSG's four bands in order, behind the state for a weapon
- * that has no range at all — Ammo is on the weapons list and never gets thrown at anyone.
- * `none` is a value rather than a blank so the field has no unset state to reason about.
- *
- * `content/books/psg/weapons.ts` declares the four bands as a TypeScript union and `null` for the
- * rest — the catalog describes the book, this describes the runtime, the content build is the
- * adapter. A weapon stores the token; the sheets localize it.
- */
+// `none` is a value, not a blank, so a rangeless weapon (e.g. Ammo) has no unset state to
+// reason about.
 export const WEAPON_RANGES = ['none', 'adjacent', 'close', 'long', 'extreme'];
 
-/**
- * The rolls a condition's modifier can name. The stats and saves are the flat key space
- * `rollCheck` dispatches on; `restSave` and `panicCheck` are its two special rolls, and a Rest
- * Save is its own scope rather than the save it happens to resolve to.
- *
- * `content/books/common.ts` declares the same list as a TypeScript union for the catalogs.
- */
+// The stats/saves plus `restSave` and `panicCheck`, the flat key space `rollCheck` dispatches on.
 export const ROLL_SCOPES = [
   'strength',
   'speed',
@@ -47,8 +28,7 @@ export const ROLL_SCOPES = [
 
 export const ROLL_MODIFIERS = ['advantage', 'disadvantage'];
 
-// How many skills of each rank a class adjustment lets the player pick. A *_full_set is one skill
-// plus the prerequisite chain beneath it, which is a different dialog, hence a different key.
+// A *_full_set pick is one skill plus its prerequisite chain, a different dialog, hence its own key.
 const picks = () => ({
   trained: num(0),
   expert: num(0),
@@ -57,7 +37,6 @@ const picks = () => ({
   master_full_set: num(0),
 });
 
-// Shared by every item type.
 const base = () => ({ description: new fields.HTMLField({ required: true, blank: true, initial: '' }) });
 
 export class MothershipItemModel extends foundry.abstract.TypeDataModel {
@@ -78,6 +57,9 @@ export class MothershipWeaponModel extends foundry.abstract.TypeDataModel {
       ...base(),
       antiArmor: bool(false),
       damage: str('1d10'),
+      // Some weapons have a second damage the range decides (e.g. Combat Shotgun: 4d10 close,
+      // 1d10 Long); the card offers every mode since the band is the fiction's to settle.
+      damageModes: new fields.ArrayField(new fields.SchemaField({ label: str(''), formula: str('') })),
       ammo: num(10, true),
       shots: num(1, true),
       curShots: num(0, true),
@@ -89,7 +71,7 @@ export class MothershipWeaponModel extends foundry.abstract.TypeDataModel {
       bonus: num(0),
       weight: num(0),
       cost: num(0),
-      // Mothership ranges in bands, not distances -- the book gives no metres for them.
+      // Ranges are bands, not distances -- the book gives no metres for them.
       range: new fields.StringField({
         required: true,
         blank: false,
@@ -111,9 +93,8 @@ export class MothershipArmorModel extends foundry.abstract.TypeDataModel {
       oxygenCurrent: num(0),
       weight: num(0),
       cost: num(0),
-      // Absent from the original template.json, yet bound by the armor sheet and read by
-      // _deriveCharacter/_deriveCreature. Under template.json unknown keys survived, so this
-      // worked; a SchemaField cleans them off, which silently stopped armour from equipping.
+      // Must stay declared here: a SchemaField silently drops undeclared keys, and the armor
+      // sheet binds this one.
       equipped: bool(false),
       features: str(''),
     };
@@ -132,8 +113,7 @@ export class MothershipConditionModel extends foundry.abstract.TypeDataModel {
       ...base(),
       severity: num(1),
       treatment: new fields.SchemaField({ value: num(0) }),
-      // Neither key takes an initial: a row that names only half of itself is not a modifier, and
-      // there is no roll a condition defaults to modifying.
+      // No initial on either key: a row naming only half of itself isn't a modifier.
       modifiers: new fields.ArrayField(
         new fields.SchemaField({
           modifier: new fields.StringField({ required: true, choices: ROLL_MODIFIERS }),
@@ -150,10 +130,8 @@ export class MothershipClassModel extends foundry.abstract.TypeDataModel {
       ...base(),
       trauma_response: str(''),
       robotic: bool(true),
-      // These eight keys are a contract, not a bag: the generator's draft copies every key except
-      // skills_granted straight into its own bonus map, so anything added here is applied as a
-      // stat bonus. Stats and saves share the one flat key space, which is what the book's
-      // adjustments map onto.
+      // The generator's draft copies every key here except skills_granted straight into its
+      // bonus map, so any key added is applied as a stat bonus.
       base_adjustment: new fields.SchemaField({
         strength: num(0),
         speed: num(0),
@@ -165,9 +143,8 @@ export class MothershipClassModel extends foundry.abstract.TypeDataModel {
         max_wounds: num(0),
         skills_granted: uuidList(),
       }),
-      // The adjustments the player chooses rather than simply receives. choose_skill_or is an
-      // array of *groups*, each a set of packages the player takes one of; a package and
-      // choose_skill_and are the same pick-set shape, which is why they share `picks()`.
+      // choose_skill_or is an array of *groups*, each a set of packages the player takes one
+      // of; a package and choose_skill_and share the same pick-set shape via `picks()`.
       selected_adjustment: new fields.SchemaField({
         choose_stat: new fields.ArrayField(
           new fields.SchemaField({

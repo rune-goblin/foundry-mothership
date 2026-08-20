@@ -51,7 +51,8 @@ describe('the settings the GM sees', () => {
   beforeEach(() => registerSettings(class {}));
 
   // The keys are the compatibility surface: a world that has already chosen keeps its choices.
-  it('registers the six visible settings under the names the old registration used', () => {
+  // The first six are the old registration's, spelled as it spelled them.
+  it('registers the visible settings under the names the old registration used', () => {
     expect(registered.filter((entry) => entry.data.config === true).map((entry) => entry.key)).toEqual([
       'macroTarget',
       'critDamage',
@@ -59,6 +60,8 @@ describe('the settings the GM sees', () => {
       'panicDieTheme',
       'hideWeight',
       'autoStress',
+      'autoRollDamagePlayers',
+      'autoRollDamageCreatures',
     ]);
   });
 

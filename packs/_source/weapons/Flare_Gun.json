@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 2,
     "damage": "1d5",
+    "damageModes": [],
     "description": "<p>High intensity flare visible day and night from Long Range.</p>",
     "range": "long",
     "shots": 2,

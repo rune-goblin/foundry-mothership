@@ -72,6 +72,27 @@ function onClick(event: MouseEvent): void {
 }
 
 /**
+ * The verbs that belong to the *card* rather than to whoever clicks them. Every other verb aims at
+ * the clicking player's own character, so anyone may press one.
+ */
+const CARD_OWNED: ReadonlySet<ActionVerb> = new Set<ActionVerb>(['damage']);
+
+/**
+ * The click handler refuses these anyway, but a button that looks pressable and does nothing reads
+ * as a broken system — which is exactly how this one read when its listener missed the card.
+ */
+export function guardCardActions(root: ParentNode, owns: boolean): void {
+  if (owns) return;
+
+  for (const button of root.querySelectorAll<HTMLButtonElement>(`[data-action="${ACTION_ATTRIBUTE}"]`)) {
+    const parsed = parseAction(button.dataset.mothershipAction ?? '');
+    if (!parsed.ok || !CARD_OWNED.has(parsed.action.verb)) continue;
+    button.disabled = true;
+    button.title = localize('Mothership.Errors.NotYourCard');
+  }
+}
+
+/**
  * Bind the listener to a root — the chat log, or any element enriched text was rendered into.
  * `onClick` is one function for the module's lifetime, so binding the same root twice adds
  * nothing: a hook that fires on every render can call this every time.

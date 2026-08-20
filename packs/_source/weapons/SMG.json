@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 5,
     "damage": "2d10",
+    "damageModes": [],
     "description": "<p>Can be fired one-handed.</p>",
     "range": "long",
     "shots": 5,

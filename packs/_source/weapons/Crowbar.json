@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 0,
     "damage": "1d5",
+    "damageModes": [],
     "description": "<p>Grants [+] on Strength Checks to open jammed airlocks, lift heavy objects, etc.<br><br>Rolls at [+].</p>",
     "range": "adjacent",
     "shots": 0,

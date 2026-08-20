@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 0,
     "damage": "1d5",
+    "damageModes": [],
     "description": "<p>Body Save or stunned 1 round.</p>",
     "range": "adjacent",
     "shots": 0,

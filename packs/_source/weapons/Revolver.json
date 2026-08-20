@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 6,
     "damage": "1d10+1",
+    "damageModes": [],
     "description": "",
     "range": "close",
     "shots": 6,

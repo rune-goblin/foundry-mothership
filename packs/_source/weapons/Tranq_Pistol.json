@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 6,
     "damage": "1d5",
+    "damageModes": [],
     "description": "<p>If DMG dealt: enemy must Body Save or be unconscious 1d10 rounds.</p>",
     "range": "close",
     "shots": 6,

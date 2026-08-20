@@ -7,6 +7,7 @@ import type { CheckActor, CheckItem, ItemCollection } from '../module/checks/act
 import {
   critFormula,
   damageFlavor,
+  damageModes,
   rollDamage,
   weaponDamage,
   woundEffectActions,
@@ -63,6 +64,10 @@ function stubs(settings: Record<string, unknown> = {}) {
   installI18n({
     'Mothership.Chat.DamageDealt': 'You inflict {damage} points of damage.',
     'Mothership.Chat.UnarmedDamage': 'You strike your target for {damage} damage.',
+    'Mothership.Chat.RollDamageOffer': 'Roll the damage you deal: {damage}',
+    'Mothership.Chat.DamageModeLabel': 'Roll {damage} · {mode}',
+    'Mothership.RangeBand.close': 'Close',
+    'Mothership.RangeBand.adjacent': 'Adjacent',
   });
   installSettings({ critDamage: 'advantage', damageDiceTheme: '', ...settings });
   installRoll([]);
@@ -86,6 +91,62 @@ describe('the damage a weapon deals', () => {
   it('wears the colorset the GM chose for damage dice', () => {
     stubs({ damageDiceTheme: 'damage' });
     expect(damageFlavor(actor(), weapon())).toBe('You inflict [[1d10[damage]]] points of damage.');
+  });
+});
+
+// PSG 2 — the Combat Shotgun deals 4d10 up close and 1d10 at Long Range, and nothing records the
+// range a shot was taken at.
+describe('the damages a weapon deals', () => {
+  const shotgun = () =>
+    weapon({ damage: '4d10', range: 'close', damageModes: [{ label: 'Long Range', formula: '1d10' }] });
+
+  it('are the weapon’s own first, each labelled by what decides it', () => {
+    stubs();
+    expect(damageModes(shotgun())).toEqual([
+      { label: 'Close', formula: '4d10' },
+      { label: 'Long Range', formula: '1d10' },
+    ]);
+  });
+
+  it('are one, unlabelled, for a weapon with a range but no second damage', () => {
+    stubs();
+    expect(damageModes(weapon({ range: 'none' }))).toEqual([{ label: '', formula: '1d10' }]);
+  });
+
+  it('collapse to the one a caller named — that question is already settled', () => {
+    stubs();
+    expect(damageModes(shotgun(), '8d10')).toEqual([{ label: 'Close', formula: '8d10' }]);
+  });
+
+  it('drop the empty rows an editor leaves behind', () => {
+    stubs();
+    const rows = [{ label: 'Long Range', formula: '  ' }, { label: '', formula: '2d10' }];
+    expect(damageModes(weapon({ damageModes: rows, range: 'none' }))).toEqual([
+      { label: '', formula: '1d10' },
+      { label: '', formula: '2d10' },
+    ]);
+  });
+
+  it('become one button each when the GM rolls damage by hand', () => {
+    stubs();
+    expect(damageFlavor(actor(), shotgun(), { offer: true })).toBe(
+      'Roll the damage you deal: @Damage[4d10]{Roll 4d10 · Close} @Damage[1d10]{Roll 1d10 · Long Range}',
+    );
+  });
+
+  // The crit rule is not re-read at the click, so the button keeps rolling what its attack earned.
+  it('carry the critical rule into the button', () => {
+    stubs({ critDamage: 'doubleDamage' });
+    expect(damageFlavor(actor(), weapon({ range: 'none' }), { offer: true, critical: true })).toBe(
+      'Roll the damage you deal: @Damage[1d10 * 2]',
+    );
+  });
+
+  it('resolve the book’s Str/10 shorthand, which no button could roll', () => {
+    stubs();
+    expect(damageFlavor(actor(45), weapon({ damage: 'Str/10', range: 'adjacent' }), { offer: true })).toBe(
+      'Roll the damage you deal: @Damage[floor(45/10)]{Roll floor(45/10) · Adjacent}',
+    );
   });
 });
 
@@ -143,7 +204,7 @@ describe('the damage card', () => {
     expect(chat.cards).toHaveLength(1);
     expect(chat.cards[0].template).toBe('systems/mothershiprpg/templates/chat/rollCheck.html');
     expect(chat.cards[0].data).toMatchObject({
-      specialRoll: 'damage',
+      showCheck: false,
       msgHeader: 'Revolver',
       woundEffect: '@Table[gunshot]',
       flavorText: 'You inflict [[1d10]] points of damage.',

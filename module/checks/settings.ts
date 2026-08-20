@@ -34,6 +34,8 @@ export const SETTING_DEFAULTS = {
   critDamage: 'advantage' as CritDamage,
   damageDiceTheme: 'damage',
   panicDieTheme: 'panic',
+  autoRollDamagePlayers: true,
+  autoRollDamageCreatures: true,
 } as const;
 
 export type SettingKey = keyof typeof SETTING_DEFAULTS;
@@ -45,6 +47,16 @@ function stored(key: SettingKey): unknown {
 export function autoStress(): boolean {
   const value = stored('autoStress');
   return typeof value === 'boolean' ? value : SETTING_DEFAULTS.autoStress;
+}
+
+/**
+ * Two answers, because a table that wants players rolling their own damage rarely wants the Warden
+ * clicking through every creature's as well.
+ */
+export function autoRollDamage(character: boolean): boolean {
+  const key: SettingKey = character ? 'autoRollDamagePlayers' : 'autoRollDamageCreatures';
+  const value = stored(key);
+  return typeof value === 'boolean' ? value : SETTING_DEFAULTS[key];
 }
 
 export function critDamage(): CritDamage {

@@ -1,3 +1,4 @@
+// @vitest-environment jsdom — the damage verb resolves its actor from the card's own DOM.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { clearChatActions, runChatAction } from '../module/chat/actions.ts';
@@ -56,9 +57,19 @@ const METHODS = [
   'printDescription',
 ] as const;
 
-function actor(name: string, items: object[] = []): FakeActor {
+/** An actor's items are a Foundry collection: iterable, and addressable by id. */
+function collection(items: { id?: string }[]) {
+  return {
+    [Symbol.iterator]: () => items[Symbol.iterator](),
+    get: (id: string) => items.find((item) => item.id === id),
+    map: <T,>(fn: (item: object) => T) => items.map(fn),
+    find: (fn: (item: object) => boolean) => items.find(fn),
+  };
+}
+
+function actor(name: string, items: { id?: string }[] = []): FakeActor {
   const calls: string[] = [];
-  const fake: FakeActor = { name, calls, items };
+  const fake: FakeActor = { name, calls, items: collection(items) };
   for (const method of METHODS) {
     fake[method] = vi.fn(async (...args: unknown[]) => {
       calls.push(method);
@@ -329,5 +340,144 @@ describe('registerActions', () => {
     // Nothing resolved the slug, so the miss is reported rather than swallowed.
     expect(notifications.errors).toHaveLength(1);
     expect(notifications.warnings).toEqual([]);
+  });
+
+  // Every other verb is aimed by the macro-target setting; a damage button is the card's own.
+  describe('the damage verb', () => {
+    const card = (attributes: Record<string, string>, messageId?: string): HTMLElement => {
+      const root = document.createElement('div');
+      for (const [key, value] of Object.entries(attributes)) root.setAttribute(key, value);
+      const button = document.createElement('button');
+      root.append(button);
+
+      if (messageId === undefined) return button;
+      // Foundry's own wrapper around every rendered message.
+      const wrapper = document.createElement('li');
+      wrapper.dataset.messageId = messageId;
+      wrapper.append(root);
+      return button;
+    };
+
+    const weapon = { id: 'wpn1', name: 'Revolver', img: 'gun.png', type: 'weapon', system: { damage: '1d10' } };
+
+    /** A message that remembers its card, as `postCard` leaves one. */
+    function posted(options: { remembers?: boolean; mayEdit?: boolean } = {}) {
+      const stored = { kind: 'check', data: { msgHeader: 'Revolver', flavorText: 'offer' } };
+      return {
+        update: vi.fn(async () => undefined),
+        canUserModify: () => options.mayEdit ?? true,
+        getFlag: () => (options.remembers ?? true ? stored : undefined),
+      };
+    }
+
+    function withMessage(message: object) {
+      globals.game = { ...(globals.game as Globals), messages: { get: () => message } };
+      globals.foundry = {
+        applications: { handlebars: { renderTemplate: async () => '<div>rolled</div>' } },
+      };
+    }
+
+    it('rolls the card’s own weapon, for the card’s own actor', async () => {
+      const sarah = actor('Sarah');
+      const selected = actor('Someone Else');
+      assign(selected);
+      globals.game = { ...(globals.game as Globals), actors: { get: () => sarah } };
+      api.registerActions();
+
+      await runChatAction(action('@Damage[4d10]'), {
+        event: null as unknown as MouseEvent,
+        button: card({ 'data-actor-id': 'actor1', 'data-item-id': 'wpn1' }),
+      });
+
+      expect(sarah.rollWeapon).toHaveBeenCalledWith('wpn1', { roll: 'damage', damage: '4d10' });
+      expect(selected.calls).toEqual([]);
+    });
+
+    it('prefers the token, whose unlinked actor shares its id with every other copy', async () => {
+      const base = actor('Base');
+      const onScene = actor('On Scene');
+      globals.game = { ...(globals.game as Globals), actors: { get: () => base } };
+      globals.canvas = { tokens: { controlled: [], get: () => ({ actor: onScene }) } };
+      api.registerActions();
+
+      await runChatAction(action('@Damage[1d10]'), {
+        event: null as unknown as MouseEvent,
+        button: card({ 'data-actor-id': 'actor1', 'data-item-id': 'wpn1', 'data-token-id': 'tok1' }),
+      });
+
+      expect(onScene.rollWeapon).toHaveBeenCalledWith('wpn1', { roll: 'damage', damage: '1d10' });
+      expect(base.calls).toEqual([]);
+    });
+
+    it('says so rather than guessing when the card names neither', async () => {
+      installI18n({ 'Mothership.Errors.NoDamageSource': 'This card names no actor and weapon.' });
+      api.registerActions();
+
+      await runChatAction(action('@Damage[1d10]'), {
+        event: null as unknown as MouseEvent,
+        button: card({}),
+      });
+
+      expect(notifications.warnings).toEqual(['This card names no actor and weapon.']);
+    });
+
+    // One message per attack, and the offer cannot be taken twice.
+    it('rewrites the card it was clicked in, rather than posting a second one', async () => {
+      const sarah = actor('Sarah', [weapon]);
+      const message = posted();
+      globals.game = { ...(globals.game as Globals), actors: { get: () => sarah } };
+      withMessage(message);
+      installI18n({ 'Mothership.Chat.DamageDealt': 'You inflict {damage} points of damage.' });
+      api.registerActions();
+
+      await runChatAction(action('@Damage[4d10]'), {
+        event: null as unknown as MouseEvent,
+        button: card({ 'data-actor-id': 'actor1', 'data-item-id': 'wpn1' }, 'msg1'),
+      });
+
+      expect(message.update).toHaveBeenCalledWith({
+        content: '<div>rolled</div>',
+        // Wearing the GM's damage colorset, exactly as the auto-rolled line does.
+        'flags.mothershiprpg.card.data.flavorText': 'You inflict [[4d10[damage]]] points of damage.',
+      });
+      expect(sarah.rollWeapon).not.toHaveBeenCalled();
+    });
+
+    // Refused outright: posting the damage as a card of their own would be the same roll by the
+    // back door.
+    it('refuses a card this user does not own, rather than rolling it elsewhere', async () => {
+      const sarah = actor('Sarah', [weapon]);
+      globals.game = { ...(globals.game as Globals), actors: { get: () => sarah } };
+      const message = posted({ mayEdit: false });
+      withMessage(message);
+      installI18n({ 'Mothership.Errors.NotYourCard': 'That roll is not yours to make.' });
+      api.registerActions();
+
+      await runChatAction(action('@Damage[4d10]'), {
+        event: null as unknown as MouseEvent,
+        button: card({ 'data-actor-id': 'actor1', 'data-item-id': 'wpn1' }, 'msg1'),
+      });
+
+      expect(message.update).not.toHaveBeenCalled();
+      expect(sarah.rollWeapon).not.toHaveBeenCalled();
+      expect(notifications.warnings).toEqual(['That roll is not yours to make.']);
+    });
+
+    // Not a permission failure — a card posted before the system kept its data cannot be rewritten.
+    it('posts a damage card when the message kept no record of the card', async () => {
+      const sarah = actor('Sarah', [weapon]);
+      globals.game = { ...(globals.game as Globals), actors: { get: () => sarah } };
+      const message = posted({ remembers: false });
+      withMessage(message);
+      api.registerActions();
+
+      await runChatAction(action('@Damage[4d10]'), {
+        event: null as unknown as MouseEvent,
+        button: card({ 'data-actor-id': 'actor1', 'data-item-id': 'wpn1' }, 'msg1'),
+      });
+
+      expect(message.update).not.toHaveBeenCalled();
+      expect(sarah.rollWeapon).toHaveBeenCalledWith('wpn1', { roll: 'damage', damage: '4d10' });
+    });
   });
 });

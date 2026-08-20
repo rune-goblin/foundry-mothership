@@ -1,7 +1,6 @@
 <script>
-  // `id` and `onchange` exist for the toggle that is not a form field: CreatureSettings' swarm
-  // rewrites Combat as well as itself, so it stays out of `formData` and needs an id of its own
-  // for the label and for the e2e locator.
+  // id/onchange let a caller (CreatureSettings' swarm toggle) keep this out of formData
+  // and drive it manually.
   let { name, label, checked, id, onchange } = $props();
 </script>
 

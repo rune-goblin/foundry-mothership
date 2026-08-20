@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 0,
     "damage": "3d10",
+    "damageModes": [],
     "description": "<p>When dealing a Wound, roll on BOTH the Bleeding AND Gore columns.</p>",
     "range": "adjacent",
     "shots": 0,

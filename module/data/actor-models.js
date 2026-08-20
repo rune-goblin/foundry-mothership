@@ -1,6 +1,3 @@
-// Replaces the Actor half of template.json. See item-models.js for the same conventions;
-// test/actor-models.test.ts asserts these reproduce template.json field-for-field.
-
 const { fields } = foundry.data;
 
 const num = (initial, integer = false) =>
@@ -12,7 +9,6 @@ const bool = (initial = false) => new fields.BooleanField({ required: true, init
 
 const html = (initial = '') => new fields.HTMLField({ required: true, blank: true, initial });
 
-// A tracked pool: health, wounds, and the derived net HP all share this shape.
 const pool = (value, max, label, { min = 0, withMax = true } = {}) =>
   new fields.SchemaField({
     value: num(value),
@@ -21,8 +17,8 @@ const pool = (value, max, label, { min = 0, withMax = true } = {}) =>
     label: str(label),
   });
 
-// A rollable stat. Characters carry `mod`, creatures carry `enabled`, armour carries both
-// plus cover and damage reduction — hence the flags rather than three near-copies.
+// Characters carry `mod`, creatures `enabled`, armour both plus cover/damageReduction —
+// flags avoid three near-identical schemas.
 const stat = (value, label, rollLabel, { mod = false, enabled = null, armor = false } = {}) =>
   new fields.SchemaField({
     value: num(value),
@@ -90,9 +86,8 @@ export class MothershipCreatureModel extends foundry.abstract.TypeDataModel {
         armor: stat(0, 'Armor', 'Armor Save', { armor: true, enabled: false }),
         sanity: stat(10, 'Sanity', 'Sanity Save', { enabled: false }),
       }),
-      // The creature-settings swarm toggle multiplies combat by the creature's remaining
-      // wounds and stashes the original here to restore on the way back. Absent from the
-      // schema, the stash was cleaned off and the multiplication became permanent.
+      // Stash for the swarm toggle's combat multiplier: must stay in the schema or a
+      // SchemaField strips it, making the multiplication permanent instead of reversible.
       swarm: new fields.SchemaField({
         enabled: bool(false),
         combat: new fields.SchemaField({ value: num(0) }),

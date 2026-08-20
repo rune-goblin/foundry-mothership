@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 1,
     "damage": "3d10",
+    "damageModes": [],
     "description": "<p>On a hit, damages all Adjacent to enemy.</p>",
     "range": "close",
     "shots": 1,

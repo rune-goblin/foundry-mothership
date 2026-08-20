@@ -1,38 +1,10 @@
-/**
- * The grammar of a clickable rule. Conditions and table results used to link a *macro document*
- * per phrasing — 15 of them, each a copy of one of four functions with its arguments baked in —
- * so every piece of content carried an id that could dangle (audit C2, C10). Here the content
- * names the meaning instead:
- *
- * ```
- * @Check[fear -]                 make a Fear Save at disadvantage
- * @Table[gunshot]                roll on the Gunshot Wound table
- * @Gain[stress 1d5]              gain 1d5 Stress
- * @Gain[health -bleeding]        take damage equal to your Bleeding
- * @Apply[coward]                 gain the Coward condition
- * ```
- *
- * Each renders as a button; `chat/actions.ts` routes the click. A trailing `{…}` overrides the
- * generated label, exactly as `@UUID[…]{…}` does. One parser reads both the text form and the
- * button's `data-mothership-action`, so what content writes and what a click executes cannot
- * diverge.
- *
- * A Panic Check is a check, not a table: it is judged against Stress and it is spelled
- * `@Check[panicCheck]`. `@Table` takes the six tables that are pure lookups.
- */
-
 import { localize, format } from '../i18n.ts';
 import { addressOf, isFieldKey, type FieldKey } from '../mutation/fields.ts';
 import type { PodLeaf } from '../mutation/address.ts';
 import { isTableKey, type TableKey } from '../tables/tables.ts';
 import type { Advantage } from '../rolls/spec.ts';
 
-/**
- * The rolls a check can name — `module/data/item-models.js`'s `ROLL_SCOPES`, which is the same
- * key space a condition's modifier declares (S8). One vocabulary: a condition that says it
- * applies to `restSave` modifies the roll `@Check[restSave]` makes. `test/chat-enrichers.test.ts`
- * holds the two lists to each other.
- */
+/** Must match `module/data/item-models.js`'s `ROLL_SCOPES`; `test/chat-enrichers.test.ts` pins the two lists together. */
 export const CHECK_SCOPES = [
   'strength',
   'speed',
@@ -47,9 +19,8 @@ export const CHECK_SCOPES = [
 
 export type CheckScope = (typeof CHECK_SCOPES)[number];
 
-export type ActionVerb = 'check' | 'table' | 'gain' | 'apply';
+export type ActionVerb = 'check' | 'table' | 'gain' | 'apply' | 'damage';
 
-/** What a field changes by: a flat number, dice to roll, or the severity of a condition. */
 export type GainAmount =
   | { readonly kind: 'amount'; readonly amount: number }
   | { readonly kind: 'roll'; readonly dice: string }
@@ -64,7 +35,8 @@ export type ChatAction =
       readonly leaf: PodLeaf;
       readonly amount: GainAmount;
     }
-  | { readonly verb: 'apply'; readonly condition: string; readonly count: number };
+  | { readonly verb: 'apply'; readonly condition: string; readonly count: number }
+  | { readonly verb: 'damage'; readonly formula: string };
 
 export type ActionFault = 'syntax' | 'verb' | 'argument';
 
@@ -77,6 +49,7 @@ const VERBS: Readonly<Record<string, ActionVerb>> = {
   Table: 'table',
   Gain: 'gain',
   Apply: 'apply',
+  Damage: 'damage',
 };
 
 const SPELLING: Readonly<Record<ActionVerb, string>> = {
@@ -84,12 +57,12 @@ const SPELLING: Readonly<Record<ActionVerb, string>> = {
   table: 'Table',
   gain: 'Gain',
   apply: 'Apply',
+  damage: 'Damage',
 };
 
-const SYNTAX = '@(Check|Table|Gain|Apply)\\[([^\\]]*)\\](?:\\{([^}]*)\\})?';
+const SYNTAX = '@(Check|Table|Gain|Apply|Damage)\\[([^\\]]*)\\](?:\\{([^}]*)\\})?';
 
-/** The enricher scans with this; `parseAction` uses its own anchored copy, so neither carries
- * the other's `lastIndex`. */
+/** `parseAction` uses its own anchored copy, so neither this nor that carries the other's `lastIndex`. */
 export const ACTION_PATTERN = new RegExp(SYNTAX, 'g');
 
 const ANCHORED = new RegExp(`^${SYNTAX}$`);
@@ -125,7 +98,7 @@ function parseTable(args: readonly string[]): ActionParse {
   const [key, modifier, ...rest] = args;
   const advantage = advantageOf(modifier);
   if (rest.length > 0 || advantage === null) return bad('argument', `@Table[${args.join(' ')}]`);
-  // The Panic Check draws from a table but is judged against Stress, so it has one spelling.
+  // Judged against Stress, not a lookup, so a Panic Check has one spelling: @Check[panicCheck].
   if (key === 'panic') return bad('argument', 'a Panic Check is @Check[panicCheck]');
   if (!isTableKey(key)) return bad('argument', `${key} is not a table`);
   return { ok: true, action: { verb: 'table', table: key, advantage }, label: null };
@@ -163,7 +136,15 @@ function parseApply(args: readonly string[]): ActionParse {
   return { ok: true, action: { verb: 'apply', condition, count: Number(count) }, label: null };
 }
 
-/** Read one expression. The same function reads content text and a button's data attribute. */
+/** A damage formula like `1d10 * 2` or `{1d10,1d10}kh` keeps its spaces, so the whole bracket is one argument. */
+const DAMAGE_FORMULA = /\d/;
+
+function parseDamage(formula: string): ActionParse {
+  if (!DAMAGE_FORMULA.test(formula)) return bad('argument', `${formula} is not damage`);
+  return { ok: true, action: { verb: 'damage', formula }, label: null };
+}
+
+/** Reads both content text and a button's `data-mothership-action` — same parser, both directions. */
 export function parseAction(text: string): ActionParse {
   const match = ANCHORED.exec(String(text ?? '').trim());
   if (match === null) return bad('syntax', String(text ?? ''));
@@ -179,7 +160,9 @@ export function parseAction(text: string): ActionParse {
         ? parseTable(args)
         : verb === 'gain'
           ? parseGain(args)
-          : parseApply(args);
+          : verb === 'damage'
+            ? parseDamage(match[2].trim())
+            : parseApply(args);
 
   return parsed.ok && match[3] !== undefined ? { ...parsed, label: match[3] } : parsed;
 }
@@ -195,7 +178,6 @@ function amountText(amount: GainAmount): string {
   }
 }
 
-/** The action back as the expression that produced it — what the button carries and a click reads. */
 export function formatAction(action: ChatAction): string {
   const args = (() => {
     switch (action.verb) {
@@ -207,12 +189,13 @@ export function formatAction(action: ChatAction): string {
         return `${action.field}${action.leaf === 'value' ? '' : `.${action.leaf}`} ${amountText(action.amount)}`;
       case 'apply':
         return `${action.condition}${action.count === 1 ? '' : ` ${action.count}`}`;
+      case 'damage':
+        return action.formula;
     }
   })();
   return `@${SPELLING[action.verb]}[${args}]`;
 }
 
-/** The dotted address a `@Gain` names, for the mutation engine that takes one. */
 export function gainAddress(action: Extract<ChatAction, { verb: 'gain' }>): string {
   return addressOf(action.field, action.leaf);
 }
@@ -246,7 +229,7 @@ function signed(text: string): string {
   return text.startsWith('-') ? text : `+${text}`;
 }
 
-/** A condition slug as prose. Content that wants the book's capitals passes its own `{label}`. */
+/** Content that wants the book's own capitalization passes its own `{label}` instead. */
 function conditionName(condition: string): string {
   return condition
     .split('-')
@@ -279,6 +262,8 @@ export function actionLabel(action: ChatAction): string {
         count: signed(String(action.count)),
         condition: conditionName(action.condition),
       });
+    case 'damage':
+      return format('Mothership.Chat.DamageLabel', { damage: action.formula });
   }
 }
 
@@ -287,6 +272,7 @@ const ICONS: Readonly<Record<ActionVerb, string>> = {
   table: 'fa-solid fa-list',
   gain: 'fa-solid fa-plus-minus',
   apply: 'fa-solid fa-notes-medical',
+  damage: 'fa-solid fa-burst',
 };
 
 /** The routing key the delegated listener matches, namespaced so no window claims it by accident. */
@@ -321,7 +307,7 @@ declare const CONFIG: { readonly TextEditor: { enrichers: EnricherConfig[] } } |
 
 const ENRICHER_ID = 'mothership-action';
 
-/** Called once, by `init.ts`. Registering twice would render every action twice. */
+/** Registering twice would render every action twice. */
 export function registerEnrichers(): void {
   if (typeof CONFIG === 'undefined') return;
   const enrichers = CONFIG?.TextEditor.enrichers;

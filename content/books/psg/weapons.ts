@@ -3,12 +3,20 @@ import type { Cost, Modifier, WoundType } from '../common.ts';
 
 export type RangeBand = 'adjacent' | 'close' | 'long' | 'extreme';
 
+/** A damage the weapon deals under a condition it does not decide — a range band, most often. */
+export interface DamageMode {
+  label: string;
+  formula: string;
+}
+
 export interface Damage {
   raw: string;
   formula: string | null;
   antiArmor: boolean;
   /** Present where the raw damage is not a bare dice formula — "1d10 per shot", and the like. */
   expression?: string;
+  /** The other damages the same weapon deals, beside `formula`. */
+  modes?: readonly DamageMode[];
 }
 
 export interface Weapon {
@@ -55,7 +63,12 @@ export const WEAPONS = [
     name: 'Combat Shotgun',
     cost: { raw: '1,400cr', value: 1400, each: false },
     range: 'close',
-    damage: { raw: '4d10 DMG', formula: '4d10', antiArmor: false },
+    damage: {
+      raw: '4d10 DMG',
+      formula: '4d10',
+      antiArmor: false,
+      modes: [{ label: 'Long Range', formula: '1d10' }],
+    },
     shots: 4,
     wounds: [{ type: 'gunshot', modifiers: [] }],
     special: '1d10 DMG at Long Range or greater.',

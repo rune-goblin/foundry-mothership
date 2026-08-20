@@ -19,6 +19,12 @@
     "critDmg": "",
     "curShots": 4,
     "damage": "4d10",
+    "damageModes": [
+      {
+        "formula": "1d10",
+        "label": "Long Range"
+      }
+    ],
     "description": "<p>1d10 DMG at Long Range or greater.</p>",
     "range": "close",
     "shots": 4,

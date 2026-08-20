@@ -25,6 +25,7 @@ import {
   askReload,
   chooseAdvantage,
   chooseAttribute,
+  chooseDamageMode,
   chooseSkill,
   outOfAmmo,
   type SkillRow,
@@ -50,9 +51,9 @@ import {
   type StatValue,
 } from './actor.ts';
 import { conditionModifier, conditionNote, conditionPreselect } from './conditions.ts';
-import { cardWeapon, damageFlavor, rollDamage, woundEffectOf } from './damage.ts';
+import { cardWeapon, damageFlavor, damageModes, rollDamage, woundEffectOf } from './damage.ts';
 import { evaluateRoll } from './roll.ts';
-import { autoStress } from './settings.ts';
+import { autoRollDamage, autoStress } from './settings.ts';
 import { runTable, type TableResult } from './tables.ts';
 
 declare const ui: { readonly notifications?: { error(message: string): unknown } } | undefined;
@@ -273,6 +274,31 @@ function headerOf(check: Check, stat: StatValue, weapon: CheckItem | null): { ti
   return { title: stat.rollLabel, image: asset(`images/icons/ui/attributes/${stat.key}.png`) };
 }
 
+/**
+ * Several damages cannot be settled without asking: the range a shot was taken at is the table's
+ * business and no field records it. `null` is the question dismissed.
+ */
+async function settleDamage(weapon: CheckItem, override: string | null): Promise<string | null> {
+  const modes = damageModes(weapon, override);
+  if (modes.length <= 1) return modes[0]?.formula ?? '';
+  return await chooseDamageMode(weapon.name, modes);
+}
+
+/** Rolled when the GM leaves that to the system, offered as a button per damage when they do not. */
+async function damageLine(
+  actor: CheckActor,
+  weapon: CheckItem,
+  options: { readonly override: string | null; readonly critical: boolean },
+): Promise<string> {
+  const offer = { ...options, offer: true };
+  if (!autoRollDamage(isCharacter(actor))) return damageFlavor(actor, weapon, offer);
+
+  const chosen = await settleDamage(weapon, options.override);
+  return chosen === null
+    ? damageFlavor(actor, weapon, offer)
+    : damageFlavor(actor, weapon, { ...options, override: chosen });
+}
+
 /** PSG 22 — a successful Rest Save relieves Stress equal to the ones digit of the roll. */
 function restRelief(total: number): number {
   return -(Math.abs(total) % 10);
@@ -314,7 +340,10 @@ async function d100Check(
       flavorText = mutationOutcome({ source, result: stress, voice });
     }
   } else if (weapon !== null) {
-    flavorText = damageFlavor(actor, weapon, { override: options.damage, critical: outcome.critical });
+    flavorText = await damageLine(actor, weapon, {
+      override: options.damage ?? null,
+      critical: outcome.critical,
+    });
   } else if (character && check.kind === 'rest-save') {
     stress = await mutate(actor, STRESS, { kind: 'amount', amount: restRelief(outcome.total) });
     flavorText = mutationOutcome({ source, result: stress, voice });
@@ -351,7 +380,12 @@ async function damageOnly(
 ): Promise<DamageResult | null> {
   const weapon = weaponOf(actor, check.itemId);
   if (weapon === null) return null;
-  const card = await rollDamage(actor, weapon, { override: check.damage ?? options.damage ?? null });
+
+  // Asked for outright, so it always rolls; what it may not do is guess which damage.
+  const chosen = await settleDamage(weapon, check.damage ?? options.damage ?? null);
+  if (chosen === null) return null;
+
+  const card = await rollDamage(actor, weapon, { override: chosen });
   return { kind: 'damage', card };
 }
 

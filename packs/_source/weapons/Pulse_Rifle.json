@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 5,
     "damage": "3d10",
+    "damageModes": [],
     "description": "",
     "range": "long",
     "shots": 5,

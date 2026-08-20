@@ -95,9 +95,9 @@ const COMPARE_WORDS: Readonly<Record<Comparison, string>> = {
 };
 
 /**
- * The verdict line. A check with nothing to beat has no verdict, so it prints none. The inline
- * style is legacy's, kept to the pixel: `css/mothership.css` is outside this plan's scope, so these
- * cards may not depend on a class it does not already have.
+ * The verdict line. A check with nothing to beat has no verdict, so it prints none. Legacy carried
+ * the type here as an inline style because the stylesheet was out of that plan's scope; the design
+ * system has since taken the cards, so this names a class and `css/mothership.css` draws it.
  */
 export function outcomeHtml(outcome: Outcome): string {
   if (outcome.target === null) return '';
@@ -109,10 +109,8 @@ export function outcomeHtml(outcome: Outcome): string {
       ? 'Mothership.Chat.Success'
       : 'Mothership.Chat.Failure';
 
-  return (
-    `<div style="font-size: 1.1rem; margin-top : -10px; margin-bottom : 5px;">` +
-    `<strong>${localize(key)}</strong></div>`
-  );
+  const state = outcome.success ? 'card-verdict-success' : 'card-verdict-failure';
+  return `<div class="card-verdict ${state}"><strong>${localize(key)}</strong></div>`;
 }
 
 /** A d100 and a d5 are both rolled as a d10 in Foundry's dice art. */
@@ -150,7 +148,7 @@ export function rollHtml(outcome: Outcome, options: RollHtmlOptions): string {
     .join('');
 
   return (
-    `<div class="dice-roll" style="margin-bottom: 10px;" data-action="expandRoll"><div class="dice-result">` +
+    `<div class="dice-roll card-dice" data-action="expandRoll"><div class="dice-result">` +
     `<div class="dice-formula">${formula}</div>` +
     `<div class="dice-tooltip" hidden><div class="wrapper">${parts}</div></div>` +
     `<h4 class="dice-total">${outcome.total}</h4>` +
@@ -163,6 +161,8 @@ function rolled(outcome: Outcome, options: RollHtmlOptions): object {
     total: outcome.total,
     success: outcome.success,
     critical: outcome.critical,
+    // The template used to compare the total against a literal 90: PSG 24 stated twice.
+    autoFailed: outcome.autoFailed,
     outcomeHtml: outcomeHtml(outcome),
     rollHtml: rollHtml(outcome, options),
   };
@@ -196,9 +196,32 @@ export interface CheckCardInput {
   readonly critFail?: boolean;
 }
 
+/** A title this long no longer fits the header pill at its own size. */
+const LONG_HEADER = 22;
+
+/**
+ * The template used to hold the English glue — "You … your … plus … skill bonus" — around four
+ * localized fragments, so `pt-BR` could reach the words and never the sentence they sat in.
+ */
+function checkSentence(input: CheckCardInput): string {
+  const bonus = input.skillBonus ?? 0;
+  const parts = {
+    verb: localize(input.outcome.success ? 'Mothership.Chat.Rolled' : 'Mothership.Chat.DidNotRoll'),
+    comparison: localize(COMPARE_WORDS[input.comparison]),
+    attribute: `<strong>${input.attribute}</strong>`,
+    skill: `<strong>${input.skill ?? ''}</strong>`,
+  };
+
+  return bonus > 0
+    ? format('Mothership.Chat.CheckSentenceSkill', parts)
+    : format('Mothership.Chat.CheckSentence', parts);
+}
+
 export function checkCard(input: CheckCardInput): Card<object> {
   const weapon = input.weapon ?? null;
   const woundEffect = input.woundEffect ?? '';
+  const damage = input.damage === true;
+  const needsDesc = weapon !== null && (weapon.system.description !== '' || woundEffect !== '');
 
   return {
     kind: 'check',
@@ -206,17 +229,19 @@ export function checkCard(input: CheckCardInput): Card<object> {
       ...origin(input.source),
       weapon,
       msgHeader: input.header,
+      longHeader: input.header.length >= LONG_HEADER,
       msgImgPath: input.image,
-      // The template's one sentinel, and it never leaves the template's own data.
-      specialRoll: input.damage === true ? 'damage' : '',
+      // The template used to re-derive both of these from a `specialRoll` sentinel, `success` and
+      // `weapon`, which is how its two weapon-description blocks became near-identical copies.
+      showCheck: !damage,
+      showWeapon: needsDesc && (damage || input.outcome.success),
       parsedRollResult: rolled(input.outcome, input),
       attribute: input.attribute,
       skill: input.skill ?? '',
       skillValue: input.skillBonus ?? 0,
-      outcomeVerb: localize(input.outcome.success ? 'Mothership.Chat.Rolled' : 'Mothership.Chat.DidNotRoll'),
-      comparisonText: localize(COMPARE_WORDS[input.comparison]),
+      checkSentence: checkSentence(input),
       flavorText: input.flavor ?? '',
-      needsDesc: weapon !== null && (weapon.system.description !== '' || woundEffect !== ''),
+      needsDesc,
       woundEffect,
       critFail: input.critFail === true,
     },
@@ -500,6 +525,38 @@ declare const foundry:
   | { readonly applications: { readonly handlebars: { renderTemplate(path: string, data: object): Promise<string> } } }
   | undefined;
 
+export async function renderCard<D extends object>(card: Card<D>): Promise<string | null> {
+  if (typeof foundry === 'undefined') return null;
+  return await foundry.applications.handlebars.renderTemplate(templateOf(card.kind), card.data);
+}
+
+/** The message flag a check card keeps itself under, so a button inside it can rebuild it. */
+export const CARD_FLAG = 'card';
+
+/** As much of a `ChatMessage` as acting on the card inside it needs. */
+export interface CardMessage {
+  getFlag(scope: string, key: string): unknown;
+  canUserModify(user: unknown, action: string): boolean;
+  update(data: object): Promise<unknown>;
+}
+
+/**
+ * A player may act on their own card, the Warden on any. `BaseChatMessage#getUserLevel` reads
+ * OWNER for the message's author and `testUserPermission` hands every GM OWNER, so this one call
+ * states the rule and predicts whether the write behind it would be accepted.
+ */
+export function ownsCard(message: CardMessage, user: unknown): boolean {
+  return message.canUserModify(user, 'update');
+}
+
+/**
+ * Rewriting a card means re-rendering its template, and the rendered HTML has thrown away the data
+ * that built it. Only the check card needs this: it is the only one with a button that rewrites it.
+ */
+function remembered<D extends object>(card: Card<D>): object {
+  return card.kind === 'check' ? { flags: { [SYSTEM_ID]: { [CARD_FLAG]: card } } } : {};
+}
+
 /**
  * The impure half, and all of it: render the card's template and post it. A card built from a
  * roll posts through the roll so Foundry keeps the dice; anything else goes through
@@ -508,11 +565,12 @@ declare const foundry:
 export async function postCard<D extends object>(card: Card<D>, options: PostOptions): Promise<unknown> {
   if (typeof foundry === 'undefined' || typeof ChatMessage === 'undefined') return null;
 
-  const content = await foundry.applications.handlebars.renderTemplate(templateOf(card.kind), card.data);
+  const content = await renderCard(card);
   const message = {
     user: typeof game === 'undefined' ? undefined : game?.user?.id,
     speaker: options.speaker,
     content,
+    ...remembered(card),
   };
 
   return options.roll ? options.roll.toMessage(message) : ChatMessage.create(ChatMessage.applyMode(message));

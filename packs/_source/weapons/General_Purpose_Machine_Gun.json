@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 5,
     "damage": "4d10",
+    "damageModes": [],
     "description": "<p>Two-handed. Heavy. Barrel can be maneuvered to fire around corners.</p>",
     "range": "long",
     "shots": 5,

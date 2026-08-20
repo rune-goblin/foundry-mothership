@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 0,
     "damage": "1d10",
+    "damageModes": [],
     "description": "<p>Can cut through airlock doors.</p>",
     "range": "adjacent",
     "shots": 0,

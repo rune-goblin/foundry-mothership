@@ -982,7 +982,9 @@
       "NoTokenSelected": "Macros are aimed at the tokens selected in the scene. Click a token, or drag a box around several.",
       "NoItemNamed": "{actor} has no item named {name}.",
       "ItemMacroNotOwned": "You can only create macro buttons for items an actor owns.",
-      "UnknownArgument": "A macro asked for {argument}, which this system has no reading for."
+      "UnknownArgument": "A macro asked for {argument}, which this system has no reading for.",
+      "NoDamageSource": "This card names no actor and weapon to roll damage for.",
+      "NotYourCard": "Only the player who made this roll, or the Warden, can roll its damage."
     },
     "Chat": {
       "Success": "SUCCESS!",
@@ -1005,7 +1007,12 @@
       "SufferLabel": "Take {condition} Damage",
       "ActionUnavailable": "That action is not available yet.",
       "DamageDealt": "You inflict {damage} points of damage.",
-      "UnarmedDamage": "You strike your target for {damage} damage."
+      "UnarmedDamage": "You strike your target for {damage} damage.",
+      "DamageLabel": "Roll {damage}",
+      "DamageModeLabel": "Roll {damage} · {mode}",
+      "RollDamageOffer": "Roll the damage you deal: {damage}",
+      "CheckSentence": "You {verb} {comparison} your {attribute}.",
+      "CheckSentenceSkill": "You {verb} {comparison} your {attribute} plus {skill} skill bonus."
     },
     "Table": {
       "panic": "Panic Check",
@@ -1062,7 +1069,20 @@
         "Name": "Rolltable Configuration",
         "Label": "Choose Tables",
         "Hint": "Customize which rolltables the system uses."
+      },
+      "autoRollDamagePlayers": {
+        "Name": "Roll Player Damage Automatically",
+        "Hint": "Roll a character's damage as part of the attack. Off, the card offers a button per damage the weapon deals."
+      },
+      "autoRollDamageCreatures": {
+        "Name": "Roll Creature Damage Automatically",
+        "Hint": "Roll a creature's damage as part of the attack. Off, the card offers a button per damage the weapon deals."
       }
-    }
+    },
+    "WhichDamageApplies": "Which damage does {weapon} deal?",
+    "DamageModes": "Damage by Range",
+    "AddDamageMode": "Add a damage",
+    "RemoveDamageMode": "Remove this damage",
+    "DamageModeLabelField": "When"
   }
 }

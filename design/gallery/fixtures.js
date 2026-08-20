@@ -71,6 +71,9 @@ export const weapons = [
     'Pulse Rifle',
     itemSystem('weapon', {
       damage: '3d10',
+      // The Combat Shotgun's shape: a second damage the range decides, which the body edits and
+      // the chat card offers.
+      damageModes: [{ label: 'Adjacent', formula: '1d10' }],
       range: 'long',
       ammo: 30,
       shots: 6,

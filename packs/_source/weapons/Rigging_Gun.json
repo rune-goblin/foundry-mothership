@@ -19,6 +19,7 @@
     "critDmg": "",
     "curShots": 1,
     "damage": "1d10",
+    "damageModes": [],
     "description": "<p>100m micro-filament. Body Save or become entangled.</p>",
     "range": "close",
     "shots": 1,

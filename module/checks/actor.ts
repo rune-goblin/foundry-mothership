@@ -1,14 +1,3 @@
-/**
- * The actor as a roll reads it, and the small readings every flow in `checks/` shares. The
- * document itself stays Foundry's; this is the surface the services need, written down so a test
- * can supply one and a change to it is a compile error rather than a `undefined is not an object`
- * halfway through a roll.
- *
- * Checks read the **derived** `system`: armour, the swarm multiplier and the condition tally are
- * derivation's work, and they are exactly what a check must be judged against. Mutations read
- * `toObject().system` instead (divergence R1-4) — the two are deliberately different.
- */
-
 import type { CardSource, Speaker, Voice } from '../chat/cards.ts';
 import { voiceOf } from '../chat/cards.ts';
 import type { ItemCard } from '../documents/item.ts';
@@ -17,7 +6,6 @@ import type { MutableDocument } from '../mutation/mutate.ts';
 import { isSkillRank, rankBonus, skillRank, storedRank } from '../rules.ts';
 import { isRobotic } from '../tables/tables.ts';
 
-/** An embedded item, as `documents/item.ts` implements it. */
 export interface CheckItem {
   readonly id: string | null;
   readonly name: string;
@@ -38,9 +26,9 @@ export interface CheckActor extends MutableDocument {
   readonly name: string;
   readonly img: string;
   readonly type: string;
+  /** The derived system (armour, swarm multiplier, condition tally) — mutations read `toObject().system` instead. */
   readonly system: unknown;
   readonly items: ItemCollection;
-  /** The token this actor was rolled from, when it was rolled from one. */
   readonly token?: { readonly id?: string | null } | null;
 }
 
@@ -71,7 +59,7 @@ export function voiceOfActor(actor: CheckActor): Voice {
   return voiceOf(isRobotic(actor));
 }
 
-/** A stat as a check reads it: the number to beat, and the two names the card prints. */
+/** label and rollLabel are the two names the card prints — they can differ. */
 export interface StatValue {
   readonly key: string;
   readonly value: number;
@@ -99,21 +87,14 @@ export function stressOf(system: unknown): number {
   return number(fields(fields(fields(system).other).stress).value);
 }
 
-/**
- * PSG 22 — what a skill adds is decided by its rank. `system.bonus` holds the same number
- * denormalized (`item-models.js` initializes it from the rank and the new-skill dialog writes
- * both), so it is the fallback for a rank the book does not name, not a second opinion.
- */
+/** `system.bonus` is a denormalized copy of the rank's bonus — the fallback for an unnamed rank, not a second opinion. */
 export function skillBonus(system: unknown): number {
   const skill = fields(system);
   const rank = text(skill.rank);
   return isSkillRank(rank) ? rankBonus(rank) : number(skill.bonus);
 }
 
-/**
- * The word the book gives this skill's bonus, for the window that names the rank beside it. A rank
- * the book does not name has no word — the bonus stands on its own rather than inventing one.
- */
+/** Returns null when the book doesn't name the rank, rather than inventing a word. */
 export function skillRankWord(system: unknown): string | null {
   const stored = text(fields(system).rank);
   return isSkillRank(stored) ? storedRank(skillRank(stored)) : null;
