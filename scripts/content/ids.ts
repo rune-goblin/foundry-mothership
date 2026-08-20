@@ -97,9 +97,8 @@ export class IdRegistry {
   }
 
   /**
-   * A new book brings new packs, so the registry has to be able to grow one — but only under
-   * `--allocate`, and never silently under a compendium or document type it was not registered
-   * with, which would hand a pack's ids to somewhere else entirely.
+   * A new pack can only be declared under `--allocate`, and never silently reassigned to a
+   * different compendium or document type than it was registered with.
    */
   declarePack(pack: string, compendium: string, documentType: string): void {
     const entry = this.registry.packs[pack];

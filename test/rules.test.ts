@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { RANK_BONUS, rankBonus, skillRank } from '../module/rules.ts';
 
 describe('skillRank — the one place a stored rank becomes a rank', () => {
-  // item-models.js initializes `rank` to 'Trained' and the new-skill dialog writes the same.
   it('reads the capitalized word a skill item stores', () => {
     expect(skillRank('Trained')).toBe('trained');
     expect(skillRank('Expert')).toBe('expert');
@@ -20,7 +19,6 @@ describe('skillRank — the one place a stored rank becomes a rank', () => {
     expect(() => skillRank(undefined as unknown as string)).toThrow(/Unknown skill rank/);
   });
 
-  // `key in RANK_BONUS` would accept every method Object.prototype carries.
   it('refuses an inherited property name', () => {
     expect(() => skillRank('toString')).toThrow(/Unknown skill rank/);
   });

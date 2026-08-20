@@ -1,6 +1,5 @@
 <script>
-  // Name and rank are one answer, so what the user changed is held here and reported over what the
-  // dialog opened with; the fields themselves keep their own live values.
+  // `changed` merges over `value` because svelte-dialog holds `value` in a closure that never updates.
   let { nameLabel, rankLabel, ranks, value, onchange } = $props();
 
   const changed = {};

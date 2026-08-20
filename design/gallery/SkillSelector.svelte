@@ -23,10 +23,8 @@
     { uuid: 'sk-exobiology', name: 'Exobiology', rank: 'Master', bonus: 20, summary: 'The study of and search for intelligent alien life.', prerequisites: ['sk-pathology'] },
   ];
 
-  // Linguistics came with the class; Mathematics is this session's own pick, already spending the
-  // one Trained slot the budget below still shows as granted. Master is left at zero so the
-  // specimen carries both halves of "unavailable": a rank with no pick left, and a skill whose
-  // prerequisite is unmet.
+  // Master is left at zero so the specimen shows both halves of "unavailable": a rank with no
+  // pick left (Sophontology, Exobiology), and a skill whose prerequisite is unmet (Pathology).
   const GRANTED = new Set(['sk-linguistics']);
   const BUDGET = { Trained: 1, Expert: 1, Master: 0 };
   let picked = $state(new Set(['sk-mathematics']));

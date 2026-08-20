@@ -17,7 +17,6 @@ export const manifest = JSON.parse(
   readFileSync(fileURLToPath(new URL('../system.json', import.meta.url)), 'utf8'),
 ) as { documentTypes: { Actor: Record<string, unknown>; Item: Record<string, unknown> } };
 
-// template.json composes a type from the named templates it lists plus its own keys.
 export function templateDefaults(kind: 'Actor' | 'Item', type: string): Record<string, unknown> {
   const body = template[kind][type];
   const merged: Record<string, unknown> = {};

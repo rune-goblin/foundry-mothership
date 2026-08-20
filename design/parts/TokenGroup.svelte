@@ -1,7 +1,4 @@
 <script>
-  // One scale, drawn the way that scale reads: a ramp is swatches, a spacing scale is bars, a
-  // radius scale is boxes, a type scale is the type. This is TokenScaleTable's idea — the pair
-  // (name, value) is constant and only the preview beside it changes with the kind.
   import { kindOf, groupKind, computedValue, barScale, stepLabels } from '../lib/preview.js';
 
   let { title = '', note = '', tokens, scope, clip } = $props();
@@ -16,8 +13,7 @@
 
   const label = (token) => (clip.copied === token.name ? 'copied!' : token.name);
 
-  // Over its own swatch a token is captioned by what distinguishes it from its neighbours, which
-  // is its name minus the prefix the group shares.
+  // A token's caption is its name minus the prefix the group shares.
   const steps = $derived(stepLabels(tokens.map((token) => token.name)));
   const step = (token) => (clip.copied === token.name ? 'copied!' : steps.get(token.name));
 </script>
@@ -120,8 +116,8 @@
   {/if}
 </section>
 
-<!-- A mixed group is several scales interleaved, so the preview is the token's own rather than the
-     group's. A line height has nothing to show and keeps the empty slot, which holds the column. -->
+<!-- The preview is per-token, not per-group, because a mixed group interleaves several scales.
+     A line height has nothing to show and keeps the empty slot, which holds the column. -->
 {#snippet preview(token)}
   {#if token.kind === 'color'}
     <span class="ds-row-chip" style="--ds-fill: {token.computed};"></span>

@@ -21,12 +21,10 @@ describe('compare — the four comparators the templates use', () => {
 });
 
 describe('compare — coercion matches the old eval', () => {
-  // 'int' left operands bare, so they compared numerically.
   it('compares numerically for int even when given digit strings', () => {
     expect(compare('int', '10', '>', '9')).toBe(true);
   });
 
-  // 'str' quoted both operands, so they compared lexicographically.
   it('compares lexicographically for str', () => {
     expect(compare('str', '10', '>', '9')).toBe(false);
   });
@@ -38,7 +36,6 @@ describe('compare — coercion matches the old eval', () => {
 });
 
 describe('compare — what eval got wrong', () => {
-  // eval('"Sam's Rifle"==="..."') was a syntax error, taking the sheet render down with it.
   it('handles a value containing a quote', () => {
     expect(compare('str', "Sam's Rifle", '===', "Sam's Rifle")).toBe(true);
     expect(compare('str', "Sam's Rifle", '===', 'Other')).toBe(false);

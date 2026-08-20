@@ -1,6 +1,4 @@
 <script>
-  // The Live Tokens editor panel's shell: a sticky rail that collapses to its icon column, a radio
-  // group at the top choosing the view, and one nav item per section of whatever that view shows.
   import { tick } from 'svelte';
   import ThemeTokens from './pages/ThemeTokens.svelte';
   import ComponentTokens from './pages/ComponentTokens.svelte';
@@ -25,10 +23,7 @@
   /** "Typography — sizes" is the Typography family; "Space — the value is the name" is Space. */
   const familyName = (title) => title.split(' — ')[0];
 
-  /**
-   * What the rail calls a group. The family alone is enough where it is unique, and where several
-   * groups share one — Typography has five — the qualifier after the dash is the whole distinction.
-   */
+  /** The family alone is enough where unique; where several share one (Typography has five) the qualifier after the dash distinguishes them. */
   function railLabel(title) {
     const [head, ...rest] = title.split(' — ');
     const shared = themeTokens.filter((block) => !block.heading && familyName(block.title) === head);
@@ -37,7 +32,7 @@
     return `${head} — ${qualifier}`;
   }
 
-  /** An icon per section, picked off what the section is. Font Awesome comes from Foundry's build. */
+  /** Font Awesome comes from Foundry's build. */
   function icon(title) {
     const what = title.toLowerCase();
     if (/colour|color|neutral|danger|success|warning|alternate|canvas|brand|accent|special|info/.test(what))
@@ -62,7 +57,6 @@
     Windows: 'fa-solid fa-window-maximize',
   };
 
-  /** The rail's contents for each view: a heading is a divider, everything else is a jump target. */
   const RAILS = {
     tokens: [
       { kind: 'divider', id: 'colour', label: 'Colour' },
@@ -113,8 +107,8 @@
   let condensed = $state(false);
   let here = $state('');
   let foundryAssets = $state(true);
-  // Every token's live value is read off this node; the pages resolve against it rather than
-  // inheriting, because the app's own chrome is deliberately outside `.mothership`.
+  // Pages resolve computed token values off this node rather than inheriting, because the
+  // app's own chrome is deliberately outside `.mothership`.
   let scope = $state(null);
 
   const clip = clipboard();
@@ -151,7 +145,6 @@
   }
 </script>
 
-<!-- The scope the tokens are declared on, present so the pages can read their computed values. -->
 <div class="mothership" bind:this={scope} aria-hidden="true" style="display: none;"></div>
 
 <div class="ds-app" class:condensed>

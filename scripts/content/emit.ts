@@ -27,10 +27,8 @@ export interface Emitted {
 const KEY_PREFIX = { Item: '!items', Macro: '!macros', RollTable: '!tables' } as const;
 
 /**
- * Exactly what `fvtt package pack` needs, and nothing else. Everything an export drags along —
- * `lastModifiedBy`, `folder`, `sort`, `exportSource`, `createdTime`, `modifiedTime`,
- * `coreVersion` — is absent by construction rather than stripped, because nothing generates it.
- * Provenance lives in `build/content-manifest.json`, never inside a shipped pack.
+ * Exactly what `fvtt package pack` needs — export cruft like `lastModifiedBy`/`folder`/`sort` is
+ * absent by construction, never stripped. Provenance lives in the build manifest, not the pack.
  */
 export function emit(
   def: PackDefinition,
@@ -108,10 +106,7 @@ export function emit(
   };
 }
 
-/**
- * Object key order is not allowed to decide the bytes on disk, so it is sorted away. Arrays keep
- * their order — a RollTable's results are a sequence, not a set.
- */
+/** Sorts object keys so key order never affects the bytes on disk; arrays keep their order. */
 export function canonical(value: unknown): string {
   return `${JSON.stringify(sortKeys(value), null, 2)}\n`;
 }

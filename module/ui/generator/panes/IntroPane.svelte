@@ -22,8 +22,6 @@
       min-height: 28rem;
     }
 
-    /* The front matter is the one place the prose block is set over an image and has to leave the
-       cover its corner. */
     .wizard-intro .wizard-prose {
       position: relative;
       z-index: 1;

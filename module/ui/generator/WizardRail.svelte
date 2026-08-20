@@ -1,6 +1,4 @@
 <script>
-  // What is left, and how to get back to what is done. The rail knows nothing about the steps
-  // beyond what `steps.js` says they are and what the shell has already worked out about them.
   import { STEPS, stepNumber, stepTitle } from './steps.js';
   import { localize } from '../../i18n.ts';
 
@@ -29,12 +27,10 @@
 </nav>
 
 <style>
-  /* The rail is one of the system's black panels, where the paper face's roles invert. It reads
-     the wizard's `--wizard-bar-*` and `--wizard-marker-size` vocabulary, which Wizard.svelte
-     declares on the form it sits in — the whole window is rethemed from that one block. */
+  /* Reads the `--wizard-bar-*` and `--wizard-marker-size` vocabulary Wizard.svelte declares. */
   @layer system {
     .wizard-rail {
-      /* The wizard's grid gives the rail both rows: it stands beside the pane and its nav alike. */
+      /* Spans both grid rows: the rail stands beside both the pane and its nav. */
       grid-row: 1 / span 2;
       overflow-y: auto;
       padding: var(--wizard-pad) var(--space-8);
@@ -62,10 +58,8 @@
       border-radius: var(--radius-md);
       background: none;
       color: inherit;
-      /* Foundry core pins every <button> to `height: var(--button-size)` AND the matching
-         `min-height`, so a two-line entry — "Note Trauma Response", "Roll Loadout, Trinket, and
-         Patch" — overflowed its own background and spilled its second line onto the rail. Both
-         have to be released, not one. Every button in this window carries the same override. */
+      /* Foundry pins <button> height AND min-height; releasing only one still let a two-line
+         entry overflow and spill onto the rail. Every button in this window needs both released. */
       height: auto;
       min-height: var(--wizard-marker-size);
       font-family: var(--font-display);
@@ -95,10 +89,6 @@
       font-weight: var(--font-weight-bold);
     }
 
-    /* A ticked step keeps its number and gains the fill: the rail is a progress bar, and a step
-       that swapped its number for a check would stop telling you which step it is. The fill is
-       monochrome because the rail is — the current step inverts the whole row, so the marker
-       inverts back rather than picking up a colour the system uses nowhere else. */
     .wizard-rail-step.complete .wizard-rail-number {
       background: var(--wizard-bar-fill);
       color: var(--wizard-bar-surface);

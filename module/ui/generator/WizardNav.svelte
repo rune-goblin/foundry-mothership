@@ -36,8 +36,7 @@
 </footer>
 
 <style>
-  /* The bar's layout only. The buttons wear the wizard's own button face, which Wizard.svelte
-     declares because three components write it. */
+  /* Layout only — buttons wear the wizard-step-button face declared in Wizard.svelte. */
   @layer system {
     .wizard-nav {
       display: grid;

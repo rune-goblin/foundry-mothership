@@ -4,11 +4,8 @@
   import { CharacterDraft } from './draft.svelte.js';
   import { localize } from '../../i18n.ts';
 
-  /**
-   * The window this wizard opens in. ApplicationV2 rather than DocumentSheetV2 on purpose: nothing
-   * here is a field of the actor, so there is no form for Foundry to persist — the draft holds the
-   * state and writes the actor once, when the player finishes the last card.
-   */
+  // ApplicationV2, not DocumentSheetV2: nothing here is a field of the actor, so there's no form
+  // for Foundry to persist — the draft holds state and writes the actor once, on finish.
   export class WizardWindow extends foundry.applications.api.ApplicationV2 {
     static DEFAULT_OPTIONS = {
       // css/mothership.css paints the content white and has no dark variant, so pin the light theme.
@@ -74,14 +71,6 @@
 </script>
 
 <script>
-  // The character generator, as the book presents it: one numbered step at a time, the PSG's own
-  // prose above the controls that answer it, and a rail down the side showing what is left. The
-  // draft store underneath is read once when the window opens and written once when the last
-  // step's button is pressed.
-  //
-  // This file is the shell and nothing else: the frame every step stands in — its counter, title,
-  // instruction and controls well — and the walk between them. A pane draws the answer it collects
-  // and nothing around it. `steps.js` is where the steps themselves live.
   import WizardRail from './WizardRail.svelte';
   import WizardNav from './WizardNav.svelte';
   import { LAST_STEP, STEPS, STEP_TOTAL, stepBlocked, stepNumber, stepTitle } from './steps.js';
@@ -159,28 +148,15 @@
 </form>
 
 <style>
-  /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
-     application; @layer system puts these in the slot the rest of the system occupies.
-
-     This block is the window's own frame — the pane, its header, the controls well — which the
-     shell draws itself and so styles without escaping. Beneath it are the two things the panes
-     cannot each own: the `--wizard-*` vocabulary, declared here so the whole window is rethemed
-     from one place, and the handful of classes more than one pane writes. Those are marked with
-     their readers, the way css/mothership.css marks its shared tier.
-
-     What the wizard borrows stays borrowed: `circle-input`, `mainstat*` and `fulllabel` are the
-     shared stat tier in css/mothership.css, hand-written by the panes here and by MainStat,
-     RollBox, CharacterSheet and CreatureSheet alike. */
+  /* `--wizard-*` is declared here so the whole window rethemes from one place. `circle-input`,
+     `mainstat*` and `fulllabel` are the shared stat tier in css/mothership.css, also written by
+     MainStat, RollBox, CharacterSheet and CreatureSheet. */
   @layer system {
     .character-wizard {
       --wizard-rail-width: 13rem;
       --wizard-gap: var(--space-16);
       --wizard-pad: var(--space-20);
 
-      /* Two grounds, so two halves. The pane is the page — black ink on white paper — and the rail
-         is one of the system's black panels, where the roles invert. DS6b is what makes that
-         sayable: `paper` and `ink` are the ends the elevation and emphasis ladders never reach, so
-         a white box and a black line each have a name now and no slot below reads the ramp raw. */
       --wizard-ink: var(--text-primary);
       --wizard-edge: var(--border-neutral-ink);
       --wizard-ink-muted: var(--text-secondary);
@@ -202,8 +178,8 @@
       grid-template-columns: var(--wizard-rail-width) minmax(0, 1fr);
       grid-template-rows: minmax(0, 1fr) auto;
       gap: 0 var(--wizard-gap);
-      /* `.mothership-sheet-root` is a full-height flex column; the form is its only child and has
-         to take the rest of it, or the rail scrolls the window instead of itself. */
+      /* Must fill `.mothership-sheet-root`'s flex column or the rail scrolls the window instead
+         of itself. */
       flex: 1;
       min-height: 0;
       font-family: var(--font-sans-mothership);
@@ -211,11 +187,8 @@
       text-shadow: none;
     }
 
-    /* Foundry and system typography can add shadows at the individual element level. Keep every
-       word on the wizard's paper face crisp and naturally cased, including labels rendered inside
-       buttons. It reaches into the panes and the primitives they mount, so anything that means to
-       shout inside this window has to say so above this rule's weight — SkillSelector's rank
-       headings are the one place that does. */
+    /* Resets shadow/case on every descendant, including mounted panes and primitives — a heading
+       that means to shout has to out-specificity this (SkillSelector's rank headings do). */
     .character-wizard.character-wizard :global(*) {
       text-shadow: none;
       text-transform: none;
@@ -242,7 +215,6 @@
       position: relative;
     }
 
-    /* The art hangs in the header's corner, so the heading has to leave it the room. */
     .character-wizard .wizard-pane-header.with-art {
       min-height: var(--wizard-class-art-size);
       padding-right: calc(var(--wizard-class-art-size) + var(--space-16));
@@ -271,8 +243,6 @@
       font-weight: var(--font-weight-semibold);
     }
 
-    /* The controls well: everything a step puts under its heading. It grows so a pane that means
-       to fill the page can. */
     .character-wizard .wizard-controls {
       display: flex;
       flex-grow: 1;
@@ -281,14 +251,12 @@
       padding-bottom: var(--wizard-pad);
     }
 
-    /* A composed page instead of a stack of controls: it runs to the pane's own edge, so the
-       well's floor comes off. The front matter is the one step that asks for this. */
+    /* Only IntroPane uses this — drops the well's bottom padding so it can run to the pane's edge. */
     .character-wizard .wizard-controls.bleed {
       padding-bottom: 0;
     }
 
-    /* A two-column grid of controls. Read by RollsPane and HealthPane, and by GearPane under its
-       own name — the tables are the same layout holding a different kind of answer. */
+    /* Read by RollsPane and HealthPane, and by GearPane as wizard-tables. */
     .character-wizard :global(.wizard-rolls),
     .character-wizard :global(.wizard-tables) {
       display: grid;
@@ -297,9 +265,8 @@
       align-items: start;
     }
 
-    /* The wizard's button face. Read by RollsPane and GearPane (`wizard-bulk`) and WizardNav
-       (`wizard-step-button`); `height`/`min-height` release Foundry's pinned button box, as every
-       button in this window has to. */
+    /* Read by RollsPane and GearPane (`wizard-bulk`) and WizardNav (`wizard-step-button`).
+       height/min-height override Foundry's pinned button box. */
     .character-wizard :global(.wizard-bulk),
     .character-wizard :global(.wizard-step-button) {
       padding: var(--space-8) var(--space-16);
@@ -331,8 +298,7 @@
       cursor: default;
     }
 
-    /* Each pane writes its own copy, so what is shared is the block's face and nothing else.
-       Read by IntroPane, HealthPane, GearPane and FinishPane. */
+    /* Read by IntroPane, HealthPane, GearPane and FinishPane. */
     .character-wizard :global(.wizard-prose p) {
       margin: 0 0 var(--space-8);
     }
@@ -344,8 +310,7 @@
       color: var(--wizard-ink-muted);
     }
 
-    /* What a pane itemises under a rolled result. Read by SkillsPane and GearPane; the floor keeps
-       the pane from jumping as the list fills. */
+    /* Read by SkillsPane and GearPane; min-height keeps the pane from jumping as the list fills. */
     .character-wizard :global(.wizard-list) {
       min-height: var(--wizard-list-min-height);
       margin: var(--space-6) 0 0;
@@ -357,8 +322,7 @@
       cursor: pointer;
     }
 
-    /* MainStat renders the skills label from a `labelClass` prop, so the class lands on markup no
-       scoped block can reach. The form ancestor keeps the escape inside this window. */
+    /* MainStat renders this from a `labelClass` prop, so no scoped block can reach it directly. */
     .character-wizard :global(div.fulllabel) {
       border-radius: var(--radius-full);
     }

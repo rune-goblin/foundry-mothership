@@ -1,10 +1,6 @@
-/**
- * Foundry documents are not reactive. A sheet re-renders whenever its document updates, so the
- * shell calls `refresh()` on each render and the components re-read from a fresh snapshot.
- * The document stays the source of truth; nothing is mirrored into local state.
- *
- * `extra` carries anything the shell had to compute asynchronously, such as enriched HTML.
- */
+// Foundry documents aren't reactive: refresh() re-reads a fresh snapshot on each render, so the
+// document stays the source of truth and nothing is mirrored into local state. `extra` carries
+// data the shell computed asynchronously, e.g. enriched HTML.
 export function createDocumentStore(document, extra = {}) {
   const read = (more) => ({
     id: document.id,

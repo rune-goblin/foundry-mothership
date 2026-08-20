@@ -51,9 +51,8 @@ export function build(options: BuildOptions): BuildResult {
   const ids = IdRegistry.load(registryPath, allocate);
   const before = allIds(ids.registry);
 
-  // Every pack is declared before any of them loads, because a loader asks the registry for ids in
-  // packs the build has not reached yet — a class names its granted skills, a loadout row links the
-  // gear it hands out.
+  // Every pack is declared before any of them loads: a loader can ask the registry for ids in a
+  // pack the build has not reached yet — a class names its granted skills before that pack loads.
   for (const def of packs) ids.declarePack(def.pack, def.compendium, def.documentType);
 
   const emitted: Emitted[] = [];

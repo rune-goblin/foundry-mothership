@@ -16,8 +16,8 @@
     Object.entries(XP_MILESTONES).map(([pip, key]) => [pip, localize(key)]),
   );
 
-  // One pip each, so the states sit beside their names rather than under them — a caption is
-  // centred on its pip, and four captions on four adjacent pips would overlap.
+  // One pip each: a caption is centred on its pip, and four captions on four adjacent pips
+  // would overlap.
   const STATES = [
     { label: 'empty', value: 0, milestone: false },
     { label: 'filled', value: 1, milestone: false },

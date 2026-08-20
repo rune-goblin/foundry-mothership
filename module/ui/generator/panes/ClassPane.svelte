@@ -7,7 +7,7 @@
 
   const selectedClass = $derived(draft.selectedClass);
 
-  /** A bonus package as one phrase: the book's own wording where it has one, its picks otherwise. */
+  // The book's own wording where it has one, otherwise the picks spelled out.
   const packageLabel = (option) =>
     option.name || option.picks.map((pick) => format(pick.label, { count: pick.count })).join(', ');
 </script>
@@ -42,10 +42,6 @@
           <dd>{signed(choice.modification)}</dd>
         </div>
       {/each}
-      <!-- The skills half of the class card, which the book prints under the class name
-           beside the adjustments: what it grants outright, then what it funds a pick of.
-           The picks are answered two panes on; naming them here is what makes "which class
-           am I" a question the pane holds the answer to. -->
       {#if selectedClass.skills.granted.length > 0}
         <div class="wizard-class-skills">
           <dt>{localize('Mothership.Skills')}</dt>
@@ -65,8 +61,7 @@
           {/each}
         </div>
       {/if}
-      <!-- PSG step 6 asks nothing: the Trauma Response is whatever the class prints, so it
-           is shown with the rest of what the class brings rather than on a pane of its own. -->
+      <!-- PSG step 6 asks nothing here — Trauma Response is whatever the class prints. -->
       <div class="wizard-trauma">
         <dt>{localize('Mothership.TraumaResponse')}</dt>
         <dd data-value="trauma">{draft.traumaResponse}</dd>
@@ -76,8 +71,7 @@
 {/if}
 
 <style>
-  /* The four cards and the book's class card beneath whichever is chosen. Reads the wizard's
-     `--wizard-*` vocabulary, which Wizard.svelte declares on the form. */
+  /* Reads the `--wizard-*` vocabulary Wizard.svelte declares. */
   @layer system {
     .wizard-classes {
       display: grid;
@@ -113,8 +107,7 @@
       object-fit: contain;
     }
 
-    /* Foundry's core icons are black line art on transparent, so on the chosen card's black panel
-       they would be a hole rather than a picture. */
+    /* Foundry's core icons are black line art on transparent — invert so they show on the black panel. */
     .wizard-class.chosen .wizard-class-art {
       filter: invert(1);
     }
@@ -162,8 +155,7 @@
       grid-column: 1 / -1;
     }
 
-    /* The Trauma Response is a sentence, not a number: it shares the adjustments' label but not
-       their display face. */
+    /* Trauma Response is a sentence, not a number — shares the label but resets the display face. */
     .wizard-trauma dd,
     .wizard-class-skills dd {
       font-family: inherit;

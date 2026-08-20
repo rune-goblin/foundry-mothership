@@ -1,10 +1,9 @@
-// The gallery mounts the system's own components with no Foundry around them, so the few globals
-// they reach for have to exist before any `module/` file is evaluated — `import './stand-in/foundry.js'`
-// is the first statement in main.js, and the first in the smoke spec, for that reason.
+// Must be evaluated before any `module/` file — this import is the first statement in both
+// main.js and the smoke spec, since components reach for these globals at module scope.
 //
-// Nothing here reimplements Foundry. Each entry is the smallest thing that lets a component load
-// and render: the localizer reads the real lang file, and everything else is inert. A specimen
-// that would need working Foundry behaviour is a specimen this app cannot honestly show.
+// Nothing here reimplements Foundry: each entry is the smallest thing that lets a component load
+// and render. A specimen that would need working Foundry behaviour is a specimen this app cannot
+// honestly show.
 import en from '../../lang/en.json';
 
 /** Foundry stores translations nested and looks them up by dot path. */
@@ -41,10 +40,8 @@ const unavailable = (what) => () => {
   console.info(`[design] ${what} is a stand-in here — the gallery does not run it.`);
 };
 
-/**
- * Real dice for `NdM+K`, so the generator's d20s answer when clicked. Anything more elaborate than
- * that formula is Foundry's own parser's job and returns null rather than a plausible wrong number.
- */
+/** Real dice for `NdM+K`, so the generator's d20s answer when clicked. Anything more elaborate
+ *  returns null rather than a plausible wrong number. */
 class RollStandIn {
   constructor(formula) {
     this.formula = formula;
@@ -97,9 +94,9 @@ Object.assign(globalThis, {
         },
       },
     },
-    // The DataModels are declared at module scope — `extends foundry.abstract.TypeDataModel`, with
-    // a `fields.XField` per key — and a specimen that reaches one transitively evaluates all of it.
-    // The gallery never validates anything, so a constructible shell per field name is enough.
+    // DataModels are declared at module scope (`extends foundry.abstract.TypeDataModel`, with a
+    // `fields.XField` per key), so a specimen that reaches one transitively evaluates all of it.
+    // The gallery never validates, so a constructible shell per field name is enough.
     abstract: { TypeDataModel: class {}, DataModel: class {} },
     data: {
       fields: new Proxy({}, { get: (cache, name) => (cache[name] ??= class {}) }),

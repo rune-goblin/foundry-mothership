@@ -1,35 +1,14 @@
-/* Layer 1 — theme tokens. Vendored and adapted from @motion-proto/live-tokens v0.47.1
-   (src/system/styles/tokens.css + CONVENTIONS.md): its category-first naming law, its scale
-   shapes, and — where Mothership has no colour of its own yet — its values.
-
-   Two layers: these theme tokens hold the palette and the scales; Layer 2 component tokens
-   (--<componentId>-<part>[-<state>][-<element>]-<property>) alias them, and a component's
-   styles read only its own tokens. A component that reads a ramp step directly forfeits the
-   point: the stark look is expressed in these values, so re-theming is an edit here.
-
-   Scope: everything is declared on .mothership, the class every Mothership window, chat card and
-   dialog root carries. Never :root — Foundry is one document and :root is everyone's.
-   Layer 2 tokens follow the same rule: they land on .mothership too.
-
-   Suffixes: only --font-sans-mothership and --font-serif-mothership carry one, because
-   Foundry defines --font-sans/--font-serif on body and aliases every heading off the first.
-   Every other name here is disjoint from Foundry's 398; test/css-guards.test.ts re-proves
-   that against the installed build rather than trusting it.
-
-   Colour provenance: neutral, danger, success and warning carry Mothership's measured values
-   (§4.7 of docs/plans/design-system.md). alternate, canvas, brand, accent, special and info
-   are live-tokens' swatches, kept so a re-theme is an edit and not a build-out — nothing
-   aliases into them until a design decision names them. */
+/* Declared on .mothership, never :root — Foundry is one document and :root is everyone's. */
 
 @layer system {
   .mothership {
-    /* Invariants — never themed, in no ramp. */
+    /* Never themed, no ramp. */
     --color-white: #ffffff;
     --color-black: #000000;
     --color-transparent: transparent;
 
-    /* Colour ramps — 100 (lightest) → 950 (darkest) */
-    /* Neutral — the measured greys. 950 is black; the ramp's foot doubles as the invariant. */
+    /* 100 (lightest) → 950 (darkest) */
+    /* 950 is black; the ramp's foot doubles as the invariant. */
     --color-neutral-100: #f1f1f1;
     --color-neutral-200: #e3e3e3;
     --color-neutral-300: #bbbbbb;
@@ -42,10 +21,7 @@
     --color-neutral-900: #111111;
     --color-neutral-950: #000000;
 
-    /* Danger — the blood red. 200/300/400/500 are measured and stay byte-exact; 100 and
-       600–950 are interpolated in OKLCH along live-tokens' ramp shape, lightness monotone,
-       chroma gamut-mapped. Measured 300 is a dusty rose, so this ramp is not smooth in
-       chroma — that is the sheet, not an error. */
+    /* 300 is measured (a dusty rose); the ramp isn't chroma-smooth by design, not an error. */
     --color-danger-100: #fab0ac;
     --color-danger-200: rgb(255, 113, 113);
     --color-danger-300: rgb(151, 100, 100);
@@ -58,7 +34,6 @@
     --color-danger-900: #120000;
     --color-danger-950: #080000;
 
-    /* Success — measured at 500; the ramp interpolated around it, same method. */
     --color-success-100: #76af6b;
     --color-success-200: #58944d;
     --color-success-300: #3d7c31;
@@ -71,7 +46,6 @@
     --color-success-900: #010a00;
     --color-success-950: #000400;
 
-    /* Warning — measured at 500; the ramp interpolated around it, same method. */
     --color-warning-100: #ffeedb;
     --color-warning-200: #ffdbb1;
     --color-warning-300: #ffc887;
@@ -84,12 +58,10 @@
     --color-warning-900: #341e00;
     --color-warning-950: #1c0e00;
 
-    /* Mothership's own. The cover bonus the Cover dialog names in prose ("displayed in Orange") is
-       #ff4500, and the warning ramp above is amber from end to end — nothing on it is this hue,
-       so a snap would recolour the readout rather than collapse it onto a step. */
+    /* Not on the warning ramp: the PSG names this colour "Orange" and nothing on the amber ramp matches it. */
     --color-highlight: #ff4500;
 
-    /* Alternate — vendored swatch, replaceable. */
+    /* Placeholder swatch — unused, replaceable. */
     --color-alternate-100: #e9e3e0;
     --color-alternate-200: #d2ccc8;
     --color-alternate-300: #b7b1ad;
@@ -102,7 +74,7 @@
     --color-alternate-900: #0e0b08;
     --color-alternate-950: #030101;
 
-    /* Canvas — vendored swatch, replaceable. */
+    /* Placeholder swatch — unused, replaceable. */
     --color-canvas-100: #cecfe5;
     --color-canvas-200: #abacc2;
     --color-canvas-300: #8d8da4;
@@ -115,7 +87,7 @@
     --color-canvas-900: #0b081f;
     --color-canvas-950: #040215;
 
-    /* Brand — vendored swatch, replaceable. */
+    /* Placeholder swatch — unused, replaceable. */
     --color-brand-100: #ffbad3;
     --color-brand-200: #ff7bb3;
     --color-brand-300: #ec4495;
@@ -128,7 +100,7 @@
     --color-brand-900: #1f000d;
     --color-brand-950: #100005;
 
-    /* Accent — vendored swatch, replaceable. */
+    /* Placeholder swatch — unused, replaceable. */
     --color-accent-100: #98e1dd;
     --color-accent-200: #70beba;
     --color-accent-300: #4ba09c;
@@ -141,7 +113,7 @@
     --color-accent-900: #00100f;
     --color-accent-950: #000606;
 
-    /* Special — vendored swatch, replaceable. */
+    /* Placeholder swatch — unused, replaceable. */
     --color-special-100: #d2c8ff;
     --color-special-200: #b19cff;
     --color-special-300: #9673f5;
@@ -154,7 +126,7 @@
     --color-special-900: #10002d;
     --color-special-950: #060019;
 
-    /* Info — vendored swatch, replaceable. */
+    /* Placeholder swatch — unused, replaceable. */
     --color-info-100: #b4d4ff;
     --color-info-200: #76b0ff;
     --color-info-300: #398efa;
@@ -167,11 +139,8 @@
     --color-info-900: #000b23;
     --color-info-950: #000413;
 
-    /* Surfaces — 7-step elevation, lowest → highest.
-       Each tier reads the ramp step live-tokens chose for it, so Mothership's measured greys and
-       reds arrive here with no second set of values to keep in step. Those choices were made
-       against live-tokens' dark ground: elevation climbs toward light. Mothership's ground is white
-       paper with black chrome, so DS8 aliases deliberately rather than assuming the direction. */
+    /* Elevation climbs toward light: lowest is darkest, highest is lightest — inverted from
+       a dark-ground system since Mothership's ground is white paper. */
 
     --surface-neutral-lowest: var(--color-neutral-900);
     --surface-neutral-lower: var(--color-neutral-800);
@@ -180,10 +149,8 @@
     --surface-neutral-high: var(--color-neutral-500);
     --surface-neutral-higher: var(--color-neutral-400);
     --surface-neutral-highest: var(--color-neutral-300);
-    /* The end the seven-step ladder never reaches. Elevation climbs toward light on a dark
-       ground, so `highest` stops at #bbb — but Mothership's ground is the page itself, and every white
-       box on it (a field, a pip, a save, a button) was reading --color-white raw for want of a
-       name. This is that name; it is not a rung on the ladder above. */
+    /* Not a rung on the ladder above: every white box (field, pip, save, button) was reading
+       --color-white raw for want of a name. This is that name. */
     --surface-neutral-paper: var(--color-white);
 
     --surface-danger-lowest: var(--color-danger-900);
@@ -258,7 +225,6 @@
     --surface-info-higher: var(--color-info-400);
     --surface-info-highest: var(--color-info-300);
 
-    /* Border widths — the value is the name */
     --border-width-0: 0;
     --border-width-1: 1px;
     --border-width-2: 2px;
@@ -273,17 +239,13 @@
     --border-width-20: 20px;
     --border-width-24: 24px;
 
-    /* Border colours — 5-step emphasis, faint → strong */
-
     --border-neutral-faint: var(--color-neutral-800);
     --border-neutral-subtle: var(--color-neutral-600);
     --border-neutral: var(--color-neutral-500);
     --border-neutral-medium: var(--color-neutral-300);
     --border-neutral-strong: var(--color-neutral-200);
-    /* The two ends the five-step scale never reaches, and the reason DS6b parked a tier
-       inversion that would not have helped: emphasis climbs #444 → #e3e3e3, so reversing the
-       order still lands on neither #111 nor white. Mothership draws a black line on the page and a
-       white one on its black panels; both are edges of the ground, not steps of emphasis. */
+    /* Edges of the ground, not steps of the emphasis scale above — ink is Mothership's line on
+       the page, paper its line on black panels; neither fits between faint and strong. */
     --border-neutral-ink: var(--color-neutral-900);
     --border-neutral-paper: var(--color-white);
 
@@ -341,8 +303,8 @@
     --border-info-medium: var(--color-info-300);
     --border-info-strong: var(--color-info-200);
 
-    /* Text colours — the neutral hierarchy carries Mothership's ink on paper (dark → pale); the
-       family tiers keep live-tokens' step choices, which read the other way. */
+    /* Neutral text reads dark → pale (ink on paper); the family tiers below read the other
+       way (light → dark) — intentional, not an inconsistency to fix. */
     --text-primary: var(--color-neutral-900);
     --text-secondary: var(--color-neutral-600);
     --text-tertiary: var(--color-neutral-500);
@@ -404,17 +366,14 @@
     --text-info-muted: var(--color-info-700);
     --text-info-disabled: var(--color-info-800);
 
-    /* Typography — families.
-       Chakra Petch and Barlow are self-hosted (fonts/, SIL OFL 1.1); Font Awesome 6 Pro ships
-       with Foundry under its own name (--font-awesome), so --font-icon is free. The serif and
-       mono stacks are vendored swatches — Mothership hosts neither face. */
+    /* --font-icon, not --font-awesome — Foundry already defines --font-awesome. Serif and
+       mono stacks are unused placeholders; Mothership hosts neither face. */
     --font-display: "Chakra Petch", sans-serif;
     --font-sans-mothership: "Barlow", sans-serif;
     --font-serif-mothership: "GFS Didot", serif;
     --font-mono: "fira-code", ui-monospace, "SF Mono", Menlo, Consolas, monospace, monospace;
     --font-icon: "Font Awesome 6 Pro";
 
-    /* Typography — sizes */
     --font-size-xs: 0.75rem;          /* 12px */
     --font-size-sm: 0.85rem;          /* 13.6px */
     --font-size-md: 0.9rem;           /* 14.4px */
@@ -427,7 +386,6 @@
     --font-size-6xl: 2.25rem;         /* 36px */
     --font-size-7xl: 2.625rem;        /* 42px */
 
-    /* Typography — weights */
     --font-weight-thin: 100;
     --font-weight-extralight: 200;
     --font-weight-light: 300;
@@ -438,7 +396,6 @@
     --font-weight-extrabold: 800;
     --font-weight-black: 900;
 
-    /* Typography — line heights */
     --line-height-none: 1;
     --line-height-tightest: 1.1;
     --line-height-tighter: 1.25;
@@ -446,15 +403,13 @@
     --line-height-normal: 1.5;
     --line-height-relaxed: 1.75;
 
-    /* Typography — letter spacing */
     --letter-spacing-tighter: -0.04em;
     --letter-spacing-tight: -0.02em;
     --letter-spacing-normal: 0;
     --letter-spacing-wide: 0.04em;
     --letter-spacing-wider: 0.08em;
 
-    /* Typography — composite styles */
-    /* The sizes are Mothership's measured headings (42/24/20/17.6px); the weight is the sheet's today. */
+    /* Sizes are measured from the actual headings (42/24/20/17.6px). */
 
     --heading-xl-font-family: var(--font-display);
     --heading-xl-font-size: var(--font-size-7xl);
@@ -492,7 +447,6 @@
     --body-sm-line-height: var(--line-height-tight);
     --body-sm-letter-spacing: var(--letter-spacing-normal);
 
-    /* Space — the value is the name */
     --space-0: 0;
     --space-2: 2px;
     --space-4: 4px;
@@ -511,7 +465,7 @@
     --space-128: 128px;
     --space-full: 100%;
 
-    /* Radius — Mothership's three focal sizes at sm/md/lg, the tail extrapolated */
+    /* sm/md/lg are Mothership's three measured focal sizes; the rest of the tail is extrapolated. */
     --radius-none: 0;
     --radius-sm: 3px;
     --radius-md: 10px;
@@ -522,7 +476,7 @@
     --radius-4xl: 48px;
     --radius-full: 999px;
 
-    /* Gradients — vendored swatches, replaceable */
+    /* Placeholder gradients — unused, replaceable. */
     --gradient-1: linear-gradient(90deg, var(--color-brand-500) 0%, var(--color-accent-500) 100%);
     --gradient-2: linear-gradient(135deg, var(--color-brand-500) 0%, var(--color-special-500) 100%);
     --gradient-3: linear-gradient(90deg, var(--color-success-500) 0%, var(--color-info-500) 100%);
@@ -534,7 +488,7 @@
     --gradient-stop-mid: 50%;
     --gradient-stop-end: 100%;
 
-    /* Effects — Mothership's own, measured from the sheet */
+    /* Measured from the sheet, unlike the placeholder gradients above. */
     --shadow-glow: 0 0 15px var(--color-white);
     --shadow-glow-soft: 0 0 10px 0 var(--color-neutral-400);
     --ring-danger: 0 0 0 2px rgba(139, 0, 0, 0.35);

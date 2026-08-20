@@ -1,9 +1,4 @@
 <script>
-  // The Live Tokens editor's UIInfoPopover: a note that would swamp the thing it annotates, moved
-  // behind an info button. The component notes here are long by design — each one argues for what
-  // its style block owns and what it left in css/mothership.css — so they read as documentation on
-  // demand rather than as a grey wall above every card.
-  //
   // Positioned `fixed` and anchored by hand: the card it belongs to clips its own overflow, and an
   // absolutely positioned panel would be cut off by it.
   let { title, text } = $props();

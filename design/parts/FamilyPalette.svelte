@@ -1,8 +1,4 @@
 <script>
-  // One colour family, laid out as the Live Tokens palette editor lays one out: the ramp across the
-  // top, and the scales derived from it — Surfaces, Borders, Text — in a row underneath, each its
-  // own small grid of steps. A step is a caption, a swatch and the value, and the caption copies
-  // the token name.
   import { computedValue, stepLabels } from '../lib/preview.js';
 
   let { family, scope, clip } = $props();

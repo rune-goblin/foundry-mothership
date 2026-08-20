@@ -1,7 +1,6 @@
-// Sample data for the gallery, and nothing else. The default shape of every `system` object comes
-// out of template.json — the same oracle the DataModel equivalence tests compare against — so a
-// schema change reaches these specimens without anyone transcribing it. Only the interesting
-// values are written here, over those defaults.
+// The default shape of every `system` object comes out of template.json, not transcribed — so a
+// schema change reaches these specimens automatically. Only the interesting values are written
+// here, over those defaults.
 import template from '../../template.json';
 import { createDocumentStore } from '../../module/ui/document-store.svelte.js';
 
@@ -26,11 +25,8 @@ export const itemSystem = (type, over = {}) => merge(defaults('Item', type), ove
 let sequence = 0;
 const nextId = () => `design${String(++sequence).padStart(11, '0')}`;
 
-/**
- * A document as the components see one: the fields `createDocumentStore` reads, plus the `update`
- * and `delete` methods the row controls call. Nothing persists — a gallery that wrote would be
- * writing to itself.
- */
+/** A document as the components see one. `update`/`delete` never persist — a gallery that wrote
+ *  would be writing to itself — they just report what they'd have done. */
 export function document({ type, name, img = 'icons/svg/item-bag.svg', system, items = [] }) {
   const id = nextId();
   return {
@@ -57,8 +53,6 @@ export const store = (doc, extra = {}) => createDocumentStore(doc, { items: doc.
 
 const enriched = (text) => `<p>${text}</p>`;
 
-/* Sample documents ---------------------------------------------------------------------- */
-
 export const skills = [
   embedded('skill', 'Zero-G', itemSystem('skill', { rank: 'Trained', bonus: 10 })),
   embedded('skill', 'Piloting', itemSystem('skill', { rank: 'Expert', bonus: 15 })),
@@ -71,8 +65,7 @@ export const weapons = [
     'Pulse Rifle',
     itemSystem('weapon', {
       damage: '3d10',
-      // The Combat Shotgun's shape: a second damage the range decides, which the body edits and
-      // the chat card offers.
+      // Borrows the Combat Shotgun's shape: a second damage the range decides.
       damageModes: [{ label: 'Adjacent', formula: '1d10' }],
       range: 'long',
       ammo: 30,

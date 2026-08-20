@@ -16,9 +16,8 @@ export function bookDir(root: string, book: Book): string {
 }
 
 /**
- * A book's records reach the build through imports, so a wrong `dir` can no longer empty it — but
- * `dir` is what the manifest cites as the provenance of every document, and BOOK.md is where the
- * printing and the licence are recorded. A book missing either is not a source anyone can trace.
+ * `dir` is the manifest's provenance for every document, and BOOK.md records the printing and
+ * licence — a book missing either can't be traced.
  */
 export function checkBookDir(root: string, book: Book): string[] {
   const dir = bookDir(root, book);

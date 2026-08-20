@@ -70,8 +70,7 @@
     },
   ];
 
-  // Mounted the way `svelte-dialog.ts` mounts it, so the specimen holds its selection the way the
-  // window does rather than through a rune the real dialog never uses.
+  // Mounted the way `svelte-dialog.ts` mounts it, not through a rune the real dialog never uses.
   const props = {
     heading: localize('Mothership.AddASkill'),
     intro: localize('Mothership.ARelevantSkillRaises'),

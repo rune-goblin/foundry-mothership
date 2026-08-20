@@ -3,7 +3,7 @@
 
   let { draft } = $props();
 
-  // No document yet, so no `editImage` action to lean on the way the character sheet does.
+  // No document yet, so no `editImage` action like the character sheet uses.
   async function choosePortrait() {
     const picker = new foundry.applications.apps.FilePicker.implementation({
       type: 'image',

@@ -4,7 +4,7 @@ import type { Modifier, RollRange } from '../common.ts';
 export interface PanicResult {
   range: RollRange;
   name: string;
-  /** PSG 21.1 — result 19's other half: the same effect, read by a machine instead. */
+  /** PSG 21.1 result 19's android reading of the same effect. */
   androidName?: string;
   effect: string;
   /** True where the result leaves a Condition behind — the eight the conditions pack comes from. */

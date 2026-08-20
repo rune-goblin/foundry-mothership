@@ -1,10 +1,5 @@
-// How a token should be drawn, decided from the value the browser computed rather than the one the
-// file authored: `--surface-neutral-raised: var(--color-neutral-800)` is a colour, and only the
-// computed side of it says so.
-//
-// The kinds are the Live Tokens editor's (TokenScaleTable's `ScaleKind`), minus the two scales Mothership
-// has no tokens for and plus the two it does — gradients and shadows, which that editor gives their
-// own sections rather than the table.
+// A token's drawing kind is decided from its computed value, not the authored one:
+// `--surface-neutral-raised: var(--color-neutral-800)` only reveals it's a colour once resolved.
 
 const COLOR = /^(#|rgba?\(|hsla?\(|oklch\(|oklab\(|lab\(|lch\(|color\(|transparent$|currentColor$)/i;
 const LENGTH = /^-?[\d.]+(px|rem|em)$/;
@@ -28,15 +23,9 @@ export function kindOf(name, computed) {
 /** Below this share, the group is several scales at once and no single layout tells the truth. */
 const DOMINANT = 0.6;
 
-/**
- * One layout per group, because a group is usually one scale. The commonest kind wins, so
- * `--space-full` at `100%` and `--radius-full` at `999px` do not drag their scales into a
- * different table.
- *
- * Two groups are genuinely mixed — the composite type styles are five scales interleaved, and the
- * gradients keep their angles and stops beside them — and those answer `mixed`, which is a row per
- * token carrying its own preview.
- */
+/** The commonest kind in a group wins, so `--space-full` (100%) and `--radius-full` (999px) don't
+ *  drag their scales into the wrong table. Genuinely mixed groups (composite type styles;
+ *  gradients, which keep angles and stops beside them) answer `mixed` instead. */
 export function groupKind(tokens, resolve) {
   const tally = new Map();
   for (const token of tokens) {
@@ -50,14 +39,8 @@ export function groupKind(tokens, resolve) {
 
 const RGB = /^rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)\s*\)$/;
 
-/**
- * The value the cascade actually produced on the surface the system is scoped to.
- *
- * An opaque `rgb()` is printed as its hex, because four steps of the danger ramp are authored that
- * way and every other step in the file is a hex — a column that alternates notation reads as though
- * the values differ in kind when only the spelling does. Alpha is left alone: `rgb(0 0 0 / 40%)`
- * has no hex that says the same thing as plainly.
- */
+/** rgb() is converted to hex for display consistency — four danger-ramp steps are authored as
+ *  rgb() while every other step is hex. Alpha is left alone: it has no hex equivalent as plain. */
 export function computedValue(scope, name) {
   const value = scope ? getComputedStyle(scope).getPropertyValue(name).trim() : '';
   const rgb = RGB.exec(value);
@@ -65,12 +48,8 @@ export function computedValue(scope, name) {
   return `#${rgb.slice(1).map((part) => Number(part).toString(16).padStart(2, '0')).join('')}`;
 }
 
-/**
- * What a swatch's caption says. A group's names share a prefix — `--color-neutral-` across a ramp,
- * `--surface-` across the surfaces — and the part after it is the whole distinction between one
- * swatch and its neighbour. Taken from the group rather than assumed, so a ramp captions `100…950`
- * and the surfaces caption `neutral-lowest…info-highest` without either being special-cased.
- */
+/** A swatch's caption is the part of its name after the group's shared prefix, so a ramp captions
+ *  `100…950` and the surfaces caption `neutral-lowest…info-highest` without special-casing either. */
 export function stepLabels(names) {
   if (names.length < 2) return new Map(names.map((name) => [name, name.replace(/^--/, '')]));
 
@@ -80,9 +59,8 @@ export function stepLabels(names) {
     shared++;
   }
 
-  // A scale usually carries its unqualified role beside the qualified ones — `--surface-neutral`
-  // among the seven `--surface-neutral-*` — and the shared prefix is that name entire. It is the
-  // step the others are named against, so it is captioned as one rather than left blank.
+  // The shared prefix is often itself a token (`--surface-neutral` among the `--surface-neutral-*`
+  // scale) — the step the others are named against, captioned 'base' rather than left blank.
   return new Map(
     names.map((name, index) => [name, parts[index].slice(shared).join('-') || 'base']),
   );

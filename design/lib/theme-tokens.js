@@ -1,6 +1,5 @@
-// Layer 1, read out of css/tokens.css itself. The file is the source of truth for the names, the
-// values and the grouping alike: its comments are the section headings, so a token added under a
-// new heading appears here with that heading and no edit to this file.
+// Read out of css/tokens.css itself, not transcribed: its comments are the section headings, so a
+// token added under a new heading appears here with that heading and no edit to this file.
 import source from '../../css/tokens.css?raw';
 
 const COMMENT_OR_DECLARATION = /\/\*([\s\S]*?)\*\/|(--[\w-]+)\s*:\s*([^;]+);/g;
@@ -11,9 +10,8 @@ function caption(comment) {
   const stop = text.indexOf('. ');
   const head = stop === -1 ? text : text.slice(0, stop);
 
-  // A heading in this file is a short noun phrase, with or without its gloss. Anything longer is
-  // prose under one — the composite type styles have exactly that — and the heading above it is
-  // already the title, so the group takes no second one.
+  // A heading is a short noun phrase; anything longer is prose under one (the composite type
+  // styles have exactly that) whose heading above it is already the title.
   if (!head.includes(' — ') && head.length > 60) return { title: '', note: text };
 
   return { title: head, note: stop === -1 ? '' : text.slice(stop + 2) };
@@ -36,13 +34,10 @@ function afterABlankLine(index) {
  */
 
 /**
- * The file in order. A line-leading comment opens a block; the declarations that follow fill it.
- * A block that never fills was a heading over the ones beneath it, which is what the ramps have.
- *
- * The one line-leading comment that titles nothing is one written *into* a run of declarations,
- * with no blank line above it: the surfaces ladder and the border tiers each break off mid-scale
- * to argue for the step that follows. Those annotate the group they interrupt — splitting on them
- * would file two thirds of Surfaces under a sentence.
+ * The file in order. A line-leading comment with a blank line above it opens a new block.
+ * One with no blank line above — the surfaces ladder and border tiers each break off mid-scale
+ * this way to argue for the step that follows — appends to the block it interrupts instead,
+ * so splitting on it wouldn't file two thirds of Surfaces under a sentence.
  *
  * @returns {Block[]}
  */
@@ -70,8 +65,7 @@ function read() {
     if (block) block.tokens.push({ name, value: value.replace(/\s+/g, ' ').trim(), note: '' });
   }
 
-  // The file opens with its own account of the two layers, above every declaration. That is the
-  // stylesheet's preamble, not a section of the token list.
+  // The file opens with a preamble comment above the first declaration; that's not a token section.
   while (blocks.length && !blocks[0].tokens.length) blocks.shift();
 
   return blocks;
@@ -84,8 +78,8 @@ const slug = (title, index) =>
 export const themeTokens = read().map((block, index) => ({
   ...block,
   id: slug(block.title || 'group', index),
-  // A block the file wrote a heading for but declared nothing under is a heading over the blocks
-  // beneath it — the colour ramps have one, and so do the composite type styles.
+  // A heading with nothing declared under it sits over the blocks beneath (the colour ramps and
+  // the composite type styles both have one).
   heading: block.tokens.length === 0,
 }));
 
@@ -96,19 +90,14 @@ export const themeTokenNames = new Set(
   themeTokens.flatMap((block) => block.tokens.map((token) => token.name)),
 );
 
-/**
- * The composite type styles are five tokens describing one thing, so the page renders them as one
- * specimen: `--heading-xl-font-size` and its four siblings collapse to the family `--heading-xl`.
- */
-/**
- * Where the composite styles live, found by their tokens rather than by their heading's wording:
- * the page draws the type specimen at the top of that group, which is where the file introduces
- * it. Identified structurally so a reworded comment cannot move it.
- */
+/** Found structurally (all tokens `--heading-*`/`--body-*`) rather than by heading text, so a
+ *  reworded heading can't move it. The page draws the type specimen at the top of this group. */
 export const compositeBlockId = themeTokens.find(
   (block) => block.tokens.length && block.tokens.every((token) => /^--(heading|body)-/.test(token.name)),
 )?.id;
 
+/** Five tokens describe one composite style; `--heading-xl-font-size` and its four siblings
+ *  collapse to the family `--heading-xl`, one specimen for the page to draw. */
 export const compositeStyles = [
   ...new Set(
     [...themeTokenNames]

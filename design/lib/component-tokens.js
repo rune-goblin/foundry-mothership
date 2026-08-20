@@ -1,7 +1,6 @@
-// Layer 2, read out of the components themselves. Every `--<componentId>-*` lives in a scoped
-// <style> block, so the glob below is the whole population: a component that grows a token shows
-// up here on the next reload, and one that reads a Layer 1 ramp step directly shows up as a
-// literal, which is the thing the two-layer rule exists to prevent.
+// Read out of the components themselves, not transcribed: every `--<componentId>-*` lives in a
+// scoped <style> block, so the glob below is the whole population — a component that reads a
+// Layer 1 ramp step directly shows up here as a literal.
 import { themeTokenNames } from './theme-tokens.js';
 
 const sources = import.meta.glob('../../module/**/*.svelte', {
@@ -16,15 +15,10 @@ const VAR_READ = /var\(\s*(--[\w-]+)/g;
 
 const componentName = (path) => path.split('/').pop().replace('.svelte', '');
 
-/** `module/ui/parts/Field.svelte`, the way the repo refers to it. */
 const repoPath = (path) => path.replace('../../', '');
 
-/**
- * The prefixes the naming law allows a component: its own id, in either of the two spellings the
- * system already uses — `ItemCell` owns `--itemcell-*` and `PipTrack` owns `--pip-track-*`. A token
- * under any other prefix is borrowing a neighbour's namespace, and the page says so rather than
- * leaving it to a reader to notice.
- */
+/** A component may own either spelling of its id — `ItemCell` owns `--itemcell-*`, `PipTrack`
+ *  owns `--pip-track-*`. A token under any other prefix is borrowing a neighbour's namespace. */
 const prefixesFor = (name) => [
   `--${name.toLowerCase()}-`,
   `--${name.replace(/(?<=[a-z0-9])(?=[A-Z])/g, '-').toLowerCase()}-`,
@@ -32,12 +26,9 @@ const prefixesFor = (name) => [
 
 const COMMENT_ONLY = /\/\*[\s\S]*?\*\//g;
 
-/**
- * The selector a declaration sits under, tracked by walking the block and keeping a stack of
- * preludes. A token is often declared twice on purpose — once for the base and again under a state
- * — and which selector each sits in is the whole difference between them. `@layer system {` is a
- * prelude too, so the innermost non-at-rule one is the answer.
- */
+/** Tracks the selector a declaration sits under via a stack of preludes — a token declared twice
+ *  (base and state override) is told apart only by its selector. `@layer system {` is a prelude
+ *  too, so the innermost non-at-rule one is the answer. */
 function declarations(block) {
   const found = [];
   const stack = [];
@@ -92,13 +83,10 @@ function read() {
         tokens.push({
           name: token,
           selector,
-          // A token declared twice is a base and a state override; the pair is only legible with
-          // the selector beside it, and it is what keeps the two rows distinct.
           key: `${selector} ${token}`,
           value: trimmed,
           aliases,
-          // A value naming no Layer 1 token is a measured px or a colour written in place — every
-          // one of them is argued for in a comment at the site, and every one is a parked call.
+          // A value naming no Layer 1 token is a measured px or a colour written in place.
           literal: aliases.length === 0,
           foreign: !own.some((prefix) => token.startsWith(prefix)),
         });

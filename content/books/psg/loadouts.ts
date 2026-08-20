@@ -4,9 +4,8 @@ import type { RollRange } from '../common.ts';
 
 export interface LoadoutResult {
   range: RollRange;
-  /** The row as the book prints it. */
   text: string;
-  /** The row split into its items, still as free text — `gear.ts` maps each onto a real document. */
+  /** `items` splits `text` into free-text pieces; `gear.ts` maps each onto a real document. */
   items: readonly string[];
 }
 

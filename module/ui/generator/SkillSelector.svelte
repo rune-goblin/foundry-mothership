@@ -1,9 +1,4 @@
 <script>
-  // The whole skill catalog in three columns by rank, always visible — no per-slot accordion to
-  // open one at a time. A skill's state (granted/picked/available/unavailable) is the draft's own
-  // judgment, handed in as a prop; this component only draws the tree from it and reports a toggle
-  // back up. `budget` is optional — the wizard passes remaining picks per rank, a future sheet use
-  // can leave it out and skip the counters entirely.
   import { localize, format } from '../../i18n.ts';
   import { RANK_LABEL } from './picks.js';
 
@@ -12,8 +7,7 @@
   const RANK_BONUS = { Trained: 10, Expert: 15, Master: 20 };
   const RANKS = ['Trained', 'Expert', 'Master'];
 
-  // The book's own order within each rank; a skill the catalog defines but this list does not
-  // know about is appended by name rather than dropped.
+  // Book order per rank; a skill not listed here sorts by name at the end.
   const BOOK_ORDER = [
     'Linguistics', 'Zoology', 'Botany', 'Geology', 'Industrial Equipment', 'Jury-Rigging',
     'Chemistry', 'Computers', 'Zero-G', 'Mathematics', 'Art', 'Archaeology', 'Theology',
@@ -31,7 +25,7 @@
 
   const byUuid = $derived(new Map(skills.map((skill) => [skill.uuid, skill])));
 
-  // The reverse edge of `prerequisites`: every skill a given skill is itself one step toward.
+  // Reverse edge of `prerequisites`: what each skill is itself one step toward.
   const dependents = $derived.by(() => {
     const map = new Map(skills.map((skill) => [skill.uuid, []]));
     for (const skill of skills) {
@@ -74,10 +68,8 @@
     return state === 'granted' || state === 'picked';
   };
 
-  // A standing fact — everything on the route to something already granted or picked — stays lit
-  // independent of the mouse. Kept apart from the hover set below so the two never draw
-  // identically: a route you already hold reads differently from the route to wherever the
-  // cursor happens to be right now.
+  // Stays lit regardless of hover; kept separate from hoverLit so an owned route and a hovered
+  // route never draw identically.
   const ownedLit = $derived.by(() => {
     const lit = new Set();
     for (const skill of skills) {
@@ -93,9 +85,7 @@
   const hovered = $derived(hoveredId ? byUuid.get(hoveredId) : null);
   const hoveredUnlocks = $derived(hoveredId ? (dependents.get(hoveredId) ?? []) : []);
 
-  // Both directions from whatever is hovered or focused: what it needed, so hovering a skill you
-  // don't have yet previews its route in, and what it leads to, so hovering one you do have shows
-  // what it opened up.
+  // Both directions from the hovered/focused skill: what it needed and what it unlocks.
   const hoverLit = $derived.by(() => {
     if (!hoveredId) return new Set();
     const lit = upstreamOf(hoveredId);
@@ -120,24 +110,17 @@
     onchoose(skill.uuid);
   }
 
-  // A row that cannot be chosen must leave nothing behind when it is clicked: it is still a button,
-  // so the press would focus it and the focus ring would sit there afterwards reading as a
-  // selection. Refusing the mousedown's default keeps the row hoverable and still reachable by
-  // keyboard, where a focus ring means what it says.
+  // Prevents mousedown's default so clicking an unchoosable row leaves no focus ring behind;
+  // it stays reachable and focusable by keyboard, where the ring is meaningful.
   const holdFocus = (event, skill) => { if (!choosable(skill)) event.preventDefault(); };
 </script>
 
 <div class="skill-selector" role="group" aria-label={localize('Mothership.CharacterGenerator.SkillTree.Label')}>
-  <!-- Three labelled fields, not three sentences. The label says what the slot holds and the slot
-       holds the answer, so an empty one reads as a field waiting rather than as an instruction the
-       player has to read once and never again. -->
   <div class="skill-selector-readout">
     <div class="skill-selector-field is-entry">
       <span class="skill-selector-label">{localize('Mothership.CharacterGenerator.SkillTree.Skill')}</span>
       <div class="skill-selector-entry">
         <span class="skill-selector-entry-name" class:is-blank={!hovered}>{hovered?.name ?? '—'}</span>
-        <!-- Why the row cannot be taken belongs beside its name, not in Requires: both reasons are
-             facts about the budget or the rank above it, and neither is answered by the chips. -->
         {#if hovered?.reason === 'strands'}
           <span class="skill-selector-note">
             {localize('Mothership.CharacterGenerator.SkillTree.WouldStrandMaster')}
@@ -232,8 +215,6 @@
 </div>
 
 <style>
-  /* Svelte emits component CSS unlayered, which would outrank every layered rule in the
-     application; @layer system puts these in the slot the rest of the system occupies. */
   @layer system {
     .skill-selector {
       --skillselector-transition: 150ms ease;
@@ -241,9 +222,6 @@
       --skillselector-rule: var(--border-neutral-medium);
       --skillselector-picked-surface: var(--surface-neutral-lowest);
       --skillselector-picked-text: var(--text-inverted);
-      /* A wash, not a step on the neutral ramp: `highest` stops at #bbb, heavy enough that a row
-         wearing it reads as a second kind of selection next to the black one. Hover is not a
-         state the player owns, so it gets the faintest mark that still registers. */
       --skillselector-hover-surface: color-mix(in srgb, var(--surface-neutral-lowest) 7%, var(--surface-neutral-paper));
       --skillselector-muted: var(--text-secondary);
       --skillselector-warn-stripe: color-mix(in srgb, var(--border-warning) 12%, transparent);
@@ -256,9 +234,6 @@
       font-family: var(--font-sans-mothership);
     }
 
-    /* The readout is the tree's masthead, so it closes on the same 2px ink rule each rank heading
-       draws rather than the hairline that divides fields inside it. Nothing here is filled: the
-       plate is paper, which leaves the greys free and the black spent entirely on the rows. */
     .skill-selector-readout {
       border-bottom: var(--border-width-2) solid var(--skillselector-edge);
     }
@@ -275,9 +250,7 @@
       border-bottom: var(--border-width-1) solid var(--skillselector-rule);
     }
 
-    /* Doubled to outweigh the wizard's typography reset, which flattens case across the window —
-       the same escape SkillSelector's rank headings take. A label has to look like a label here or
-       it reads as more of the answer. */
+    /* Doubled for specificity to beat the wizard's typography reset. */
     .skill-selector-label.skill-selector-label {
       font-family: var(--font-display);
       font-size: var(--font-size-xs);
@@ -287,9 +260,8 @@
       color: var(--skillselector-muted);
     }
 
-    /* Every height in this plate is explicit, never a floor content may exceed: the tree below it
-       must not shift by a pixel as the hovered skill changes, and entries, prerequisite lists and
-       warnings all vary in length. Text clamps, chips scroll sideways. */
+    /* Heights are fixed so the tree below doesn't shift as the hovered entry changes; text
+       clamps, chips scroll sideways. */
     .skill-selector-entry {
       display: flex;
       align-items: baseline;
@@ -413,9 +385,7 @@
       border-bottom: var(--border-width-2) solid var(--skillselector-edge);
     }
 
-    /* The class is doubled to outweigh the wizard's typography reset, which flattens case across
-       everything inside that window. These four rank headings are the one thing in it that means
-       to shout. */
+    /* Doubled for specificity to beat the wizard's typography reset. */
     .skill-selector-column-head.skill-selector-column-head h4 {
       margin: 0;
       font-family: var(--font-display);
@@ -431,9 +401,6 @@
       color: var(--skillselector-muted);
     }
 
-    /* The whole column is greyed out when the last pick of its rank is spent; the count is the only
-       thing on the page that says why, so it answers in the same ink the rows below it use for
-       "you cannot act here". */
     .skill-selector-bonus.is-spent {
       color: var(--text-warning-muted);
     }
@@ -441,9 +408,7 @@
     .skill-selector-list {
       display: flex;
       flex-direction: column;
-      /* Wide enough that even the thickest ring any row draws (the 3px picked+hover-lit shadow
-         below) never visually touches a neighbour, whether that shadow is inset or not — a row's
-         own box never grows or shrinks, but a gap this tight would still look like it does. */
+      /* Must clear the 3px picked+hover-lit ring so rows never look like they touch. */
       gap: var(--space-8);
     }
 
@@ -455,12 +420,10 @@
       gap: var(--space-8);
       width: 100%;
       padding: var(--space-6) var(--space-8) var(--space-6) var(--space-6);
-      /* 2px on every row, transparent until a state claims it, so the outline a granted row wears
-         costs its neighbours no reflow — the border box is the same on all four states. */
+      /* Always 2px, transparent by default, so a state's border color doesn't reflow neighbours. */
       border: var(--border-width-2) solid transparent;
       border-radius: var(--radius-md);
-      /* Explicit, not `none` — every state needs a real declared background for the e2e contrast
-         check to measure against, not the paper surface it happens to inherit visually. */
+      /* Explicit, not `none` — the e2e contrast check measures the declared background. */
       background: var(--surface-neutral-paper);
       color: inherit;
       height: auto;
@@ -515,10 +478,6 @@
       transition: color var(--skillselector-transition), transform var(--skillselector-transition);
     }
 
-    /* available: an open pick, waiting. Hover deliberately draws no border — an ink outline is the
-       one thing that says "you hold this", and a row the cursor merely rests on must not borrow it.
-       A wash barely off the paper and a dot that comes up to full ink are enough to say where the
-       cursor is, and both vanish the moment it leaves. */
     .skill-selector-row.is-available:hover,
     .skill-selector-row.is-available:focus-visible {
       background: var(--skillselector-hover-surface);
@@ -532,14 +491,8 @@
       color: var(--text-primary);
     }
 
-    /* Two rows you hold, told apart by agency rather than by tint: filled is the one you chose and
-       can unchoose, outlined is the one the class handed you. Both are the same ink, so "held"
-       reads at a glance across all three columns and only the fill says whether it is yours to
-       change — a distinction a second grey could never carry. */
-
-    /* picked: this session's answer — filled dot, filled row, and clicking it again clears it. The
-       inverted ink sits on the row itself, not only on the name, so every descendant inherits it
-       and the e2e contrast probe measures the pair that is actually painted. */
+    /* Ink applies to the row itself, not just the name, so the e2e contrast probe measures the
+       colors actually painted (inherited by every descendant). */
     .skill-selector-row.is-picked {
       background: var(--skillselector-picked-surface);
       border-color: var(--skillselector-picked-surface);
@@ -549,7 +502,6 @@
     .skill-selector-row.is-picked .skill-selector-dot::after { background: var(--skillselector-picked-surface); transform: scale(1); }
     .skill-selector-row.is-picked .skill-selector-chev { color: var(--skillselector-picked-text); }
 
-    /* granted: the class handed it out, nothing to decide */
     .skill-selector-row.is-granted {
       border-color: var(--skillselector-edge);
       cursor: default;
@@ -560,9 +512,6 @@
     }
     .skill-selector-row.is-granted .skill-selector-chev { color: var(--skillselector-muted); }
 
-    /* unavailable: no open slot can take it yet. The dot itself is hidden, not just dimmed, so a
-       dot's mere presence always means "you can act on this row" — an empty ring next to another
-       empty ring barely reads as different, an absent one doesn't. */
     .skill-selector-row.is-unavailable {
       cursor: not-allowed;
     }
@@ -570,10 +519,8 @@
     .skill-selector-row.is-unavailable .skill-selector-name { color: var(--skillselector-muted); }
     .skill-selector-row.is-unavailable .skill-selector-chev { color: var(--border-neutral-strong); }
 
-    /* Hovering an unavailable row gets its own language — amber hatching, not the solid dark fill
-       an available row uses on hover — so "can't take this yet" never reads as "nothing happened".
-       A ::before layer fades via opacity rather than swapping background-image, since gradients
-       don't interpolate reliably across browsers. */
+    /* Opacity fades rather than swapping background-image — gradients don't interpolate reliably
+       across browsers. */
     .skill-selector-row.is-unavailable::before {
       content: '';
       position: absolute;
@@ -601,11 +548,8 @@
       color: var(--text-warning-muted);
     }
 
-    /* Two different facts, two different line styles. is-lit (solid border/ring) is a standing
-       fact — this skill is on the route to something already granted or picked, true regardless
-       of the mouse. is-hover-lit (dotted, via `outline` rather than `border` so it layers over
-       is-lit/is-granted/is-picked without a style conflict) is only true while the cursor or
-       keyboard focus sits on the skill that leads to or from it. */
+    /* is-hover-lit uses outline rather than border so it layers over is-lit/granted/picked
+       without conflicting. */
     .skill-selector-row.is-lit:not(.is-picked):not(.is-granted) {
       border-color: var(--border-accent);
     }
@@ -619,10 +563,7 @@
 
     .skill-selector-row.is-hover-lit { outline-color: var(--border-accent); }
 
-    /* A skill already held reads its own ring, not a second dotted one layered on top of it —
-       hovering its route just thickens the ring it is already wearing. Every ring here is inset:
-       drawn inside the row's own border box, never outside it, so a row's footprint on the page —
-       and the gap to its neighbours — never changes no matter which ring is showing. */
+    /* Rings are inset so a row's box size never changes when a ring is added. */
     .skill-selector-row.is-granted.is-hover-lit,
     .skill-selector-row.is-picked.is-hover-lit {
       outline-color: transparent;
@@ -630,9 +571,7 @@
     .skill-selector-row.is-granted.is-hover-lit { box-shadow: 0 0 0 2px var(--border-accent) inset; }
     .skill-selector-row.is-picked.is-hover-lit { box-shadow: 0 0 0 3px var(--border-accent) inset; }
 
-    /* Reclaims a visible keyboard-focus ring now that `outline` is spoken for above — solid, and
-       in the system's ink rather than accent, so tabbing through the tree never reads as a route
-       highlight. */
+    /* `outline` is already used for hover-lit above; this reclaims it for keyboard focus. */
     .skill-selector-row:focus-visible {
       outline-style: solid;
       outline-color: var(--skillselector-edge);

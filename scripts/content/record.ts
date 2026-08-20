@@ -44,10 +44,7 @@ export interface TableBody {
 
 export type Body = ItemBody | MacroBody | TableBody;
 
-/**
- * The one shape every book normalises to. The emitter never learns which book a record came
- * from — `provenance` is carried for the build manifest and is never emitted into a pack.
- */
+/** `provenance` is carried for the build manifest only — it is never emitted into a pack. */
 export interface ContentRecord {
   contentId: string;
   name: string;
@@ -56,11 +53,7 @@ export interface ContentRecord {
   provenance: SourceRef;
 }
 
-/**
- * What a loader needs to write a link. A class names the skills it grants by `_id`, and a loadout
- * row links the gear it hands out — both before the target document has been emitted, so the
- * registry has to answer for an id the build has not reached yet.
- */
+/** What a loader needs to write a link to a document the build has not emitted yet. */
 export interface IdLookup {
   documentId(pack: string, contentId: string): string;
 }

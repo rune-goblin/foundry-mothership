@@ -3,8 +3,8 @@
     group: 'Windows',
     title: 'Wizard',
     path: 'module/ui/generator/Wizard.svelte',
-    // The shell mounts one pane at a time, so the specimen is the whole family: walk the rail and
-    // every one of these draws. None is reachable — or reviewable — on its own.
+    // The shell mounts one pane at a time, so this specimen is the whole family — none of these
+    // panes is reachable on its own.
     covers: [
       'module/ui/generator/WizardRail.svelte',
       'module/ui/generator/WizardNav.svelte',
@@ -31,8 +31,7 @@
 
   const STATS = ['strength', 'speed', 'intellect', 'combat'];
 
-  // The skills half of a class row, phrased by the real `pickPhrases` so the card prints what the
-  // window would. `granted` arrives already named: the pane never sees the UUIDs a class stores.
+  // `granted` arrives already named — the pane never sees the UUIDs a class stores.
   const skills = (granted, picks = {}, groups = []) => ({
     granted,
     picks: pickPhrases(picks),
@@ -43,9 +42,8 @@
 
   const draft = new CharacterDraft({ name: 'Rook Vance', items: [] });
 
-  // The class pane only draws once a scan has run, and the gallery has no compendium to scan. These
-  // are the four PSG classes as `loadClasses` flattens them, so the chooser and selected detail
-  // panel are the real markup over stand-in rows.
+  // The class pane only draws once a scan has run, and the gallery has no compendium to scan —
+  // these are the four PSG classes as `loadClasses` flattens them.
   draft.classOptions = [
     {
       uuid: 'Design.android',
@@ -109,8 +107,7 @@
     },
   ];
 
-  // A half-answered Scientist: the stats are rolled, so the dropdown can show the arithmetic each
-  // pick would do, and the choice itself is left unspent — the state the rail gates on.
+  // A half-answered Scientist: stats rolled but the choice left unspent — the state the rail gates on.
   draft.rolled = { ...draft.rolled, strength: 44, speed: 40, intellect: 31, combat: 35 };
   draft.className = 'Scientist';
   draft.classUuid = 'Design.scientist';

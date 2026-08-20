@@ -5,17 +5,11 @@
 
   let { draft } = $props();
 
-  /**
-   * The dropdown's answer. `chooseStat` toggles — naming the stat a choice already sits on takes it
-   * back — so the blank option clears the choice by naming that stat a second time.
-   */
+  // `chooseStat` toggles: naming the stat a choice already sits on clears it. The blank option
+  // reuses that by naming the current stat a second time.
   const spendOn = (position, stat) =>
     draft.chooseStat(position, stat || draft.statChoices[position].chosen);
 
-  /**
-   * One line of the dropdown. A stat already rolled shows the arithmetic the pick would do, because
-   * "+5 to 1 Stat" is a question about which number is worth raising and the numbers are the answer.
-   */
   function optionLabel(choice, stat) {
     const name = localize(statLabel(stat) ?? stat);
     if (draft.rolled[stat] === null) return name;
@@ -24,8 +18,7 @@
   }
 </script>
 
-<!-- One arithmetic table: what was rolled, what the class changes, and where that leaves the
-     character. Wounds use the same equation, beginning at the system's base of two. -->
+<!-- Wounds follow the same ledger equation, starting from the system's base of two. -->
 <table class="wizard-adjustment-table" data-list="ledger">
   <thead>
     <tr>
@@ -50,10 +43,6 @@
   </tbody>
 </table>
 
-<!-- The class's `choose_stat` entries, asked on their own pane rather than under the cards
-     that answered the question before it: picking a class and spending what it hands you
-     are two decisions, and the second is made against these numbers, not against the cards.
-     Each is answered by naming a stat, and unanswered by taking the blank line. -->
 {#if draft.statChoices.length > 0}
   <p class="wizard-prompt">{localize('Mothership.CharacterGenerator.Wizard.Adjustments.Choose')}</p>
 {/if}
@@ -76,9 +65,7 @@
           <option value={stat}>{optionLabel(choice, stat)}</option>
         {/each}
       </select>
-      <!-- The answer at the size of an answer: the stat as it now stands, and beneath it
-           what this choice put there. Both lines hold a dash while the choice is unspent, so
-           taking it back leaves the row the height it already had. -->
+      <!-- Dash placeholders keep the row's height stable whether or not the choice is spent. -->
       <p class="wizard-choice-readout" class:spent={picked !== null}>
         <span class="wizard-choice-standing" data-standing={picked ?? ''}>
           {standing ?? DASH}
@@ -91,10 +78,7 @@
   </div>
 {/each}
 
-<!-- The other half of what a class hands out: the skill bonus it offers one of. It is a
-     benefit of the class, not a skill choice — which is why it is asked here and not on the
-     skills pane, where it used to leave the picker counting picks the player had not been
-     given yet. A group offering one package is not a question and prints nothing. -->
+<!-- A group offering only one package isn't a question and prints nothing. -->
 {#each draft.skillGroups as group, groupIndex (groupIndex)}
   {#if group.options.length > 1}
     <div class="wizard-choice" role="group" aria-label={localize('Mothership.CharacterGenerator.SkillOption.ChoiceText')}>
@@ -126,8 +110,7 @@
 {/each}
 
 <style>
-  /* The ledger and the two questions asked against it. Reads the wizard's `--wizard-*`
-     vocabulary, which Wizard.svelte declares on the form. */
+  /* Reads the `--wizard-*` vocabulary Wizard.svelte declares. */
   @layer system {
     .wizard-adjustment-table {
       width: 100%;
@@ -186,8 +169,6 @@
       font-weight: var(--font-weight-semibold);
     }
 
-    /* Every question this pane asks inline wears this: a label over the answers, which the pane
-       holds in place rather than in a window that closes over them. */
     .wizard-choice-label {
       display: block;
       margin: 0 0 var(--space-6);

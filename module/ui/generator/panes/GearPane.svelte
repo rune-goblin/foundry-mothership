@@ -45,9 +45,7 @@
           {/if}
         {/snippet}
       </MainStat>
-      <!-- A loadout row is a comma-separated list of the items it hands out, so printing the
-           row and then itemising it says everything twice. The row stands in only when the
-           draw resolved to no items at all. -->
+      <!-- The loadout row duplicates its own itemised list, so it only prints when empty. -->
       {#if kind !== 'loadout' || !draft.loadout?.entries.length}
         <p class="wizard-readout" data-text={kind}>{draft[kind]?.text ?? ''}</p>
       {/if}
