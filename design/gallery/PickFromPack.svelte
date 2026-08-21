@@ -4,7 +4,7 @@
     title: 'PickFromPack',
     path: 'module/ui/actor/PickFromPack.svelte',
     width: 600,
-    note: 'The compendium picker, drawn from the same ChoiceList the roll prompts use: a filter, a header row over the columns the pack supplies, an optional prerequisite gate, and one row per document. No icon column — every document in a pack ships the same placeholder art, so the column carried nothing.',
+    note: 'The compendium picker, drawn from the same ChoiceList the roll prompts use: a filter, a sticky header over the columns the pack supplies, an optional prerequisite gate, and one row per document. No icon column — every document in a pack ships the same placeholder art, so the column carried nothing.',
   };
 </script>
 

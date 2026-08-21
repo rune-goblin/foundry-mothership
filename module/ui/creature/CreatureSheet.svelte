@@ -259,7 +259,6 @@
       --creaturesheet-plate-label-font-size: var(--font-size-md);
       --creaturesheet-plate-label-font-weight: var(--font-weight-bold);
       --creaturesheet-plate-label-text: var(--text-inverted);
-      --creaturesheet-plate-label-letter-spacing: var(--letter-spacing-wide);
       --creaturesheet-plate-stat-gap: var(--space-6);
 
       --creaturesheet-bar-gap: var(--space-8);
@@ -267,7 +266,6 @@
       --creaturesheet-bar-font-family: var(--font-display);
       --creaturesheet-bar-font-size: var(--font-size-md);
       --creaturesheet-bar-font-weight: var(--font-weight-bold);
-      --creaturesheet-bar-letter-spacing: var(--letter-spacing-wide);
 
       --creaturesheet-columns: 1fr 17em;
       --creaturesheet-columns-gap: var(--space-16);
@@ -365,7 +363,6 @@
       font-family: var(--creaturesheet-plate-label-font-family);
       font-size: var(--creaturesheet-plate-label-font-size);
       font-weight: var(--creaturesheet-plate-label-font-weight);
-      letter-spacing: var(--creaturesheet-plate-label-letter-spacing);
       white-space: nowrap;
     }
 
@@ -382,7 +379,6 @@
       font-family: var(--creaturesheet-bar-font-family);
       font-size: var(--creaturesheet-bar-font-size);
       font-weight: var(--creaturesheet-bar-font-weight);
-      letter-spacing: var(--creaturesheet-bar-letter-spacing);
       line-height: var(--line-height-none);
       white-space: nowrap;
     }

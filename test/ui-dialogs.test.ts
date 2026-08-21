@@ -172,7 +172,7 @@ describe('promptAddItem', () => {
   const settle = () => new Promise((resolve) => setTimeout(resolve));
 
   const radios = (): string[] =>
-    [...only().element.querySelectorAll<HTMLElement>('[role=radio]')].map(
+    [...only().element.querySelectorAll<HTMLElement>('[data-choice]')].map(
       (node) => node.dataset.choice!,
     );
 
@@ -194,7 +194,7 @@ describe('promptAddItem', () => {
     await settle();
 
     const radio = (id: string) =>
-      only().element.querySelector<HTMLButtonElement>(`[data-choice="${id}"]`)!;
+      only().element.querySelector<HTMLInputElement>(`[data-choice="${id}"] .choice-input`)!;
     expect(radio('sk-x').disabled).toBe(true);
     expect(radio('sk-b').disabled).toBe(false);
 
@@ -220,7 +220,7 @@ describe('promptAddItem', () => {
       await settle();
 
       expect(
-        only().element.querySelector<HTMLButtonElement>('[data-choice="sk-x"]')!.disabled,
+        only().element.querySelector<HTMLInputElement>('[data-choice="sk-x"] .choice-input')!.disabled,
       ).toBe(false);
 
       only().dismiss();

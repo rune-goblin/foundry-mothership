@@ -143,7 +143,12 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   `ItemImage`, plus the `dropTarget` attachment. **`ChoiceList` is the one list this system
   selects from** — the roll prompts and the compendium pickers both draw their rows from it;
   a new "pick one of these" window configures it (`headers`, `filterLabel`, `cells`, `trailing`)
-  rather than writing rows of its own. Build a conversion out of these before
+  rather than writing rows of its own. It is a real `<table>`: columns are `<col>`s, the
+  description spans with `colspan` and the trailing cell holds both rows with `rowspan`, and
+  selection is one native radio group, which is where the arrow keys and `Enter` come from. The
+  radio itself is visually hidden and a span draws the mark — Foundry's core theme reaches
+  `input[type="radio"]` from outside every layer, so styling it would take `!important`.
+  Build a conversion out of these before
   writing bespoke markup. Most own their styles in scoped `<style>` blocks; classes still
   served by `css/mothership.css`'s shared tier keep their pins in `test/ui-parts.test.ts`,
   because that half of the contract still has no compiler.

@@ -329,11 +329,6 @@
     flex: 1;
   }
 
-  /* shared tier: CharacterSheet, Cover. */
-  .mothership .health {grid-area: centercol;}
-  @container (max-width: 610px) {
-    .mothership .health {grid-area: mobilehealth;}
-  }
   /* shared tier: Field, CheckField, MinMaxField, ArmorBlock, CreatureSettings, Cover. */
   .mothership .healthspread {width:96%;}
 
@@ -758,7 +753,6 @@
 
   .mothership .card-rule-label {
     font-size: var(--font-size-xs);
-    letter-spacing: var(--body-sm-letter-spacing);
   }
 
   .mothership .card-note {

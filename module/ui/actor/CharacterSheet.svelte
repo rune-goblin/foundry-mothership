@@ -137,31 +137,39 @@
     </div>
 
     <div class="health vitals">
-      <HealthBlock health={system.health} hits={system.hits} />
+      <div class="tracks">
+        <HealthBlock health={system.health} hits={system.hits} />
 
-      <MinMaxField
-        label={localize('Mothership.Stress')}
-        labelClass="rollable"
-        onroll={panic}
-        name="system.other.stress.value"
-        value={system.other.stress.value}
-        rightName="system.other.stress.min"
-        rightValue={system.other.stress.min}
-        leftLabel={localize('Mothership.Current')}
-        rightLabel={localize('Mothership.Minimum')}
-      />
+        <MinMaxField
+          label={localize('Mothership.Stress')}
+          labelClass="rollable"
+          onroll={panic}
+          name="system.other.stress.value"
+          value={system.other.stress.value}
+          rightName="system.other.stress.min"
+          rightValue={system.other.stress.min}
+          leftLabel={localize('Mothership.Current')}
+          rightLabel={localize('Mothership.Minimum')}
+        />
+      </div>
 
       <ArmorBlock armor={system.stats.armor} oncover={setCover} />
     </div>
 
-    <div class="abilities grid grid-1col widegap">
-      {#each STATS as stat (stat.key)}
-        {@render checkStat(stat)}
-      {/each}
+    <div class="abilities rail">
+      <div class="resource-label minmaxtext">{localize('Mothership.Stats')}</div>
+
+      <div class="rail-stack">
+        {#each STATS as stat (stat.key)}
+          {@render checkStat(stat)}
+        {/each}
+      </div>
     </div>
 
-    <div class="saves">
-      <div class="savepanel">
+    <div class="saves rail">
+      <div class="resource-label minmaxtext">{localize('Mothership.Saves')}</div>
+
+      <div class="rail-stack">
         {#each SAVES as save (save.key)}
           {@render checkStat(save)}
         {/each}
@@ -512,10 +520,17 @@
     .char-header {
       --charactersheet-header-grid-gap: var(--space-10);
       --charactersheet-header-grid-padding: var(--space-2);
-      /* Both rails carry the same control now, so they are the same measurement; the vitals take
-         what is left of the 820px window. The stat pill's own word sets the floor -- below about
-         230px "Strength" outgrows its track and shoves the number circle off the row. */
-      --charactersheet-rail-width: 238px;
+
+      /* Every column is as wide as its own widest content and no wider; the window's slack goes
+         into the gutters instead of stretching four boxes that have nothing to stretch for.
+         Measured, not guessed:
+           rail    — "Strength" plus its die plus the 4.6em circle column. Clips below 214px.
+           tracks  — the "Current"/"Maximum" caption pair, 117px; the numbers never reach three
+                     digits, so the boxes themselves want far less than the words under them.
+           armor   — "Insignificant Cover" on one line inside the cover chip. */
+      --charactersheet-rail-width: 224px;
+      --charactersheet-tracks-width: 126px;
+      --charactersheet-armor-width: 156px;
 
       --charactersheet-identity-gap: var(--space-4);
       --charactersheet-identity-padding: var(--space-16);
@@ -523,80 +538,118 @@
       /* The vitals rows, measured off the blocks they hold, not off the spacing scale. */
       --charactersheet-vitals-row-height: 76px;
 
-      --charactersheet-saves-radius: var(--radius-md);
-      --charactersheet-saves-border-width: var(--border-width-2);
-      --charactersheet-saves-border-color: var(--border-neutral-ink);
-      --charactersheet-saves-padding-block: var(--space-8);
-      /* Asymmetric only in that the pills need no room on the right any more: the modifier moved
-         inside them. */
-      --charactersheet-saves-padding-inline: var(--space-6);
-      --charactersheet-saves-gap: var(--space-6);
+      /* The caption above every column: 16px of type over a 4px margin. The boxes in the middle
+         columns start on the line beneath it, and so must the rails. */
+      --charactersheet-caption-height: 20px;
+
+      /* A pill is 35px inside a 46px row because the number circle beside it is taller and the
+         two are centred on each other, so its black edge starts 5.5px down. Lifting the stack by
+         that much is what puts the pills on the boxes' top line. */
+      --charactersheet-pill-inset: 5.5px;
+
+      /* `.mainstat`'s own value column holds the circle but not the modifier badge riding past
+         it, which the panel's padding used to pay for. The saves rail ends on the sheet's own
+         edge, so the badge is otherwise the one thing hanging over it. */
+      --charactersheet-stat-value-column: 5.2em;
+
+      --charactersheet-rail-gap: var(--space-16);
     }
 
     /* Selector must stay chained: `centercol`/`mobilehealth` are claimed by
-       `.mothership .health` in css/mothership.css, which this block cannot take. */
+       `.mothership .health` in css/mothership.css, which this block cannot take.
+
+       Four columns, not three: the vitals split into tracks and armour, and putting that split in
+       the header grid rather than inside the vitals is what makes all three gutters one
+       measurement. `space-between` spends the window's slack on them -- widening the sheet opens
+       the gutters and leaves the contents alone -- and the gap is the floor they close to. */
     .char-header .header-grid {
       display: grid;
       grid-template-areas:
-        'header header header'
-        'abilities centercol saves'
-        'mobilehealth mobilehealth mobilehealth';
-      grid-gap: var(--charactersheet-header-grid-gap);
-      padding: var(--charactersheet-header-grid-padding);
+        'header header header header'
+        'abilities centercol centercol saves'
+        'mobilehealth mobilehealth mobilehealth mobilehealth';
       grid-template-columns:
-        var(--charactersheet-rail-width) minmax(0, 1fr) var(--charactersheet-rail-width);
-      container-type: inline-size;
+        var(--charactersheet-rail-width)
+        var(--charactersheet-tracks-width)
+        var(--charactersheet-armor-width)
+        var(--charactersheet-rail-width);
+      justify-content: space-between;
+      gap: var(--charactersheet-header-grid-gap);
+      padding: var(--charactersheet-header-grid-padding);
+    }
+
+    /* Named, and on the outer header rather than the grid itself: the grid has to answer the
+       query too, and an element can never be measured against its own container. */
+    .char-header {
+      container: mothership-sheet / inline-size;
     }
 
     .abilities {
       grid-area: abilities;
     }
 
-    /* Health beside Stress, Wounds beside Armour: the pool you spend on the left of each row, the
-       thing that empties it on the right. Armour's row is taller because the cover chip hangs off
-       the bottom of it. */
-    .vitals {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: var(--charactersheet-vitals-row-height) auto;
-      grid-auto-flow: column;
-      gap: var(--charactersheet-header-grid-gap);
-      align-content: start;
-    }
-
-    /* Every block keeps its own row height; only the armour block, which the cover chip hangs off
-       the bottom of, is allowed to be as tall as it is. Without this a MinMaxField in the shorter
-       row stretches and its captions drift away from the box they name. */
-    .vitals > :global(*) {
-      width: 100%;
-      height: var(--charactersheet-vitals-row-height);
-      align-self: start;
-    }
-
-    .vitals > :global(*:last-child) {
-      height: auto;
-    }
-
     /* The trauma response belongs to the saves, not to the vitals: it is the sentence a failed
        Fear save writes. */
     .saves {
       grid-area: saves;
-      display: grid;
-      grid-template-rows: auto 1fr;
-      gap: var(--charactersheet-header-grid-gap);
       min-height: 0;
     }
 
-    /* A frame, not a slab: three black pills on a black ground made the rail the heaviest thing
-       on the sheet, and it is not the most important one. */
-    .savepanel {
+    /* Stats and Saves are one control in one column shape, so nothing but a caption should tell
+       the two rails apart -- the frame that used to fence the saves in said "different" about a
+       column that isn't. The caption is the vitals' own, so all four columns of the header start
+       on the same line of type. */
+    .rail {
       display: grid;
-      gap: var(--charactersheet-saves-gap);
+      grid-template-rows: var(--charactersheet-caption-height) auto 1fr;
       align-content: start;
-      padding-block: var(--charactersheet-saves-padding-block);
-      padding-inline: var(--charactersheet-saves-padding-inline);
-      border: var(--charactersheet-saves-border-width) solid var(--charactersheet-saves-border-color);
-      border-radius: var(--charactersheet-saves-radius);
+    }
+
+    .rail-stack {
+      display: grid;
+      gap: var(--charactersheet-rail-gap);
+      margin-top: calc(-1 * var(--charactersheet-pill-inset));
+    }
+
+    .char-header .rail :global(.mainstat) {
+      grid-template-columns: minmax(0, 1fr) var(--charactersheet-stat-value-column);
+    }
+
+    /* The trauma response is the only thing under a rail that is not a pill, so it takes the gap
+       the stack does not. */
+    .saves > :global(*:last-child) {
+      margin-top: var(--charactersheet-header-grid-gap);
+    }
+
+    /* What empties on the left, what protects on the right. Health, Wounds and Stress are the
+       three tracks a session spends, read straight down; armour is not a track, so it keeps its
+       own column, with the cover it borrows hanging off the bottom.
+
+       `subgrid`, so the two of them sit in the header's own columns and inherit its gutter rather
+       than inventing a narrower one in the middle of the row. */
+    .vitals {
+      grid-area: centercol;
+      display: grid;
+      grid-template-columns: subgrid;
+      align-items: start;
+    }
+
+    .tracks {
+      display: grid;
+      gap: var(--charactersheet-header-grid-gap);
+    }
+
+    /* Each column is sized already, so its blocks fill it: `.healthspread`'s 96% was a way of
+       finding a margin inside a stretchy column, and these no longer stretch. */
+    .char-header .vitals > :global(*),
+    .char-header .tracks > :global(*) {
+      width: 100%;
+    }
+
+    /* Each track keeps its own row height. Without this the shorter of them stretches and its
+       captions drift away from the box they name. */
+    .tracks > :global(*) {
+      height: var(--charactersheet-vitals-row-height);
     }
 
     .headergrid {
@@ -608,6 +661,26 @@
 
     .headernamegrid {
       grid-column: 1/-2;
+    }
+
+    /* Below the width the four columns need -- their own widths plus three floor gutters and the
+       padding -- the vitals drop under the two rails rather than squeezing what is already at its
+       measured minimum. */
+    @container mothership-sheet (max-width: 764px) {
+      .char-header .header-grid {
+        grid-template-areas:
+          'header header'
+          'abilities saves'
+          'mobilehealth mobilehealth';
+        grid-template-columns: var(--charactersheet-rail-width) var(--charactersheet-rail-width);
+      }
+
+      .vitals {
+        grid-area: mobilehealth;
+        grid-template-columns: var(--charactersheet-tracks-width) var(--charactersheet-armor-width);
+        justify-content: space-between;
+        column-gap: var(--charactersheet-header-grid-gap);
+      }
     }
   }
 </style>

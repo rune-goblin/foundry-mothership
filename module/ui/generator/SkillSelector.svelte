@@ -255,7 +255,6 @@
       font-family: var(--font-display);
       font-size: var(--font-size-md);
       font-weight: var(--font-weight-bold);
-      letter-spacing: var(--letter-spacing-wider);
       color: var(--skillselector-muted);
     }
 
@@ -389,7 +388,6 @@
       margin: 0;
       font-family: var(--font-display);
       font-size: var(--font-size-md);
-      letter-spacing: 0.03em;
     }
 
     .skill-selector-bonus {

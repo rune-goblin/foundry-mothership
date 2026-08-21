@@ -27,7 +27,7 @@
 </script>
 
 {#snippet armor(option)}
-  <span class="cover-armor health resource healthspread minmaxtopstat">
+  <span class="cover-armor resource healthspread minmaxtopstat">
     <ArmorBar
       spread
       left={armorPoints}

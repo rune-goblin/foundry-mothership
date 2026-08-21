@@ -84,6 +84,11 @@ const only = (): OpenDialog => {
 };
 
 /** A prompt that enriches its rows first opens a turn later, so let the microtasks drain. */
+/** Which row's radio is checked — the whole list holds one native radio group. */
+const checkedRow = (scope: ParentNode): string | undefined =>
+  scope.querySelector<HTMLInputElement>('.choice-input:checked')?.closest<HTMLElement>('[data-choice]')
+    ?.dataset.choice;
+
 const settle = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 0));
 
 describe('svelteDialog', () => {
@@ -218,7 +223,7 @@ describe('svelteDialog', () => {
       buttons: [{ action: 'next', label: 'Next', answer: (stat) => stat }],
     });
 
-    only().element.querySelector<HTMLButtonElement>('[data-choice="speed"]')!.click();
+    only().element.querySelector<HTMLTableRowElement>('[data-choice="speed"]')!.click();
     flushSync();
     await only().press('next');
 
@@ -309,7 +314,7 @@ describe('the prompts', () => {
     });
     await settle();
 
-    only().element.querySelector<HTMLButtonElement>('[data-choice="sk1"]')!.click();
+    only().element.querySelector<HTMLTableRowElement>('[data-choice="sk1"]')!.click();
     flushSync();
     await only().press('advantage');
 
@@ -333,7 +338,7 @@ describe('the prompts', () => {
     expect(element.querySelector('.prompt-readout-value')?.textContent).toBe('45');
     expect(element.querySelector('.check-sum-working')?.textContent).toBe('Speed 45, no Skill');
 
-    element.querySelector<HTMLButtonElement>('[data-choice="sk1"]')!.click();
+    element.querySelector<HTMLTableRowElement>('[data-choice="sk1"]')!.click();
     flushSync();
     expect(element.querySelector('.prompt-readout-value')?.textContent).toBe('55');
     expect(element.querySelector('.check-sum-working')?.textContent).toBe('Speed 45 + Athletics 10');
@@ -354,9 +359,9 @@ describe('the prompts', () => {
     });
     await settle();
 
-    expect(only().element.querySelector('[data-choice="sk1"]')?.getAttribute('aria-checked')).toBe('true');
+    expect(checkedRow(only().element)).toBe('sk1');
 
-    only().element.querySelector<HTMLButtonElement>('[data-choice=""]')!.click();
+    only().element.querySelector<HTMLTableRowElement>('[data-choice=""]')!.click();
     flushSync();
     await only().press('none');
 
@@ -383,7 +388,7 @@ describe('the prompts', () => {
   it('chooseAttribute answers with the stat and the modifier', async () => {
     const answer = chooseAttribute({ advantage: true });
 
-    only().element.querySelector<HTMLButtonElement>('[data-choice="combat"]')!.click();
+    only().element.querySelector<HTMLTableRowElement>('[data-choice="combat"]')!.click();
     flushSync();
     await only().press('advantage');
 
@@ -403,7 +408,7 @@ describe('the prompts', () => {
     expect(element.querySelector('.prompt-readout-value')?.textContent).toBe('40');
     expect(element.querySelector('.check-sum-working')?.textContent).toBe('Strength 30 + Athletics 10');
 
-    element.querySelector<HTMLButtonElement>('[data-choice="speed"]')!.click();
+    element.querySelector<HTMLTableRowElement>('[data-choice="speed"]')!.click();
     flushSync();
     expect(element.querySelector('.prompt-readout-value')?.textContent).toBe('55');
 
@@ -419,7 +424,7 @@ describe('the prompts', () => {
       ['sanity', 'fear', 'body'],
     );
 
-    only().element.querySelector<HTMLButtonElement>('[data-choice="body"]')!.click();
+    only().element.querySelector<HTMLTableRowElement>('[data-choice="body"]')!.click();
     flushSync();
     await only().press('disadvantage');
 
@@ -472,11 +477,9 @@ describe('the prompts', () => {
     }
 
     // Blunt Force is preselected; the (alphabetical) key order gives no reason why.
-    expect(only().element.querySelector('[data-choice="blunt-force"]')?.getAttribute('aria-checked')).toBe(
-      'true',
-    );
+    expect(checkedRow(only().element)).toBe('blunt-force');
 
-    only().element.querySelector<HTMLButtonElement>('[data-choice="gunshot"]')!.click();
+    only().element.querySelector<HTMLTableRowElement>('[data-choice="gunshot"]')!.click();
     flushSync();
     await only().press('advantage');
 
@@ -514,8 +517,8 @@ describe('the prompts', () => {
   it('chooseCover answers with the cover picked, and null when dismissed', async () => {
     const answer = chooseCover('light', { armorPoints: 4, damageReduction: 1 });
 
-    expect(only().element.querySelector('[data-choice="light"]')?.getAttribute('aria-checked')).toBe('true');
-    only().element.querySelector<HTMLButtonElement>('[data-choice="heavy"]')!.click();
+    expect(checkedRow(only().element)).toBe('light');
+    only().element.querySelector<HTMLTableRowElement>('[data-choice="heavy"]')!.click();
     flushSync();
     await only().press('ok');
     await expect(answer).resolves.toBe('heavy');
@@ -585,12 +588,12 @@ describe('the components themselves', () => {
       note: 'Anxious: this roll is at [-].',
     });
 
-    const row = target.querySelector<HTMLButtonElement>('[data-choice="sk1"]')!;
+    const row = target.querySelector<HTMLTableRowElement>('[data-choice="sk1"]')!;
     expect([...row.querySelectorAll('.choice-cell')].map((cell) => cell.textContent)).toEqual([
       'Expert',
       '+15',
     ]);
-    expect(row.querySelector('em')?.textContent).toBe('Computers.');
+    expect(target.querySelector('[data-description="sk1"] em')?.textContent).toBe('Computers.');
     expect(target.querySelector('.prompt-note')?.textContent).toContain('Anxious');
 
     row.click();
@@ -608,10 +611,11 @@ describe('the components themselves', () => {
       fixed: { label: 'Speed', amount: 45 },
     });
 
-    const checked = [...target.querySelectorAll('[data-choice]')].filter(
-      (row) => row.getAttribute('aria-checked') === 'true',
-    );
-    expect(checked.map((row) => row.getAttribute('data-choice'))).toEqual(['sk1']);
+    expect(
+      [...target.querySelectorAll('.choice-description-row.is-open')].map(
+        (row) => (row as HTMLElement).dataset.description,
+      ),
+    ).toEqual(['sk1']);
     expect(target.querySelector('.check-sum-working')?.textContent).toBe('Speed 45 + Hacking 15');
     expect(target.querySelector('.prompt-readout-value')?.textContent).toBe('60');
   });
