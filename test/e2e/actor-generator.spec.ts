@@ -266,7 +266,7 @@ test.describe('character generator', () => {
 
     // The book's class card prints granted skills alongside adjustments, so this pane does too.
     await expect(detail.locator('[data-skills="granted"]')).toHaveText('Military Training, Athletics');
-    await expect(detail.locator('[data-skills="group"]')).toHaveText('1 Expert Skill OR 2 Trained Skills');
+    await expect(detail.locator('[data-skills="group"]')).toHaveText('1 Expert Skill or 2 Trained Skills');
 
     // The book's card collapses a class that moves everything by one amount, so the pane does too.
     await gmPage.click('button.wizard-class[data-class="Teamster"]');

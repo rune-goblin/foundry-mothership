@@ -23,6 +23,7 @@ import RollDie from '../module/ui/parts/RollDie.svelte';
 import RollButton from '../module/ui/parts/RollButton.svelte';
 import ArmorBar from '../module/ui/parts/ArmorBar.svelte';
 import ArmorBlock from '../module/ui/parts/sections/ArmorBlock.svelte';
+import StatModifier from '../module/ui/parts/StatModifier.svelte';
 import HealthBlock from '../module/ui/parts/sections/HealthBlock.svelte';
 import ItemPanel from '../module/ui/parts/sections/ItemPanel.svelte';
 import { onActivate } from '../module/ui/parts/activate.js';
@@ -128,7 +129,7 @@ describe('MainStat', () => {
     expect(span.textContent).toBe('Combat');
 
     const input = stat.querySelector('input')!;
-    expect(input.className).toBe('circle-input');
+    expect(classes(input)).toEqual(['circle-input']);
     expect(input.getAttribute('name')).toBe('system.base_adjustment.combat');
     expect(input.getAttribute('type')).toBe('text');
     expect(input.getAttribute('data-dtype')).toBe('Number');
@@ -158,7 +159,7 @@ describe('MainStat', () => {
       key: 'robotic',
     }).querySelector('input')!;
 
-    expect(input.className).toBe('circle-input');
+    expect(classes(input)).toEqual(['circle-input']);
     expect(input.type).toBe('checkbox');
     expect(input.checked).toBe(true);
     expect(input.getAttribute('data-dtype')).toBe('Boolean');
@@ -188,10 +189,42 @@ describe('MainStat', () => {
       modifier: text('+5'),
     }).firstElementChild!;
 
-    const pill = wrapper.querySelector('.mainstatlabel')!;
-    expect(classes(pill)).toEqual(['mainstatlabel', 'has-modifier']);
-    expect(pill.textContent).toContain('+5');
+    // On the circle, not in the pill: the pill ends with its die, as every other stat's does.
+    const slot = wrapper.querySelector('.circle-slot')!;
+    expect(slot.textContent).toContain('+5');
+    expect(wrapper.querySelector('.mainstatlabel')!.textContent).not.toContain('+5');
     expect(wrapper.querySelector('.circle-input')).not.toBeNull();
+  });
+
+  // The number the player rolls under, once the modifier is in. It covers the circle's face and
+  // carries no name, so a form harvest can never write the total back over the base.
+  it('shows an adjusted value over the circle, leaving the stored base in the input', () => {
+    const wrapper = render(MainStat, {
+      label: 'Body',
+      key: 'body',
+      name: 'system.stats.body.value',
+      value: 40,
+      adjusted: 45,
+    }).firstElementChild!;
+
+    const input = wrapper.querySelector('.circle-input') as HTMLInputElement;
+    const shown = wrapper.querySelector('.circle-adjusted')!;
+
+    expect(input.value).toBe('40');
+    expect(input.name).toBe('system.stats.body.value');
+    expect(shown.textContent).toBe('45');
+    expect(shown.hasAttribute('name')).toBe(false);
+  });
+
+  it('leaves the circle bare when nothing adjusts it', () => {
+    const wrapper = render(MainStat, {
+      label: 'Body',
+      key: 'body',
+      name: 'system.stats.body.value',
+      value: 40,
+    }).firstElementChild!;
+
+    expect(wrapper.querySelector('.circle-adjusted')).toBeNull();
   });
 
   // The character sheet's four stats are clicked to roll them, so the caption becomes a
@@ -204,7 +237,7 @@ describe('MainStat', () => {
       onroll: () => rolled.push('strength'),
     }).querySelector('.mainstatlabel span')!;
 
-    expect([...span.classList]).toEqual([
+    expect(classes(span)).toEqual([
       'ability-mod',
       'stat-roll',
       'rollable',
@@ -422,7 +455,7 @@ describe('RollableStat', () => {
     }).firstElementChild!;
 
     expect(el.tagName).toBe('SPAN');
-    expect([...el.classList]).toEqual([
+    expect(classes(el)).toEqual([
       'ability-mod',
       'stat-roll',
       'rollable',
@@ -699,37 +732,133 @@ describe('HealthBlock', () => {
   });
 });
 
+describe('StatModifier', () => {
+  const badge = (value: number) =>
+    render(StatModifier, { name: 'system.stats.body.mod', value, label: 'Body' })
+      .firstElementChild!;
+
+  it.each([
+    [0, []],
+    [9, ['is-up']],
+    [-10, ['is-down']],
+  ])('reads %s as the tone that fills it', (value, expected) => {
+    expect(classes(badge(value)).filter((c) => c !== 'stat-modifier')).toEqual(expected);
+  });
+
+  it('carries the stored modifier under the schema path', () => {
+    const field = badge(9).querySelector('input') as HTMLInputElement;
+
+    expect(field.name).toBe('system.stats.body.mod');
+    expect(field.value).toBe('9');
+    expect(field.getAttribute('data-dtype')).toBe('Number');
+  });
+
+  // Without this it stays open under a pointer that never left it.
+  it('shuts on Enter until the pointer leaves', () => {
+    const el = badge(0);
+    const field = el.querySelector('input')!;
+
+    field.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    flushSync();
+    expect(classes(el)).toContain('is-dismissed');
+
+    el.dispatchEvent(new PointerEvent('pointerleave', { bubbles: true }));
+    flushSync();
+    expect(classes(el)).not.toContain('is-dismissed');
+  });
+});
+
 describe('ArmorBlock', () => {
-  const block = (armor: Record<string, unknown>, onchoose = () => {}) =>
-    render(ArmorBlock, { armor, onchoose }).firstElementChild!;
+  const block = (armor: Record<string, unknown>, oncover = (_key: string) => {}) =>
+    render(ArmorBlock, { armor, oncover }).firstElementChild!;
 
   it('reads out the derived points and reduction', () => {
     const el = block({ mod: 4, damageReduction: 2, cover: 'none' });
 
     expect([...el.querySelectorAll('.whiteText')].map((n) => n.textContent)).toEqual(['4', '2']);
+    // The worn row never carries the borrowed numbers now; they have a row of their own.
     expect(el.querySelector('.highlightText')).toBeNull();
+    // Without a write path the points are a reading, not a field.
+    expect(el.querySelector('input')).toBeNull();
   });
 
-  // The block used to carry a die on its caption; the only thing it can do is open the prompt.
-  it('names the cover on a button that chooses it, and nothing here rolls', () => {
-    const onchoose = vi.fn();
-    const el = block({ mod: 4, damageReduction: 2, cover: 'heavy' }, onchoose);
+  // A horror wears nothing, so `mod` is always nought for one: given the path, the cell becomes
+  // the field that sets `value`, and the character sheet passing no path stays read-only.
+  it('turns the points into a field for the caller that hands it a write path', () => {
+    const el = render(ArmorBlock, {
+      armor: { value: 5, mod: 0, damageReduction: 0, cover: 'none' },
+      onchoose: () => {},
+      name: 'system.stats.armor.value',
+    }).firstElementChild!;
 
-    const chip = el.querySelector('button')!;
+    const field = el.querySelector('input')!;
+    expect(field.getAttribute('name')).toBe('system.stats.armor.value');
+    expect(field.value).toBe('5');
+    expect(field.dataset.dtype).toBe('Number');
+    // The reduction beside it stays derived either way.
+    expect(el.querySelectorAll('input')).toHaveLength(1);
+  });
+
+  // The block used to carry a die on its caption; the only thing it can do is name the cover.
+  it('names the cover on the chip that opens the menu, and nothing here rolls', () => {
+    const el = block({ mod: 4, damageReduction: 2, cover: 'heavy' });
+
+    const chip = el.querySelector('.cover-choice')!;
     expect(chip.textContent!.trim()).toBe('Mothership.HeavyCover');
     expect(el.querySelector('i.fa-dice-d20')).toBeNull();
+    // Closed until asked: the four options are not in the document yet.
+    expect(el.querySelector('[role="listbox"]')).toBeNull();
+  });
 
-    chip.click();
-    expect(onchoose).toHaveBeenCalledTimes(1);
+  // The prompt it used to open lived a window away and asked the same four-way question; the
+  // menu answers it in place, and each row carries what the cover looks like and what it is worth.
+  it('opens a menu of every cover, each with its examples and its bonuses', () => {
+    const el = block({ mod: 4, damageReduction: 2, cover: 'light' });
+    (el.querySelector('.cover-choice') as HTMLElement).click();
+    flushSync();
+
+    const options = [...el.querySelectorAll('.cover-option')];
+    expect(options.map((o) => o.querySelector('.cover-option-name')!.textContent)).toEqual([
+      'Mothership.NoCover',
+      'Mothership.InsignificantCover',
+      'Mothership.LightCover',
+      'Mothership.HeavyCover',
+    ]);
+    expect(options[3].querySelector('.cover-option-detail')!.textContent!.replace(/\s+/g, ' ').trim())
+      .toBe('Mothership.AirlockDoorsCementBeamsShips +20 Mothership.AP · +5 Mothership.DR');
+    expect(el.querySelector('[aria-selected="true"] .cover-option-name')!.textContent)
+      .toBe('Mothership.LightCover');
+  });
+
+  it('answers with the cover chosen and shuts itself', () => {
+    const oncover = vi.fn();
+    const el = block({ mod: 4, damageReduction: 2, cover: 'none' }, oncover);
+    (el.querySelector('.cover-choice') as HTMLElement).click();
+    flushSync();
+
+    (el.querySelectorAll('.cover-option')[3] as HTMLElement).click();
+    flushSync();
+
+    expect(oncover).toHaveBeenCalledWith('heavy');
+    expect(el.querySelector('[role="listbox"]')).toBeNull();
   });
 
   it.each([
-    ['insignificant', [' 5']],
-    ['light', [' 10']],
-    ['heavy', [' 20', ' 5']],
-  ])('cover %s adds its bonuses beside the readouts', (cover, expected) => {
+    ['none', ['+0', '+0']],
+    ['insignificant', ['+5', '+0']],
+    ['light', ['+10', '+0']],
+    ['heavy', ['+20', '+5']],
+  ])('cover %s fills the second row of the table', (cover, expected) => {
     const el = block({ mod: 0, damageReduction: 0, cover });
-    expect([...el.querySelectorAll('.highlightText')].map((n) => n.textContent)).toEqual(expected);
+    expect([...el.querySelectorAll('.cover-cell')].map((n) => n.textContent)).toEqual(expected);
+  });
+
+  // A zero reads as "this is doing nothing", not as a number to compare with the row above.
+  it('greys the cells a cover leaves at zero', () => {
+    const el = block({ mod: 0, damageReduction: 0, cover: 'light' });
+    expect(
+      [...el.querySelectorAll('.cover-cell')].map((n) => n.classList.contains('is-zero')),
+    ).toEqual([false, true]);
   });
 });
 
@@ -749,6 +878,14 @@ describe('ArmorBar', () => {
   it('spreads a value from its bonus only when asked', () => {
     expect(bar({ left: 4, right: 2 }).querySelector('.whiteText.maxhealth-input')).toBeNull();
     expect(bar({ left: 4, right: 2, spread: true }).querySelectorAll('.whiteText.maxhealth-input')).toHaveLength(2);
+  });
+
+  it('writes the left cell as a field only when named', () => {
+    expect(bar({ left: 4, right: 2 }).querySelector('input')).toBeNull();
+
+    const named = bar({ left: 4, right: 2, leftName: 'system.stats.armor.value' });
+    expect(named.querySelectorAll('input')).toHaveLength(1);
+    expect(named.querySelector('input')!.getAttribute('name')).toBe('system.stats.armor.value');
   });
 });
 

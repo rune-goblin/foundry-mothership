@@ -120,7 +120,9 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   `noCharSelected` and the legacy actor methods survive as a deprecated shim (`module/api/legacy.ts`)
   for macros already imported into worlds. **Changing either surface's signature breaks something** —
   grep `packs/_source/` for the new verbs, `test/api-legacy.test.ts` pins the old ones.
-- **Strings** live in `lang/en.json` under `Mothership.*`; there is a `pt-BR` translation too.
+- **Strings** live in `lang/en.json` under `Mothership.*` — the only language the manifest
+  declares. The `pt-BR` translation was pulled on 2026-08-21 and sits unbuilt and untested in
+  `docs/archive/lang/`; see the README beside it before reviving it.
 - **CSS is hand-authored, not compiled** — no SCSS step (the `scss/` tree was 17 months stale
   and was deleted). `css/tokens.css` holds the Layer-1 design tokens (~400, adapted from
   live-tokens, scoped to `.mothership` inside `@layer system`); `css/mothership.css` holds
@@ -137,8 +139,11 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   truth, Foundry persists the form, mount once.
 - **`module/ui/parts/` holds the shared primitives** — `ItemList`/`ItemRow`/`ItemCell`/
   `ItemControls`/`ItemControl`, `Tabs`/`TabPanel`, `CircleStats`, `MainStat`, `Field`,
-  `CheckField`, `Editor`, `SheetHeader`, `MinMaxField`, `PipTrack`, `RollableStat`,
-  `ItemImage`, plus the `dropTarget` attachment. Build a conversion out of these before
+  `CheckField`, `ChoiceList`, `Editor`, `SheetHeader`, `MinMaxField`, `PipTrack`, `RollableStat`,
+  `ItemImage`, plus the `dropTarget` attachment. **`ChoiceList` is the one list this system
+  selects from** — the roll prompts and the compendium pickers both draw their rows from it;
+  a new "pick one of these" window configures it (`headers`, `filterLabel`, `cells`, `trailing`)
+  rather than writing rows of its own. Build a conversion out of these before
   writing bespoke markup. Most own their styles in scoped `<style>` blocks; classes still
   served by `css/mothership.css`'s shared tier keep their pins in `test/ui-parts.test.ts`,
   because that half of the contract still has no compiler.

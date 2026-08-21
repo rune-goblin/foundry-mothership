@@ -176,7 +176,7 @@ export interface CheckCardInput {
 /** A title this long no longer fits the header pill at its own size. */
 const LONG_HEADER = 22;
 
-/** Built from localized fragments, not one English sentence, so `pt-BR` gets the words without the sentence structure baked in. */
+/** Built from localized fragments, not one English sentence, so a translation gets the words without the sentence structure baked in. */
 function checkSentence(input: CheckCardInput): string {
   const bonus = input.skillBonus ?? 0;
   const parts = {

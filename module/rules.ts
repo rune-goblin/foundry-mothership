@@ -84,4 +84,12 @@ export const COVER_LABEL: Readonly<Record<Cover, string>> = {
   heavy: 'Mothership.HeavyCover',
 };
 
+/** The lang key naming what each state looks like — read by the sheet's cover menu. */
+export const COVER_EXAMPLES: Readonly<Record<Cover, string>> = {
+  none: 'Mothership.UnprotectedOutInTheOpen',
+  insignificant: 'Mothership.WoodFurnitureDoorsShields',
+  light: 'Mothership.TreesBulkheadWallMetalFurniture',
+  heavy: 'Mothership.AirlockDoorsCementBeamsShips',
+};
+
 export const COVER_KEYS: readonly Cover[] = Object.keys(COVER_BONUS) as Cover[];

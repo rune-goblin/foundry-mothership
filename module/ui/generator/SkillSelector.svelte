@@ -256,7 +256,6 @@
       font-size: var(--font-size-md);
       font-weight: var(--font-weight-bold);
       letter-spacing: var(--letter-spacing-wider);
-      text-transform: uppercase;
       color: var(--skillselector-muted);
     }
 
@@ -391,7 +390,6 @@
       font-family: var(--font-display);
       font-size: var(--font-size-md);
       letter-spacing: 0.03em;
-      text-transform: uppercase;
     }
 
     .skill-selector-bonus {

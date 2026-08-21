@@ -5,30 +5,21 @@
 
   let { store } = $props();
 
-  const STAT_TOGGLES = [
-    { key: 'combat', label: 'Mothership.Combat' },
-    { key: 'instinct', label: 'Mothership.Instinct' },
-    { key: 'loyalty', label: 'Mothership.Loyalty' },
-    { key: 'armor', label: 'Mothership.Armor' },
-  ];
-
   // Not a plain form field: setSwarm() also rewrites Combat, which form persistence can't express.
   const onSwarmChange = (event) => store.document.setSwarm(event.currentTarget.checked);
 </script>
 
 <header class="sheet-header">
   <div class="header-fields">
-    <div class="grid grid-3col">
-      {#each STAT_TOGGLES as toggle (toggle.key)}
-        <CheckField
-          name={`system.stats.${toggle.key}.enabled`}
-          label={localize(toggle.label)}
-          checked={store.current.system.stats[toggle.key].enabled}
-        />
-      {/each}
+    <div class="grid grid-2col">
+      <CheckField
+        name="system.contractor"
+        label={localize('Mothership.Contractor')}
+        checked={store.current.system.contractor}
+      />
       <CheckField
         id="swarm-enabled"
-        label="Swarm"
+        label={localize('Mothership.Swarm')}
         checked={store.current.system.swarm.enabled}
         onchange={onSwarmChange}
       />

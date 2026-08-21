@@ -295,7 +295,7 @@ test.describe('character sheet', () => {
     await sheet.locator('.item-header a.item-control').click();
 
     const picker = gmPage.locator('.macro-popup-dialog');
-    await picker.locator('#pick-filter').fill('revolver');
+    await picker.locator('#choice-filter').fill('revolver');
     await picker.getByRole('radio').check();
     await picker.locator('button[data-action="add"]').click();
 
@@ -323,10 +323,10 @@ test.describe('character sheet', () => {
     const picker = gmPage.locator('.macro-popup-dialog');
 
     // PSG 22: Piloting is unlocked by Zero-G, which this character owns.
-    await picker.locator('#pick-filter').fill('piloting');
+    await picker.locator('#choice-filter').fill('piloting');
     await expect(picker.getByRole('radio')).toBeEnabled();
 
-    await picker.locator('#pick-filter').fill('sophontology');
+    await picker.locator('#choice-filter').fill('sophontology');
     await expect(picker.getByRole('radio')).toBeDisabled();
 
     await picker.locator('#pick-enforce').uncheck();

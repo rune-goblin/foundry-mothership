@@ -51,16 +51,16 @@ describe('asset paths', () => {
 describe('the verdict line', () => {
   it('names what happened, from the lang files', () => {
     installI18n({
-      'Mothership.Chat.Success': 'SUCCESS!',
-      'Mothership.Chat.Failure': 'FAILURE!',
-      'Mothership.Chat.CriticalSuccess': 'CRITICAL SUCCESS!',
-      'Mothership.Chat.CriticalFailure': 'CRITICAL FAILURE!',
+      'Mothership.Chat.Success': 'Success!',
+      'Mothership.Chat.Failure': 'Failure!',
+      'Mothership.Chat.CriticalSuccess': 'Critical Success!',
+      'Mothership.Chat.CriticalFailure': 'Critical Failure!',
     });
 
-    expect(outcomeHtml(outcome('1d100', [30], 40))).toContain('SUCCESS!');
-    expect(outcomeHtml(outcome('1d100', [50], 40))).toContain('FAILURE!');
-    expect(outcomeHtml(outcome('1d100', [33], 40))).toContain('CRITICAL SUCCESS!');
-    expect(outcomeHtml(outcome('1d100', [55], 40))).toContain('CRITICAL FAILURE!');
+    expect(outcomeHtml(outcome('1d100', [30], 40))).toContain('Success!');
+    expect(outcomeHtml(outcome('1d100', [50], 40))).toContain('Failure!');
+    expect(outcomeHtml(outcome('1d100', [33], 40))).toContain('Critical Success!');
+    expect(outcomeHtml(outcome('1d100', [55], 40))).toContain('Critical Failure!');
   });
 
   it('prints nothing for a roll with nothing to beat', () => {
@@ -117,7 +117,7 @@ describe('the check card', () => {
       attribute: 'Body',
       skill: 'Athletics',
       skillValue: 10,
-      // Assembled here, not glued together in the template, which `pt-BR` could not reach.
+      // Assembled here, not glued together in the template, which a translation could not reach.
       checkSentence: 'You rolled less than your <strong>Body</strong> plus <strong>Athletics</strong> skill bonus.',
       showCheck: true,
       showWeapon: false,

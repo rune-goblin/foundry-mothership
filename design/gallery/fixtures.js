@@ -190,11 +190,12 @@ export const creature = document({
     health: { value: 25, max: 25 },
     hits: { value: 0, max: 4 },
     netHP: { value: 45, max: 45 },
+    contractor: true,
     stats: {
       combat: { value: 65 },
       instinct: { value: 55 },
-      loyalty: { value: 40, enabled: true },
-      armor: { value: 5, mod: 0, damageReduction: 0, cover: 'none', enabled: true },
+      loyalty: { value: 40 },
+      armor: { value: 5, mod: 5, damageReduction: 0, cover: 'none' },
     },
   }),
 });

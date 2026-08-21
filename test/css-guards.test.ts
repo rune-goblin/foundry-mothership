@@ -4,9 +4,9 @@ import { join } from 'node:path';
 
 const REPO = join(import.meta.dirname, '..');
 const CSS_DIR = join(REPO, 'css');
-// 3 theme-defence declarations on the dialog radios need !important: module CSS outranks
-// layer(system) in normal order, and !important is what inverts that.
-const IMPORTANT_CEILING = 3;
+// The dialog radios were the only rules that needed !important to invert module CSS outranking
+// layer(system); ChoiceList owns its mark outright, so nothing in css/ needs it now.
+const IMPORTANT_CEILING = 0;
 
 const stylesheets = readdirSync(CSS_DIR)
   .filter((file) => file.endsWith('.css'))

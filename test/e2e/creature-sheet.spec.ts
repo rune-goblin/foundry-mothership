@@ -69,10 +69,18 @@ test.describe('creature sheet', () => {
     await expect(sheet.locator('input[name="name"]')).toHaveValue('__e2e_creature');
     await expect(sheet.locator('input[name="system.stats.combat.value"]')).toHaveValue('45');
     await expect(sheet.locator('input[name="system.stats.instinct.value"]')).toBeVisible();
-    // Off by default, and the settings window is what turns them on.
-    for (const stat of ['loyalty', 'armor']) {
-      await expect(sheet.locator(`input[name="system.stats.${stat}.value"]`)).toHaveCount(0);
-    }
+    // Armour is one of the block's seven fields, so it is always drawn.
+    await expect(sheet.locator('.cover-choice')).toBeVisible();
+    // Loyalty belongs to Contractors alone, and this creature is not one.
+    await expect(sheet.locator('input[name="system.stats.loyalty.value"]')).toHaveCount(0);
+  });
+
+  test('a contractor carries Loyalty on the plate', async ({ gmPage }) => {
+    const { appId } = await open(gmPage, { contractor: true, stats: { loyalty: { value: 35 } } });
+    const loyalty = gmPage.locator(`#${appId} .creature-plate-stats`);
+
+    await expect(loyalty).toContainText('Loyalty');
+    await expect(loyalty.locator('input[name="system.stats.loyalty.value"]')).toHaveValue('35');
   });
 
   test('carries nothing a character sheet would carry', async ({ gmPage }) => {
@@ -95,6 +103,17 @@ test.describe('creature sheet', () => {
     await combat.fill('55');
     await combat.blur();
     await expect.poll(() => stored(gmPage, uuid, 'system.stats.combat.value')).toBe(55);
+  });
+
+  // A horror wears nothing, so the shared armour block's derived `mod` would read nought forever;
+  // the creature sheet hands it the write path and the points become the field that sets them.
+  test('the armour points are the horror’s own, and persist', async ({ gmPage }) => {
+    const { appId, uuid } = await open(gmPage);
+    const points = gmPage.locator(`#${appId} input[name="system.stats.armor.value"]`);
+
+    await points.fill('10');
+    await points.blur();
+    await expect.poll(() => stored(gmPage, uuid, 'system.stats.armor.value')).toBe(10);
   });
 
   test('a swarm labels its combat stat as a wound total', async ({ gmPage }) => {
@@ -157,7 +176,7 @@ test.describe('creature sheet', () => {
     await sheet.locator('.creature-attacks a.item-control').click();
 
     const picker = gmPage.locator('.macro-popup-dialog');
-    await picker.locator('#pick-filter').fill('revolver');
+    await picker.locator('#choice-filter').fill('revolver');
     await picker.getByRole('radio').check();
     await picker.locator('button[data-action="add"]').click();
 

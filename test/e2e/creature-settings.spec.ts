@@ -57,26 +57,24 @@ test.describe('creature settings window', () => {
     );
   });
 
-  test('shows all five toggles', async ({ gmPage }) => {
+  test('shows the two things a creature can be', async ({ gmPage }) => {
     await openSettings(gmPage);
     const settings = gmPage.locator(SETTINGS);
 
-    for (const stat of ['combat', 'instinct', 'loyalty', 'armor']) {
-      await expect(settings.locator(`input[name="system.stats.${stat}.enabled"]`)).toBeVisible();
-    }
+    await expect(settings.locator('input[name="system.contractor"]')).toBeVisible();
     await expect(settings.locator('input#swarm-enabled')).toBeVisible();
   });
 
-  // The named toggles have no click handler — if Foundry's form handling isn't wired up, this write goes nowhere.
-  test('a stat toggle persists through Foundry form handling', async ({ gmPage }) => {
-    const uuid = await openSettings(gmPage, { stats: { instinct: { enabled: false } } });
-    const toggle = gmPage.locator(SETTINGS).locator('input[name="system.stats.instinct.enabled"]');
+  // The named toggle has no click handler — if Foundry's form handling isn't wired up, this write goes nowhere.
+  test('the contractor toggle persists through Foundry form handling', async ({ gmPage }) => {
+    const uuid = await openSettings(gmPage);
+    const toggle = gmPage.locator(SETTINGS).locator('input[name="system.contractor"]');
 
     await toggle.check();
-    await expect.poll(() => stored(gmPage, uuid, 'system.stats.instinct.enabled')).toBe(true);
+    await expect.poll(() => stored(gmPage, uuid, 'system.contractor')).toBe(true);
 
     await toggle.uncheck();
-    await expect.poll(() => stored(gmPage, uuid, 'system.stats.instinct.enabled')).toBe(false);
+    await expect.poll(() => stored(gmPage, uuid, 'system.contractor')).toBe(false);
   });
 
   // 30 -> 60 -> 30: system.swarm.combat.value stashes the original so unchecking can restore it exactly.

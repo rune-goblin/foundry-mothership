@@ -138,30 +138,28 @@
       "biography": "",
       "notes": "",
       "description": "This is a description",
-      "stats": {
+      "contractor": false,
+        "stats": {
         "combat": {
           "value": 10,
           "min": 0,
           "max": 99,
           "label": "Combat",
-          "rollLabel": "Combat Check",
-          "enabled": true
+          "rollLabel": "Combat Check"
         },
         "instinct": {
           "value": 10,
           "min": 0,
           "max": 99,
           "label": "Instinct",
-          "rollLabel": "Instinct Check",
-          "enabled": true
+          "rollLabel": "Instinct Check"
         },
         "loyalty": {
           "value": 10,
           "min": 0,
           "max": 99,
           "label": "Loyalty",
-          "rollLabel": "Loyalty Check",
-          "enabled": false
+          "rollLabel": "Loyalty Check"
         },
         "armor": {
           "value": 0,
@@ -171,8 +169,7 @@
           "damageReduction": 0,
           "cover": "none",
           "label": "Armor",
-          "rollLabel": "Armor Save",
-          "enabled": false
+          "rollLabel": "Armor Save"
         }
       },
       "swarm": {

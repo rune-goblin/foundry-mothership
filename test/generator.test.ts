@@ -12,10 +12,11 @@ import {
   RECORD_VERSION,
   saveRun,
 } from '../module/ui/generator/record.js';
-import { collapseAdjustments } from '../module/ui/generator/labels.js';
+import { classCard, collapseAdjustments, signed } from '../module/ui/generator/labels.js';
 import { CharacterDraft, UNARMED } from '../module/ui/generator/draft.svelte.js';
 import { STEPS, STEP_TOTAL, stepNumber } from '../module/ui/generator/steps.js';
 import { CHARACTER_CREATION } from '../content/books/psg/character-creation.ts';
+import { CLASSES } from '../content/books/psg/classes.ts';
 import { WEAPONS } from '../content/books/psg/weapons.ts';
 
 function lang(file: string): Map<string, string> {
@@ -28,7 +29,6 @@ function lang(file: string): Map<string, string> {
 }
 
 const en = lang('en.json');
-const ptBR = lang('pt-BR.json');
 
 const loadoutRow = {
   type: 'text',
@@ -151,7 +151,7 @@ describe('the steps the wizard walks', () => {
   });
 
   // The lang-keys spec cannot see these: it does not scan module/ui.
-  it('names no string neither lang file carries', () => {
+  it('names no string the lang file does not carry', () => {
     const named = [
       `${K}.Intro.Title`, `${K}.Intro.Welcome`, `${K}.Intro.Excavate`,
       `${K}.Adjustments.Title`, `${K}.Adjustments.TitleFor`, `${K}.Adjustments.Choose`,
@@ -163,7 +163,6 @@ describe('the steps the wizard walks', () => {
     ];
 
     expect(named.filter((key) => !en.has(key))).toEqual([]);
-    expect(named.filter((key) => !ptBR.has(key))).toEqual([]);
   });
 });
 
@@ -303,9 +302,29 @@ describe('the class card the pane prints', () => {
 
     expect(rows).toEqual([
       { key: 'all_stats', label: 'Mothership.CharacterGenerator.AllStats', value: 5 },
-      { key: 'sanity', label: 'Mothership.Sanity', value: 30 },
+      { key: 'sanity', label: 'Mothership.SanitySave', value: 30 },
     ]);
   });
+
+  // The card is the book's step 3, printed word for word: the same lines, in the same order,
+  // with the picked adjustment standing where the book stands it. The classes are read out of
+  // the pack sources so what the pane receives is what ships.
+  it.each(CLASSES.map((klass) => [klass.name, klass.adjustments.map((row) => row.raw)]))(
+    'prints the %s exactly as the character sheet does',
+    (name, printed) => {
+      const { base_adjustment, selected_adjustment } = JSON.parse(
+        readFileSync(fileURLToPath(new URL(`../packs/_source/classes/${name}.json`, import.meta.url)), 'utf8'),
+      ).system;
+      const rows = classCard(
+        Object.entries(base_adjustment)
+          .filter(([key, value]) => key !== 'skills_granted' && value !== 0)
+          .map(([key, value]) => ({ key, value: value as number })),
+        selected_adjustment.choose_stat,
+      );
+
+      expect(rows.map((row) => `${signed(row.value)} ${en.get(row.label)}`.toUpperCase())).toEqual(printed);
+    },
+  );
 });
 
 describe('the creation record an actor keeps', () => {

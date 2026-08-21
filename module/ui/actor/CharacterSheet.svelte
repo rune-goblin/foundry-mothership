@@ -6,6 +6,7 @@
   import ItemImage from '../parts/ItemImage.svelte';
   import MainStat from '../parts/MainStat.svelte';
   import MinMaxField from '../parts/MinMaxField.svelte';
+  import StatModifier from '../parts/StatModifier.svelte';
   import PipTrack from '../parts/PipTrack.svelte';
   import TabPanel from '../parts/TabPanel.svelte';
   import Tabs from '../parts/Tabs.svelte';
@@ -87,6 +88,8 @@
   const shotStep = (id) => (event) => stepShots(actor, id, stepBy(event));
 
   const panic = () => actor.rollPanic();
+
+  const setCover = (cover) => actor.update({ 'system.stats.armor.cover': cover });
 </script>
 
 <header class="char-header header-grid">
@@ -148,7 +151,7 @@
         rightLabel={localize('Mothership.Minimum')}
       />
 
-      <ArmorBlock armor={system.stats.armor} onchoose={() => actor.chooseCover()} />
+      <ArmorBlock armor={system.stats.armor} oncover={setCover} />
     </div>
 
     <div class="abilities grid grid-1col widegap">
@@ -183,17 +186,14 @@
     name="system.stats.{stat.key}.value"
     value={pod.value}
     adjusted={mod ? Number(pod.value) + mod : null}
+    tone={mod > 0 ? 'up' : mod < 0 ? 'down' : null}
     onroll={statRoll(stat.key)}
   >
     {#snippet modifier()}
-      <!-- The sign is a glyph, not part of the value: a negative modifier prints its own. -->
-      {#if mod >= 0}<span class={['stat-mod-sign', !mod && 'is-zero']}>+</span>{/if}
-      <input
-        class={['stat-mod', !mod && 'is-zero']}
-        type="text"
+      <StatModifier
         name="system.stats.{stat.key}.mod"
         value={pod.mod}
-        data-dtype="Number"
+        label={localize(stat.label)}
       />
     {/snippet}
   </MainStat>

@@ -105,11 +105,12 @@ const CHARACTER = {
 };
 
 const CREATURE = {
+  contractor: true,
   stats: {
-    combat: { value: 35, enabled: true },
-    instinct: { value: 40, enabled: true },
-    loyalty: { value: 20, enabled: true },
-    armor: { value: 5, damageReduction: 1, enabled: true },
+    combat: { value: 35 },
+    instinct: { value: 40 },
+    loyalty: { value: 20 },
+    armor: { value: 5, mod: 5, damageReduction: 1, cover: 'light' },
   },
   health: { value: 12, max: 15 },
   hits: { value: 1, max: 3 },
@@ -498,7 +499,7 @@ test.describe('visual baselines', () => {
     // The window names the Skill that opened it — the paragraph it replaced never could.
     await expect(dialog.locator('.prompt-intro')).toContainText('__e2e_Zero-G +10');
     // The chip is the Stat's value, not a bonus, and the total adds the Skill to whichever is chosen.
-    await expect(dialog.locator('[data-choice="strength"] .choice-value')).toHaveText('50');
+    await expect(dialog.locator('[data-choice="strength"] .choice-cell.is-boxed')).toHaveText('50');
     await expect(dialog.locator('.prompt-readout-value')).toHaveText('60');
     await expect(dialog.locator('.check-sum-working')).toHaveText('Strength 50 + __e2e_Zero-G 10');
 

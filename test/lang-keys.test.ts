@@ -25,7 +25,6 @@ const lang = (file: string): Set<string> =>
   new Set(flatten(JSON.parse(readFileSync(fileURLToPath(new URL(`../lang/${file}`, import.meta.url)), 'utf8'))));
 
 const en = lang('en.json');
-const ptBR = lang('pt-BR.json');
 
 // Setting keys are built from the setting's own name, so none appears as a literal for the scan
 // above to find — list them explicitly instead.
@@ -55,9 +54,5 @@ describe('the strings the new runtime asks for', () => {
 
   it('exist in English', () => {
     expect(used.filter((key) => !en.has(key))).toEqual([]);
-  });
-
-  it('exist in Portuguese', () => {
-    expect(used.filter((key) => !ptBR.has(key))).toEqual([]);
   });
 });

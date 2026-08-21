@@ -567,8 +567,7 @@ describe('the components themselves', () => {
     {
       key: 'sk1',
       label: 'Hacking',
-      note: 'Expert',
-      value: '+15',
+      cells: ['Expert', { text: '+15', boxed: true }],
       amount: 15,
       description: '<em>Computers.</em>',
     },
@@ -587,8 +586,10 @@ describe('the components themselves', () => {
     });
 
     const row = target.querySelector<HTMLButtonElement>('[data-choice="sk1"]')!;
-    expect(row.querySelector('.choice-value')?.textContent).toBe('+15');
-    expect(row.querySelector('.choice-note')?.textContent).toBe('Expert');
+    expect([...row.querySelectorAll('.choice-cell')].map((cell) => cell.textContent)).toEqual([
+      'Expert',
+      '+15',
+    ]);
     expect(row.querySelector('em')?.textContent).toBe('Computers.');
     expect(target.querySelector('.prompt-note')?.textContent).toContain('Anxious');
 

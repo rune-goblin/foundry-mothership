@@ -355,7 +355,10 @@ export class MothershipActor extends Actor {
       typeof stored === 'string' && Object.hasOwn(COVER_BONUS, stored) ? (stored as Cover) : 'none';
 
     const chosen = await chooseCover(current, {
-      armorPoints: number(armor.mod),
+      // A creature's AP is its own number, folded into `total` by deriveArmor. A character's is
+      // only what it has strapped on: there `value` is the Armor Save target, so `total` would
+      // add a save to a defence.
+      armorPoints: number(this.type === CREATURE ? armor.total : armor.mod),
       damageReduction: number(armor.damageReduction),
     });
     if (chosen === null) return null;

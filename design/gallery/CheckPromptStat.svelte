@@ -23,7 +23,7 @@
   const options = ROWS.map(([key, label, example, amount]) => ({
     key,
     label: localize(label),
-    value: String(amount),
+    cells: [{ text: String(amount), boxed: true }],
     amount,
     description: localize(example),
   }));

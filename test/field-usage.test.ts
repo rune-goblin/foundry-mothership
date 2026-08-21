@@ -44,19 +44,15 @@ const DYNAMIC: Entry[] = [
     reason: "checks/actor.ts's statOf reads stats[key].value by computed key",
   },
   {
-    pattern: /^stats\.armor\.(value|mod|damageReduction)$/,
-    reason: 'deriveArmor holds the armor pod and reads .value off it; ArmorBlock reads the pod as a prop',
+    pattern: /^stats\.armor\.(mod|damageReduction)$/,
+    reason: 'deriveArmor writes them onto the armor pod it holds; ArmorBlock reads that pod as a prop',
   },
   {
     pattern: /^netHP\.(min|label)$/,
     reason: '_deriveCharacter/_deriveCreature write netHP as an object literal, not by path',
   },
   {
-    pattern: /^stats\.(combat|instinct|loyalty|armor)\.enabled$/,
-    reason: 'CreatureSheet and CreatureSettings bind system.stats.<stat>.enabled by computed key',
-  },
-  {
-    pattern: /^stats\.(instinct|loyalty)\.value$/,
+    pattern: /^stats\.instinct\.value$/,
     reason: 'CreatureSheet binds system.stats.<stat>.value by computed key',
   },
   {

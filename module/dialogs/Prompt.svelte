@@ -1,5 +1,5 @@
 <script>
-  import ChoiceList from './ChoiceList.svelte';
+  import ChoiceList from '../ui/parts/ChoiceList.svelte';
 
   // The body every dialog in this directory is drawn from: the head that names the question, the
   // list that answers it, and the note a condition adds. Everything a caller needs beyond those
@@ -15,7 +15,7 @@
     onchange = () => {},
     lines = 2,
     note = '',
-    /** Drawn in each row's right-hand cell, in place of the row's own value. */
+    /** Drawn in each row's right-hand cell, in place of the row's own cells. */
     trailing = null,
     expanded = false,
     children = null,

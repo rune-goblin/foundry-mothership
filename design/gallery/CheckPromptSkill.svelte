@@ -3,7 +3,7 @@
     group: 'Dialog bodies',
     title: 'CheckPrompt — which Skill',
     path: 'module/dialogs/CheckPrompt.svelte',
-    covers: ['module/dialogs/ChoiceList.svelte', 'module/dialogs/DialogBody.svelte'],
+    covers: ['module/ui/parts/ChoiceList.svelte', 'module/dialogs/DialogBody.svelte'],
     width: 660,
     note: 'The Stat is known and the list supplies the Skill. Only the chosen row prints its description, in a slot two lines deep whether it needs them or not — Heavy Machinery is the longest the book ships, at 114 characters. The three roll buttons are DialogV2’s own footer, stood up as the rail by css/mothership.css.',
   };
@@ -27,16 +27,14 @@
     {
       key: 'military',
       label: 'Military Training',
-      note: localize('Mothership.SkillRankTrained'),
-      value: '+10',
+      cells: [localize('Mothership.SkillRankTrained'), { text: '+10', boxed: true }],
       amount: 10,
       description: '<p>Basic training provided to all military personnel.</p>',
     },
     {
       key: 'machinery',
       label: 'Heavy Machinery',
-      note: localize('Mothership.SkillRankTrained'),
-      value: '+10',
+      cells: [localize('Mothership.SkillRankTrained'), { text: '+10', boxed: true }],
       amount: 10,
       description:
         '<p>The safe and proper use of heavy machinery and tools (exosuits, forklifts, drills, breakers, laser cutters, etc.).</p>',
@@ -44,16 +42,14 @@
     {
       key: 'firearms',
       label: 'Firearms',
-      note: localize('Mothership.SkillRankExpert'),
-      value: '+15',
+      cells: [localize('Mothership.SkillRankExpert'), { text: '+15', boxed: true }],
       amount: 15,
       description: '<p>Safe and effective use of guns.</p>',
     },
     {
       key: 'hyperspace',
       label: 'Hyperspace',
-      note: localize('Mothership.SkillRankMaster'),
-      value: '+20',
+      cells: [localize('Mothership.SkillRankMaster'), { text: '+20', boxed: true }],
       amount: 20,
       description: '<p>Plotting jumps and surviving the transit.</p>',
     },

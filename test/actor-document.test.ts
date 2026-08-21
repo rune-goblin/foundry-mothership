@@ -477,6 +477,19 @@ describe('chooseCover', () => {
     expect(updates).toEqual([{ 'system.stats.armor.cover': 'heavy' }]);
   });
 
+  // A creature's AP lives in `stats.armor.value`, which deriveArmor folds into `total`. Reading
+  // `mod` there would offer the cover window a nought for every horror with natural armour.
+  it('offers a creature its own armour points, not just what it wears', async () => {
+    prompts.chooseCover.mockResolvedValue('light');
+    const { actor } = actorOf([], {
+      stats: { armor: { value: 5, mod: 0, total: 5, damageReduction: 0, cover: 'none', label: 'Armor' } },
+    });
+    actor.type = 'creature';
+
+    await expect(actor.chooseCover()).resolves.toBe('light');
+    expect(prompts.chooseCover).toHaveBeenCalledWith('none', { armorPoints: 5, damageReduction: 0 });
+  });
+
   it('writes nothing when the window is dismissed', async () => {
     prompts.chooseCover.mockResolvedValue(null);
     const { actor, updates } = actorOf();

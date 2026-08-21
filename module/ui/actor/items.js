@@ -127,7 +127,6 @@ export async function promptAddItem(actor, type) {
       rows: sorted.map((doc) => ({
         id: doc.id,
         name: doc.name,
-        img: doc.img,
         cells: spec.cells(doc),
         unmet: unmet(doc),
       })),

@@ -459,10 +459,13 @@
   }
 
   /* shared tier: MainStat. */
+  /* minmax(0, ...) so the pill yields instead of the row overflowing; the value column is cut from
+     5em, which left 30px of dead space at the end of every row, to the circle plus the room the
+     modifier dot needs to sit clear of it. */
   .mothership .mainstat {
     position: relative;
     display: grid;
-    grid-template-columns: 1fr 5em;
+    grid-template-columns: minmax(0, 1fr) 4.6em;
     align-items: center;
     gap: 0;
     width: 100%;
@@ -676,7 +679,6 @@
     margin-right: calc(var(--space-12) * -1);
     font-size: var(--font-size-lg);
     font-weight: bold;
-    text-transform: uppercase;
     background: var(--surface-neutral-lowest);
     color: var(--text-inverted);
     padding: var(--space-6);
@@ -756,7 +758,6 @@
 
   .mothership .card-rule-label {
     font-size: var(--font-size-xs);
-    text-transform: uppercase;
     letter-spacing: var(--body-sm-letter-spacing);
   }
 
@@ -786,10 +787,9 @@
 
   /* Dialog V2 shell tier: keyed on the class svelte-dialog.ts puts on the frame. The chrome
      selectors (.window-header, .window-content, .form-footer button, …) match elements Foundry
-     renders, which no <style> block can reach. The body vocabulary is down to macro_window,
-     macro_desc and the radio, which the three windows under module/ui/ that have not moved to
-     Prompt still write — every dialog under module/dialogs/ draws its body from Prompt, which
-     owns its own styles. */
+     renders, which no <style> block can reach. The body vocabulary is down to macro_window and
+     macro_desc, which the two windows under module/ui/ that have not moved to ChoiceList still
+     write — every other dialog body draws its list from ChoiceList, which owns its own styles. */
   .mothership.application.dialog.macro-popup-dialog {
   	background: var(--surface-neutral-paper);
   	font-family: "Barlow", sans-serif;
@@ -860,62 +860,6 @@
     background: var(--surface-neutral-lower);
     color: var(--text-inverted);
     border-color: var(--border-neutral-ink);
-  }
-
-  .mothership.macro-popup-dialog input[type="radio"] {
-    appearance: none;
-    -webkit-appearance: none;
-    accent-color: initial;
-    box-sizing: border-box;
-    width: 16px;
-    height: 16px;
-    border: var(--border-width-2) solid var(--color-neutral-600);
-    border-radius: 50%;
-    background: var(--surface-neutral-paper);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 0;
-    margin: var(--space-0) var(--space-8) var(--space-0) var(--space-2);
-    vertical-align: middle;
-
-    /* !important beats Foundry's core theme glow: module CSS outranks layer(system) here. */
-    box-shadow: none !important;
-    outline: none;
-  }
-
-  .mothership.macro-popup-dialog input[type="radio"]::before {
-    content: "";
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--surface-neutral-lowest);
-    transform: scale(0);
-    transition: transform 120ms ease-in-out;
-  }
-
-  .mothership.macro-popup-dialog input[type="radio"]:checked::before {
-    transform: scale(1);
-  }
-
-  .mothership.macro-popup-dialog input[type="radio"]:checked::after {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    transform: scale(0);
-    background: var(--surface-neutral-paper);
-  }
-
-  .mothership.macro-popup-dialog input[type="radio"]:hover { border-color: #5c5c5c; }
-  .mothership.macro-popup-dialog input[type="radio"]:focus-visible {
-    outline: var(--border-width-2) solid var(--color-neutral-400);
-    outline-offset: var(--space-2);
-  }
-
-  /* !important strips a theme's :has(input:checked) row highlight, which outranks layer(system). */
-  .mothership.macro-popup-dialog label:has(input[type="radio"]:checked) {
-    background: inherit !important;
-    box-shadow: none !important;
   }
 
   /* Applied when a condition is preselecting this roll — border/glow marks the autofocused

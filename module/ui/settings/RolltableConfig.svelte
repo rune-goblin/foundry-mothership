@@ -83,7 +83,6 @@
       font-size: var(--rolltableconfig-title-font-size);
       font-weight: var(--rolltableconfig-title-font-weight);
       text-align: center;
-      text-transform: uppercase;
     }
 
     /* Same specificity as `.circlestattitle` above; overrides it on source order alone. Keep

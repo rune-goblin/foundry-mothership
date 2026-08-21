@@ -75,13 +75,15 @@ export class MothershipCreatureModel extends foundry.abstract.TypeDataModel {
       biography: html(''),
       notes: html(''),
       description: html('This is a description'),
+      // PSG 41, "Improving Loyalty": a Contractor is a creature that also tracks Loyalty. That is
+      // the only thing a creature can be that changes which stats it carries, so it is one flag
+      // and not a row of them.
+      contractor: bool(false),
       stats: new fields.SchemaField({
-        combat: stat(10, 'Combat', 'Combat Check', { enabled: true }),
-        instinct: stat(10, 'Instinct', 'Instinct Check', { enabled: true }),
-        // PSG 41, "Improving Loyalty": Contractors are run as creatures and track Loyalty.
-        // Nothing else in 1e has it, so it stays off until a creature is a contractor.
-        loyalty: stat(10, 'Loyalty', 'Loyalty Check', { enabled: false }),
-        armor: stat(0, 'Armor', 'Armor Save', { armor: true, enabled: false }),
+        combat: stat(10, 'Combat', 'Combat Check'),
+        instinct: stat(10, 'Instinct', 'Instinct Check'),
+        loyalty: stat(10, 'Loyalty', 'Loyalty Check'),
+        armor: stat(0, 'Armor', 'Armor Save', { armor: true }),
       }),
       // Stash for the swarm toggle's combat multiplier: must stay in the schema or a
       // SchemaField strips it, making the multiplication permanent instead of reversible.

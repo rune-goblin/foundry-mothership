@@ -3,7 +3,7 @@ import { enrich } from '../enrich.ts';
 import { format, localize } from '../i18n.ts';
 import type { Amount } from '../mutation/mutate.ts';
 import type { Advantage, StatKey } from '../rolls/spec.ts';
-import { COVER_KEYS, COVER_LABEL, type Cover } from '../rules.ts';
+import { COVER_EXAMPLES, COVER_KEYS, COVER_LABEL, type Cover } from '../rules.ts';
 import { WOUND_TABLE_KEYS, type TableKey } from '../tables/tables.ts';
 import CheckPrompt from './CheckPrompt.svelte';
 import CoverPrompt from './Cover.svelte';
@@ -117,7 +117,7 @@ async function pickStat(
     options: rows.map((entry) => ({
       key: entry.key,
       label: localize(entry.label),
-      value: values[entry.key] === undefined ? '' : String(values[entry.key]),
+      cells: [{ text: values[entry.key] === undefined ? '' : String(values[entry.key]), boxed: true }],
       amount: values[entry.key],
       description: localize(entry.example),
     })),
@@ -219,8 +219,10 @@ export async function chooseSkill(options: SkillPrompt): Promise<ChosenSkill | n
       ...skills.map((skill) => ({
         key: skill.id,
         label: skill.name,
-        note: skill.rank === null ? '' : localize(`Mothership.SkillRank${skill.rank}`),
-        value: `+${skill.bonus}`,
+        cells: [
+          skill.rank === null ? '' : localize(`Mothership.SkillRank${skill.rank}`),
+          { text: `+${skill.bonus}`, boxed: true },
+        ],
         amount: skill.bonus,
         description: skill.description,
       })),
@@ -323,13 +325,6 @@ export async function outOfAmmo(): Promise<void> {
   });
 }
 
-const COVER_LABELS: Readonly<Record<Cover, { readonly label: string; readonly examples: string }>> = {
-  none: { label: COVER_LABEL.none, examples: 'Mothership.UnprotectedOutInTheOpen' },
-  insignificant: { label: COVER_LABEL.insignificant, examples: 'Mothership.WoodFurnitureDoorsShields' },
-  light: { label: COVER_LABEL.light, examples: 'Mothership.TreesBulkheadWallMetalFurniture' },
-  heavy: { label: COVER_LABEL.heavy, examples: 'Mothership.AirlockDoorsCementBeamsShips' },
-};
-
 export interface CoverPromptArmor {
   readonly armorPoints: number;
   readonly damageReduction: number;
@@ -338,8 +333,8 @@ export interface CoverPromptArmor {
 export async function chooseCover(current: Cover, armor: CoverPromptArmor): Promise<Cover | null> {
   const options = COVER_KEYS.map((key) => ({
     key,
-    label: localize(COVER_LABELS[key].label),
-    examples: localize(COVER_LABELS[key].examples),
+    label: localize(COVER_LABEL[key]),
+    examples: localize(COVER_EXAMPLES[key]),
   }));
   const props = {
     heading: localize('Mothership.Cover'),

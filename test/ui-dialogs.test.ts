@@ -39,20 +39,20 @@ const only = (): OpenDialog => {
   return opened[0];
 };
 
-const select = (id: string, value: string): void => {
-  const node = only().element.querySelector<HTMLSelectElement>(`#${id}`)!;
+const select = (selector: string, value: string): void => {
+  const node = only().element.querySelector<HTMLSelectElement>(selector)!;
   node.value = value;
   node.dispatchEvent(new Event('change', { bubbles: true }));
 };
 
-const type = (id: string, value: string): void => {
-  const node = only().element.querySelector<HTMLInputElement>(`#${id}`)!;
+const type = (selector: string, value: string): void => {
+  const node = only().element.querySelector<HTMLInputElement>(selector)!;
   node.value = value;
   node.dispatchEvent(new Event('input', { bubbles: true }));
 };
 
-const check = (id: string): void => {
-  only().element.querySelector<HTMLInputElement>(`#${id}`)!.click();
+const check = (selector: string): void => {
+  only().element.querySelector<HTMLElement>(selector)!.click();
 };
 
 describe('promptNewSkill', () => {
@@ -79,8 +79,8 @@ describe('promptNewSkill', () => {
     const { actor, created } = actorOf();
     const done = promptNewSkill(actor);
 
-    type('name', 'Zero-G');
-    select('rank', 'Expert');
+    type('#name', 'Zero-G');
+    select('#rank', 'Expert');
     await only().press('create');
     await done;
 
@@ -172,8 +172,8 @@ describe('promptAddItem', () => {
   const settle = () => new Promise((resolve) => setTimeout(resolve));
 
   const radios = (): string[] =>
-    [...only().element.querySelectorAll<HTMLInputElement>('input[type=radio]')].map(
-      (node) => node.id,
+    [...only().element.querySelectorAll<HTMLElement>('[role=radio]')].map(
+      (node) => node.dataset.choice!,
     );
 
   it('orders skills weakest rank first, alphabetically inside a rank', async () => {
@@ -181,7 +181,7 @@ describe('promptAddItem', () => {
     const done = promptAddItem(actorOf().actor, 'skill');
     await settle();
 
-    expect(radios()).toEqual(['pick-sk-a', 'pick-sk-b', 'pick-sk-x']);
+    expect(radios()).toEqual(['sk-a', 'sk-b', 'sk-x']);
 
     only().dismiss();
     await done;
@@ -194,15 +194,15 @@ describe('promptAddItem', () => {
     await settle();
 
     const radio = (id: string) =>
-      only().element.querySelector<HTMLInputElement>(`#pick-${id}`)!;
+      only().element.querySelector<HTMLButtonElement>(`[data-choice="${id}"]`)!;
     expect(radio('sk-x').disabled).toBe(true);
     expect(radio('sk-b').disabled).toBe(false);
 
-    check('pick-enforce');
+    check('#pick-enforce');
     await settle();
     expect(radio('sk-x').disabled).toBe(false);
 
-    check('pick-sk-x');
+    check('[data-choice="sk-x"]');
     await only().press('add');
     await done;
 
@@ -220,7 +220,7 @@ describe('promptAddItem', () => {
       await settle();
 
       expect(
-        only().element.querySelector<HTMLInputElement>('#pick-sk-x')!.disabled,
+        only().element.querySelector<HTMLButtonElement>('[data-choice="sk-x"]')!.disabled,
       ).toBe(false);
 
       only().dismiss();
@@ -234,10 +234,10 @@ describe('promptAddItem', () => {
     const done = promptAddItem(actor, 'skill');
     await settle();
 
-    check('pick-enforce');
+    check('#pick-enforce');
     await settle();
-    check('pick-sk-x');
-    check('pick-enforce');
+    check('[data-choice="sk-x"]');
+    check('#pick-enforce');
     await settle();
 
     await only().press('add');
@@ -250,13 +250,13 @@ describe('promptAddItem', () => {
     const done = promptAddItem(actorOf().actor, 'weapon');
     await settle();
 
-    type('pick-filter', 'laser');
+    type('#choice-filter', 'laser');
     await settle();
-    expect(radios()).toEqual(['pick-wp-l']);
+    expect(radios()).toEqual(['wp-l']);
 
-    type('pick-filter', '');
+    type('#choice-filter', '');
     await settle();
-    expect(radios()).toEqual(['pick-wp-l', 'pick-wp-r']);
+    expect(radios()).toEqual(['wp-l', 'wp-r']);
 
     only().dismiss();
     await done;
@@ -268,7 +268,7 @@ describe('promptAddItem', () => {
     const done = promptAddItem(actor, 'weapon');
     await settle();
 
-    check('pick-wp-r');
+    check('[data-choice="wp-r"]');
     await only().press('add');
     await done;
 
@@ -319,10 +319,10 @@ describe('promptAddItem', () => {
     const done = promptAddItem(actor, 'condition');
     await settle();
 
-    expect(radios()).toEqual(['pick-cn-a', 'pick-cn-b']);
+    expect(radios()).toEqual(['cn-a', 'cn-b']);
     expect(only().buttons.map((button) => button.action)).toEqual(['add', 'cancel']);
 
-    check('pick-cn-b');
+    check('[data-choice="cn-b"]');
     await only().press('add');
     await done;
 
@@ -346,9 +346,9 @@ describe('promptStatOption', () => {
   it('answers with the value and the stats it may be spent on', async () => {
     const answer = promptStatOption();
 
-    type('modification', '-10');
-    check('speed');
-    check('strength');
+    type('#modification', '-10');
+    check('#speed');
+    check('#strength');
     await only().press('create');
 
     await expect(answer).resolves.toEqual({ modification: -10, stats: ['strength', 'speed'] });
@@ -358,8 +358,8 @@ describe('promptStatOption', () => {
   it('answers with a number, and with zero for a blank', async () => {
     const answer = promptStatOption();
 
-    check('strength');
-    check('fear');
+    check('#strength');
+    check('#fear');
     await only().press('create');
 
     await expect(answer).resolves.toEqual({ modification: 0, stats: ['strength', 'fear'] });
@@ -368,7 +368,7 @@ describe('promptStatOption', () => {
   it('refuses an entry naming fewer than two stats, and says why', async () => {
     const answer = promptStatOption();
 
-    check('strength');
+    check('#strength');
     await only().press('create');
 
     await expect(answer).resolves.toBeNull();

@@ -127,8 +127,8 @@ test.describe('the remade core, executed live', () => {
   });
 
   for (const [label, roll, verdict] of [
-    ['succeeds', 5, 'SUCCESS!'],
-    ['crits', 11, 'CRITICAL SUCCESS!'],
+    ['succeeds', 5, 'Success!'],
+    ['crits', 11, 'Critical Success!'],
   ] as const) {
     test(`a Strength Check that ${label} posts a ChatMessage saying so`, async ({ gmPage }) => {
       await create(gmPage, { stats: { strength: { value: 60 } } });

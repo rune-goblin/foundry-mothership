@@ -5,6 +5,8 @@
   import ItemList from '../parts/ItemList.svelte';
   import ItemRow from '../parts/ItemRow.svelte';
   import MainStat from '../parts/MainStat.svelte';
+  import RollableStat from '../parts/RollableStat.svelte';
+  import ArmorBlock from '../parts/sections/ArmorBlock.svelte';
   import HealthBlock from '../parts/sections/HealthBlock.svelte';
   import { onActivate } from '../parts/activate.js';
   import { localize } from '../../i18n.ts';
@@ -27,17 +29,8 @@
     { key: 'instinct', label: 'Mothership.Instinct' },
   ];
 
-  // Loyalty is a Contractor's, and Armor Points appear only where a horror has any: both stay
-  // off until the creature settings turn them on.
-  const OPTIONAL = [
-    { key: 'loyalty', label: 'Mothership.Loyalty' },
-    { key: 'armor', label: 'Mothership.Armor' },
-  ];
-
-  const enabled = (stats) => stats.filter((stat) => system.stats[stat.key].enabled);
-
   const heroes = $derived(
-    enabled(HERO).map((stat) => ({
+    HERO.map((stat) => ({
       ...stat,
       // A swarm's combat value is a whole wound's worth of attacks, so the label says so.
       text:
@@ -46,8 +39,6 @@
           : localize(stat.label),
     }))
   );
-
-  const extras = $derived(enabled(OPTIONAL));
 
   const damageText = (weapon) =>
     weapon.system.antiArmor
@@ -63,8 +54,7 @@
   const damageRoll = (id) => () =>
     actor.rollWeapon(id, { roll: 'damage', damage: actor.swarmDamage(id) });
 
-  // Cover is the only thing the armour readout has ever rolled; AP itself is a plain number.
-  const armorRoll = () => actor.chooseCover();
+  const setCover = (cover) => actor.update({ 'system.stats.armor.cover': cover });
 </script>
 
 {#snippet bar(title, control)}
@@ -93,6 +83,29 @@
       value={doc.name}
       placeholder={localize('Mothership.Name')}
     />
+
+    <!-- Loyalty is a Contractor's alone, and the plate is where it costs the stat block below no
+         height: the sheet is the same shape whether a creature is a contractor or not. -->
+    {#if system.contractor}
+      <div class="creature-plate-stats">
+        <div class="creature-plate-stat">
+          <RollableStat
+            key="loyalty"
+            label={localize('Mothership.Loyalty')}
+            class="creature-plate-label"
+            dieTone="solid"
+            onroll={statRoll('loyalty')}
+          />
+          <input
+            class="circle-input"
+            type="text"
+            name="system.stats.loyalty.value"
+            value={system.stats.loyalty.value}
+            data-dtype="Number"
+          />
+        </div>
+      </div>
+    {/if}
   </header>
 
   <div class="creature-hero">
@@ -108,23 +121,14 @@
     {/each}
   </div>
 
-  <div class="creature-vitals grid grid-2col">
+  <div class="creature-vitals grid grid-3col">
     <HealthBlock health={system.health} hits={system.hits} />
+    <ArmorBlock
+      armor={system.stats.armor}
+      name="system.stats.armor.value"
+      oncover={setCover}
+    />
   </div>
-
-  {#if extras.length}
-    <div class="creature-extras">
-      {#each extras as stat (stat.key)}
-        <MainStat
-          key={stat.key}
-          label={localize(stat.label)}
-          name="system.stats.{stat.key}.value"
-          value={system.stats[stat.key].value}
-          onroll={stat.key === 'armor' ? armorRoll : statRoll(stat.key)}
-        />
-      {/each}
-    </div>
-  {/if}
 
   <div class="creature-columns">
     <div class="creature-column">
@@ -249,7 +253,14 @@
       --creaturesheet-name-font-weight: var(--font-weight-bold);
 
       --creaturesheet-hero-gap: var(--space-32);
-      --creaturesheet-extras-gap: var(--space-16);
+
+      --creaturesheet-plate-stats-gap: var(--space-20);
+      --creaturesheet-plate-label-font-family: var(--font-display);
+      --creaturesheet-plate-label-font-size: var(--font-size-md);
+      --creaturesheet-plate-label-font-weight: var(--font-weight-bold);
+      --creaturesheet-plate-label-text: var(--text-inverted);
+      --creaturesheet-plate-label-letter-spacing: var(--letter-spacing-wide);
+      --creaturesheet-plate-stat-gap: var(--space-6);
 
       --creaturesheet-bar-gap: var(--space-8);
       --creaturesheet-bar-rule-width: var(--border-width-3);
@@ -288,7 +299,7 @@
 
     .creature-masthead {
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr);
+      grid-template-columns: auto minmax(0, 1fr) auto;
       align-items: center;
       gap: var(--creaturesheet-masthead-gap);
       padding: var(--creaturesheet-masthead-padding-block)
@@ -317,7 +328,6 @@
       font-size: var(--creaturesheet-name-font-size);
       font-weight: var(--creaturesheet-name-font-weight);
       line-height: var(--line-height-tightest);
-      text-transform: uppercase;
     }
 
     .creature-hero {
@@ -327,17 +337,36 @@
       padding-inline: var(--creaturesheet-padding-inline);
     }
 
-    .creature-vitals,
-    .creature-extras {
+    /* start, not stretch: the armour block is the tall one, and stretching its neighbours pulls
+       their Current/Maximum captions down to its baseline. */
+    .creature-vitals {
+      align-items: start;
       padding-inline: var(--creaturesheet-padding-inline);
     }
 
-    /* One row whatever the settings turn on, so a lone stat never wraps onto a line of its own. */
-    .creature-extras {
-      display: grid;
-      grid-auto-flow: column;
-      grid-auto-columns: minmax(0, 1fr);
-      gap: var(--creaturesheet-extras-gap);
+    /* The optional stats ride the plate, where they cost the body no height: the sheet below is
+       the same shape whether a creature is a contractor, wears armour, or is neither. */
+    .creature-plate-stats {
+      display: flex;
+      align-items: center;
+      gap: var(--creaturesheet-plate-stats-gap);
+    }
+
+    .creature-plate-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--creaturesheet-plate-stat-gap);
+    }
+
+    /* :global reaches the span RollableStat renders, which this block cannot select directly. */
+    .creature-plate-stat :global(.creature-plate-label) {
+      color: var(--creaturesheet-plate-label-text);
+      font-family: var(--creaturesheet-plate-label-font-family);
+      font-size: var(--creaturesheet-plate-label-font-size);
+      font-weight: var(--creaturesheet-plate-label-font-weight);
+      letter-spacing: var(--creaturesheet-plate-label-letter-spacing);
+      white-space: nowrap;
     }
 
     .creature-bar {
@@ -355,7 +384,6 @@
       font-weight: var(--creaturesheet-bar-font-weight);
       letter-spacing: var(--creaturesheet-bar-letter-spacing);
       line-height: var(--line-height-none);
-      text-transform: uppercase;
       white-space: nowrap;
     }
 
@@ -462,7 +490,6 @@
       font-size: var(--creaturesheet-special-title-font-size);
       font-weight: var(--creaturesheet-special-title-font-weight);
       line-height: var(--line-height-tightest);
-      text-transform: uppercase;
     }
 
     .creature-special-text {
