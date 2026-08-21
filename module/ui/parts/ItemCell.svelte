@@ -1,4 +1,5 @@
 <script>
+  import RollDie from './RollDie.svelte';
   import { onActivate } from './activate.js';
 
   let {
@@ -6,6 +7,7 @@
     grow,
     variant = 'stat',
     roll = false,
+    die = false,
     class: extra = '',
     onclick,
     oncontextmenu,
@@ -29,12 +31,18 @@
 </script>
 
 <div
-  class={[`skill-${variant}`, roll && 'list-roll', extra]}
+  class={[`skill-${variant}`, roll && 'list-roll', die && 'has-die', extra]}
   style={grow ? `flex-grow: ${grow};` : undefined}
   {title}
   {...interactive}
 >
-  {@render children()}
+  {#if die}
+    <span class="cell-label">{@render children()}</span>
+    <!-- The name variant is a black pill, where the muted die silts up. -->
+    <RollDie tone={variant === 'name' ? 'solid' : 'muted'} />
+  {:else}
+    {@render children()}
+  {/if}
 </div>
 
 <style>
@@ -69,6 +77,9 @@
       --itemcell-name-height: 27px; /* measurement, not a spacing-scale step */
       --itemcell-name-margin-inline-start: var(--space-0);
       --itemcell-name-padding: var(--space-2);
+      /* Clears the pill's cap: at 27px tall the ends curve for about half that, so a badge's
+         word and die are inset this far to sit inside the straight part. */
+      --itemcell-name-padding-inline: var(--space-12);
       --itemcell-name-radius: var(--radius-xl);
 
       color: var(--itemcell-name-text);
@@ -81,6 +92,24 @@
       border-radius: var(--itemcell-name-radius);
       text-align: center;
       overflow: hidden;
+    }
+
+    /* A badge reads left to right: the name on the pill's left edge, the die on its right. Must
+       stay after the `.skill-name` rule above — equal specificity, so order decides the padding. */
+    .skill-name.has-die {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-inline: var(--itemcell-name-padding-inline);
+    }
+
+    /* The die keeps its size and the name gives way, so a long name ellipsizes rather than
+       pushing the die out of the pill. */
+    .has-die .cell-label {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 </style>

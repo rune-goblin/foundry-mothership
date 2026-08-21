@@ -234,23 +234,17 @@
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
-  .mothership .flex-group-center,
-  .mothership .flex-group-left {
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    text-align: center;
-    padding: var(--space-4);
-  }
-
+  /* `flex-group-center` shared this rule until the character sheet's saves became MainStats and
+     stopped being the only thing that wrote it. */
   .mothership .flex-group-left {
     -webkit-box-pack: start;
     -ms-flex-pack: start;
     justify-content: flex-start;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
     text-align: left;
+    padding: var(--space-4);
   }
 
   .mothership .flex-center {
@@ -274,6 +268,23 @@
   .mothership input {
     font-weight: inherit;
     font-family: "Barlow", sans-serif;
+  }
+
+  /* Foundry's elements.forms layer paints a 2px focus outline on the input itself. Ours are
+     borderless children of the shape that reads as the field (`.headerinputfield`'s pill,
+     `.valuewrapper`), so it draws a rectangle inside a stadium. The caret marks focus.
+     `select` keeps its outline — it has no caret. */
+  .mothership :is(
+    input[type="text"],
+    input[type="number"],
+    input[type="password"],
+    input[type="search"],
+    input[type="date"],
+    input[type="time"],
+    input[type="datetime-local"],
+    textarea
+  ):focus {
+    outline: none;
   }
 
 
@@ -354,40 +365,6 @@
   /* Shared stat vocabulary (below): read by MainStat, RollableStat, RollBox, CircleStats,
      Wizard, CreatureSheet — hand-written, so it can't dissolve into scoped <style> blocks.
      Several rules share equal specificity and depend on source order; do not reorder them. */
-
-  /* shared tier: CharacterSheet. Padding stays zeroed — ApplicationV2's wider input padding
-     overflows the 28px pill on a two-digit bonus. */
-  .mothership .mainstatmod-input {
-    font-family: "Chakra Petch", sans-serif;
-    height: 26px;
-    width: 28px;
-    padding: 0;
-    border: 0;
-    border-radius: var(--radius-full);
-    color: var(--color-danger-300);
-    font-size: var(--font-size-sm);
-    font-weight: bold;
-    text-align: center;
-    margin-left: calc(var(--space-24) * -1);
-    z-index: 5;
-    background: var(--surface-neutral-paper);
-    top: var(--space-8);
-    left: var(--space-12);
-    position: relative;
-    background: var(--surface-neutral-highest);
-  }
-
-  /* shared tier: CharacterSheet. */
-  .mothership .mainstatmod-title {
-    position: relative;
-    color: var(--text-disabled);
-    font-size: var(--font-size-lg);
-    line-height: 1;
-    margin-left: calc(var(--space-40) * -1);
-    pointer-events: none;
-    top: var(--space-12);
-    left: var(--space-12);
-  }
 
   /* shared tier: Field (its numeric variant), MinMaxField, ArmorBlock, Cover. */
   .mothership .maxhealth-input {
@@ -478,7 +455,7 @@
   /* shared tier: MainStat, CreatureSheet. */
   .mothership .mainstatwrapper {
     display: flex;
-    width: 95%;
+    width: 100%;
   }
 
   /* shared tier: MainStat. */
@@ -488,7 +465,7 @@
     grid-template-columns: 1fr 5em;
     align-items: center;
     gap: 0;
-    width: 98%;
+    width: 100%;
   }
 
   /* shared tier: CircleStats (SkillSheet), RolltableConfig. */
@@ -545,6 +522,20 @@
     height: 35px;
   }
 
+  /* shared tier: RollableStat (via class prop) — the rollable stat pill only, which is
+     MainStat's black label. The caption fills the pill so the die rides its right edge: the gap
+     to the number circle then reads the same on every row, whatever the word's length. The
+     plain caption keeps the inline flow, since it has nothing to push. */
+  .mothership .mainstattext.stat-roll {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* The pill's own height, and no block padding of its own: a caption taller than the pill
+       would push the word below its centre. */
+    height: 100%;
+    padding-block: var(--space-0);
+  }
+
   /* shared tier: MainStat (plain caption), RollableStat (via class prop). Must stay below the
      `:where(.mothership) .rollable:hover` rule — same specificity, order decides. */
   .mothership .mainstattext {
@@ -558,8 +549,8 @@
   }
 
 
-  /* shared tier: MainStat, RollBox, Wizard — which writes the class on the readonly circles it
-     fills in itself. */
+  /* shared tier: MainStat, RollButton, RollBox and GearPane — the last two write it on the
+     readonly circles they fill in once the roll lands. */
   .mothership .circle-input {
     font-family: "Chakra Petch", sans-serif;
     margin: calc(var(--space-2) * -1);
@@ -576,17 +567,30 @@
   }
 
 
-  /* shared tier: RollableStat (via class prop). Must stay below the
-     `:where(.mothership) .rollable:hover` rule — same specificity, order decides. */
-  .mothership .savetext {
-    font-family: "Chakra Petch", sans-serif;
-    display: block;
-    margin-bottom: var(--space-4);
+  /* shared tier: MainStat's `size="lg"` — CreatureSheet's Combat and Instinct, the two stats a
+     Warden rolls all night. Every rule below outranks its base by the extra class, so the pair
+     can sit anywhere in source order. The measurements are the pill and circle at 1.3x. */
+  .mothership .mainstatwrapper.is-lg {
     width: 100%;
-    color: var(--text-inverted);
-    font-size: var(--font-size-sm);
-    font-weight: bold;
-    text-align: center;
+  }
+
+  .mothership .mainstat.is-lg {
+    grid-template-columns: 1fr 4.4em;
+    width: 100%;
+  }
+
+  .mothership .mainstat.is-lg .mainstatlabel {
+    height: 46px;
+  }
+
+  .mothership .mainstat.is-lg .mainstattext {
+    font-size: var(--font-size-4xl);
+  }
+
+  .mothership .mainstat.is-lg .circle-input {
+    height: 66px;
+    width: 66px;
+    font-size: var(--font-size-5xl);
   }
 
   /* shared tier: CharacterSheet, SheetHeader. */
@@ -625,17 +629,6 @@
     border-radius: var(--radius-4xl);
     font-size: var(--font-size-lg);
     margin-right: var(--space-16);
-  }
-
-  /* Stays here: CreatureSheet hands this to RollableStat as a class prop, but the plain input
-     beside the label wears it too — a scoped block can't reach both. */
-  .mothership .creaturestat {
-    margin-left: var(--space-4);
-    height: auto;
-    font-size: var(--font-size-md);
-    text-transform: uppercase;
-    font-family: "Chakra Petch", sans-serif;
-    color:white;
   }
 
   .mothership .editor {
@@ -793,10 +786,10 @@
 
   /* Dialog V2 shell tier: keyed on the class svelte-dialog.ts puts on the frame. The chrome
      selectors (.window-header, .window-content, .form-footer button, …) match elements Foundry
-     renders, which no <style> block can reach; the body vocabulary (macro_window, macro_desc,
-     condition-modifier, …) is hand-written by eleven components mounted into this one shell, so
-     no scoped block reaches more than a fraction of the writers. `macro_prompt` stays on the
-     markup — test/dialogs.test.ts locates by it. */
+     renders, which no <style> block can reach. The body vocabulary is down to macro_window,
+     macro_desc and the radio, which the three windows under module/ui/ that have not moved to
+     Prompt still write — every dialog under module/dialogs/ draws its body from Prompt, which
+     owns its own styles. */
   .mothership.application.dialog.macro-popup-dialog {
   	background: var(--surface-neutral-paper);
   	font-family: "Barlow", sans-serif;
@@ -932,12 +925,6 @@
     box-shadow: var(--ring-danger);
   }
 
-  .mothership.macro-popup-dialog .condition-modifier {
-    color: var(--color-danger-500);
-    font-style: italic;
-    margin-bottom: var(--space-6);
-  }
-
   /* [+]/[-] are PSG notation, not language — belongs in CSS, not lang/en.json. A plain roll
      carries the bare `roll-mark`, holding the column open so the three labels align down the rail. */
   .mothership.macro-popup-dialog .form-footer button i.roll-mark {
@@ -1001,6 +988,7 @@
   /* Foundry stamps `autofocus` on the default button — the same attribute makes Enter submit
      it and marks it here as the default. */
   .mothership.macro-popup-rail .form-footer button[autofocus] {
+    position: relative;
     background: var(--color-neutral-850);
     color: var(--text-inverted);
     border-color: var(--color-neutral-850);
@@ -1015,9 +1003,12 @@
     border-color: var(--color-neutral-950);
   }
 
+  /* Out of flow, so the widest label — Disadvantage, the one a condition preselects — keeps the
+     whole button to itself instead of pushing this badge past the border. */
   .mothership.macro-popup-rail .form-footer button[autofocus]::after {
     content: "\21B5";
-    margin-left: auto;
+    position: absolute;
+    right: var(--space-10);
     padding: var(--space-0) var(--space-4);
     font-family: var(--font-sans-mothership);
     font-size: var(--font-size-xs);

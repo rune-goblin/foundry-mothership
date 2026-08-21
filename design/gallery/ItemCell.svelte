@@ -3,7 +3,7 @@
     group: 'Primitives',
     title: 'ItemCell',
     path: 'module/ui/parts/ItemCell.svelte',
-    note: 'The two cells a row is built from: the plain `stat` readout and the black `name` pill. `roll` adds the hover cue; a cell with a handler gets the button role, a tab stop and a key handler, and one without gets none of them.',
+    note: 'The two cells a row is built from: the plain `stat` readout and the black `name` pill. `roll` adds the hover cue; a cell with a handler gets the button role, a tab stop and a key handler, and one without gets none of them. `die` makes the cell a badge — name at the pill\'s left edge, die at its right — which is what the skill, weapon and attack rows wear.',
   };
 </script>
 
@@ -20,5 +20,11 @@
     <ItemCell grow={1}>3d10</ItemCell>
     <ItemCell grow={1} roll onclick={say('+1')} oncontextmenu={say('-1')} title="Left adds, right removes">4</ItemCell>
     <ItemCell grow={1}>Long</ItemCell>
+  </ItemRow>
+
+  <ItemRow itemId="badge">
+    <ItemCell variant="name" die grow={2} roll onclick={say('rolled the badge')}>Talons</ItemCell>
+    <ItemCell die grow={1} roll onclick={say('rolled damage')}>2d10</ItemCell>
+    <ItemCell grow={2}>A name long enough to need the ellipsis the badge gives it</ItemCell>
   </ItemRow>
 </ItemList>

@@ -1,8 +1,10 @@
 <script>
-  let { name, label, value } = $props();
+  // fill: take the height the row leaves instead of the fixed two lines, for a caller that gives
+  // this field a track of its own rather than a strip under a grid.
+  let { name, label, value, fill = false } = $props();
 </script>
 
-<div class="textarea-field">
+<div class={['textarea-field', fill && 'is-fill']}>
   <div class="resource-label">{label}</div>
   <textarea {name} rows="2" class="textarea-input" {value}></textarea>
 </div>
@@ -45,6 +47,20 @@
       resize: none;
       min-height: 0;
       overflow: hidden;
+    }
+
+    .textarea-field.is-fill {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      margin-left: var(--space-0);
+      grid-column: auto;
+    }
+
+    .is-fill .textarea-input {
+      flex: 1;
+      height: auto;
+      overflow: auto;
     }
   }
 </style>

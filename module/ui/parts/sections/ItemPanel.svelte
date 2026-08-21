@@ -7,12 +7,14 @@
   import ItemControl from '../ItemControl.svelte';
   import { localize } from '../../../i18n.ts';
 
-  let { headers, items, row, create, style } = $props();
+  // `image` false drops the leading art column, header spacer and all — for a list whose
+  // documents all carry the same placeholder, where the frame reads as a control that does nothing.
+  let { headers, items, row, create, style, image = true } = $props();
 </script>
 
 <ItemList {style}>
   <ItemRow header>
-    <ItemImage />
+    {#if image}<ItemImage />{/if}
     {#each headers as header (header.label)}
       <ItemCell grow={header.grow}>{header.label}</ItemCell>
     {/each}

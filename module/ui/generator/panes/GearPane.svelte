@@ -1,6 +1,6 @@
 <script>
   import MainStat from '../../parts/MainStat.svelte';
-  import { onActivate } from '../../parts/activate.js';
+  import RollButton from '../../parts/RollButton.svelte';
   import { localize } from '../../../i18n.ts';
   import { TABLES } from '../labels.js';
 
@@ -11,20 +11,6 @@
     await draft.roll('credits');
   }
 </script>
-
-{#snippet die(kind, onclick)}
-  <!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
-  <img
-    class="clicable-item circle-input"
-    src="icons/svg/d20-black.svg"
-    alt="roll"
-    data-roll={kind}
-    role="button"
-    tabindex="0"
-    {onclick}
-    onkeydown={onActivate(onclick)}
-  />
-{/snippet}
 
 <div class="wizard-prose">
   <p>{localize('Mothership.CharacterGenerator.Wizard.Gear.Loadout')}</p>
@@ -39,7 +25,7 @@
       <MainStat key={kind} label={localize(label)} wrapper={false}>
         {#snippet control()}
           {#if draft[kind] === null}
-            {@render die(kind, () => draft.rollTable(kind))}
+            <RollButton key={kind} onroll={() => draft.rollTable(kind)} />
           {:else}
             <input class="circle-input" type="text" readonly data-value={kind} value={draft[kind].roll} />
           {/if}
@@ -63,7 +49,7 @@
     <MainStat key="credits" label={localize('Mothership.Credits')} wrapper={false}>
       {#snippet control()}
         {#if draft.rolled.credits === null}
-          {@render die('credits', () => draft.roll('credits'))}
+          <RollButton key="credits" onroll={() => draft.roll('credits')} />
         {:else}
           <input class="circle-input" type="text" readonly data-value="credits" value={draft.rolled.credits} />
         {/if}
@@ -71,9 +57,11 @@
     </MainStat>
   </div>
 </div>
-<button type="button" class="wizard-bulk" data-roll="all" onclick={rollGear}>
-  {localize('Mothership.CharacterGenerator.Wizard.RollRemaining')}
-</button>
+{#if !draft.gearRolled}
+  <button type="button" class="wizard-bulk" data-roll="all" onclick={rollGear}>
+    {localize('Mothership.CharacterGenerator.Wizard.RollRemaining')}
+  </button>
+{/if}
 
 <style>
   @layer system {

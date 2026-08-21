@@ -4,7 +4,7 @@
     title: 'CreatureSheet',
     path: 'module/ui/creature/CreatureSheet.svelte',
     width: 820,
-    note: 'The same sections as the character sheet, over the creature’s own stat set — which stats show at all is a per-creature setting, and the weight column is hidden.',
+    note: 'The UCR stat block and nothing else: the name, the two stats a horror is rolled on, its wounds over its Health, its attacks and its special abilities. Speed, Loyalty, Sanity and AP appear only where the creature settings turn them on.',
   };
 </script>
 

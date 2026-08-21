@@ -34,10 +34,6 @@ export const BONUS_LABEL = Object.fromEntries([
   ['max_wounds', 'Mothership.Wounds'],
 ]);
 
-// Health isn't here: it's rolled on the next pane, and a row of nothing but dashes would be
-// the one line on the page saying nothing.
-export const LEDGER = [...STATS, ...SAVES, ['max_wounds', 'Mothership.Wounds']];
-
 export const DASH = '—';
 
 export const signed = (value) => (value > 0 ? `+${value}` : `${value}`);

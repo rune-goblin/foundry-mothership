@@ -3,7 +3,7 @@
     group: 'Sections',
     title: 'ArmorBlock',
     path: 'module/ui/parts/sections/ArmorBlock.svelte',
-    note: 'Derived armour points and damage reduction, each showing the bonus the chosen cover adds beside it. Both are read-only — `prepareDerivedData` owns the arithmetic.',
+    note: 'Two rows of one table: the armour you are wearing, then the armour the room is lending you. Both are read-only — `prepareDerivedData` owns the arithmetic. The chip at the bottom opens the cover prompt and rewrites the row above it; it is the only control here, and it does not roll. Each specimen is staged at the width the sheet gives the block.',
   };
 </script>
 
@@ -14,8 +14,8 @@
   const covers = ['none', 'insignificant', 'light', 'heavy'];
 </script>
 
-<div class="grid grid-4col">
+<div class="grid grid-4col" style="max-width: 640px;">
   {#each covers as cover (cover)}
-    <ArmorBlock armor={{ mod: 7, damageReduction: 0, cover }} onroll={say('roll armor save')} />
+    <ArmorBlock armor={{ mod: 7, damageReduction: 0, cover }} onchoose={say('choose cover')} />
   {/each}
 </div>

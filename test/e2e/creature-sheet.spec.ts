@@ -31,15 +31,6 @@ const stored = (page: Page, uuid: string, path: string) =>
     { u: uuid, p: path },
   );
 
-const itemField = (page: Page, uuid: string, itemId: string, path: string) =>
-  page.evaluate(
-    async ({ u, i, p }: { u: string; i: string; p: string }) => {
-      const actor = await (window as any).fromUuid(u);
-      return (window as any).foundry.utils.getProperty(actor.items.get(i).toObject(), p);
-    },
-    { u: uuid, i: itemId, p: path },
-  );
-
 // Playwright's drag helpers carry no dataTransfer, and Foundry reads the payload out of one.
 const dropOn = (page: Page, selector: string, documentUuid: string) =>
   page.evaluate(
@@ -79,9 +70,22 @@ test.describe('creature sheet', () => {
     await expect(sheet.locator('input[name="system.stats.combat.value"]')).toHaveValue('45');
     await expect(sheet.locator('input[name="system.stats.instinct.value"]')).toBeVisible();
     // Off by default, and the settings window is what turns them on.
-    for (const stat of ['speed', 'loyalty', 'armor', 'sanity']) {
+    for (const stat of ['loyalty', 'armor']) {
       await expect(sheet.locator(`input[name="system.stats.${stat}.value"]`)).toHaveCount(0);
     }
+  });
+
+  test('carries nothing a character sheet would carry', async ({ gmPage }) => {
+    const { appId, uuid } = await open(gmPage);
+    const sheet = gmPage.locator(`#${appId}`);
+    for (const type of ['skill', 'armor', 'item', 'condition']) {
+      await addItem(gmPage, uuid, { name: `__e2e_${type}`, type });
+    }
+
+    await expect(sheet.locator('a.tab-select')).toHaveCount(0);
+    await expect(sheet.locator('textarea[name="system.notes"], [name="system.biography"]')).toHaveCount(0);
+    // The four types above are still on the actor; the stat block just has no line for them.
+    await expect(sheet.locator('li.item[data-item-id]')).toHaveCount(0);
   });
 
   test('editing a stat persists through Foundry form handling', async ({ gmPage }) => {
@@ -98,87 +102,59 @@ test.describe('creature sheet', () => {
     await expect(gmPage.locator(`#${appId} span[data-key="combat"]`)).toContainText('W*');
   });
 
-  test('opens on the skills tab and switches', async ({ gmPage }) => {
-    const { appId } = await open(gmPage);
-    const sheet = gmPage.locator(`#${appId}`);
-
-    await expect(sheet.locator('.tab[data-tab="skills"]')).toBeVisible();
-    await sheet.locator('a.tab-select[data-tab="weapons"]').click();
-    await expect(sheet.locator('.tab[data-tab="weapons"]')).toBeVisible();
-    await expect(sheet.locator('.tab[data-tab="skills"]')).toHaveCount(0);
-  });
-
-  test('the notes tab shows bio and notes together', async ({ gmPage }) => {
-    const { appId } = await open(gmPage, {
-      notes: '<p>ate the away team</p>',
-      biography: '<p>found drifting near the derelict</p>',
-    });
-    const sheet = gmPage.locator(`#${appId}`);
-
-    await sheet.locator('a.tab-select[data-tab="notes"]').click();
-    await expect(sheet.locator('.tab[data-tab="notes"]')).toContainText('ate the away team');
-    await expect(sheet.locator('.tab[data-tab="notes"]')).toContainText('found drifting near the derelict');
-  });
-
-  test('a condition shows its treatment pips and steps them', async ({ gmPage }) => {
+  test('an attack rolls from its name and its damage', async ({ gmPage }) => {
     const { appId, uuid } = await open(gmPage);
     const id = await addItem(gmPage, uuid, {
-      name: '__e2e_frightened',
-      type: 'condition',
-      system: { severity: 2, treatment: { value: 1 } },
+      name: '__e2e_Talons',
+      type: 'weapon',
+      system: { damage: '4d10', range: 'adjacent' },
     });
-    await gmPage.locator(`#${appId} a.tab-select[data-tab="conditions"]`).click();
     const row = gmPage.locator(`#${appId} li.item[data-item-id="${id}"]`);
 
-    await expect(row).toContainText('__e2e_frightened');
-    await expect(row.locator('i.fas.fa-circle')).toHaveCount(1);
-    await expect(row.locator('i.far.fa-circle')).toHaveCount(2);
+    await expect(row).toContainText('__e2e_Talons');
+    await expect(row).toContainText('4d10');
 
-    await row.locator('.list-roll.flex').click();
-    await expect.poll(() => itemField(gmPage, uuid, id, 'system.treatment.value')).toBe(2);
-    await expect(row.locator('i.fas.fa-circle')).toHaveCount(2);
+    // The name opens the check prompt; dismiss it before the damage cell can be reached.
+    await row.locator('.skill-name').click();
+    await expect(gmPage.locator('.macro-popup-dialog')).toBeVisible();
+    await gmPage.keyboard.press('Escape');
+    await expect(gmPage.locator('.macro-popup-dialog')).toHaveCount(0);
+
+    await row.locator('.skill-stat.list-roll').click();
+    await expect
+      .poll(() =>
+        gmPage.evaluate(() =>
+          (window as any).game.messages.contents.map((m: any) => m.content).join(''),
+        ),
+      )
+      .toContain('__e2e_Talons');
   });
 
-  test('a gear row steps its quantity up on click and down on right click', async ({ gmPage }) => {
+  test('a special ability prints itself to chat', async ({ gmPage }) => {
     const { appId, uuid } = await open(gmPage);
     const id = await addItem(gmPage, uuid, {
-      name: '__e2e_ration',
-      type: 'item',
-      system: { quantity: 2 },
+      name: '__e2e_Acid_Blood',
+      type: 'ability',
+      system: { description: 'Splashes for 1d10 DMG.' },
     });
-    const sheet = gmPage.locator(`#${appId}`);
+    const block = gmPage.locator(`#${appId} .creature-special[data-item-id="${id}"]`);
 
-    await sheet.locator('a.tab-select[data-tab="items"]').click();
-    const quantity = sheet.locator(`li.item[data-item-id="${id}"] .skill-stat[role="button"]`);
-
-    await quantity.click();
-    await expect.poll(() => itemField(gmPage, uuid, id, 'system.quantity')).toBe(3);
-
-    await quantity.click({ button: 'right' });
-    await expect.poll(() => itemField(gmPage, uuid, id, 'system.quantity')).toBe(2);
+    await expect(block).toContainText('Splashes for 1d10 DMG.');
+    await block.locator('.creature-special-title').click();
+    await expect
+      .poll(() =>
+        gmPage.evaluate(() =>
+          (window as any).game.messages.contents.map((m: any) => m.content).join(''),
+        ),
+      )
+      .toContain('__e2e_Acid_Blood');
   });
 
-  test('an armour row equips and unequips', async ({ gmPage }) => {
-    const { appId, uuid } = await open(gmPage);
-    const id = await addItem(gmPage, uuid, { name: '__e2e_vac', type: 'armor' });
-    const sheet = gmPage.locator(`#${appId}`);
-
-    await sheet.locator('a.tab-select[data-tab="armor"]').click();
-    const box = sheet.locator(`li.item[data-item-id="${id}"] input[type="checkbox"]`);
-
-    await box.check();
-    await expect.poll(() => itemField(gmPage, uuid, id, 'system.equipped')).toBe(true);
-
-    await box.uncheck();
-    await expect.poll(() => itemField(gmPage, uuid, id, 'system.equipped')).toBe(false);
-  });
-
-  test('a panel adds a pack document through the picker, and deletes it', async ({ gmPage }) => {
+  test('the attack bar adds a pack weapon through the picker, and deletes it', async ({ gmPage }) => {
     const { appId, uuid } = await open(gmPage);
     const sheet = gmPage.locator(`#${appId}`);
 
-    await sheet.locator('a.tab-select[data-tab="weapons"]').click();
-    await sheet.locator('.item-header a.item-control').click();
+    await sheet.locator('.creature-attacks a.item-control').click();
 
     const picker = gmPage.locator('.macro-popup-dialog');
     await picker.locator('#pick-filter').fill('revolver');
@@ -202,7 +178,7 @@ test.describe('creature sheet', () => {
   // row Svelte adds during that same render has to be in the DOM by then.
   test('a row added while the sheet is open is draggable', async ({ gmPage }) => {
     const { appId, uuid } = await open(gmPage);
-    const id = await addItem(gmPage, uuid, { name: '__e2e_zerog', type: 'skill' });
+    const id = await addItem(gmPage, uuid, { name: '__e2e_talons', type: 'weapon' });
     await expect(gmPage.locator(`#${appId} li.item[data-item-id="${id}"]`)).toBeVisible();
 
     const payload = await gmPage.evaluate(

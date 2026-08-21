@@ -108,10 +108,8 @@ const CREATURE = {
   stats: {
     combat: { value: 35, enabled: true },
     instinct: { value: 40, enabled: true },
-    speed: { value: 25, enabled: true },
     loyalty: { value: 20, enabled: true },
     armor: { value: 5, damageReduction: 1, enabled: true },
-    sanity: { value: 15, enabled: true },
   },
   health: { value: 12, max: 15 },
   hits: { value: 1, max: 3 },
@@ -119,7 +117,7 @@ const CREATURE = {
   notes: '<p>ate the away team</p>',
 };
 
-/** One of each embedded type, so every item panel on both actor sheets draws a row. */
+/** One of each embedded type, so every item panel on the character sheet draws a row. */
 const LOADOUT = [
   { name: '__e2e_Zero-G', type: 'skill', system: { rank: 'Trained', bonus: 10 } },
   {
@@ -134,6 +132,26 @@ const LOADOUT = [
   },
   { name: '__e2e_Rations', type: 'item', system: { quantity: 3, weight: 1, cost: 15 } },
   { name: '__e2e_Bleeding', type: 'condition', system: { severity: 2, treatment: { value: 1 } } },
+];
+
+/** What a horror carries: the book's Attack line, and the special abilities under it. */
+const HORROR = [
+  { name: '__e2e_Talons', type: 'weapon', system: { damage: '4d10', range: 'adjacent' } },
+  {
+    name: '__e2e_Tail',
+    type: 'weapon',
+    system: { damage: '2d10', range: 'adjacent', antiArmor: true },
+  },
+  {
+    name: '__e2e_Acid_Blood',
+    type: 'ability',
+    system: { description: 'Anything that wounds it is splashed for 1d10 DMG, armour first.' },
+  },
+  {
+    name: '__e2e_Tail_Poison',
+    type: 'ability',
+    system: { description: 'Body Save [-] or fall unconscious.' },
+  },
 ];
 
 const ITEM_SHEETS = [
@@ -357,7 +375,7 @@ test.describe('visual baselines', () => {
   });
 
   test('the creature sheet', async ({ gmPage }) => {
-    const { appId } = await openActor(gmPage, 'creature', '__e2e_creature', CREATURE, LOADOUT);
+    const { appId } = await openActor(gmPage, 'creature', '__e2e_creature', CREATURE, HORROR);
     await capture(gmPage, gmPage.locator(`#${appId}`), 'window-creature-sheet');
   });
 
@@ -478,14 +496,14 @@ test.describe('visual baselines', () => {
     await expect(dialog).toBeVisible();
 
     // The window names the Skill that opened it — the paragraph it replaced never could.
-    await expect(dialog.locator('.check-intro')).toContainText('__e2e_Zero-G +10');
+    await expect(dialog.locator('.prompt-intro')).toContainText('__e2e_Zero-G +10');
     // The chip is the Stat's value, not a bonus, and the total adds the Skill to whichever is chosen.
     await expect(dialog.locator('[data-choice="strength"] .choice-value')).toHaveText('50');
-    await expect(dialog.locator('.check-readout-total')).toHaveText('60');
+    await expect(dialog.locator('.prompt-readout-value')).toHaveText('60');
     await expect(dialog.locator('.check-sum-working')).toHaveText('Strength 50 + __e2e_Zero-G 10');
 
     await dialog.locator('[data-choice="combat"]').click();
-    await expect(dialog.locator('.check-readout-total')).toHaveText('75');
+    await expect(dialog.locator('.prompt-readout-value')).toHaveText('75');
 
     // This window is the last before the dice, so it owns the roll type, and Normal is the default.
     await expect(dialog.locator('button[data-action="none"]')).toHaveAttribute('autofocus', '');

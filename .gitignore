@@ -24,3 +24,7 @@ playwright/.cache/
 
 # Agent worktrees (git metadata lives in .git/worktrees; never a repo file)
 .claude/worktrees/
+
+# Symlinks to local-only sources: the book PDFs and the extraction tool.
+mothership-pdfs
+mothership-data

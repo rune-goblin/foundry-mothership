@@ -30,27 +30,25 @@
 {#if selectedClass}
   <section class="wizard-class-detail" data-class-detail={selectedClass.name} aria-live="polite">
     <p class="wizard-class-description" data-class-description>{selectedClass.description}</p>
-    <dl class="wizard-adjustments" data-list="adjustments">
+    <ul class="wizard-modifiers" data-list="adjustments">
       {#each adjustments as adjustment (adjustment.key)}
-        <div>
-          <dt>{localize(adjustment.label)}</dt>
-          <dd data-bonus={adjustment.key}>{signed(adjustment.value)}</dd>
-        </div>
+        <li><span data-bonus={adjustment.key}>{signed(adjustment.value)}</span> {localize(adjustment.label)}</li>
       {/each}
       {#each selectedClass.choices as choice, position (position)}
-        <div data-choice-detail={position}>
-          <dt>{localize(offerLabel(choice.stats))}</dt>
-          <dd>{signed(choice.modification)}</dd>
-        </div>
+        <li data-choice-detail={position}>
+          <span>{signed(choice.modification)}</span> {localize(offerLabel(choice.stats))}
+        </li>
       {/each}
+    </ul>
+    <dl class="wizard-class-facts">
       {#if selectedClass.skills.granted.length > 0}
-        <div class="wizard-class-skills">
+        <div>
           <dt>{localize('Mothership.Skills')}</dt>
           <dd data-skills="granted">{selectedClass.skills.granted.join(', ')}</dd>
         </div>
       {/if}
       {#if selectedClass.skills.picks.length > 0 || selectedClass.skills.groups.length > 0}
-        <div class="wizard-class-skills">
+        <div>
           <dt>{localize('Mothership.CharacterGenerator.Wizard.ClassSkillPicks')}</dt>
           {#each selectedClass.skills.picks as pick (pick.label)}
             <dd data-skills="pick">{format(pick.label, { count: pick.count })}</dd>
@@ -63,7 +61,7 @@
         </div>
       {/if}
       <!-- PSG step 6 asks nothing here — Trauma Response is whatever the class prints. -->
-      <div class="wizard-trauma">
+      <div>
         <dt>{localize('Mothership.TraumaResponse')}</dt>
         <dd data-value="trauma">{draft.traumaResponse}</dd>
       </div>
@@ -131,37 +129,22 @@
       line-height: var(--body-md-line-height);
     }
 
-    .wizard-adjustments {
+    /* What the class hands out that isn't a number: each fact its own block, so three of them
+       don't read as one paragraph. */
+    .wizard-class-facts {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
-      gap: var(--space-4) var(--space-12);
-      margin: 0;
+      gap: var(--space-10);
+      margin: var(--space-12) 0 0;
     }
 
-    .wizard-adjustments dt {
-      font-size: var(--font-size-sm);
+    .wizard-class-facts dt {
+      font-size: var(--font-size-md);
       font-weight: var(--font-weight-semibold);
       color: var(--wizard-ink-muted);
     }
 
-    .wizard-adjustments dd {
+    .wizard-class-facts dd {
       margin: 0;
-      font-family: var(--font-display);
-      font-size: var(--font-size-lg);
-      font-weight: var(--font-weight-bold);
-    }
-
-    .wizard-trauma,
-    .wizard-class-skills {
-      grid-column: 1 / -1;
-    }
-
-    /* Trauma Response is a sentence, not a number — shares the label but resets the display face. */
-    .wizard-trauma dd,
-    .wizard-class-skills dd {
-      font-family: inherit;
-      font-size: inherit;
-      font-weight: inherit;
     }
   }
 </style>

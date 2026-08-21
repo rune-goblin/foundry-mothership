@@ -40,9 +40,6 @@
       "class": {
         "value": ""
       },
-      "rank": {
-        "value": ""
-      },
       "pronouns": {
         "value": ""
       },
@@ -158,14 +155,6 @@
           "rollLabel": "Instinct Check",
           "enabled": true
         },
-        "speed": {
-          "value": 10,
-          "min": 0,
-          "max": 99,
-          "label": "Speed",
-          "rollLabel": "Speed Check",
-          "enabled": false
-        },
         "loyalty": {
           "value": 10,
           "min": 0,
@@ -183,14 +172,6 @@
           "cover": "none",
           "label": "Armor",
           "rollLabel": "Armor Save",
-          "enabled": false
-        },
-        "sanity": {
-          "value": 10,
-          "min": 0,
-          "max": 99,
-          "label": "Sanity",
-          "rollLabel": "Sanity Save",
           "enabled": false
         }
       },

@@ -253,7 +253,7 @@
     /* Doubled for specificity to beat the wizard's typography reset. */
     .skill-selector-label.skill-selector-label {
       font-family: var(--font-display);
-      font-size: var(--font-size-xs);
+      font-size: var(--font-size-md);
       font-weight: var(--font-weight-bold);
       letter-spacing: var(--letter-spacing-wider);
       text-transform: uppercase;
@@ -283,12 +283,12 @@
     }
 
     .skill-selector-entry-name.is-blank {
-      color: var(--text-muted);
+      color: var(--skillselector-muted);
     }
 
     .skill-selector-note {
       flex: none;
-      font-size: var(--font-size-xs);
+      font-size: var(--font-size-sm);
       font-weight: var(--font-weight-medium);
       color: var(--text-warning-muted);
       white-space: nowrap;
@@ -296,8 +296,9 @@
 
     .skill-selector-entry-text {
       margin: 0;
-      height: 2.1rem;
-      font-size: var(--font-size-sm);
+      /* Two lines of its own text, so the clamp crops nothing the fixed height then hides. */
+      height: calc(var(--line-height-tight) * 2em);
+      font-size: var(--font-size-md);
       line-height: var(--line-height-tight);
       color: var(--text-primary);
       display: -webkit-box;
@@ -316,16 +317,14 @@
       border-left: var(--border-width-1) solid var(--skillselector-rule);
     }
 
+    /* `blank` prints "No prerequisites", not only the placeholder dash — it reads as text and
+       is inked as text. */
     .skill-selector-blank,
     .skill-selector-conj {
       flex: none;
-      font-size: var(--font-size-sm);
+      font-size: var(--font-size-md);
       color: var(--skillselector-muted);
       white-space: nowrap;
-    }
-
-    .skill-selector-blank {
-      color: var(--text-muted);
     }
 
     .skill-selector-chips {
@@ -347,7 +346,7 @@
       padding: var(--space-2) var(--space-8) var(--space-2) var(--space-6);
       border: var(--border-width-1) solid var(--skillselector-rule);
       border-radius: var(--radius-full);
-      font-size: var(--font-size-xs);
+      font-size: var(--font-size-sm);
       font-weight: var(--font-weight-medium);
       white-space: nowrap;
     }
@@ -360,7 +359,8 @@
       background: currentcolor;
     }
 
-    .skill-selector-chip.met { border-color: var(--border-accent); color: var(--text-accent-secondary); }
+    /* accent-secondary measures 4.42:1 on paper — one step darker clears the floor. */
+    .skill-selector-chip.met { border-color: var(--border-accent); color: var(--text-accent-tertiary); }
     .skill-selector-chip.unmet { border-color: var(--border-danger); color: var(--text-danger-secondary); }
 
     .skill-selector-columns {
@@ -389,14 +389,14 @@
     .skill-selector-column-head.skill-selector-column-head h4 {
       margin: 0;
       font-family: var(--font-display);
-      font-size: var(--font-size-sm);
+      font-size: var(--font-size-md);
       letter-spacing: 0.03em;
       text-transform: uppercase;
     }
 
     .skill-selector-bonus {
       flex: none;
-      font-size: var(--font-size-xs);
+      font-size: var(--font-size-sm);
       font-weight: var(--font-weight-bold);
       color: var(--skillselector-muted);
     }
@@ -440,7 +440,7 @@
     }
 
     .skill-selector-name {
-      font-size: var(--font-size-sm);
+      font-size: var(--font-size-md);
       overflow-wrap: anywhere;
       transition: color var(--skillselector-transition);
     }

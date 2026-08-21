@@ -99,16 +99,27 @@
     }
 
     .wizard-identity span {
-      font-size: var(--font-size-sm);
+      font-size: var(--font-size-md);
       font-weight: var(--font-weight-semibold);
       color: var(--wizard-ink-muted);
+    }
+
+    /* Foundry's fields are a grey well with no border; every other control in this window is a
+       white box inside a black rule, and these have to read as the same window. */
+    .wizard-identity input,
+    .wizard-identity textarea {
+      padding: var(--space-6) var(--space-10);
+      border: var(--border-width-2) solid var(--wizard-edge);
+      border-radius: var(--radius-md);
+      background: var(--wizard-bar-fill);
+      color: var(--wizard-ink);
+      font-family: inherit;
+      font-size: var(--font-size-md);
     }
 
     .wizard-longform textarea {
       min-height: calc(var(--space-20) * 4);
       resize: vertical;
-      font-family: inherit;
-      font-size: var(--font-size-sm);
     }
   }
 </style>

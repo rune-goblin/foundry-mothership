@@ -9,9 +9,7 @@
     { key: 'combat', label: 'Mothership.Combat' },
     { key: 'instinct', label: 'Mothership.Instinct' },
     { key: 'loyalty', label: 'Mothership.Loyalty' },
-    { key: 'speed', label: 'Mothership.Speed' },
     { key: 'armor', label: 'Mothership.Armor' },
-    { key: 'sanity', label: 'Mothership.Sanity' },
   ];
 
   // Not a plain form field: setSwarm() also rewrites Combat, which form persistence can't express.

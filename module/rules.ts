@@ -76,4 +76,12 @@ export const COVER_BONUS: Readonly<Record<Cover, CoverBonus>> = {
   heavy: { armorPoints: 20, damageReduction: 5 },
 };
 
+/** The lang key naming each state — printed by the cover prompt and by the sheet's cover control. */
+export const COVER_LABEL: Readonly<Record<Cover, string>> = {
+  none: 'Mothership.NoCover',
+  insignificant: 'Mothership.InsignificantCover',
+  light: 'Mothership.LightCover',
+  heavy: 'Mothership.HeavyCover',
+};
+
 export const COVER_KEYS: readonly Cover[] = Object.keys(COVER_BONUS) as Cover[];

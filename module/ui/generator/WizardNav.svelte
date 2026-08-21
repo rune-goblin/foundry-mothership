@@ -49,7 +49,7 @@
 
     .wizard-gate {
       margin: 0;
-      font-size: var(--font-size-sm);
+      font-size: var(--font-size-md);
       color: var(--wizard-danger);
     }
   }

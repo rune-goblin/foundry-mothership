@@ -19,6 +19,10 @@
     />
   {/each}
 </div>
-<button type="button" class="wizard-bulk" data-roll="all" onclick={rollAll}>
-  {localize('Mothership.CharacterGenerator.Wizard.RollRemaining')}
-</button>
+<!-- "Roll the rest" has nothing left to roll once the last die is in, and a control that does
+     nothing is worse than no control. -->
+{#if rolls.some(([key]) => draft.rolled[key] === null)}
+  <button type="button" class="wizard-bulk" data-roll="all" onclick={rollAll}>
+    {localize('Mothership.CharacterGenerator.Wizard.RollRemaining')}
+  </button>
+{/if}

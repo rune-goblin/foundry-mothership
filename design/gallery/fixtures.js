@@ -131,7 +131,27 @@ export const conditions = [
   ),
 ];
 
-export const abilities = [embedded('ability', 'Acid Blood', itemSystem('ability', { roll: '1d10' }))];
+export const abilities = [
+  embedded(
+    'ability',
+    'Acid Blood',
+    itemSystem('ability', {
+      roll: '1d10',
+      description: 'Anything that wounds it is splashed for 1d10 DMG, armour first.',
+    })
+  ),
+  embedded(
+    'ability',
+    'Tail Poison',
+    itemSystem('ability', { description: 'Body Save [-] or fall unconscious.' })
+  ),
+];
+
+/** A horror's attacks are the book's Attack line: a name and a damage, nothing else. */
+export const creatureAttacks = [
+  embedded('weapon', 'Talons', itemSystem('weapon', { damage: '4d10', range: 'adjacent' })),
+  embedded('weapon', 'Tail', itemSystem('weapon', { damage: '2d10', range: 'adjacent', antiArmor: true })),
+];
 
 export const character = document({
   type: 'character',
@@ -140,7 +160,6 @@ export const character = document({
   items: [...skills, ...weapons, ...armors, ...gear, ...conditions],
   system: actorSystem('character', {
     class: { value: 'Teamster' },
-    rank: { value: 'Crew' },
     pronouns: { value: 'they/them' },
     credits: { value: '2,450' },
     health: { value: 14, max: 20 },
@@ -165,7 +184,7 @@ export const creature = document({
   type: 'creature',
   name: 'Xenomorph Drone',
   img: 'icons/svg/mystery-man.svg',
-  items: [...abilities, ...weapons.slice(0, 1)],
+  items: [...abilities, ...creatureAttacks],
   system: actorSystem('creature', {
     description: 'A hunched silhouette in the coolant fog.',
     health: { value: 25, max: 25 },
@@ -174,7 +193,8 @@ export const creature = document({
     stats: {
       combat: { value: 65 },
       instinct: { value: 55 },
-      armor: { value: 5, mod: 5, damageReduction: 0, cover: 'none' },
+      loyalty: { value: 40, enabled: true },
+      armor: { value: 5, mod: 0, damageReduction: 0, cover: 'none', enabled: true },
     },
   }),
 });
@@ -188,12 +208,7 @@ export const characterStore = store(character, {
 });
 
 export const creatureStore = store(creature, {
-  hideWeight: true,
-  enriched: {
-    description: enriched('A hunched silhouette in the coolant fog.'),
-    biography: enriched('First sighted on deck four.'),
-    notes: enriched('Hunts by sound.'),
-  },
+  enriched: { description: enriched('A hunched silhouette in the coolant fog. It hunts by sound.') },
 });
 
 export const itemStore = (type, name, system, extra = '') =>

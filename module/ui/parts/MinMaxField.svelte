@@ -1,4 +1,5 @@
 <script>
+  import RollDie from './RollDie.svelte';
   import { onActivate } from './activate.js';
 
   // rightName/rightValue, not max/min: the right field is a maximum on health/wounds but a
@@ -25,7 +26,9 @@
 </script>
 
 <div class="resource healthspread minmaxtopstat" {style}>
-  <label for={name} class="resource-label minmaxtext {labelClass}" {...rollable}>{label}</label>
+  <label for={name} class="resource-label minmaxtext {labelClass}" {...rollable}>
+    {label}{#if onroll}<RollDie />{/if}
+  </label>
 
   <div class="minmaxwrapper">
     <input class="maxhealth-input darkGreyText" type="text" {name} {value} data-dtype="Number" />

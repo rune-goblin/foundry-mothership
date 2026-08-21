@@ -2,7 +2,17 @@
   // Rows are `role="radio"` buttons, not `<input type="radio">`: the dialog shell tier styles
   // every radio inside `.macro-popup-dialog` at specificity (0,3,1), which no scoped block here
   // can outrank, so owning the mark outright is the only way to control its appearance.
-  let { options, value, onchange, lines = 2, label = '' } = $props();
+  // `expanded` keeps every row's description open: a list whose descriptions are the choice
+  // itself, rather than a gloss on the row already picked.
+  let {
+    options,
+    value,
+    onchange,
+    lines = 2,
+    label = '',
+    trailing = null,
+    expanded = false,
+  } = $props();
 
   let group = $state(null);
 
@@ -32,6 +42,7 @@
 
 <div
   class="choice-list"
+  class:is-expanded={expanded}
   role="radiogroup"
   aria-label={label}
   bind:this={group}
@@ -42,6 +53,8 @@
       type="button"
       class="choice"
       class:muted={option.muted}
+      class:has-icon={option.img}
+      class:has-trailing={trailing}
       role="radio"
       aria-checked={option.key === value}
       tabindex={position === index ? 0 : -1}
@@ -50,9 +63,14 @@
       onkeydown={keydown}
     >
       <span class="choice-mark" aria-hidden="true"></span>
+      {#if option.img}<img class="choice-icon" src={option.img} alt="" />{/if}
       <span class="choice-name">{option.label}</span>
       <span class="choice-note">{option.note ?? ''}</span>
-      <span class="choice-value">{option.value ?? ''}</span>
+      {#if trailing}
+        <span class="choice-trailing">{@render trailing(option)}</span>
+      {:else}
+        <span class="choice-value">{option.value ?? ''}</span>
+      {/if}
       <span class="choice-description">{@html option.description ?? ''}</span>
     </button>
   {/each}
@@ -70,6 +88,10 @@
 
     .choice {
       --choice-list-row-columns: auto minmax(0, 1fr) auto auto;
+      /* Which tracks the description spans — from the column after the name's, which an icon row
+         pushes along by one, up to the trailing cell where a row has one. */
+      --choice-list-description-start: 2;
+      --choice-list-description-end: -1;
       --choice-list-row-gap: var(--space-12);
       --choice-list-row-padding-block: var(--space-8);
       --choice-list-row-padding-inline: var(--space-12);
@@ -103,6 +125,15 @@
       transition:
         background 90ms ease-out,
         border-color 90ms ease-out;
+    }
+
+    .choice.has-trailing {
+      --choice-list-description-end: -2;
+    }
+
+    .choice.has-icon {
+      --choice-list-row-columns: auto auto minmax(0, 1fr) auto auto;
+      --choice-list-description-start: 3;
     }
 
     .choice:hover {
@@ -156,6 +187,15 @@
 
     .choice[aria-checked='true'] .choice-mark::before {
       transform: scale(1);
+    }
+
+    .choice-icon {
+      --choice-list-icon-size: 34px;
+
+      width: var(--choice-list-icon-size);
+      height: var(--choice-list-icon-size);
+      object-fit: contain;
+      border: none;
     }
 
     .choice-name {
@@ -220,7 +260,7 @@
       --choice-list-description-line-height: 18px;
       --choice-list-description-lines: 2;
 
-      grid-column: 2 / -1;
+      grid-column: var(--choice-list-description-start) / var(--choice-list-description-end);
       height: 0;
       overflow: hidden;
       font-family: var(--font-sans-mothership);
@@ -229,11 +269,25 @@
       color: var(--choice-list-description-text);
     }
 
-    .choice[aria-checked='true'] .choice-description {
+    .choice[aria-checked='true'] .choice-description:not(:empty),
+    .is-expanded .choice-description:not(:empty) {
       height: calc(
         var(--choice-list-description-lines) * var(--choice-list-description-line-height)
       );
       margin-top: var(--space-2);
+    }
+
+    /* Whatever the caller draws here sizes itself. It spans both rows so a cell taller than the
+       label cannot push the description away from the name it belongs to. */
+    .choice-trailing {
+      --choice-list-trailing-width: 190px;
+
+      /* Positioned rather than auto-placed: an item with a definite row is placed before the
+         auto-placed ones, and would otherwise take the first column instead of the last. */
+      grid-column: -2 / -1;
+      grid-row: 1 / span 2;
+      align-self: center;
+      width: var(--choice-list-trailing-width);
     }
 
     /* Enriched descriptions arrive wrapped in a <p> whose margins would push the second line

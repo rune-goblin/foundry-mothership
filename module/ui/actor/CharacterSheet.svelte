@@ -7,7 +7,6 @@
   import MainStat from '../parts/MainStat.svelte';
   import MinMaxField from '../parts/MinMaxField.svelte';
   import PipTrack from '../parts/PipTrack.svelte';
-  import RollableStat from '../parts/RollableStat.svelte';
   import TabPanel from '../parts/TabPanel.svelte';
   import Tabs from '../parts/Tabs.svelte';
   import TextareaField from '../parts/TextareaField.svelte';
@@ -54,7 +53,6 @@
   const IDENTITY = [
     { name: 'system.credits.value', label: 'Mothership.Credits' },
     { name: 'system.class.value', label: 'Mothership.CLASS' },
-    { name: 'system.rank.value', label: 'Mothership.RANK' },
     { name: 'system.pronouns.value', label: 'Mothership.Pronouns' },
     { name: 'system.attributes.level.value', label: 'Mothership.HighScore' },
   ];
@@ -135,7 +133,7 @@
       </div>
     </div>
 
-    <div class="health grid grid-2col" style="margin-top: 0; grid-template-rows: 76px 77px 72px;">
+    <div class="health vitals">
       <HealthBlock health={system.health} hits={system.hits} />
 
       <MinMaxField
@@ -150,76 +148,56 @@
         rightLabel={localize('Mothership.Minimum')}
       />
 
-      <ArmorBlock
-        armor={system.stats.armor}
-        onroll={() => actor.chooseCover()}
-        style="grid-column-start: 2; grid-column-end: 3;"
-      />
+      <ArmorBlock armor={system.stats.armor} onchoose={() => actor.chooseCover()} />
+    </div>
+
+    <div class="abilities grid grid-1col widegap">
+      {#each STATS as stat (stat.key)}
+        {@render checkStat(stat)}
+      {/each}
+    </div>
+
+    <div class="saves">
+      <div class="savepanel">
+        {#each SAVES as save (save.key)}
+          {@render checkStat(save)}
+        {/each}
+      </div>
 
       <TextareaField
+        fill
         name="system.other.stressdesc.value"
         label={localize('Mothership.TraumaResponse')}
         value={system.other.stressdesc.value}
       />
     </div>
-
-    <div class="abilities">
-      <div class="grid grid-1col widegap">
-        {#each STATS as stat (stat.key)}
-          <MainStat
-            key={stat.key}
-            label={localize(stat.label)}
-            name="system.stats.{stat.key}.value"
-            value={system.stats[stat.key].value}
-            onroll={statRoll(stat.key)}
-          >
-            {#snippet after()}
-              <input
-                class="mainstatmod-input"
-                type="text"
-                name="system.stats.{stat.key}.mod"
-                value={system.stats[stat.key].mod}
-                data-dtype="Number"
-              />
-              <div class="mainstatmod-title">+</div>
-            {/snippet}
-          </MainStat>
-        {/each}
-      </div>
-    </div>
-
-    <div class="saves grid grid-1col savebackground">
-      {#each SAVES as save (save.key)}
-        <div class="resource flex-group-center">
-          <RollableStat
-            key={save.key}
-            label={localize(save.label)}
-            class="savetext"
-            onroll={statRoll(save.key)}
-          />
-          <div class="grid grid-3col" style="grid-template-columns: 44px 14px 42px; margin-left:6px;">
-            <input
-              class="square-input"
-              type="text"
-              name="system.stats.{save.key}.value"
-              value={system.stats[save.key].value}
-              data-dtype="Number"
-            />
-            <div class="mainstatmod-title" style="top: 10px;">+</div>
-            <input
-              class="mainsavemod-input"
-              style="top: 5px;"
-              type="text"
-              name="system.stats.{save.key}.mod"
-              value={system.stats[save.key].mod}
-              data-dtype="Number"
-            />
-          </div>
-        </div>
-      {/each}
-    </div>
   </div>
 </header>
+
+{#snippet checkStat(stat)}
+  {@const pod = system.stats[stat.key]}
+  {@const mod = Number(pod.mod) || 0}
+  <MainStat
+    key={stat.key}
+    label={localize(stat.label)}
+    name="system.stats.{stat.key}.value"
+    value={pod.value}
+    adjusted={mod ? Number(pod.value) + mod : null}
+    onroll={statRoll(stat.key)}
+  >
+    {#snippet modifier()}
+      <!-- The sign is a glyph, not part of the value: a negative modifier prints its own. -->
+      {#if mod >= 0}<span class={['stat-mod-sign', !mod && 'is-zero']}>+</span>{/if}
+      <input
+        class={['stat-mod', !mod && 'is-zero']}
+        type="text"
+        name="system.stats.{stat.key}.mod"
+        value={pod.mod}
+        data-dtype="Number"
+      />
+    {/snippet}
+  </MainStat>
+{/snippet}
 
 <Tabs {tabs} bind:active={tab} />
 
@@ -300,6 +278,7 @@
       items={skills}
       create={{ title: localize('Mothership.CreateSkill'), onclick: () => promptAddItem(actor, 'skill') }}
       row={skillRow}
+      image={false}
     />
   </TabPanel>
 
@@ -412,8 +391,7 @@
 {/snippet}
 
 {#snippet skillRow(skill)}
-  <ItemImage src={skill.img} title={skill.name} />
-  <ItemCell variant="name" roll onclick={skillRoll(skill.id)}>{skill.name}</ItemCell>
+  <ItemCell variant="name" die roll onclick={skillRoll(skill.id)}>{skill.name}</ItemCell>
   <ItemCell>{skill.system.rank}</ItemCell>
   <ItemCell>{skill.system.bonus}</ItemCell>
   <ItemControls>
@@ -469,7 +447,7 @@
 
 {#snippet weaponRow(weapon)}
   <ItemImage src={weapon.img} title={weapon.name} />
-  <ItemCell variant="name" grow={2.05} roll onclick={weaponRoll(weapon.id)}>{weapon.name}</ItemCell>
+  <ItemCell variant="name" die grow={2.05} roll onclick={weaponRoll(weapon.id)}>{weapon.name}</ItemCell>
   <ItemCell roll onclick={damageRoll(weapon.id)}>
     {weapon.system.damage}{weapon.system.antiArmor
       ? ` (${localize('Mothership.AntiArmorAcronym')})`
@@ -534,47 +512,25 @@
     .char-header {
       --charactersheet-header-grid-gap: var(--space-10);
       --charactersheet-header-grid-padding: var(--space-2);
-      /* Fixed-px tracks measure this header; no spacing-scale step governs them. */
-      --charactersheet-header-grid-columns: 238px auto 100px;
+      /* Both rails carry the same control now, so they are the same measurement; the vitals take
+         what is left of the 820px window. The stat pill's own word sets the floor -- below about
+         230px "Strength" outgrows its track and shoves the number circle off the row. */
+      --charactersheet-rail-width: 238px;
 
       --charactersheet-identity-gap: var(--space-4);
       --charactersheet-identity-padding: var(--space-16);
 
-      --charactersheet-saves-surface: var(--surface-neutral-lowest);
+      /* The vitals rows, measured off the blocks they hold, not off the spacing scale. */
+      --charactersheet-vitals-row-height: 76px;
+
       --charactersheet-saves-radius: var(--radius-md);
-      --charactersheet-saves-padding-block-start: var(--space-6);
-      --charactersheet-saves-padding-block-end: var(--space-4);
-      /* The panel's own height — a measurement, not a step. */
-      --charactersheet-saves-height: 225px;
-
-      --charactersheet-save-value-font-family: var(--font-display);
-      --charactersheet-save-value-font-size: var(--font-size-xl);
-      --charactersheet-save-value-font-weight: var(--font-weight-bold);
-      --charactersheet-save-value-surface: var(--surface-neutral-paper);
-      --charactersheet-save-value-border-width: var(--border-width-4);
-      --charactersheet-save-value-border-color: var(--border-neutral-ink);
-      --charactersheet-save-value-radius: var(--radius-md);
-      --charactersheet-save-value-margin: calc(var(--space-2) * -1);
-      /* The box's own size — measurements, not steps. */
-      --charactersheet-save-value-height: 42px;
-      --charactersheet-save-value-width: 45px;
-      --charactersheet-save-value-padding: var(--space-0);
-
-      --charactersheet-save-modifier-font-family: var(--font-display);
-      --charactersheet-save-modifier-font-size: var(--font-size-sm);
-      --charactersheet-save-modifier-font-weight: var(--font-weight-bold);
-      --charactersheet-save-modifier-text: var(--color-danger-300);
-      /* `lightgrey` (#d3d3d3) maps to the nearest existing surface tier; no exact token. */
-      --charactersheet-save-modifier-surface: var(--surface-neutral-highest);
-      --charactersheet-save-modifier-radius: var(--radius-md);
-      --charactersheet-save-modifier-border-width: var(--border-width-0);
-      /* The badge's own size — measurements, not steps. */
-      --charactersheet-save-modifier-height: 26px;
-      --charactersheet-save-modifier-width: 28px;
-      --charactersheet-save-modifier-padding: var(--space-0);
-      --charactersheet-save-modifier-margin-inline-start: calc(var(--space-24) * -1);
-      --charactersheet-save-modifier-offset-block: var(--space-8);
-      --charactersheet-save-modifier-offset-inline: var(--space-12);
+      --charactersheet-saves-border-width: var(--border-width-2);
+      --charactersheet-saves-border-color: var(--border-neutral-ink);
+      --charactersheet-saves-padding-block: var(--space-8);
+      /* Asymmetric only in that the pills need no room on the right any more: the modifier moved
+         inside them. */
+      --charactersheet-saves-padding-inline: var(--space-6);
+      --charactersheet-saves-gap: var(--space-6);
     }
 
     /* Selector must stay chained: `centercol`/`mobilehealth` are claimed by
@@ -587,7 +543,8 @@
         'mobilehealth mobilehealth mobilehealth';
       grid-gap: var(--charactersheet-header-grid-gap);
       padding: var(--charactersheet-header-grid-padding);
-      grid-template-columns: var(--charactersheet-header-grid-columns);
+      grid-template-columns:
+        var(--charactersheet-rail-width) minmax(0, 1fr) var(--charactersheet-rail-width);
       container-type: inline-size;
     }
 
@@ -595,8 +552,51 @@
       grid-area: abilities;
     }
 
+    /* Health beside Stress, Wounds beside Armour: the pool you spend on the left of each row, the
+       thing that empties it on the right. Armour's row is taller because the cover chip hangs off
+       the bottom of it. */
+    .vitals {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: var(--charactersheet-vitals-row-height) auto;
+      grid-auto-flow: column;
+      gap: var(--charactersheet-header-grid-gap);
+      align-content: start;
+    }
+
+    /* Every block keeps its own row height; only the armour block, which the cover chip hangs off
+       the bottom of, is allowed to be as tall as it is. Without this a MinMaxField in the shorter
+       row stretches and its captions drift away from the box they name. */
+    .vitals > :global(*) {
+      width: 100%;
+      height: var(--charactersheet-vitals-row-height);
+      align-self: start;
+    }
+
+    .vitals > :global(*:last-child) {
+      height: auto;
+    }
+
+    /* The trauma response belongs to the saves, not to the vitals: it is the sentence a failed
+       Fear save writes. */
     .saves {
       grid-area: saves;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: var(--charactersheet-header-grid-gap);
+      min-height: 0;
+    }
+
+    /* A frame, not a slab: three black pills on a black ground made the rail the heaviest thing
+       on the sheet, and it is not the most important one. */
+    .savepanel {
+      display: grid;
+      gap: var(--charactersheet-saves-gap);
+      align-content: start;
+      padding-block: var(--charactersheet-saves-padding-block);
+      padding-inline: var(--charactersheet-saves-padding-inline);
+      border: var(--charactersheet-saves-border-width) solid var(--charactersheet-saves-border-color);
+      border-radius: var(--charactersheet-saves-radius);
     }
 
     .headergrid {
@@ -608,51 +608,6 @@
 
     .headernamegrid {
       grid-column: 1/-2;
-    }
-
-    /* Same specificity as `.mothership .grid`'s `padding: 0`; wins on load order only. */
-    .savebackground {
-      border-radius: var(--charactersheet-saves-radius);
-      background: var(--charactersheet-saves-surface);
-      padding-bottom: var(--charactersheet-saves-padding-block-end);
-      padding-top: var(--charactersheet-saves-padding-block-start);
-      height: var(--charactersheet-saves-height);
-    }
-
-    .square-input {
-      font-family: var(--charactersheet-save-value-font-family);
-      margin: var(--charactersheet-save-value-margin);
-      height: var(--charactersheet-save-value-height);
-      width: var(--charactersheet-save-value-width);
-      padding: var(--charactersheet-save-value-padding);
-      border: var(--charactersheet-save-value-border-width) solid
-        var(--charactersheet-save-value-border-color);
-      background-color: var(--charactersheet-save-value-surface);
-      border-radius: var(--charactersheet-save-value-radius);
-      font-size: var(--charactersheet-save-value-font-size);
-      font-weight: var(--charactersheet-save-value-font-weight);
-      text-align: center;
-    }
-
-    /* Padding zeroed: a two-digit bonus overflows the 28px pill under ApplicationV2's
-       wider default input padding. */
-    .mainsavemod-input {
-      font-family: var(--charactersheet-save-modifier-font-family);
-      height: var(--charactersheet-save-modifier-height);
-      width: var(--charactersheet-save-modifier-width);
-      padding: var(--charactersheet-save-modifier-padding);
-      border: var(--charactersheet-save-modifier-border-width);
-      border-radius: var(--charactersheet-save-modifier-radius);
-      color: var(--charactersheet-save-modifier-text);
-      font-size: var(--charactersheet-save-modifier-font-size);
-      font-weight: var(--charactersheet-save-modifier-font-weight);
-      text-align: center;
-      margin-left: var(--charactersheet-save-modifier-margin-inline-start);
-      z-index: 5;
-      background: var(--charactersheet-save-modifier-surface);
-      top: var(--charactersheet-save-modifier-offset-block);
-      left: var(--charactersheet-save-modifier-offset-inline);
-      position: relative;
     }
   }
 </style>

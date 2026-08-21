@@ -2,11 +2,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushSync, mount, unmount } from 'svelte';
 
-import ChooseAdvantage from '../module/dialogs/ChooseAdvantage.svelte';
 import CheckPrompt from '../module/dialogs/CheckPrompt.svelte';
 import Cover from '../module/dialogs/Cover.svelte';
-import NoCharacter from '../module/dialogs/NoCharacter.svelte';
-import Reload from '../module/dialogs/Reload.svelte';
+import Prompt from '../module/dialogs/Prompt.svelte';
 import {
   askReload,
   chooseAdvantage,
@@ -89,25 +87,25 @@ const only = (): OpenDialog => {
 const settle = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 0));
 
 describe('svelteDialog', () => {
-  const props = { note: '', die: '' };
+  const props = { heading: 'Select your roll type', note: '', die: '' };
 
   it('mounts the component once, however often the dialog renders', async () => {
     const answer = svelteDialog<null, string, typeof props>({
-      component: ChooseAdvantage,
+      component: Prompt,
       props,
       title: 'Body Save',
       initial: null,
       buttons: [{ action: 'ok', label: 'OK', answer: () => 'ok' }],
     });
 
-    expect(only().element.querySelectorAll('.macro_prompt')).toHaveLength(1);
+    expect(only().element.querySelectorAll('.prompt-head')).toHaveLength(1);
     await only().press('ok');
     await answer;
   });
 
   it('resolves with the answer the button gives', async () => {
     const answer = svelteDialog<null, string, typeof props>({
-      component: ChooseAdvantage,
+      component: Prompt,
       props,
       title: 'Body Save',
       initial: null,
@@ -123,7 +121,7 @@ describe('svelteDialog', () => {
 
   it('resolves null when the dialog is dismissed', async () => {
     const answer = svelteDialog<null, string, typeof props>({
-      component: ChooseAdvantage,
+      component: Prompt,
       props,
       title: 'Body Save',
       initial: null,
@@ -137,7 +135,7 @@ describe('svelteDialog', () => {
   it('keeps an answer of null distinct from a dismissal', async () => {
     const dismissed = vi.fn();
     const answer = svelteDialog<null, null, typeof props>({
-      component: ChooseAdvantage,
+      component: Prompt,
       props,
       title: 'Body Save',
       initial: null,
@@ -151,7 +149,7 @@ describe('svelteDialog', () => {
 
   it('unmounts the component on the way out, either way', async () => {
     const answer = svelteDialog<null, string, typeof props>({
-      component: ChooseAdvantage,
+      component: Prompt,
       props,
       title: 'Body Save',
       initial: null,
@@ -161,10 +159,10 @@ describe('svelteDialog', () => {
 
     await only().press('ok');
     await answer;
-    expect(element.querySelector('.macro_prompt')).toBeNull();
+    expect(element.querySelector('.prompt-head')).toBeNull();
 
     const second = svelteDialog<null, string, typeof props>({
-      component: ChooseAdvantage,
+      component: Prompt,
       props,
       title: 'Body Save',
       initial: null,
@@ -173,14 +171,14 @@ describe('svelteDialog', () => {
     const dismissedElement = opened[1].element;
     opened[1].dismiss();
     await second;
-    expect(dismissedElement.querySelector('.macro_prompt')).toBeNull();
+    expect(dismissedElement.querySelector('.prompt-head')).toBeNull();
   });
 
   // ApplicationV2 may re-render a dialog into a fresh content node. Mounting once and never
   // again would leave the component on the detached one and the window empty.
   it('re-mounts when a render replaces the node it is mounted in', async () => {
     const answer = svelteDialog<null, string, typeof props>({
-      component: ChooseAdvantage,
+      component: Prompt,
       props,
       title: 'Body Save',
       initial: null,
@@ -195,12 +193,12 @@ describe('svelteDialog', () => {
     element.append(second);
     only().render();
 
-    expect(first.querySelector('.macro_prompt')).toBeNull();
-    expect(second.querySelector('.macro_prompt')).not.toBeNull();
+    expect(first.querySelector('.prompt-head')).toBeNull();
+    expect(second.querySelector('.prompt-head')).not.toBeNull();
 
     await only().press('ok');
     await answer;
-    expect(second.querySelector('.macro_prompt')).toBeNull();
+    expect(second.querySelector('.prompt-head')).toBeNull();
   });
 
   it('carries what the user picked into the answer', async () => {
@@ -230,9 +228,9 @@ describe('svelteDialog', () => {
   // The rail is the dialog's own footer stood on end, so the only thing that switches it on is a
   // class on the frame. Without it the same buttons lie along the foot, as every other dialog's do.
   it('asks for the rail class only when the prompt wants the rail', async () => {
-    const props = { note: '', die: '' };
+    const props = { heading: 'Select your roll type', note: '', die: '' };
     const plain = svelteDialog<null, string, typeof props>({
-      component: ChooseAdvantage,
+      component: Prompt,
       props,
       title: 'Body Save',
       initial: null,
@@ -243,7 +241,7 @@ describe('svelteDialog', () => {
     await plain;
 
     const railed = svelteDialog<null, string, typeof props>({
-      component: ChooseAdvantage,
+      component: Prompt,
       props,
       title: 'Body Save',
       initial: null,
@@ -283,7 +281,7 @@ describe('the prompts', () => {
     const preselected = only().buttons.filter((button) => button.default === true);
     expect(preselected).toHaveLength(1);
     expect(preselected[0]).toMatchObject({ action: 'disadvantage', class: 'condition-preselect' });
-    expect(only().element.querySelector('.condition-modifier')?.textContent).toContain('Nightmares');
+    expect(only().element.querySelector('.prompt-note')?.textContent).toContain('Nightmares');
 
     only().dismiss();
     await expect(answer).resolves.toBeNull();
@@ -332,12 +330,12 @@ describe('the prompts', () => {
     await settle();
 
     const { element } = only();
-    expect(element.querySelector('.check-readout-total')?.textContent).toBe('45');
+    expect(element.querySelector('.prompt-readout-value')?.textContent).toBe('45');
     expect(element.querySelector('.check-sum-working')?.textContent).toBe('Speed 45, no Skill');
 
     element.querySelector<HTMLButtonElement>('[data-choice="sk1"]')!.click();
     flushSync();
-    expect(element.querySelector('.check-readout-total')?.textContent).toBe('55');
+    expect(element.querySelector('.prompt-readout-value')?.textContent).toBe('55');
     expect(element.querySelector('.check-sum-working')?.textContent).toBe('Speed 45 + Athletics 10');
 
     only().dismiss();
@@ -401,13 +399,13 @@ describe('the prompts', () => {
     });
 
     const { element } = only();
-    expect(element.querySelector('.check-intro')?.textContent).toContain('Athletics +10');
-    expect(element.querySelector('.check-readout-total')?.textContent).toBe('40');
+    expect(element.querySelector('.prompt-intro')?.textContent).toContain('Athletics +10');
+    expect(element.querySelector('.prompt-readout-value')?.textContent).toBe('40');
     expect(element.querySelector('.check-sum-working')?.textContent).toBe('Strength 30 + Athletics 10');
 
     element.querySelector<HTMLButtonElement>('[data-choice="speed"]')!.click();
     flushSync();
-    expect(element.querySelector('.check-readout-total')?.textContent).toBe('55');
+    expect(element.querySelector('.prompt-readout-value')?.textContent).toBe('55');
 
     only().dismiss();
     await expect(answer).resolves.toBeNull();
@@ -433,7 +431,7 @@ describe('the prompts', () => {
   it('chooseSave states no total, having no actor to total against', async () => {
     const answer = chooseSave();
 
-    expect(only().element.querySelector('.check-readout')).toBeNull();
+    expect(only().element.querySelector('.prompt-readout')).toBeNull();
     expect(only().element.querySelector('.check-sum')).toBeNull();
 
     only().dismiss();
@@ -465,22 +463,20 @@ describe('the prompts', () => {
   it('chooseWound answers with the table key and the modifier, and carries no document id', async () => {
     const answer = chooseWound();
 
-    expect([...only().element.querySelectorAll('input[name="wound_table"]')].map((node) => node.id)).toEqual([
-      'wound-bleeding',
-      'wound-blunt-force',
-      'wound-fire-explosives',
-      'wound-gore-massive',
-      'wound-gunshot',
-    ]);
+    expect(
+      [...only().element.querySelectorAll('[data-choice]')].map((node) => node.getAttribute('data-choice')),
+    ).toEqual(['bleeding', 'blunt-force', 'fire-explosives', 'gore-massive', 'gunshot']);
     // Two of the five shipped filenames keep an `&` the table key spells as a dash.
     for (const img of only().element.querySelectorAll('img')) {
       expect(img.getAttribute('src')).not.toContain('undefined');
     }
 
     // Blunt Force is preselected; the (alphabetical) key order gives no reason why.
-    expect(only().element.querySelector<HTMLInputElement>('#wound-blunt-force')!.checked).toBe(true);
+    expect(only().element.querySelector('[data-choice="blunt-force"]')?.getAttribute('aria-checked')).toBe(
+      'true',
+    );
 
-    only().element.querySelector<HTMLInputElement>('#wound-gunshot')!.click();
+    only().element.querySelector<HTMLButtonElement>('[data-choice="gunshot"]')!.click();
     flushSync();
     await only().press('advantage');
 
@@ -518,8 +514,8 @@ describe('the prompts', () => {
   it('chooseCover answers with the cover picked, and null when dismissed', async () => {
     const answer = chooseCover('light', { armorPoints: 4, damageReduction: 1 });
 
-    expect(only().element.querySelector<HTMLInputElement>('#cover-light')!.checked).toBe(true);
-    only().element.querySelector<HTMLInputElement>('#cover-heavy')!.click();
+    expect(only().element.querySelector('[data-choice="light"]')?.getAttribute('aria-checked')).toBe('true');
+    only().element.querySelector<HTMLButtonElement>('[data-choice="heavy"]')!.click();
     flushSync();
     await only().press('ok');
     await expect(answer).resolves.toBe('heavy');
@@ -541,6 +537,13 @@ describe('the prompts', () => {
     expect(only().element.textContent).toContain('Assign a character.');
     only().dismiss();
     await expect(dismissed).resolves.toBeUndefined();
+  });
+
+  it('noCharacter falls back to the character explanation for a target it does not know', async () => {
+    const answered = noCharacter('nonsense');
+    expect(only().element.textContent).toContain('Assign a character.');
+    await only().press('ok');
+    await expect(answered).resolves.toBeUndefined();
   });
 });
 
@@ -587,7 +590,7 @@ describe('the components themselves', () => {
     expect(row.querySelector('.choice-value')?.textContent).toBe('+15');
     expect(row.querySelector('.choice-note')?.textContent).toBe('Expert');
     expect(row.querySelector('em')?.textContent).toBe('Computers.');
-    expect(target.querySelector('.condition-modifier')?.textContent).toContain('Anxious');
+    expect(target.querySelector('.prompt-note')?.textContent).toContain('Anxious');
 
     row.click();
     flushSync();
@@ -609,7 +612,7 @@ describe('the components themselves', () => {
     );
     expect(checked.map((row) => row.getAttribute('data-choice'))).toEqual(['sk1']);
     expect(target.querySelector('.check-sum-working')?.textContent).toBe('Speed 45 + Hacking 15');
-    expect(target.querySelector('.check-readout-total')?.textContent).toBe('60');
+    expect(target.querySelector('.prompt-readout-value')?.textContent).toBe('60');
   });
 
   it('CheckPrompt reserves the description slot the caller asked for', () => {
@@ -629,12 +632,16 @@ describe('the components themselves', () => {
 
   it('Cover shows each option’s bonus beside the actor’s own armour', () => {
     const target = render(Cover as never, {
+      heading: 'Cover',
+      intro: 'The environment can protect you.',
       options: [
         { key: 'none', label: 'No Cover', examples: 'Out in the open' },
         { key: 'heavy', label: 'Heavy Cover', examples: 'Airlock doors' },
       ],
       armorPoints: 4,
       damageReduction: 1,
+      armorLabel: 'Armor Points',
+      reductionLabel: 'DMG Reduction',
       value: 'none',
       onchange: () => {},
     });
@@ -651,18 +658,23 @@ describe('the components themselves', () => {
     ]);
   });
 
-  it('Reload is the message it was given', () => {
-    const target = render(Reload as never, { message: 'Out of ammo' });
-    expect(target.querySelector('.macro_prompt')?.textContent).toBe('Out of ammo');
+  it('Prompt is the heading alone when that is all it was given', () => {
+    const target = render(Prompt as never, { heading: 'Out of ammo' });
+    expect(target.querySelector('.prompt-heading')?.textContent).toBe('Out of ammo');
+    expect(target.querySelector('.prompt-readout')).toBeNull();
+    expect(target.querySelector('.choice-list')).toBeNull();
   });
 
-  it('NoCharacter falls back to the character explanation for an unknown target', () => {
-    const target = render(NoCharacter as never, { target: 'nonsense' });
-    expect(target.querySelector('.macro_prompt')?.textContent).toContain('Assign a character.');
-  });
+  it('Prompt prints the readout it was handed, and the note in the condition’s voice', () => {
+    const target = render(Prompt as never, {
+      heading: 'Select your roll type',
+      intro: 'Advantage rolls twice.',
+      readout: { label: 'Rolling:', value: '1d10' },
+      note: 'Phobia: Fear Save [-]',
+    });
 
-  it('ChooseAdvantage names the die when it was given one', () => {
-    const target = render(ChooseAdvantage as never, { note: '', die: '1d10' });
-    expect(target.querySelector('.macro_prompt')?.textContent).toContain('1d10');
+    expect(target.querySelector('.prompt-readout-value')?.textContent).toBe('1d10');
+    expect(target.querySelector('.prompt-intro')?.textContent).toBe('Advantage rolls twice.');
+    expect(target.querySelector('.prompt-note')?.textContent).toContain('Phobia');
   });
 });

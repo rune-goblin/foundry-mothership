@@ -19,6 +19,8 @@ import MainStat from '../module/ui/parts/MainStat.svelte';
 import MinMaxField from '../module/ui/parts/MinMaxField.svelte';
 import PipTrack from '../module/ui/parts/PipTrack.svelte';
 import RollableStat from '../module/ui/parts/RollableStat.svelte';
+import RollDie from '../module/ui/parts/RollDie.svelte';
+import RollButton from '../module/ui/parts/RollButton.svelte';
 import ArmorBar from '../module/ui/parts/ArmorBar.svelte';
 import ArmorBlock from '../module/ui/parts/sections/ArmorBlock.svelte';
 import HealthBlock from '../module/ui/parts/sections/HealthBlock.svelte';
@@ -116,9 +118,9 @@ describe('MainStat', () => {
       key: 'combat',
     }).firstElementChild!;
 
-    expect(wrapper.className).toBe('mainstatwrapper');
+    expect(classes(wrapper)).toEqual(['mainstatwrapper']);
     const stat = wrapper.firstElementChild!;
-    expect([...stat.classList]).toEqual(['resource', 'mainstat']);
+    expect(classes(stat)).toEqual(['resource', 'mainstat']);
 
     const span = stat.querySelector('.mainstatlabel span')!;
     expect(span.className).toBe('mainstattext');
@@ -131,6 +133,19 @@ describe('MainStat', () => {
     expect(input.getAttribute('type')).toBe('text');
     expect(input.getAttribute('data-dtype')).toBe('Number');
     expect(input.value).toBe('10');
+  });
+
+  it('rolls from its label, and the die on the black pill is solid', () => {
+    const label = render(MainStat, {
+      label: 'Combat',
+      key: 'combat',
+      name: 'system.stats.combat.value',
+      value: 30,
+      onroll: vi.fn(),
+    }).querySelector('.mainstatlabel span')!;
+
+    expect(classes(label)).toContain('stat-roll');
+    expect(classes(label.querySelector('i')!)).toContain('is-solid');
   });
 
   it('renders a checked box for a boolean stat', () => {
@@ -149,24 +164,38 @@ describe('MainStat', () => {
     expect(input.getAttribute('data-dtype')).toBe('Boolean');
   });
 
-  // The generator swaps a clickable die for the rolled value and hangs the class bonus beside it,
-  // so it drives the circle and the wrapper's second slot itself.
-  it('lets a caller replace the circle and add beside it', () => {
+  // RollBox swaps a clickable die for the rolled value, so the generator drives the circle itself.
+  it('lets a caller replace the circle', () => {
     const wrapper = render(MainStat, {
       label: 'Strength',
       key: 'strength',
       control: text('die'),
-      after: text('bonus'),
     }).firstElementChild!;
 
-    expect(wrapper.className).toBe('mainstatwrapper');
+    expect(classes(wrapper)).toEqual(['mainstatwrapper']);
     expect(wrapper.querySelector('.resource.mainstat')!.textContent).toContain('die');
     expect(wrapper.querySelector('input')).toBeNull();
-    expect(wrapper.lastElementChild!.textContent).toBe('bonus');
   });
 
-  // The character sheet's four stats are clicked to roll them, so the caption becomes the
-  // RollableStat the creature sheet builds by hand -- same classes, same data attributes.
+  // The modifier sits inside the label pill rather than orbiting the circle as a second, smaller
+  // one. The sign is the caller's glyph so a negative modifier can print its own.
+  it('hangs a modifier on the right end of the pill', () => {
+    const wrapper = render(MainStat, {
+      label: 'Body',
+      key: 'body',
+      name: 'system.stats.body.value',
+      value: 40,
+      modifier: text('+5'),
+    }).firstElementChild!;
+
+    const pill = wrapper.querySelector('.mainstatlabel')!;
+    expect(classes(pill)).toEqual(['mainstatlabel', 'has-modifier']);
+    expect(pill.textContent).toContain('+5');
+    expect(wrapper.querySelector('.circle-input')).not.toBeNull();
+  });
+
+  // The character sheet's four stats are clicked to roll them, so the caption becomes a
+  // RollableStat wearing MainStat's own pill class.
   it('makes the caption rollable when given a handler', () => {
     const rolled: string[] = [];
     const span = render(MainStat, {
@@ -198,8 +227,8 @@ describe('MainStat', () => {
       wrapper: false,
     }).firstElementChild!;
 
-    expect([...stat.classList]).toEqual(['resource', 'mainstat']);
-    expect([...stat.querySelector('div')!.classList]).toEqual(['fulllabel', 'mainstatlabel']);
+    expect(classes(stat)).toEqual(['resource', 'mainstat']);
+    expect(classes(stat.querySelector('div')!)).toEqual(['fulllabel', 'mainstatlabel']);
   });
 });
 
@@ -246,6 +275,27 @@ describe('ItemCell', () => {
     const el = render(ItemCell, { children: text('Wrench'), variant: 'name', roll: true })
       .firstElementChild!;
     expect(classes(el)).toEqual(['skill-name', 'list-roll']);
+  });
+
+  // The badge the skill, weapon and attack rows all wear: the name reads from the pill's left
+  // edge and the die rides its right, so no call site hand-writes a die of its own.
+  it('lays a badge out as name then die, and prints the die solid on the black pill', () => {
+    const el = render(ItemCell, { children: text('Talons'), variant: 'name', die: true, roll: true })
+      .firstElementChild!;
+
+    expect(classes(el)).toEqual(['skill-name', 'list-roll', 'has-die']);
+    const [label, die] = Array.from(el.children);
+    expect(label.textContent).toBe('Talons');
+    expect(classes(label)).toContain('cell-label');
+    expect(classes(die)).toContain('is-solid');
+  });
+
+  // A stat cell is printed on paper, where a solid die shouts over the number beside it.
+  it('mutes a badge die outside the pill', () => {
+    const el = render(ItemCell, { children: text('2d10'), die: true, roll: true }).firstElementChild!;
+
+    expect(classes(el)).toEqual(['skill-stat', 'list-roll', 'has-die']);
+    expect(classes(el.children[1])).not.toContain('is-solid');
   });
 
   // The +/- cells: left click adds, right click removes. Enter is the left click's twin; a
@@ -325,6 +375,7 @@ describe('MinMaxField', () => {
     const caption = el.querySelector('label')!;
     expect([...caption.classList]).toEqual(['resource-label', 'minmaxtext']);
     expect(caption.hasAttribute('role')).toBe(false);
+    expect(caption.querySelector('i')).toBeNull();
 
     const wrapper = el.querySelector('.minmaxwrapper')!;
     const [left, right] = [...wrapper.querySelectorAll('input')];
@@ -353,6 +404,7 @@ describe('MinMaxField', () => {
       'rollable',
       'stress-roll',
     ]);
+    expect(caption.querySelector('i.fa-dice-d20')).not.toBeNull();
     caption.click();
     press(caption, ' ');
     expect(onroll).toHaveBeenCalledTimes(2);
@@ -378,10 +430,75 @@ describe('RollableStat', () => {
     ]);
     expect((el as HTMLElement).dataset).toMatchObject({ key: 'combat', label: 'Combat' });
     expect(el.textContent!.trim()).toBe('Combat');
+    // The cue follows the word, and adds nothing a screen reader has to read.
+    expect(classes(el.querySelector('i')!)).toContain('fa-dice-d20');
 
     (el as HTMLElement).click();
     press(el, 'Enter');
     expect(onroll).toHaveBeenCalledTimes(2);
+  });
+
+  it('hands the die its tone and its scale', () => {
+    const die = render(RollableStat, {
+      label: 'Sanity',
+      key: 'sanity',
+      dieTone: 'solid',
+      dieScale: 1,
+    }).querySelector('i') as HTMLElement;
+
+    expect(classes(die)).toContain('is-solid');
+    expect(die.style.getPropertyValue('--rolldie-scale')).toBe('1');
+  });
+});
+
+describe('RollDie', () => {
+  it('is a decorative die glyph', () => {
+    const el = render(RollDie).firstElementChild!;
+
+    expect(el.tagName).toBe('I');
+    expect(classes(el)).toEqual(expect.arrayContaining(['fas', 'fa-dice-d20', 'roll-die']));
+    expect(el.getAttribute('aria-hidden')).toBe('true');
+    expect(el.textContent).toBe('');
+  });
+
+  // The muted grey silts up on a black ground, so the pill asks for the solid tone.
+  it('takes a solid tone for labels printed on black', () => {
+    expect(classes(render(RollDie, { tone: 'solid' }).firstElementChild!)).toContain('is-solid');
+    expect(classes(render(RollDie).firstElementChild!)).not.toContain('is-solid');
+  });
+
+  // One number, because the rise divides by the same scale to stay on the label's centre.
+  it('takes a scale from the caller, and carries none of its own without one', () => {
+    const scaled = render(RollDie, { scale: 1 }).firstElementChild as HTMLElement;
+
+    expect(scaled.style.getPropertyValue('--rolldie-scale')).toBe('1');
+    expect((render(RollDie).firstElementChild as HTMLElement).getAttribute('style')).toBeNull();
+  });
+});
+
+describe('RollButton', () => {
+  // The generator's e2e specs click `img[data-roll="<key>"]`, and the pane swaps the button for
+  // a `circle-input` once the value lands — so both classes and the hook are the contract.
+  it('is a keyboard-answering die that fills a number circle', () => {
+    const onroll = vi.fn();
+    const el = render(RollButton, { key: 'health', title: 'Health', onroll })
+      .firstElementChild as HTMLImageElement;
+
+    expect(el.tagName).toBe('IMG');
+    expect(classes(el)).toEqual(['roll-button', 'circle-input']);
+    expect(el.dataset.roll).toBe('health');
+    expect(el.title).toBe('Health');
+    expect(el.getAttribute('role')).toBe('button');
+
+    el.click();
+    press(el, 'Enter');
+    expect(onroll).toHaveBeenCalledTimes(2);
+  });
+
+  it('carries no title when the caller gives it none', () => {
+    const el = render(RollButton, { key: 'credits' }).firstElementChild!;
+
+    expect(el.hasAttribute('title')).toBe(false);
   });
 });
 
@@ -583,20 +700,27 @@ describe('HealthBlock', () => {
 });
 
 describe('ArmorBlock', () => {
-  const block = (armor: Record<string, unknown>, onroll = () => {}) =>
-    render(ArmorBlock, { armor, onroll }).firstElementChild!;
+  const block = (armor: Record<string, unknown>, onchoose = () => {}) =>
+    render(ArmorBlock, { armor, onchoose }).firstElementChild!;
 
-  it('reads out the derived points and reduction, and rolls from its caption', () => {
-    const onroll = vi.fn();
-    const el = block({ mod: 4, damageReduction: 2, cover: 'none' }, onroll);
+  it('reads out the derived points and reduction', () => {
+    const el = block({ mod: 4, damageReduction: 2, cover: 'none' });
 
     expect([...el.querySelectorAll('.whiteText')].map((n) => n.textContent)).toEqual(['4', '2']);
     expect(el.querySelector('.highlightText')).toBeNull();
+  });
 
-    const caption = el.querySelector('label')!;
-    caption.click();
-    press(caption, 'Enter');
-    expect(onroll).toHaveBeenCalledTimes(2);
+  // The block used to carry a die on its caption; the only thing it can do is open the prompt.
+  it('names the cover on a button that chooses it, and nothing here rolls', () => {
+    const onchoose = vi.fn();
+    const el = block({ mod: 4, damageReduction: 2, cover: 'heavy' }, onchoose);
+
+    const chip = el.querySelector('button')!;
+    expect(chip.textContent!.trim()).toBe('Mothership.HeavyCover');
+    expect(el.querySelector('i.fa-dice-d20')).toBeNull();
+
+    chip.click();
+    expect(onchoose).toHaveBeenCalledTimes(1);
   });
 
   it.each([

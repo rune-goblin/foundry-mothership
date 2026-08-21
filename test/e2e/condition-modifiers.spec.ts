@@ -73,7 +73,7 @@ test.describe('conditions preselect the roll they name', () => {
     const uuid = await character(gmPage, 'Nightmares');
     const dialog = await roll(gmPage, uuid, 'restSave');
 
-    await expect(dialog.locator('.condition-modifier')).toHaveText('Nightmares: this roll is at [-].');
+    await expect(dialog.locator('.prompt-note')).toHaveText('Nightmares: this roll is at [-].');
     await expect(dialog.locator('button[data-action="disadvantage"]')).toHaveAttribute('autofocus', '');
     await expect(dialog.locator('button[data-action="advantage"]')).not.toHaveAttribute('autofocus', '');
   });
@@ -108,7 +108,7 @@ test.describe('conditions preselect the roll they name', () => {
     const uuid = await character(gmPage, 'Nightmares');
     const dialog = await roll(gmPage, uuid, 'fear');
 
-    await expect(dialog.locator('.condition-modifier')).toHaveCount(0);
+    await expect(dialog.locator('.prompt-note')).toHaveCount(0);
     await expect(dialog.locator('button[data-action="none"]')).toHaveAttribute('autofocus', '');
   });
 
@@ -116,7 +116,7 @@ test.describe('conditions preselect the roll they name', () => {
     const uuid = await character(gmPage, 'Spiraling');
     const dialog = await roll(gmPage, uuid, 'panic');
 
-    await expect(dialog.locator('.condition-modifier')).toHaveText('Spiraling: this roll is at [-].');
+    await expect(dialog.locator('.prompt-note')).toHaveText('Spiraling: this roll is at [-].');
     await expect(dialog.locator('button[data-action="disadvantage"]')).toHaveAttribute('autofocus', '');
   });
 
@@ -124,7 +124,7 @@ test.describe('conditions preselect the roll they name', () => {
     const uuid = await character(gmPage, null);
     const dialog = await roll(gmPage, uuid, 'restSave');
 
-    await expect(dialog.locator('.condition-modifier')).toHaveCount(0);
+    await expect(dialog.locator('.prompt-note')).toHaveCount(0);
     // Normal is the default now — Advantage previously had autofocus only because it was the first button.
     await expect(dialog.locator('button[data-action="none"]')).toHaveAttribute('autofocus', '');
   });

@@ -4,7 +4,7 @@
     title: 'Cover',
     path: 'module/dialogs/Cover.svelte',
     width: 600,
-    note: 'The radio group holds the choice; `value` is the cover the actor is already behind. Each option shows what its bonus would do to the armour bar, in orange.',
+    note: 'Every row keeps its examples open — here they are the choice, not a gloss on the row already picked. Each option shows what its bonus would do to the armour bar, in orange.',
   };
 </script>
 
@@ -29,5 +29,17 @@
 </script>
 
 <div class="mothership macro-popup-dialog">
-  <Cover {options} armorPoints={7} damageReduction={0} value="light" onchange={say('cover')} />
+  <Cover
+    heading={localize('Mothership.Cover')}
+    intro="{localize('Mothership.TheEnvironmentCanProvideProtectionCalled')} <strong>{localize(
+      'Mothership.Cover',
+    )}</strong>. {localize('Mothership.ItCanBeDestroyedLikeArmor')}"
+    {options}
+    armorPoints={7}
+    damageReduction={0}
+    armorLabel={localize('Mothership.ArmorPoints')}
+    reductionLabel={localize('Mothership.DMGReduction')}
+    value="light"
+    onchange={say('cover')}
+  />
 </div>

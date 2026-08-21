@@ -47,7 +47,6 @@ export class MothershipCharacterModel extends foundry.abstract.TypeDataModel {
       biography: html(''),
       notes: html(''),
       class: new fields.SchemaField({ value: str('') }),
-      rank: new fields.SchemaField({ value: str('') }),
       pronouns: new fields.SchemaField({ value: str('') }),
       credits: new fields.SchemaField({ value: str('') }),
       attributes: new fields.SchemaField({ level: new fields.SchemaField({ value: num(0) }) }),
@@ -79,10 +78,10 @@ export class MothershipCreatureModel extends foundry.abstract.TypeDataModel {
       stats: new fields.SchemaField({
         combat: stat(10, 'Combat', 'Combat Check', { enabled: true }),
         instinct: stat(10, 'Instinct', 'Instinct Check', { enabled: true }),
-        speed: stat(10, 'Speed', 'Speed Check', { enabled: false }),
+        // PSG 41, "Improving Loyalty": Contractors are run as creatures and track Loyalty.
+        // Nothing else in 1e has it, so it stays off until a creature is a contractor.
         loyalty: stat(10, 'Loyalty', 'Loyalty Check', { enabled: false }),
         armor: stat(0, 'Armor', 'Armor Save', { armor: true, enabled: false }),
-        sanity: stat(10, 'Sanity', 'Sanity Save', { enabled: false }),
       }),
       // Stash for the swarm toggle's combat multiplier: must stay in the schema or a
       // SchemaField strips it, making the multiplication permanent instead of reversible.

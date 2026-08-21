@@ -63,7 +63,7 @@
       height: auto;
       min-height: var(--wizard-marker-size);
       font-family: var(--font-display);
-      font-size: var(--font-size-sm);
+      font-size: var(--font-size-md);
       text-align: left;
       cursor: pointer;
     }
@@ -85,7 +85,7 @@
       height: var(--wizard-marker-size);
       border: var(--border-width-2) solid currentcolor;
       border-radius: var(--radius-full);
-      font-size: var(--font-size-xs);
+      font-size: var(--font-size-sm);
       font-weight: var(--font-weight-bold);
     }
 

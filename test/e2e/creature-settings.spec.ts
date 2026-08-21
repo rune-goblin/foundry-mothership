@@ -57,11 +57,11 @@ test.describe('creature settings window', () => {
     );
   });
 
-  test('shows all seven toggles', async ({ gmPage }) => {
+  test('shows all five toggles', async ({ gmPage }) => {
     await openSettings(gmPage);
     const settings = gmPage.locator(SETTINGS);
 
-    for (const stat of ['combat', 'instinct', 'loyalty', 'speed', 'armor', 'sanity']) {
+    for (const stat of ['combat', 'instinct', 'loyalty', 'armor']) {
       await expect(settings.locator(`input[name="system.stats.${stat}.enabled"]`)).toBeVisible();
     }
     await expect(settings.locator('input#swarm-enabled')).toBeVisible();

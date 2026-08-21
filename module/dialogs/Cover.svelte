@@ -1,62 +1,78 @@
 <script>
   import ArmorBar from '../ui/parts/ArmorBar.svelte';
-  import { asset } from '../chat/cards.ts';
-  import { localize } from '../i18n.ts';
   import { COVER_BONUS } from '../rules.ts';
+  import Prompt from './Prompt.svelte';
 
-  // No <style> block: the dialog vocabulary is the shell tier's, declared in css/mothership.css.
-  let { options, armorPoints, damageReduction, value, onchange } = $props();
+  // The head and the list are shared; the armour bar beside each option is ArmorBar's own, dressed
+  // in the shell tier's health classes the way every other reader of it is.
+  let {
+    heading,
+    intro,
+    options,
+    armorPoints,
+    damageReduction,
+    armorLabel,
+    reductionLabel,
+    value,
+    onchange,
+  } = $props();
+
+  const rows = $derived(
+    options.map((option) => ({
+      key: option.key,
+      label: option.label,
+      description: option.examples,
+    })),
+  );
 </script>
 
-<div class="macro_window">
-  <div class="grid grid-2col" style="grid-template-columns: 150px auto">
-    <div>
-      <img src={asset('images/icons/ui/attributes/armor.png')} alt={localize('Mothership.Cover')} />
-    </div>
-    <div class="macro_desc">
-      <h4>{localize('Mothership.Cover')}</h4>
-      {localize('Mothership.TheEnvironmentCanProvideProtectionCalled')}
-      <strong>{localize('Mothership.Cover')}</strong>. {localize('Mothership.ItCanBeDestroyedLikeArmor')}
-      <strong>{localize('Mothership.IfYouShotWhileInCover')}.</strong>
-      {localize('Mothership.YourCoverValuesAreDisplayedIn')}
-      <strong><span style="color: orangered">{localize('Mothership.Orange')}</span></strong>.
-    </div>
-  </div>
-</div>
+{#snippet armor(option)}
+  <span class="cover-armor health resource healthspread minmaxtopstat">
+    <ArmorBar
+      spread
+      left={armorPoints}
+      leftBonus={COVER_BONUS[option.key].armorPoints}
+      right={damageReduction}
+      rightBonus={COVER_BONUS[option.key].damageReduction}
+    />
+    <span class="cover-armor-legend">
+      <span>{armorLabel}</span>
+      <span>{reductionLabel}</span>
+    </span>
+  </span>
+{/snippet}
 
-<div class="macro_prompt">{localize('Mothership.SelectYourCurrentCoverSituation')}:</div>
+<Prompt
+  {heading}
+  {intro}
+  options={rows}
+  {value}
+  {onchange}
+  lines={1}
+  expanded
+  trailing={armor}
+/>
 
-{#each options as option (option.key)}
-  <label for="cover-{option.key}">
-    <div class="macro_window" style="vertical-align: middle; padding-left: 3px;">
-      <div class="grid grid-3col" style="align-items: center; grid-template-columns: 20px auto 250px">
-        <input
-          type="radio"
-          id="cover-{option.key}"
-          name="cover"
-          value={option.key}
-          checked={value === option.key}
-          onchange={() => onchange(option.key)}
-        />
-        <div class="macro_desc" style="display: table; padding-left: 5px;">
-          <span style="display: table-cell; vertical-align: middle;">
-            <strong>{option.label}</strong><br />{option.examples}
-          </span>
-        </div>
-        <div class="macro_desc health resource healthspread minmaxtopstat">
-          <ArmorBar
-            spread
-            left={armorPoints}
-            leftBonus={COVER_BONUS[option.key].armorPoints}
-            right={damageReduction}
-            rightBonus={COVER_BONUS[option.key].damageReduction}
-          />
-          <div class="grid">
-            <div class="healthmaxtext health resource">{localize('Mothership.ArmorPoints')}</div>
-            <div class="healthmaxtext health resource">{localize('Mothership.DMGReduction')}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </label>
-{/each}
+<style>
+  @layer system {
+    .cover-armor {
+      display: block;
+    }
+
+    /* Names the two numbers in the bar above, in the order the bar prints them. */
+    .cover-armor-legend {
+      --cover-legend-font-size: var(--font-size-xs);
+      --cover-legend-text: var(--text-tertiary);
+
+      display: flex;
+      justify-content: space-between;
+      gap: var(--space-4);
+      margin-top: var(--space-2);
+      font-family: var(--font-sans-mothership);
+      font-size: var(--cover-legend-font-size);
+      line-height: var(--line-height-none);
+      white-space: nowrap;
+      color: var(--cover-legend-text);
+    }
+  }
+</style>

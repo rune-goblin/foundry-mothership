@@ -63,7 +63,6 @@ test.describe('character sheet', () => {
   test('opens with the identity header filled from the document', async ({ gmPage }) => {
     const { appId } = await open(gmPage, {
       class: { value: 'Marine' },
-      rank: { value: 'Corporal' },
       pronouns: { value: 'they/them' },
       credits: { value: '250' },
       attributes: { level: { value: 3 } },
@@ -73,7 +72,6 @@ test.describe('character sheet', () => {
     await expect(sheet.locator('.window-title')).toContainText('__e2e_character');
     await expect(sheet.locator('input[name="name"]')).toHaveValue('__e2e_character');
     await expect(sheet.locator('input[name="system.class.value"]')).toHaveValue('Marine');
-    await expect(sheet.locator('input[name="system.rank.value"]')).toHaveValue('Corporal');
     await expect(sheet.locator('input[name="system.pronouns.value"]')).toHaveValue('they/them');
     await expect(sheet.locator('input[name="system.credits.value"]')).toHaveValue('250');
     await expect(sheet.locator('input[name="system.attributes.level.value"]')).toHaveValue('3');
@@ -105,7 +103,23 @@ test.describe('character sheet', () => {
       await expect(sheet.locator(`input[name="system.stats.${stat}.value"]`)).toHaveValue(value);
       await expect(sheet.locator(`input[name="system.stats.${stat}.mod"]`)).toHaveValue(mod);
       await expect(sheet.locator(`span[data-key="${stat}"]`)).toBeVisible();
+      await expect(sheet.locator(`span[data-key="${stat}"] i.fa-dice-d20`)).toBeVisible();
     }
+  });
+
+  // The die marks what rolls, so a field that only holds a number must not wear one.
+  test('the roll cue sits on every rollable label and nowhere else', async ({ gmPage }) => {
+    const { appId, uuid } = await open(gmPage);
+    await addItem(gmPage, uuid, { name: '__e2e_zerog', type: 'skill', system: { rank: 'Trained', bonus: 10 } });
+    const sheet = gmPage.locator(`#${appId}`);
+
+    for (const label of ['Stress', 'Armor']) {
+      await expect(sheet.locator('label.rollable', { hasText: label }).locator('i.fa-dice-d20')).toBeVisible();
+    }
+    for (const label of ['Health', 'Wounds']) {
+      await expect(sheet.locator('label.minmaxtext', { hasText: label }).locator('i')).toHaveCount(0);
+    }
+    await expect(sheet.locator('.skill-name', { hasText: '__e2e_zerog' }).locator('i.fa-dice-d20')).toBeVisible();
   });
 
   test('editing a stat persists through Foundry form handling', async ({ gmPage }) => {
@@ -400,6 +414,69 @@ test.describe('character sheet', () => {
         ),
       )
       .toEqual(['__e2e_smg']);
+  });
+
+  // Sanity, Fear and Body are d100 roll-unders like the four stats, and are now drawn by the same
+  // control. This replaces a spec that measured the bespoke save row's caption against its value
+  // box; that row, and the four classes it needed, are gone.
+  test('a save is the same control as a stat', async ({ gmPage }) => {
+    const { appId } = await open(gmPage, { stats: { sanity: { value: 21, mod: 0 } } });
+
+    const shape = await gmPage.evaluate((id: string) => {
+      const app = document.getElementById(id)!;
+      const read = (rail: string) =>
+        [...app.querySelectorAll(`${rail} .mainstatwrapper`)].map((row) => ({
+          label: row.querySelector('.mainstattext')!.textContent!.trim(),
+          rolls: row.querySelector('.mainstattext.rollable') !== null,
+          circle: Math.round(row.querySelector('.circle-input')!.getBoundingClientRect().width),
+          modifier: row.querySelector('.stat-mod') !== null,
+        }));
+      return { stats: read('.abilities'), saves: read('.saves') };
+    }, appId);
+
+    expect(shape.saves.map((s) => s.label)).toEqual(['Sanity', 'Fear', 'Body']);
+    expect(shape.saves.every((s) => s.rolls && s.modifier)).toBe(true);
+    expect(new Set(shape.saves.map((s) => s.circle))).toEqual(
+      new Set(shape.stats.map((s) => s.circle)),
+    );
+  });
+
+  // Every skill in the book carries the same placeholder art, so the frame around it read as a
+  // control that did nothing.
+  test('the skills list has no art column', async ({ gmPage }) => {
+    const { appId, uuid } = await open(gmPage);
+    await addItem(gmPage, uuid, {
+      name: '__e2e_linguistics',
+      type: 'skill',
+      img: 'icons/svg/book.svg',
+      system: { rank: 'Trained', bonus: 10 },
+    });
+    const sheet = gmPage.locator(`#${appId}`);
+    await sheet.locator('a.tab-select[data-tab="skills"]').click();
+
+    const skills = sheet.locator('.tab[data-tab="skills"]');
+    await expect(skills.locator('.item-image')).toHaveCount(0);
+    // The header lost its spacer with the column, so both still start at the same edge.
+    const [header, row] = await skills.locator('.items-list li').evaluateAll((rows) =>
+      rows.slice(0, 2).map((entry) => entry.firstElementChild!.getBoundingClientRect().left),
+    );
+    expect(row).toBeCloseTo(header, 0);
+  });
+
+  test('a hovered roll control turns its die over', async ({ gmPage }) => {
+    const { appId } = await open(gmPage);
+    const sheet = gmPage.locator(`#${appId}`);
+    const die = sheet.locator('.mainstat .roll-die').first();
+
+    expect(await die.evaluate((el) => {
+      const style = getComputedStyle(el);
+      return [style.transitionProperty, style.transitionDuration, style.transitionTimingFunction];
+    })).toEqual(['transform', '0.2s', 'ease-in-out']);
+
+    const turn = () => die.evaluate((el) => getComputedStyle(el).transform);
+    expect(await turn()).toBe('none');
+    await sheet.locator('.mainstat .mainstattext').first().hover();
+    await expect.poll(turn).not.toBe('none');
   });
 
   test('the header control opens the creation wizard', async ({ gmPage }) => {

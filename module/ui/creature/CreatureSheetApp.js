@@ -9,7 +9,7 @@ export class MothershipCreatureSheet extends ActorSheetV2 {
   static DEFAULT_OPTIONS = {
     // css/mothership.css paints the content white and has no dark variant, so pin the light theme.
     classes: ['mothership', 'sheet', 'actor', 'creature', 'themed', 'theme-light'],
-    position: { width: 820, height: 770 },
+    position: { width: 820, height: 720 },
     window: {
       resizable: true,
       controls: [
@@ -53,13 +53,9 @@ export class MothershipCreatureSheet extends ActorSheetV2 {
       TextEditor.implementation.enrichHTML(html ?? '', { relativeTo: this.document });
 
     return {
-      // World setting, not actor data — kept off system.settings, which no schema declares.
-      hideWeight: game.settings.get('mothershiprpg', 'hideWeight'),
-      enriched: {
-        description: await enrich(this.document.system.description),
-        biography: await enrich(this.document.system.biography),
-        notes: await enrich(this.document.system.notes),
-      },
+      // Only `description` reaches the sheet: the UCR stat block has no biography and no notes,
+      // and the schema keeps both fields only so older creatures lose nothing on load.
+      enriched: { description: await enrich(this.document.system.description) },
       items: this.document.items.map((item) => ({
         id: item.id,
         type: item.type,

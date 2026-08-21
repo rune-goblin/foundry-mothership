@@ -1,7 +1,7 @@
 <script>
   import { localize } from '../../../i18n.ts';
   import { statLabel } from '../../class/choosable-stats.js';
-  import { DASH, LEDGER, STATS, signed } from '../labels.js';
+  import { BONUS_LABEL, DASH, collapseAdjustments, signed } from '../labels.js';
 
   let { draft } = $props();
 
@@ -10,6 +10,16 @@
   const spendOn = (position, stat) =>
     draft.chooseStat(position, stat || draft.statChoices[position].chosen);
 
+  // Read off the one running total rather than recomputed, so a placed choice joins the class's
+  // flat adjustments as a row of its own. A stat nothing moved says nothing and is left out.
+  const modifiers = $derived(
+    collapseAdjustments(
+      Object.keys(BONUS_LABEL)
+        .filter((key) => draft.bonus[key])
+        .map((key) => ({ key, value: draft.bonus[key] })),
+    ),
+  );
+
   function optionLabel(choice, stat) {
     const name = localize(statLabel(stat) ?? stat);
     if (draft.rolled[stat] === null) return name;
@@ -17,31 +27,6 @@
     return `${name} ${base} → ${base + choice.modification}`;
   }
 </script>
-
-<!-- Wounds follow the same ledger equation, starting from the system's base of two. -->
-<table class="wizard-adjustment-table" data-list="ledger">
-  <thead>
-    <tr>
-      <th aria-label={localize('Mothership.StatsAndSaves')}></th>
-      <th scope="col">{localize('Mothership.Base')}</th>
-      <th scope="col">{localize('Mothership.Adjustment')}</th>
-      <th scope="col">{localize('Mothership.Total')}</th>
-    </tr>
-  </thead>
-  <tbody>
-  {#each LEDGER as [key, label], position (key)}
-    {@const modifier = draft.bonus[key]}
-    {@const total = key === 'max_wounds' ? draft.wounds : draft.rolled[key] === null ? null : draft.total(key)}
-    {@const base = total === null ? null : total - modifier}
-    <tr class:raised={modifier !== 0} class:group-start={position === STATS.length}>
-      <th scope="row">{localize(label)}</th>
-      <td data-base={key}>{base ?? DASH}</td>
-      <td data-modifier={key}>{total === null ? DASH : signed(modifier)}</td>
-      <td data-value={key}>{total ?? DASH}</td>
-    </tr>
-  {/each}
-  </tbody>
-</table>
 
 {#if draft.statChoices.length > 0}
   <p class="wizard-prompt">{localize('Mothership.CharacterGenerator.Wizard.Adjustments.Choose')}</p>
@@ -109,61 +94,17 @@
   {/if}
 {/each}
 
+{#if modifiers.length > 0}
+  <ul class="wizard-modifiers" data-list="modifiers">
+    {#each modifiers as row (row.key)}
+      <li><span data-modifier={row.key}>{signed(row.value)}</span> {localize(row.label)}</li>
+    {/each}
+  </ul>
+{/if}
+
 <style>
   /* Reads the `--wizard-*` vocabulary Wizard.svelte declares. */
   @layer system {
-    .wizard-adjustment-table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-    }
-
-    .wizard-adjustment-table th,
-    .wizard-adjustment-table td {
-      padding: var(--space-6) var(--space-10);
-      border-bottom: var(--border-width-1) solid var(--wizard-rule);
-    }
-
-    .wizard-adjustment-table thead th {
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-bold);
-      text-align: right;
-      color: var(--wizard-ink-muted);
-    }
-
-    .wizard-adjustment-table thead th:first-child,
-    .wizard-adjustment-table tbody th {
-      width: 46%;
-      text-align: left;
-    }
-
-    .wizard-adjustment-table tbody th {
-      font-size: var(--font-size-sm);
-      color: var(--wizard-ink-muted);
-    }
-
-    .wizard-adjustment-table tbody td {
-      font-family: var(--font-display);
-      font-size: var(--font-size-lg);
-      font-weight: var(--font-weight-bold);
-      text-align: right;
-    }
-
-    .wizard-adjustment-table tr.raised th,
-    .wizard-adjustment-table tr.raised td {
-      border-bottom-color: var(--wizard-edge);
-    }
-
-    .wizard-adjustment-table tr.raised th,
-    .wizard-adjustment-table tr.raised td[data-modifier] {
-      color: var(--wizard-ink);
-    }
-
-    .wizard-adjustment-table tr.group-start th,
-    .wizard-adjustment-table tr.group-start td {
-      border-top: var(--border-width-2) solid var(--wizard-edge);
-    }
-
     .wizard-prompt {
       margin: 0;
       font-weight: var(--font-weight-semibold);
@@ -172,7 +113,7 @@
     .wizard-choice-label {
       display: block;
       margin: 0 0 var(--space-6);
-      font-size: var(--font-size-sm);
+      font-size: var(--font-size-md);
       font-weight: var(--font-weight-bold);
       color: var(--wizard-ink-muted);
     }
@@ -194,7 +135,7 @@
       height: auto;
       min-height: 0;
       font-family: var(--font-display);
-      font-size: var(--font-size-sm);
+      font-size: var(--font-size-md);
       font-weight: var(--font-weight-bold);
       cursor: pointer;
     }
@@ -255,7 +196,7 @@
     .wizard-package ul {
       margin: var(--space-4) 0 0;
       padding-left: var(--space-20);
-      font-size: var(--font-size-sm);
+      font-size: var(--font-size-md);
     }
   }
 </style>

@@ -3,15 +3,11 @@ import { enrich } from '../enrich.ts';
 import { format, localize } from '../i18n.ts';
 import type { Amount } from '../mutation/mutate.ts';
 import type { Advantage, StatKey } from '../rolls/spec.ts';
-import { COVER_KEYS, type Cover } from '../rules.ts';
+import { COVER_KEYS, COVER_LABEL, type Cover } from '../rules.ts';
 import { WOUND_TABLE_KEYS, type TableKey } from '../tables/tables.ts';
-import AmountPromptBody from './Amount.svelte';
 import CheckPrompt from './CheckPrompt.svelte';
-import ChooseAdvantage from './ChooseAdvantage.svelte';
 import CoverPrompt from './Cover.svelte';
-import NoCharacter from './NoCharacter.svelte';
-import MessagePrompt from './Reload.svelte';
-import WoundTable from './WoundTable.svelte';
+import Prompt from './Prompt.svelte';
 import { svelteDialog, type DialogButton } from './svelte-dialog.ts';
 
 const DIALOG_WIDTH = 600;
@@ -258,20 +254,29 @@ export interface AdvantagePrompt {
 }
 
 export async function chooseAdvantage(options: AdvantagePrompt): Promise<Advantage | null> {
-  return await svelteDialog<null, Advantage, { note: string; die: string }>({
-    component: ChooseAdvantage,
-    props: { note: options.note, die: options.die ?? '' },
+  const die = options.die ?? '';
+  const props = {
+    heading: localize('Mothership.SelectYourRollType'),
+    intro: localize('Mothership.WhatARollTypeBuys'),
+    note: options.note,
+    readout: die === '' ? null : { label: localize('Mothership.Rolling'), value: die },
+  };
+
+  return await svelteDialog<null, Advantage, typeof props>({
+    component: Prompt,
+    props,
     title: options.title,
     initial: null,
     width: DIALOG_WIDTH,
+    rail: true,
     buttons: advantageButtons(options.preselect, (advantage) => advantage),
   });
 }
 
 export async function askReload(): Promise<boolean> {
-  const answer = await svelteDialog<null, boolean, { message: string }>({
-    component: MessagePrompt,
-    props: { message: localize('Mothership.OutOfAmmoNeedReload') },
+  const answer = await svelteDialog<null, boolean, { heading: string }>({
+    component: Prompt,
+    props: { heading: localize('Mothership.OutOfAmmoNeedReload') },
     title: localize('Mothership.WeaponIssue'),
     initial: null,
     buttons: [
@@ -289,9 +294,9 @@ export async function chooseDamageMode(
   weapon: string,
   modes: readonly { label: string; formula: string }[],
 ): Promise<string | null> {
-  return await svelteDialog<null, string, { message: string }>({
-    component: MessagePrompt,
-    props: { message: format('Mothership.WhichDamageApplies', { weapon }) },
+  return await svelteDialog<null, string, { heading: string }>({
+    component: Prompt,
+    props: { heading: format('Mothership.WhichDamageApplies', { weapon }) },
     title: localize('Mothership.Damage'),
     initial: null,
     width: DIALOG_WIDTH,
@@ -309,9 +314,9 @@ export async function chooseDamageMode(
 }
 
 export async function outOfAmmo(): Promise<void> {
-  await svelteDialog<null, null, { message: string }>({
-    component: MessagePrompt,
-    props: { message: localize('Mothership.OutOfAmmo') },
+  await svelteDialog<null, null, { heading: string }>({
+    component: Prompt,
+    props: { heading: localize('Mothership.OutOfAmmo') },
     title: localize('Mothership.WeaponIssue'),
     initial: null,
     buttons: [{ action: 'ok', label: localize('Mothership.OK'), icon: 'fas fa-check', answer: () => null }],
@@ -319,10 +324,10 @@ export async function outOfAmmo(): Promise<void> {
 }
 
 const COVER_LABELS: Readonly<Record<Cover, { readonly label: string; readonly examples: string }>> = {
-  none: { label: 'Mothership.NoCover', examples: 'Mothership.UnprotectedOutInTheOpen' },
-  insignificant: { label: 'Mothership.InsignificantCover', examples: 'Mothership.WoodFurnitureDoorsShields' },
-  light: { label: 'Mothership.LightCover', examples: 'Mothership.TreesBulkheadWallMetalFurniture' },
-  heavy: { label: 'Mothership.HeavyCover', examples: 'Mothership.AirlockDoorsCementBeamsShips' },
+  none: { label: COVER_LABEL.none, examples: 'Mothership.UnprotectedOutInTheOpen' },
+  insignificant: { label: COVER_LABEL.insignificant, examples: 'Mothership.WoodFurnitureDoorsShields' },
+  light: { label: COVER_LABEL.light, examples: 'Mothership.TreesBulkheadWallMetalFurniture' },
+  heavy: { label: COVER_LABEL.heavy, examples: 'Mothership.AirlockDoorsCementBeamsShips' },
 };
 
 export interface CoverPromptArmor {
@@ -336,7 +341,18 @@ export async function chooseCover(current: Cover, armor: CoverPromptArmor): Prom
     label: localize(COVER_LABELS[key].label),
     examples: localize(COVER_LABELS[key].examples),
   }));
-  const props = { options, ...armor };
+  const props = {
+    heading: localize('Mothership.Cover'),
+    intro: `${localize('Mothership.TheEnvironmentCanProvideProtectionCalled')} <strong>${localize(
+      'Mothership.Cover',
+    )}</strong>. ${localize('Mothership.ItCanBeDestroyedLikeArmor')} <strong>${localize(
+      'Mothership.IfYouShotWhileInCover',
+    )}.</strong>`,
+    options,
+    armorLabel: localize('Mothership.ArmorPoints'),
+    reductionLabel: localize('Mothership.DMGReduction'),
+    ...armor,
+  };
 
   return await svelteDialog<Cover, Cover, typeof props>({
     component: CoverPrompt,
@@ -387,15 +403,10 @@ const STRESS_STEPS = ['1', '2', '1d5'] as const;
 export async function chooseStress(direction: StressDirection): Promise<Amount | null> {
   const text = STRESS_PROMPTS[direction];
   const heading = localize(text.title);
-  const props = {
-    image: asset(text.image),
-    heading,
-    body: localize(text.body),
-    prompt: `${localize('Mothership.SelectYourModification')}:`,
-  };
+  const props = { image: asset(text.image), heading, intro: localize(text.body) };
 
   return await svelteDialog<null, Amount, typeof props>({
-    component: AmountPromptBody,
+    component: Prompt,
     props,
     title: heading,
     initial: null,
@@ -430,33 +441,44 @@ const DEFAULT_WOUND: TableKey = 'blunt-force';
 
 /** Uses the keys `tables/` resolves, so a GM's re-pointed table is honoured here too. */
 export async function chooseWound(): Promise<ChosenWound | null> {
-  const tables = WOUND_TABLE_KEYS.map((key) => ({
-    key,
-    label: localize(`Mothership.Table.${key}`),
-    img: asset(`images/icons/ui/rolltables/${WOUND_ICONS[key]}`),
-  }));
   const props = {
     image: asset('images/icons/ui/macros/wound_roll.png'),
     heading: localize('Mothership.WoundRoll'),
-    body: localize('Mothership.WhatAWoundRollIs'),
-    tables,
+    intro: localize('Mothership.WhatAWoundRollIs'),
+    options: WOUND_TABLE_KEYS.map((key) => ({
+      key,
+      label: localize(`Mothership.Table.${key}`),
+      img: asset(`images/icons/ui/rolltables/${WOUND_ICONS[key]}`),
+    })),
   };
 
   return await svelteDialog<TableKey, ChosenWound, typeof props>({
-    component: WoundTable,
+    component: Prompt,
     props,
     title: localize('Mothership.WoundRoll'),
     initial: DEFAULT_WOUND,
-    width: DIALOG_WIDTH,
+    width: RAIL_WIDTH,
+    rail: true,
     buttons: advantageButtons(null, (advantage, key) => ({ key, advantage })),
   });
 }
 
+const NO_CHARACTER: Readonly<Record<string, string>> = {
+  character: 'Mothership.Errors.NoCharacterSelected',
+  token: 'Mothership.Errors.NoTokenSelected',
+};
+
 export async function noCharacter(target: string): Promise<void> {
-  await svelteDialog<null, null, { target: string }>({
-    component: NoCharacter,
-    props: { target },
-    title: localize('Mothership.Errors.NoCharacterTitle'),
+  const heading = localize('Mothership.Errors.NoCharacterTitle');
+  const props = {
+    heading,
+    intro: localize(NO_CHARACTER[target] ?? NO_CHARACTER.character),
+  };
+
+  await svelteDialog<null, null, typeof props>({
+    component: Prompt,
+    props,
+    title: heading,
     initial: null,
     buttons: [{ action: 'ok', label: localize('Mothership.OK'), icon: 'fas fa-check', answer: () => null }],
   });

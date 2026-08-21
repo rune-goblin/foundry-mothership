@@ -63,7 +63,9 @@ const goTo = async (page: Page, pane: string) => {
 const rollStatsAndSaves = async (page: Page) => {
   for (const pane of ['stats', 'saves']) {
     await goTo(page, pane);
-    await page.click('button[data-roll="all"]');
+    // The bulk roller retires once its pane's last die is in, so a second call finds nothing.
+    const bulk = page.locator('button[data-roll="all"]');
+    if (await bulk.count()) await bulk.click();
   }
 };
 
@@ -444,9 +446,10 @@ test.describe('character generator', () => {
     // to make an Expert available.
     await chooseClass(gmPage, 'Teamster');
     await pickEverySkill(gmPage);
-    // +5 to all stats and saves, so every ledger row is raised by 5.
+    // +5 to all stats and +10 to all saves, so the readout collapses each into a row of its own.
     await goTo(gmPage, 'adjustments');
-    await expect(gmPage.locator('[data-modifier="combat"]')).toHaveText('+5');
+    await expect(gmPage.locator('[data-modifier="all_stats"]')).toHaveText('+5');
+    await expect(gmPage.locator('[data-modifier="all_saves"]')).toHaveText('+10');
 
     await chooseClass(gmPage, 'Android');
 
@@ -454,16 +457,13 @@ test.describe('character generator', () => {
     // rather than doubling it — park it on Strength, then move it to Speed.
     await expect(gmPage.locator('button.wizard-rail-step[data-pane="health"]')).toBeDisabled();
     await goTo(gmPage, 'adjustments');
-    await expect(gmPage.locator('.wizard-adjustment-table thead th')).toHaveText([
-      '', 'Base', 'Adjustment', 'Total',
-    ]);
     await gmPage.selectOption('[data-choice="0"] select', 'strength');
-    await expect(gmPage.locator('[data-base="strength"]')).toHaveText('27');
     await expect(gmPage.locator('[data-modifier="strength"]')).toHaveText('-10');
-    await expect(gmPage.locator('[data-value="strength"]')).toHaveText('17');
+    await expect(gmPage.locator('[data-standing="strength"]')).toHaveText('17');
     await gmPage.selectOption('[data-choice="0"] select', 'speed');
-    await expect(gmPage.locator('[data-modifier="strength"]')).toHaveText('0');
-    await expect(gmPage.locator('[data-value="strength"]')).toHaveText('27');
+    // The readout carries what moved and nothing else, so Strength leaves it entirely.
+    await expect(gmPage.locator('[data-modifier="strength"]')).toHaveCount(0);
+    await expect(gmPage.locator('[data-modifier="speed"]')).toHaveText('-10');
 
     // The pane asks two questions; placing the adjustment alone isn't enough — the either/or bonus also gates the rail.
     await expect(gmPage.locator('button.wizard-rail-step[data-pane="health"]')).toBeDisabled();
@@ -476,7 +476,7 @@ test.describe('character generator', () => {
     await goTo(gmPage, 'adjustments');
     await expect(gmPage.locator('[data-modifier="intellect"]')).toHaveText('+20');
     await expect(gmPage.locator('[data-modifier="speed"]')).toHaveText('-10');
-    await expect(gmPage.locator('[data-modifier="combat"]')).toHaveText('0');
+    await expect(gmPage.locator('[data-modifier="combat"]')).toHaveCount(0);
     await expect(gmPage.locator('[data-modifier="fear"]')).toHaveText('+60');
     // Three granted plus the two chosen, not the Teamster's on top.
     await goTo(gmPage, 'skills');
@@ -592,6 +592,23 @@ test.describe('character generator', () => {
     expect(await stored(gmPage, uuid, 'system.class.value')).toBe('Teamster');
     await sheet.locator('.header-control[data-action="toggleControls"]').click();
     await expect(control).toHaveCount(0);
+  });
+
+  // In the wizard the die is the button, not a mark riding one, so it turns on its own hover.
+  test('a hovered wizard die turns over', async ({ gmPage }) => {
+    await openGenerator(gmPage);
+    await goTo(gmPage, 'stats');
+    const die = gmPage.locator('img[data-roll="strength"]');
+
+    expect(await die.evaluate((el) => {
+      const style = getComputedStyle(el);
+      return [style.transitionProperty, style.transitionDuration, style.transitionTimingFunction];
+    })).toEqual(['transform', '0.2s', 'ease-in-out']);
+
+    const turn = () => die.evaluate((el) => getComputedStyle(el).transform);
+    expect(await turn()).toBe('none');
+    await die.hover();
+    await expect.poll(turn).not.toBe('none');
   });
 
   test('rolling a patch no longer throws on a row that links nothing', async ({ gmPage }) => {

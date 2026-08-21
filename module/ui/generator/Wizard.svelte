@@ -180,7 +180,7 @@
 <style>
   /* `--wizard-*` is declared here so the whole window rethemes from one place. `circle-input`,
      `mainstat*` and `fulllabel` are the shared stat tier in css/mothership.css, also written by
-     MainStat, RollBox, CharacterSheet and CreatureSheet. */
+     MainStat, RollButton, CharacterSheet and CreatureSheet. */
   @layer system {
     .character-wizard {
       --wizard-rail-width: 13rem;
@@ -190,7 +190,9 @@
       --wizard-ink: var(--text-primary);
       --wizard-edge: var(--border-neutral-ink);
       --wizard-ink-muted: var(--text-secondary);
-      --wizard-ink-disabled: var(--text-muted);
+      /* Only disabled controls wear this, which WCAG 1.4.3 exempts from the 4.5:1 floor —
+         it still has to read as text, so it is the darkest grey that still says "off". */
+      --wizard-ink-disabled: var(--text-tertiary);
       --wizard-rule: var(--border-neutral-medium);
       --wizard-bar-surface: var(--surface-neutral-lowest);
       --wizard-bar-fill: var(--surface-neutral-paper);
@@ -236,7 +238,7 @@
     .character-wizard .wizard-counter {
       margin: 0;
       font-family: var(--font-display);
-      font-size: var(--font-size-sm);
+      font-size: var(--font-size-md);
       font-weight: var(--font-weight-bold);
       color: var(--wizard-ink-muted);
     }
@@ -313,7 +315,7 @@
 
     .character-wizard :global(.wizard-bulk) {
       align-self: start;
-      font-size: var(--font-size-xs);
+      font-size: var(--font-size-md);
     }
 
     .character-wizard :global(.wizard-step-button.primary) {
@@ -333,6 +335,7 @@
       margin: 0 0 var(--space-8);
     }
 
+    /* The one true subtext in the window — a page citation under the prose it cites. */
     .character-wizard :global(.wizard-reference) {
       margin: var(--space-8) 0 0;
       font-size: var(--font-size-sm);
@@ -347,9 +350,28 @@
       padding-left: var(--space-20);
     }
 
-    /* RollBox and GearPane's dice write this class, and only ever inside this form. */
-    .character-wizard :global(.clicable-item) {
-      cursor: pointer;
+    /* The book's class list — read by ClassPane and AdjustmentsPane, which print the same
+       adjustments a step apart. Foundry's reset strips the marker off every `ul` in a window. */
+    .character-wizard :global(.wizard-modifiers) {
+      list-style: disc;
+      margin: 0;
+      padding: var(--space-12) var(--space-16) var(--space-12) var(--space-32);
+      border: var(--border-width-2) solid var(--wizard-edge);
+      border-radius: var(--radius-md);
+    }
+
+    .character-wizard :global(.wizard-modifiers li) {
+      margin-bottom: var(--space-4);
+      font-size: var(--font-size-md);
+    }
+
+    .character-wizard :global(.wizard-modifiers li:last-child) {
+      margin-bottom: 0;
+    }
+
+    .character-wizard :global(.wizard-modifiers span) {
+      font-family: var(--font-display);
+      font-weight: var(--font-weight-bold);
     }
 
     /* MainStat renders this from a `labelClass` prop, so no scoped block can reach it directly. */
