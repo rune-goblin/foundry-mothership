@@ -116,4 +116,4 @@
   draft.statChoices = [{ modification: 5, stats: STATS, chosen: null }];
 </script>
 
-<Wizard {draft} close={say('close generator')} />
+<Wizard {draft} oncreated={say('close generator')} onstep={say('step')} />

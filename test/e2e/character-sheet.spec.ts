@@ -117,7 +117,7 @@ test.describe('character sheet', () => {
     await expect.poll(() => stored(gmPage, uuid, 'system.stats.combat.value')).toBe(62);
   });
 
-  test('the trauma response and the training note persist', async ({ gmPage }) => {
+  test('the trauma response persists', async ({ gmPage }) => {
     const { appId, uuid } = await open(gmPage);
     const sheet = gmPage.locator(`#${appId}`);
 
@@ -127,11 +127,6 @@ test.describe('character sheet', () => {
     await expect
       .poll(() => stored(gmPage, uuid, 'system.other.stressdesc.value'))
       .toBe('Adrenaline surge');
-
-    const training = sheet.locator('textarea[name="system.xp.selectedSkill"]');
-    await training.fill('Military Training');
-    await training.blur();
-    await expect.poll(() => stored(gmPage, uuid, 'system.xp.selectedSkill')).toBe('Military Training');
   });
 
   // Stress carries a *minimum*, not a maximum -- MinMaxField names both sides for that reason.
@@ -205,21 +200,6 @@ test.describe('character sheet', () => {
     await sheet.locator('a.tab-select[data-tab="notes"]').click();
     await expect(sheet.locator('.tab[data-tab="notes"]')).toContainText('owes the company money');
     await expect(sheet.locator('.tab[data-tab="notes"]')).toContainText('born on Prospero');
-  });
-
-  test('the XP track fills to the stored value and steps both ways', async ({ gmPage }) => {
-    const { appId, uuid } = await open(gmPage, { xp: { value: 7 } });
-    const track = gmPage.locator(`#${appId} .skill_training_frame [role="button"]`);
-
-    await expect(track.locator('.pip.filled')).toHaveCount(7);
-    await expect(track.locator('.pip:not(.filled)')).toHaveCount(8);
-    await expect(track.locator('.pip-caption')).toHaveText(['Trained', 'Expert', 'Master']);
-
-    await track.click({ position: { x: 5, y: 5 } });
-    await expect.poll(() => stored(gmPage, uuid, 'system.xp.value')).toBe(8);
-
-    await track.click({ button: 'right', position: { x: 5, y: 5 } });
-    await expect.poll(() => stored(gmPage, uuid, 'system.xp.value')).toBe(7);
   });
 
   test('a condition shows its treatment pips and steps them', async ({ gmPage }) => {

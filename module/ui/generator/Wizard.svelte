@@ -2,10 +2,13 @@
   import { mount, unmount } from 'svelte';
   import Self from './Wizard.svelte';
   import { CharacterDraft } from './draft.svelte.js';
+  import { creationRecord, finishCreation, saveRun } from './record.js';
   import { localize } from '../../i18n.ts';
 
   // ApplicationV2, not DocumentSheetV2: nothing here is a field of the actor, so there's no form
-  // for Foundry to persist — the draft holds state and writes the actor once, on finish.
+  // for Foundry to persist — the draft holds state and writes the actor once, on finish. What the
+  // run has answered so far is kept apart from that, in a flag, so closing the window mid-creation
+  // loses nothing and reopening resumes rather than restarts.
   export class WizardWindow extends foundry.applications.api.ApplicationV2 {
     static DEFAULT_OPTIONS = {
       // css/mothership.css paints the content white and has no dark variant, so pin the light theme.
@@ -21,6 +24,8 @@
     #onComplete;
     #component;
     #root;
+    #step = 0;
+    #created = false;
 
     constructor({ actor, onComplete, ...options } = {}) {
       super({ id: `mothership-generator-${actor.id}`, ...options });
@@ -41,19 +46,38 @@
     async _renderHTML() {
       if (this.#component) return this.#root;
       await this.#draft.load();
+      const record = creationRecord(this.#actor);
+      if (record && !record.done) {
+        await this.#draft.restore(record);
+        this.#step = record.step ?? 0;
+      }
       this.#root = document.createElement('div');
       this.#root.className = 'mothership-sheet-root';
       this.#component = mount(Self, {
         target: this.#root,
         props: {
           draft: this.#draft,
-          close: async () => {
+          start: this.#step,
+          onstep: async (index) => {
+            this.#step = index;
+            await this.#save();
+          },
+          oncreated: async () => {
+            this.#created = true;
+            await finishCreation(this.#actor);
             await this.close();
             await this.#onComplete?.();
           },
         },
       });
       return this.#root;
+    }
+
+    // A run with nothing answered is not a run: opening the window to read a class card and closing
+    // it again leaves the actor as it was.
+    async #save() {
+      if (this.#created || !this.#draft.started) return;
+      await saveRun(this.#actor, this.#draft, this.#step);
     }
 
     _replaceHTML(result, content) {
@@ -63,6 +87,7 @@
     async _preClose(options) {
       await super._preClose(options);
       if (!this.#component) return;
+      await this.#save();
       unmount(this.#component);
       this.#component = undefined;
       this.#root = undefined;
@@ -78,9 +103,13 @@
   // `localize` is already in scope: the module block above imports it for the window's title.
   import { format } from '../../i18n.ts';
 
-  let { draft, close } = $props();
+  let { draft, start = 0, oncreated, onstep } = $props();
 
-  let index = $state(0);
+  // A resumed run reopens where it stopped, but never past the first step its answers no longer
+  // satisfy — a class the world lost since drops the steps that stood on it.
+  const firstOpen = STEPS.findIndex((entry) => !entry.done(draft));
+  // svelte-ignore state_referenced_locally
+  let index = $state(Math.min(start, firstOpen === -1 ? LAST_STEP : firstOpen));
   const step = $derived(STEPS[index]);
   const Pane = $derived(step.pane);
   const art = $derived(step.art?.(draft) ?? null);
@@ -95,6 +124,7 @@
   function go(target) {
     if (target < 0 || target > LAST_STEP || !reachable(target)) return;
     index = target;
+    onstep?.(target);
   }
 
   async function onDropClass(data) {
@@ -104,7 +134,7 @@
 
   async function finish() {
     await draft.apply();
-    await close();
+    await oncreated();
   }
 </script>
 

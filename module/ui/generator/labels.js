@@ -41,3 +41,32 @@ export const LEDGER = [...STATS, ...SAVES, ['max_wounds', 'Mothership.Wounds']];
 export const DASH = '—';
 
 export const signed = (value) => (value > 0 ? `+${value}` : `${value}`);
+
+const GROUPS = [
+  { key: 'all_stats', label: 'Mothership.CharacterGenerator.AllStats', members: STATS },
+  { key: 'all_saves', label: 'Mothership.CharacterGenerator.AllSaves', members: SAVES },
+];
+
+const uniform = (adjustments, group) => {
+  const values = group.members.map(([key]) => adjustments.find((row) => row.key === key)?.value);
+  return values.every((value) => value !== undefined && value === values[0]);
+};
+
+/**
+ * The book prints the Teamster's flat bonus as "+5 to all Stats", not as four identical rows —
+ * so a group whose members all move by the same amount collapses to one row where the first
+ * of them stood.
+ */
+export function collapseAdjustments(adjustments) {
+  const collapsed = GROUPS.filter((group) => uniform(adjustments, group));
+  const rows = [];
+  for (const { key, value } of adjustments) {
+    const group = collapsed.find((entry) => entry.members.some(([member]) => member === key));
+    if (!group) {
+      rows.push({ key, label: BONUS_LABEL[key], value });
+    } else if (!rows.some((row) => row.key === group.key)) {
+      rows.push({ key: group.key, label: group.label, value });
+    }
+  }
+  return rows;
+}

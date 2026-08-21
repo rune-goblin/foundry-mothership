@@ -1,6 +1,7 @@
 import { mount, unmount, flushSync } from 'svelte';
 import CharacterSheet from './CharacterSheet.svelte';
 import { WizardWindow } from '../generator/Wizard.svelte';
+import { creationFinished, finishCreation } from '../generator/record.js';
 import { chooseCreationMode } from './creation.js';
 import { createDocumentStore } from '../document-store.svelte.js';
 
@@ -20,6 +21,12 @@ export class MothershipCharacterSheet extends ActorSheetV2 {
           icon: 'fas fa-cogs',
           label: 'Mothership.CharacterGenerator.name',
           ownership: 'OWNER',
+          // The generator makes a character; it has no second job on one already made. Read at the
+          // moment the menu opens — ApplicationV2 builds its entries in the dropdown's `onOpen` —
+          // so finishing a run takes the control away without the sheet re-rendering to do it.
+          visible() {
+            return !creationFinished(this.document);
+          },
         },
       ],
     },
@@ -52,13 +59,17 @@ export class MothershipCharacterSheet extends ActorSheetV2 {
   async #chooseInitialView() {
     this.#choosingCreationMode = true;
     try {
-      if ((await chooseCreationMode()) === 'wizard') {
+      const mode = await chooseCreationMode();
+      if (mode === 'wizard') {
         this.#openGenerator({
           centreOnSheet: false,
           onComplete: () => this.render({ force: true }),
         });
         return;
       }
+      // Choosing the blank sheet is the answer to the question the generator asks, so it closes
+      // creation too. Dismissing the dialog answers nothing and leaves the control where it is.
+      if (mode === 'blank') await finishCreation(this.document);
       await this.render({ force: true, renderContext: 'mothershipCreationChoice' });
     } finally {
       this.#choosingCreationMode = false;

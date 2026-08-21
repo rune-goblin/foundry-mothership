@@ -13,7 +13,6 @@
   import ItemPanel from '../parts/sections/ItemPanel.svelte';
   import { onActivate } from '../parts/activate.js';
   import { localize } from '../../i18n.ts';
-  import { XP_PIPS, XP_MILESTONES } from '../../rules.ts';
   import {
     adjust,
     createItem,
@@ -69,15 +68,9 @@
     }))
   );
 
-  const xpMilestones = Object.fromEntries(
-    Object.entries(XP_MILESTONES).map(([pip, key]) => [pip, localize(key)]),
-  );
-
   const statRoll = (key) => () => actor.rollStat(key);
 
   const describe = (id) => () => actor.printDescription(id);
-
-  const stepXp = (event) => actor.stepXp(stepBy(event));
 
   const skillRoll = (id) => () => actor.rollSkill(id);
 
@@ -267,7 +260,6 @@
 
   <TabPanel tab="skills" active={tab} class="items">
     <ItemPanel
-      style="margin-bottom: 10px;"
       headers={[
         { label: localize('Mothership.SkillName') },
         { label: localize('Mothership.SkillRank') },
@@ -277,32 +269,6 @@
       create={{ title: localize('Mothership.CreateSkill'), onclick: () => promptAddItem(actor, 'skill') }}
       row={skillRow}
     />
-
-    <div class="skill_training_frame" style="margin-bottom: 10px;">
-      <div class="grid grid-3col" style="grid-template-columns: 90px auto 283px ;">
-        <div class="skill-stat" style="position: relative; top: 6px;">
-          <strong>{localize('Mothership.SkillTraining')}</strong>
-        </div>
-        <textarea
-          name="system.xp.selectedSkill"
-          rows="2"
-          class="textarea-input-grey"
-          style="height: 30px; margin: 0; position: relative; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%); background: white; color: black;"
-          value={system.xp.selectedSkill}
-        ></textarea>
-        <div
-          class="list-roll"
-          role="button"
-          tabindex="0"
-          onclick={stepXp}
-          oncontextmenu={stepXp}
-          onkeydown={onActivate(stepXp)}
-        >
-          <PipTrack count={XP_PIPS} value={system.xp.value} milestones={xpMilestones} />
-        </div>
-      </div>
-    </div>
-
   </TabPanel>
 
   <TabPanel tab="conditions" active={tab} class="items">
@@ -452,7 +418,7 @@
       oncontextmenu={step(condition.id, 'treatment.value', { min: 0 })}
       onkeydown={onActivate(step(condition.id, 'treatment.value', { max: 3 }))}
     >
-      <PipTrack count={3} value={condition.system.treatment.value} variant="icon" />
+      <PipTrack count={3} value={condition.system.treatment.value} />
     </div>
   </ItemCell>
   <ItemControls>

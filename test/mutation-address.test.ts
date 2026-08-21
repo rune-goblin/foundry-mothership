@@ -10,7 +10,7 @@ const system = {
   health: { value: 7, min: 0, max: 10, label: 'Health' },
   hits: { value: 1, min: 0, max: 2, label: 'Wounds' },
   bleeding: { value: 0, min: 0, label: 'Bleeding' },
-  xp: { value: 3, selectedSkill: '' },
+  attributes: { level: { value: 3 } },
   credits: { value: '250' },
   stats: { body: { value: 40, mod: 0, min: 0, max: 99, label: 'Body', rollLabel: 'Body Save' } },
   other: { stress: { value: 4, min: 2, max: 20, label: 'Stress' } },
@@ -69,7 +69,7 @@ describe('resolveField — the pod contract, honestly', () => {
   });
 
   it('reports a bare pod as having neither bound nor label', () => {
-    expect(field('system.xp.value')).toMatchObject({ value: 3, bounds: { min: null, max: null }, label: null });
+    expect(field('system.attributes.level.value')).toMatchObject({ value: 3, bounds: { min: null, max: null }, label: null });
   });
 
   // Legacy clamped a bound against itself, so raising Maximum Stress could never take effect.

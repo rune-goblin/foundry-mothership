@@ -464,6 +464,67 @@ export class CharacterDraft {
     });
   }
 
+  /** Whether this run has an answer worth keeping. Opening the window to read a class card is not one. */
+  get started() {
+    return this.classUuid !== '' || ROLL_KEYS.some((key) => this.rolled[key] !== null);
+  }
+
+  /** The answers this run has given, as plain data — what `restore` replays. */
+  answers() {
+    return $state.snapshot({
+      name: this.name,
+      pronouns: this.pronouns,
+      portrait: this.portrait,
+      biography: this.biography,
+      notes: this.notes,
+      rolled: this.rolled,
+      classUuid: this.classUuid,
+      stats: this.statChoices.map((choice) => choice.chosen),
+      groups: this.skillGroups.map((group) => group.chosen),
+      skills: this.skillSlots.filter((slot) => slot.chosen).map((slot) => [slot.key, slot.chosen]),
+      loadout: this.loadout,
+      trinket: this.trinket,
+      patch: this.patch,
+    });
+  }
+
+  /**
+   * Replay a stored run over a loaded draft. The class goes back through `chooseClass` rather than
+   * being assigned, so bonuses, packages and slots rebuild from the class document as it stands
+   * now; a class the world has since lost drops its whole branch instead of restoring a character
+   * half-made of it. Every replayed answer runs through the same guards the panes call, so an
+   * answer the class no longer offers is refused here exactly as it would be there.
+   */
+  async restore(record) {
+    if (!record) return;
+    this.name = record.name || this.name;
+    this.pronouns = record.pronouns ?? '';
+    this.portrait = record.portrait ?? '';
+    this.biography = record.biography ?? '';
+    this.notes = record.notes ?? '';
+    this.rolled = { ...nulled(ROLL_KEYS), ...record.rolled };
+    this.trinket = record.trinket ?? null;
+    this.patch = record.patch ?? null;
+    if (!record.classUuid) return;
+
+    await this.chooseClass(record.classUuid);
+    if (!this.classChosen) return;
+    for (const [index, stat] of (record.stats ?? []).entries()) {
+      if (stat) this.chooseStat(index, stat);
+    }
+    for (const [index, option] of (record.groups ?? []).entries()) {
+      if (option !== null) this.chooseSkillOption(index, option);
+    }
+    // Slots are restored by key rather than by replaying `toggleSkill`: which slot took a skill is
+    // itself one of the run's answers, and the toggle would pick that again from scratch. `#prune`
+    // then drops any pick the class as it now stands cannot support.
+    const kept = new Map(record.skills ?? []);
+    for (const slot of this.skillSlots) slot.chosen = kept.get(slot.key) ?? null;
+    this.#prune();
+    // After the class: choosing one clears the loadout, that table being the class's own.
+    this.loadout = record.loadout ?? null;
+  }
+
   /**
    * The one write. Rolled values are only sent when they were actually rolled, so saving a
    * half-finished draft cannot overwrite a stat with NaN — which is what the AppV1 submit did with

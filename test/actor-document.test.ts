@@ -4,7 +4,6 @@ import type { CheckActor } from '../module/checks/actor.ts';
 import type { MothershipActor as ActorClass } from '../module/documents/actor.ts';
 import type { MothershipItem as ItemClass } from '../module/documents/item.ts';
 import type { GrantDocument } from '../module/mutation/items.ts';
-import { XP_PIPS } from '../module/rules.ts';
 import {
   clearFoundryStubs,
   installChat,
@@ -238,35 +237,6 @@ describe('the creature rules', () => {
 
       expect(updates[0]['system.swarm.combat.value']).toBe(7);
       expect(updates[0]['system.stats.combat.value']).toBe(21);
-    });
-  });
-
-  describe('stepXp', () => {
-    const trained = (value: number) => actorOf([], { xp: { value, selectedSkill: '' } });
-
-    it('steps up and down one pip at a time', async () => {
-      const { actor, updates } = trained(3);
-
-      await actor.stepXp(1);
-      await actor.stepXp(-1);
-
-      expect(updates).toEqual([{ 'system.xp.value': 4 }, { 'system.xp.value': 3 }]);
-    });
-
-    it('stops at the end of the track the sheets draw', async () => {
-      const { actor, updates } = trained(XP_PIPS);
-
-      await actor.stepXp(1);
-
-      expect(updates).toEqual([{ 'system.xp.value': XP_PIPS }]);
-    });
-
-    it('never goes below zero', async () => {
-      const { actor, updates } = trained(0);
-
-      await actor.stepXp(-1);
-
-      expect(updates).toEqual([{ 'system.xp.value': 0 }]);
     });
   });
 });

@@ -53,7 +53,6 @@ test.describe('created documents get the DataModel defaults', () => {
   const RESTORED: Array<[kind: 'Actor' | 'Item', type: string, path: string, value: unknown]> = [
     ['Item', 'armor', 'system.equipped', true],
     ['Item', 'armor', 'system.features', 'sealed'],
-    ['Actor', 'creature', 'system.xp.selectedSkill', 'Zero-G'],
     ['Actor', 'creature', 'system.swarm.enabled', true],
     ['Actor', 'creature', 'system.swarm.combat.value', 30],
   ];

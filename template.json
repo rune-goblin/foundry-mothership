@@ -49,10 +49,6 @@
       "credits": {
         "value": ""
       },
-      "xp": {
-        "value": 0,
-        "selectedSkill": ""
-      },
       "attributes": {
         "level": {
           "value": 0
@@ -145,10 +141,6 @@
       "biography": "",
       "notes": "",
       "description": "This is a description",
-      "xp": {
-        "value": 1,
-        "selectedSkill": ""
-      },
       "stats": {
         "combat": {
           "value": 10,

@@ -5,6 +5,14 @@ import { fileURLToPath } from 'node:url';
 
 import { parseResults, drawnRow } from '../module/ui/generator/table-result.js';
 import { candidates } from '../module/ui/generator/skills.js';
+import {
+  creationFinished,
+  creationRecord,
+  finishCreation,
+  RECORD_VERSION,
+  saveRun,
+} from '../module/ui/generator/record.js';
+import { collapseAdjustments } from '../module/ui/generator/labels.js';
 import { CharacterDraft, UNARMED } from '../module/ui/generator/draft.svelte.js';
 import { STEPS, STEP_TOTAL, stepNumber } from '../module/ui/generator/steps.js';
 import { CHARACTER_CREATION } from '../content/books/psg/character-creation.ts';
@@ -253,6 +261,114 @@ describe('the adjustments a class leaves to the player', () => {
 
     expect(draft.bonus.combat).toBe(0);
     expect(draft.statChoicesSpent).toBe(false);
+  });
+});
+
+describe('the class card the pane prints', () => {
+  const teamster = [
+    { key: 'strength', value: 5 },
+    { key: 'speed', value: 5 },
+    { key: 'intellect', value: 5 },
+    { key: 'combat', value: 5 },
+    { key: 'sanity', value: 10 },
+    { key: 'fear', value: 10 },
+    { key: 'body', value: 10 },
+  ];
+
+  it('prints the Teamster the way the book does', () => {
+    expect(collapseAdjustments(teamster)).toEqual([
+      { key: 'all_stats', label: 'Mothership.CharacterGenerator.AllStats', value: 5 },
+      { key: 'all_saves', label: 'Mothership.CharacterGenerator.AllSaves', value: 10 },
+    ]);
+  });
+
+  it('leaves an uneven set of adjustments alone', () => {
+    const marine = [
+      { key: 'combat', value: 10 },
+      { key: 'body', value: 10 },
+      { key: 'fear', value: 20 },
+      { key: 'max_wounds', value: 1 },
+    ];
+
+    expect(collapseAdjustments(marine).map((row) => row.key)).toEqual([
+      'combat',
+      'body',
+      'fear',
+      'max_wounds',
+    ]);
+  });
+
+  it('collapses one group without touching the other', () => {
+    const rows = collapseAdjustments([...teamster.slice(0, 4), { key: 'sanity', value: 30 }]);
+
+    expect(rows).toEqual([
+      { key: 'all_stats', label: 'Mothership.CharacterGenerator.AllStats', value: 5 },
+      { key: 'sanity', label: 'Mothership.Sanity', value: 30 },
+    ]);
+  });
+});
+
+describe('the creation record an actor keeps', () => {
+  type Update = { data: Record<string, unknown>; options: Record<string, unknown> };
+
+  const actorWith = (flag: unknown, log: Update[] = []) => ({
+    getFlag: (scope: string, key: string) =>
+      (scope === 'mothershiprpg' && key === 'creation' ? flag : undefined),
+    update: (data: Record<string, unknown>, options: Record<string, unknown>) => {
+      log.push({ data, options });
+      return Promise.resolve();
+    },
+  });
+
+  const written = (log: Update[]) =>
+    log.at(-1)?.data['flags.mothershiprpg.creation'] as Record<string, unknown>;
+
+  beforeEach(() => {
+    const globals = globalThis as Record<string, unknown>;
+    globals.foundry = {
+      data: { operators: { ForcedReplacement: { create: (value: unknown) => value } } },
+    };
+  });
+
+  afterEach(() => {
+    delete (globalThis as Record<string, unknown>).foundry;
+  });
+
+  it('reads back the run it stored, and where the run had got to', async () => {
+    const log: Update[] = [];
+    const draft = new CharacterDraft({ name: 'Rook Vance' });
+    draft.rolled.strength = 35;
+
+    await saveRun(actorWith(null, log), draft, 2);
+
+    expect(written(log)).toMatchObject({ version: RECORD_VERSION, done: false, step: 2 });
+    expect((written(log).rolled as Record<string, number>).strength).toBe(35);
+    expect(creationRecord(actorWith(written(log)))).toMatchObject({ step: 2 });
+  });
+
+  // The sheet is open behind the wizard and shows nothing the record holds.
+  it('writes without re-rendering the sheet', async () => {
+    const log: Update[] = [];
+
+    await saveRun(actorWith(null, log), new CharacterDraft({ name: 'Rook Vance' }), 0);
+
+    expect(log.at(-1)?.options).toMatchObject({ render: false });
+  });
+
+  it('keeps no answers once creation is finished', async () => {
+    const log: Update[] = [];
+
+    await finishCreation(actorWith({ version: RECORD_VERSION, done: false, step: 5 }, log));
+
+    expect(written(log)).toEqual({ version: RECORD_VERSION, done: true });
+    expect(creationFinished(actorWith(written(log)))).toBe(true);
+  });
+
+  // Absence is not an answer: a character made before the wizard kept a record keeps its control.
+  it('calls an actor with no record unfinished', () => {
+    expect(creationRecord(actorWith(undefined))).toBe(null);
+    expect(creationFinished(actorWith(undefined))).toBe(false);
+    expect(creationFinished(actorWith({ version: RECORD_VERSION + 1, done: true }))).toBe(false);
   });
 });
 
@@ -667,6 +783,74 @@ describe('the skills a class hands out', () => {
         },
       },
     ]);
+  });
+
+  describe('the run a reopened wizard replays', () => {
+    const answered = async () => {
+      const draft = await drafted();
+      draft.rolled.strength = 35;
+      draft.rolled.sanity = 22;
+      draft.chooseStat(0, 'speed');
+      draft.chooseSkillOption(0, 0);
+      draft.toggleSkill('sk-mathematics');
+      draft.toggleSkill('sk-cybernetics');
+      draft.toggleSkill('sk-rimwise');
+      draft.name = 'Rook Vance';
+      return draft;
+    };
+
+    const resumed = async (record: unknown) => {
+      const draft = new CharacterDraft({ name: 'Rook Vance' });
+      await draft.load();
+      await draft.restore(record);
+      return draft;
+    };
+
+    it('comes back with the same answers, bonuses and picks', async () => {
+      const before = await answered();
+
+      const after = await resumed(before.answers());
+
+      expect(after.rolled).toEqual(before.rolled);
+      expect(after.bonus).toEqual(before.bonus);
+      expect(after.className).toBe('Android');
+      expect(named(after)).toEqual(named(before));
+      expect(keys(after)).toEqual(keys(before));
+      expect(after.skillsPicked).toBe(true);
+    });
+
+    // The bonus a choice moves is applied by `chooseStat`, so a replay that assigned the answer
+    // instead would restore the pick and lose the number under it.
+    it('restores the stat choice with its bonus, not just its answer', async () => {
+      const after = await resumed((await answered()).answers());
+
+      expect(after.statChoices[0].chosen).toBe('speed');
+      expect(after.bonus.speed).toBe(-10);
+      expect(after.statChoicesSpent).toBe(true);
+    });
+
+    it('drops a class the world has lost, and the answers that stood on it', async () => {
+      const record = (await answered()).answers();
+      const world = (globalThis as Record<string, unknown>).game as { items: { uuid: string }[] };
+      world.items = world.items.filter((doc) => doc.uuid !== 'Item.android');
+
+      const after = await resumed(record);
+
+      expect(after.classChosen).toBe(false);
+      expect(after.skillSlots).toEqual([]);
+      // The rolls were the player's, not the class's — those survive.
+      expect(after.rolled.strength).toBe(35);
+    });
+
+    // Opening the window to read a class card is not a run worth remembering.
+    it('counts a draft as started only once something is answered', async () => {
+      const draft = new CharacterDraft({ name: 'Rook Vance' });
+      await draft.load();
+      expect(draft.started).toBe(false);
+
+      draft.rolled.combat = 30;
+      expect(draft.started).toBe(true);
+    });
   });
 
   // The Master pick is not three free picks: gating the set's upper slots is the whole rule,

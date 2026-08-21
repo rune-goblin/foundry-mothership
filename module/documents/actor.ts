@@ -25,7 +25,7 @@ import { mutate, type Amount, type Change, type MutationResult } from '../mutati
 import type { Outcome } from '../rolls/resolve.ts';
 import { parseRollSpec } from '../rolls/parse.ts';
 import { CHECK_SEMANTICS, type RollSpec, type StatKey } from '../rolls/spec.ts';
-import { COVER_BONUS, STR_CAPACITY_DIVISOR, XP_PIPS, type Cover } from '../rules.ts';
+import { COVER_BONUS, STR_CAPACITY_DIVISOR, type Cover } from '../rules.ts';
 import type { TableKey } from '../tables/tables.ts';
 import type { MothershipItem } from './item.ts';
 
@@ -321,14 +321,6 @@ export class MothershipActor extends Actor {
       return null;
     }
     return await this.applyItem(found.document, count, options);
-  }
-
-  // XP_PIPS is the single source for track length, so the clamp and the sheet's pip count agree.
-  async stepXp(delta: number): Promise<unknown> {
-    const current = number(fields(fields(this.system).xp).value);
-    return await this.update({
-      'system.xp.value': Math.min(XP_PIPS, Math.max(0, current + delta)),
-    });
   }
 
   async reloadWeapon(itemId: string): Promise<ReloadOutcome | null> {

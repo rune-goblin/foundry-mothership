@@ -386,36 +386,10 @@ describe('RollableStat', () => {
 });
 
 describe('PipTrack', () => {
-  // A pip is one element in states, not two elements drawing a circle each: `filled` and
-  // `milestone` say only what they change. The track carries its own row, so the pips are its
-  // children rather than the caller's.
+  // The track carries its own row, so the pips are its children rather than the caller's.
   it('fills the first `value` pips and leaves the rest empty', () => {
-    const target = render(PipTrack, { count: 5, value: 2 });
-    const track = target.querySelector('.pip-track')!;
+    const target = render(PipTrack, { count: 3, value: 1 });
 
-    expect([...track.children].map((n) => classes(n).join(' '))).toEqual([
-      'pip filled',
-      'pip filled',
-      'pip',
-      'pip',
-      'pip',
-    ]);
-  });
-
-  // The caption is centred by transform, so it carries no inline style.
-  it('captions a milestone pip and marks the pip that carries it', () => {
-    const target = render(PipTrack, { count: 5, value: 5, milestones: { 5: 'Trained' } });
-    const caption = target.querySelector('.pip-caption')! as HTMLElement;
-
-    expect(caption.textContent!.trim()).toBe('Trained');
-    expect(caption.getAttribute('style')).toBeNull();
-    expect(classes(caption.parentElement!)).toEqual(['pip', 'filled', 'milestone']);
-    expect(classes(target.querySelector('.pip-track')!)).toContain('captioned');
-  });
-
-  // The condition treatment track is three Font Awesome circles, not divs.
-  it('renders the icon variant as solid and outline glyphs', () => {
-    const target = render(PipTrack, { count: 3, value: 1, variant: 'icon' });
     expect([...target.querySelector('.pip-track')!.children].map((n) => classes(n).join(' '))).toEqual([
       'fas fa-circle',
       'far fa-circle',

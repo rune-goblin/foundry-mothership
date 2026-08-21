@@ -143,7 +143,6 @@ export const character = document({
     rank: { value: 'Crew' },
     pronouns: { value: 'they/them' },
     credits: { value: '2,450' },
-    xp: { value: 7 },
     health: { value: 14, max: 20 },
     hits: { value: 1, max: 3 },
     netHP: { value: 34, max: 40 },

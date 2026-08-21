@@ -96,6 +96,14 @@ const pickEverySkill = async (page: Page) => {
   }
 };
 
+const closeWizard = (page: Page) =>
+  page.evaluate(async () => {
+    const w = window as any;
+    for (const app of w.foundry.applications.instances.values()) {
+      if (String(app.id).startsWith('mothership-generator-')) await app.close();
+    }
+  });
+
 const stored = (page: Page, uuid: string, path: string): Promise<any> =>
   page.evaluate(
     async ({ u, p }: { u: string; p: string }) =>
@@ -257,6 +265,13 @@ test.describe('character generator', () => {
     // The book's class card prints granted skills alongside adjustments, so this pane does too.
     await expect(detail.locator('[data-skills="granted"]')).toHaveText('Military Training, Athletics');
     await expect(detail.locator('[data-skills="group"]')).toHaveText('1 Expert Skill OR 2 Trained Skills');
+
+    // The book's card collapses a class that moves everything by one amount, so the pane does too.
+    await gmPage.click('button.wizard-class[data-class="Teamster"]');
+    const teamster = gmPage.locator('[data-class-detail="Teamster"]');
+    await expect(teamster.locator('[data-bonus="all_stats"]')).toHaveText('+5');
+    await expect(teamster.locator('[data-bonus="all_saves"]')).toHaveText('+10');
+    await expect(teamster.locator('[data-bonus="strength"]')).toHaveCount(0);
 
     // The Scientist grants no skills outright — its whole benefit is the qualified pick, so the pane must spell that out.
     await gmPage.click('button.wizard-class[data-class="Scientist"]');
@@ -535,6 +550,48 @@ test.describe('character generator', () => {
     const carried = await items(gmPage, uuid);
     const skills = carried.filter((item) => item.type === 'skill').map((item) => item.name).sort();
     expect(skills).toEqual(['Chemistry', 'Cybernetics', 'Industrial Equipment', 'Mechanical Repair']);
+  });
+
+  test('a run closed halfway resumes from the menu, which retires once the run finishes', async ({ gmPage }) => {
+    const uuid = await openGenerator(gmPage);
+    await freezeDice(gmPage, LOWEST_FACE);
+    await chooseClass(gmPage, 'Teamster');
+    await goTo(gmPage, 'adjustments');
+    await closeWizard(gmPage);
+
+    const record = await stored(gmPage, uuid, 'flags.mothershiprpg.creation');
+    expect(record).toMatchObject({ done: false, step: 4 });
+    expect(record.rolled.strength).toBeGreaterThan(0);
+    // The run is the only place the answers live: the sheet itself is untouched until Create.
+    expect(await stored(gmPage, uuid, 'system.class.value')).toBe('');
+
+    // By id, not by contents: a closing generator window is briefly still in the DOM with its
+    // form already unmounted.
+    const sheet = gmPage.locator('.application.character:not([id^="mothership-generator-"])');
+    const control = gmPage.locator('.context-item', { hasText: 'Character Creation Wizard' });
+    await sheet.locator('.header-control[data-action="toggleControls"]').click();
+    await expect(control).toHaveCount(1);
+    await control.click();
+
+    await expect(gmPage.locator('section.wizard-pane[data-pane="adjustments"]')).toHaveCount(1);
+    await goTo(gmPage, 'class');
+    await expect(gmPage.locator('button.wizard-class.chosen')).toHaveAttribute('data-class', 'Teamster');
+    await goTo(gmPage, 'stats');
+    await expect(gmPage.locator('input[data-value="strength"]')).not.toHaveValue('');
+
+    await pickEverySkill(gmPage);
+    await goTo(gmPage, 'gear');
+    await gmPage.click('button[data-roll="all"]');
+    await goTo(gmPage, 'finish');
+    await gmPage.fill('form.character-wizard input[name="name"]', '__e2e_resumed');
+    await gmPage.click('button[data-action="save"]');
+    await gmPage.waitForSelector('form.character-wizard', { state: 'detached' });
+
+    // Finishing keeps the fact of the run and drops its answers, and the control goes with them.
+    expect(await stored(gmPage, uuid, 'flags.mothershiprpg.creation')).toEqual({ version: 1, done: true });
+    expect(await stored(gmPage, uuid, 'system.class.value')).toBe('Teamster');
+    await sheet.locator('.header-control[data-action="toggleControls"]').click();
+    await expect(control).toHaveCount(0);
   });
 
   test('rolling a patch no longer throws on a row that links nothing', async ({ gmPage }) => {

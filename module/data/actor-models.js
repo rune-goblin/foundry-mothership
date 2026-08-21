@@ -50,7 +50,6 @@ export class MothershipCharacterModel extends foundry.abstract.TypeDataModel {
       rank: new fields.SchemaField({ value: str('') }),
       pronouns: new fields.SchemaField({ value: str('') }),
       credits: new fields.SchemaField({ value: str('') }),
-      xp: new fields.SchemaField({ value: num(0), selectedSkill: str('') }),
       attributes: new fields.SchemaField({ level: new fields.SchemaField({ value: num(0) }) }),
       stats: new fields.SchemaField({
         strength: stat(10, 'Strength', 'Strength Check', { mod: true }),
@@ -77,7 +76,6 @@ export class MothershipCreatureModel extends foundry.abstract.TypeDataModel {
       biography: html(''),
       notes: html(''),
       description: html('This is a description'),
-      xp: new fields.SchemaField({ value: num(1), selectedSkill: str('') }),
       stats: new fields.SchemaField({
         combat: stat(10, 'Combat', 'Combat Check', { enabled: true }),
         instinct: stat(10, 'Instinct', 'Instinct Check', { enabled: true }),

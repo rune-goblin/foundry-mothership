@@ -100,7 +100,6 @@ const CHARACTER = {
   health: { value: 8, max: 10 },
   hits: { value: 1, max: 2 },
   other: { stress: { value: 3, min: 2 }, stressdesc: { value: 'Adrenaline surge' } },
-  xp: { value: 7, selectedSkill: 'Military Training' },
   notes: '<p>owes the company money</p>',
   biography: '<p>born on Prospero</p>',
 };
@@ -116,7 +115,6 @@ const CREATURE = {
   },
   health: { value: 12, max: 15 },
   hits: { value: 1, max: 3 },
-  xp: { value: 2 },
   description: '<p>Something in the ducting, and it has learned the door codes.</p>',
   notes: '<p>ate the away team</p>',
 };

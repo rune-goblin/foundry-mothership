@@ -25,16 +25,6 @@ export const DEATH_DIE = '1d10';
 /** Health reduced to zero costs this many Wounds; the surplus damage carries into the refilled bar. */
 export const WOUND_ROLLOVER = 1;
 
-/** The XP track's length; the clamp uses this same number. */
-export const XP_PIPS = 15;
-
-/** PSG 22 — the pip each rank is reached on. Values are lang keys, not captions, since the caption is user-visible text. */
-export const XP_MILESTONES: Readonly<Record<number, string>> = {
-  5: 'Mothership.SkillRankTrained',
-  10: 'Mothership.SkillRankExpert',
-  15: 'Mothership.SkillRankMaster',
-};
-
 export type SkillRank = 'trained' | 'expert' | 'master';
 
 /** PSG 22 — what a skill of each rank adds to the check. Skill items store the rank capitalized. */

@@ -1,11 +1,12 @@
 <script>
   import { format, localize } from '../../../i18n.ts';
   import { offerLabel } from '../../class/choosable-stats.js';
-  import { BONUS_LABEL, CLASS_ICONS, signed } from '../labels.js';
+  import { CLASS_ICONS, collapseAdjustments, signed } from '../labels.js';
 
   let { draft } = $props();
 
   const selectedClass = $derived(draft.selectedClass);
+  const adjustments = $derived(collapseAdjustments(selectedClass?.adjustments ?? []));
 
   // The book's own wording where it has one, otherwise the picks spelled out.
   const packageLabel = (option) =>
@@ -30,9 +31,9 @@
   <section class="wizard-class-detail" data-class-detail={selectedClass.name} aria-live="polite">
     <p class="wizard-class-description" data-class-description>{selectedClass.description}</p>
     <dl class="wizard-adjustments" data-list="adjustments">
-      {#each selectedClass.adjustments as adjustment (adjustment.key)}
+      {#each adjustments as adjustment (adjustment.key)}
         <div>
-          <dt>{localize(BONUS_LABEL[adjustment.key])}</dt>
+          <dt>{localize(adjustment.label)}</dt>
           <dd data-bonus={adjustment.key}>{signed(adjustment.value)}</dd>
         </div>
       {/each}

@@ -120,25 +120,6 @@ test.describe('creature sheet', () => {
     await expect(sheet.locator('.tab[data-tab="notes"]')).toContainText('found drifting near the derelict');
   });
 
-  test('the XP track fills to the stored value and steps both ways', async ({ gmPage }) => {
-    const { appId, uuid } = await open(gmPage, { xp: { value: 3 } });
-    const track = gmPage.locator(`#${appId} .skill_training_frame [role="button"]`);
-
-    await expect(track.locator('.pip.filled')).toHaveCount(3);
-    await expect(track.locator('.pip:not(.filled)')).toHaveCount(12);
-    await expect(track.locator('.pip-caption')).toHaveText([
-      'Trained',
-      'Expert',
-      'Master',
-    ]);
-
-    await track.click({ position: { x: 5, y: 5 } });
-    await expect.poll(() => stored(gmPage, uuid, 'system.xp.value')).toBe(4);
-
-    await track.click({ button: 'right', position: { x: 5, y: 5 } });
-    await expect.poll(() => stored(gmPage, uuid, 'system.xp.value')).toBe(3);
-  });
-
   test('a condition shows its treatment pips and steps them', async ({ gmPage }) => {
     const { appId, uuid } = await open(gmPage);
     const id = await addItem(gmPage, uuid, {
