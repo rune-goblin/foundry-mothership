@@ -651,7 +651,7 @@ test.describe('character generator', () => {
     expect(await die.evaluate((el) => {
       const style = getComputedStyle(el);
       return [style.transitionProperty, style.transitionDuration, style.transitionTimingFunction];
-    })).toEqual(['transform', '0.2s', 'ease-in-out']);
+    })).toEqual(['transform', '0.5s', 'ease-in-out']);
 
     const turn = () => die.evaluate((el) => getComputedStyle(el).transform);
     expect(await turn()).toBe('none');

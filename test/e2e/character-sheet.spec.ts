@@ -107,17 +107,17 @@ test.describe('character sheet', () => {
     }
   });
 
-  // The die marks what rolls, so a field that only holds a number must not wear one.
+  // The die marks what rolls, so a field that only holds a number must not wear one. Armour is in
+  // the second list: it once wore a die that opened the cover picker, and cover is a dropdown in
+  // the block itself now — nothing on that label ever rolled.
   test('the roll cue sits on every rollable label and nowhere else', async ({ gmPage }) => {
     const { appId, uuid } = await open(gmPage);
     await addItem(gmPage, uuid, { name: '__e2e_zerog', type: 'skill', system: { rank: 'Trained', bonus: 10 } });
     const sheet = gmPage.locator(`#${appId}`);
 
-    for (const label of ['Stress', 'Armor']) {
-      await expect(sheet.locator('label.rollable', { hasText: label }).locator('i.fa-dice-d20')).toBeVisible();
-    }
-    for (const label of ['Health', 'Wounds']) {
-      await expect(sheet.locator('label.minmaxtext', { hasText: label }).locator('i')).toHaveCount(0);
+    await expect(sheet.locator('label.rollable', { hasText: 'Stress' }).locator('i.fa-dice-d20')).toBeVisible();
+    for (const label of ['Health', 'Wounds', 'Armor']) {
+      await expect(sheet.locator('.resource-label.minmaxtext', { hasText: label }).locator('i')).toHaveCount(0);
     }
     await expect(sheet.locator('.skill-name', { hasText: '__e2e_zerog' }).locator('i.fa-dice-d20')).toBeVisible();
   });
@@ -169,10 +169,13 @@ test.describe('character sheet', () => {
     });
     expect(spans).toBe(true);
 
-    const clipped = await sheet
-      .locator('input[name="system.stats.combat.mod"]')
-      .evaluate((node: HTMLInputElement) => node.scrollWidth > node.clientWidth);
-    expect(clipped).toBe(false);
+    // Measured open, not closed: StatModifier is a 16px dot at rest that says everything with its
+    // fill, and grows to 40px when aimed at. Open is where the digits have to fit.
+    const modifier = sheet.locator('input[name="system.stats.combat.mod"]');
+    await modifier.focus();
+    await expect
+      .poll(() => modifier.evaluate((node: HTMLInputElement) => node.scrollWidth > node.clientWidth))
+      .toBe(false);
   });
 
   // ArmorBlock's numbers are derived, so equipping armour has to move them without a reload.
@@ -183,7 +186,9 @@ test.describe('character sheet', () => {
       type: 'armor',
       system: { armorPoints: 3, damageReduction: 1, equipped: false },
     });
-    const armour = gmPage.locator(`#${appId} label[for="system.stats.armor.value"]`).locator('..');
+    const armour = gmPage
+      .locator(`#${appId} .resource`)
+      .filter({ has: gmPage.locator('.resource-label', { hasText: 'Armor' }) });
 
     await expect(armour.locator('.whiteText').first()).toHaveText('0');
 
@@ -483,7 +488,7 @@ test.describe('character sheet', () => {
           label: row.querySelector('.mainstattext')!.textContent!.trim(),
           rolls: row.querySelector('.mainstattext.rollable') !== null,
           circle: Math.round(row.querySelector('.circle-input')!.getBoundingClientRect().width),
-          modifier: row.querySelector('.stat-mod') !== null,
+          modifier: row.querySelector('.stat-modifier') !== null,
         }));
       return { stats: read('.abilities'), saves: read('.saves') };
     }, appId);
@@ -562,7 +567,7 @@ test.describe('character sheet', () => {
     expect(await die.evaluate((el) => {
       const style = getComputedStyle(el);
       return [style.transitionProperty, style.transitionDuration, style.transitionTimingFunction];
-    })).toEqual(['transform', '0.2s', 'ease-in-out']);
+    })).toEqual(['transform', '0.5s', 'ease-in-out']);
 
     const turn = () => die.evaluate((el) => getComputedStyle(el).transform);
     expect(await turn()).toBe('none');
