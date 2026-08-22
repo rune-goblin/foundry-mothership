@@ -6,6 +6,7 @@
   "esmodules": [
     "dist/mothershiprpg.js"
   ],
+  "socket": true,
   "styles": [
     "dist/mothershiprpg.css"
   ],

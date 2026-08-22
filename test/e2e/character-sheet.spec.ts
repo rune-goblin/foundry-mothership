@@ -367,6 +367,60 @@ test.describe('character sheet', () => {
     ).toBe(0);
   });
 
+  // Create is a body control, not a footer button: the dialog stays open so the document it just
+  // wrote can be edited and then picked out of the list it joined.
+  test('the picker creates a world document, and lists it live beneath the pack', async ({
+    gmPage,
+  }) => {
+    const clearWorld = () =>
+      gmPage.evaluate(async () => {
+        const g = (window as any).game;
+        const ids = g.items
+          .filter((i: any) => i.name.startsWith('New ') || i.name.startsWith('__e2e_'))
+          .map((i: any) => i.id);
+        if (ids.length) await g.items.documentClass.deleteDocuments(ids);
+      });
+
+    await clearWorld();
+    const { appId, uuid } = await open(gmPage);
+    const sheet = gmPage.locator(`#${appId}`);
+
+    await sheet.locator('a.tab-select[data-tab="weapons"]').click();
+    await sheet.locator('.item-header a.item-control').click();
+
+    const picker = gmPage.locator('.macro-popup-dialog');
+    await expect(picker.locator('.choice-group')).toHaveCount(0);
+
+    await picker.locator('#pick-create').click();
+
+    await expect(picker.locator('.choice-group')).toHaveText('From this world');
+    await expect(picker.locator('[data-choice^="Item."]')).toHaveCount(1);
+    await expect(gmPage.locator('.application.sheet').filter({ hasText: 'New Weapon' })).toBeVisible();
+
+    // The row follows the name typed into the sheet, without the picker being reopened.
+    await gmPage.evaluate(async () => {
+      const doc = (window as any).game.items.find((i: any) => i.name === 'New Weapon');
+      await doc.update({ name: '__e2e_Bolt Thrower', 'system.damage': '2d10' });
+    });
+    await expect(picker.locator('[data-choice^="Item."] .choice-name')).toHaveText('__e2e_Bolt Thrower');
+
+    await gmPage.evaluate(async () => {
+      for (const doc of (window as any).game.items) await doc.sheet?.close();
+    });
+    await picker.locator('[data-choice^="Item."]').click();
+    await picker.locator('button[data-action="add"]').click();
+
+    await expect.poll(() =>
+      gmPage.evaluate(
+        async (u: string) =>
+          (await (window as any).fromUuid(u)).items.map((i: any) => [i.type, i.name]),
+        uuid,
+      ),
+    ).toEqual([['weapon', '__e2e_Bolt Thrower']]);
+
+    await clearWorld();
+  });
+
   test('a row added while the sheet is open is draggable', async ({ gmPage }) => {
     const { appId, uuid } = await open(gmPage);
     const id = await addItem(gmPage, uuid, { name: '__e2e_zerog', type: 'skill' });

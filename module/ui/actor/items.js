@@ -54,36 +54,63 @@ const PICKS = {
   skill: {
     pack: 'mothershiprpg.skills_1e',
     title: 'Mothership.AddSkill',
+    blank: 'Mothership.NewSkill',
     headers: ['Mothership.SkillName', 'Mothership.SkillRank', 'Mothership.SkillBonus'],
     cells: (doc) => [doc.system.rank, `+${doc.system.bonus}`],
   },
   weapon: {
     pack: 'mothershiprpg.weapons_1e',
     title: 'Mothership.AddWeapon',
+    blank: 'Mothership.NewWeapon',
     headers: ['Mothership.WeaponName', 'Mothership.Damage', 'Mothership.Range'],
     cells: (doc) => [doc.system.damage, localize(`Mothership.RangeBand.${doc.system.range}`)],
   },
   item: {
     pack: 'mothershiprpg.equipment_1e',
     title: 'Mothership.AddItem',
+    blank: 'Mothership.NewGear',
     headers: ['Mothership.ItemName', 'Mothership.Cost', 'Mothership.Weight'],
     cells: (doc) => [doc.system.cost, doc.system.weight],
   },
   armor: {
     pack: 'mothershiprpg.armor_1e',
     title: 'Mothership.AddArmor',
+    blank: 'Mothership.NewArmor',
     headers: ['Mothership.ArmorName', 'Mothership.AP', 'Mothership.DR'],
     cells: (doc) => [doc.system.armorPoints, doc.system.damageReduction],
   },
   condition: {
     pack: 'mothershiprpg.conditions_1e',
     title: 'Mothership.AddCondition',
+    blank: 'Mothership.NewCondition',
     headers: ['Mothership.Condition'],
     cells: () => [],
   },
 };
 
 const byName = (a, b) => a.name.localeCompare(b.name);
+
+/** Between the picker and the sheet a Create opens beside it, and how far it cascades instead. */
+const SHEET_GAP = 8;
+const SHEET_CASCADE = 44;
+
+/**
+ * Foundry centres a new window, which is where the picker already is — so the list the new row
+ * just joined would sit behind its own editor. Stand the sheet beside the picker where the screen
+ * has room for both, and cascade it off the picker's corner where it does not.
+ */
+function placeBeside(sheet, anchor) {
+  const rect = anchor?.getBoundingClientRect?.();
+  const width = sheet.position?.width ?? 0;
+  if (rect === undefined || width <= 0) return;
+
+  const fits = rect.right + SHEET_GAP + width <= globalThis.innerWidth;
+  const left = fits ? rect.right + SHEET_GAP : rect.left + SHEET_CASCADE;
+  sheet.setPosition?.({
+    left: Math.max(0, Math.min(left, globalThis.innerWidth - width)),
+    top: fits ? rect.top : rect.top + SHEET_CASCADE,
+  });
+}
 
 /** PSG 22's tree runs weakest to strongest; an unknown rank sorts last rather than first. */
 const rankIndex = (doc) => {
@@ -105,31 +132,60 @@ function markUnmet(sorted, actor) {
   };
 }
 
-// Fallback when the pack is missing or empty.
+// Fallback when there is nothing at all to pick from.
 const blank = (actor, type) =>
   type === 'skill' ? promptNewSkill(actor) : createItem(actor, type);
+
+/** Everything of this type the world holds, which is what Create adds to. */
+const worldDocs = (type) =>
+  [...(globalThis.game?.items ?? [])].filter((doc) => doc.type === type).sort(byName);
+
+/** Writes a world document and opens its sheet; the picker's own hooks bring the row in. */
+async function createInWorld(type, anchor) {
+  const documentClass = globalThis.game?.items?.documentClass ?? globalThis.Item;
+  const doc = await documentClass?.create({ name: localize(PICKS[type].blank), type });
+  const sheet = doc?.sheet;
+  if (!sheet) return doc;
+
+  await sheet.render({ force: true });
+  placeBeside(sheet, anchor);
+  return doc;
+}
 
 export async function promptAddItem(actor, type) {
   const spec = PICKS[type];
   const pack = globalThis.game?.packs?.get(spec.pack);
   const docs = (await pack?.getDocuments()) ?? [];
-  if (docs.length === 0) return blank(actor, type);
 
   const skills = type === 'skill';
   const sorted = [...docs].sort(skills ? byRankThenName : byName);
   const unmet = skills ? markUnmet(sorted, actor) : () => false;
+
+  // Keyed by uuid, not id: the pack half and the world half are separate id spaces, and one key
+  // has to resolve back to exactly one document.
+  const rowOf = (group) => (doc) => ({
+    id: doc.uuid,
+    name: doc.name,
+    cells: spec.cells(doc),
+    unmet: unmet(doc),
+    group,
+  });
+
+  const world = localize('Mothership.FromThisWorld');
+  const rows = () => [...sorted.map(rowOf('')), ...worldDocs(type).map(rowOf(world))];
+
+  if (rows().length === 0) return blank(actor, type);
+
   const picked = await svelteDialog({
     component: PickFromPack,
     props: {
       filterLabel: localize('Mothership.Filter'),
       headers: spec.headers.map((key) => localize(key)),
       enforceLabel: skills ? localize('Mothership.EnforcePrerequisites') : '',
-      rows: sorted.map((doc) => ({
-        id: doc.id,
-        name: doc.name,
-        cells: spec.cells(doc),
-        unmet: unmet(doc),
-      })),
+      createLabel: localize('Mothership.Create'),
+      oncreate: (anchor) => createInWorld(type, anchor),
+      reload: rows,
+      rows: rows(),
     },
     title: localize(spec.title),
     initial: null,
@@ -147,7 +203,8 @@ export async function promptAddItem(actor, type) {
   });
 
   if (picked === null) return null;
-  const doc = sorted.find((entry) => entry.id === picked.id);
+  const byUuid = (entry) => entry.uuid === picked.id;
+  const doc = sorted.find(byUuid) ?? worldDocs(type).find(byUuid);
   if (doc === undefined) return null;
   return actor.createEmbeddedDocuments('Item', [doc.toObject()]);
 }

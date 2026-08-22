@@ -54,8 +54,12 @@ function onClick(event: MouseEvent): void {
   runChatAction(parsed.action, { event, button });
 }
 
-/** Verbs that belong to the card rather than whoever clicks it; every other verb targets the clicking player's own character. */
-const CARD_OWNED: ReadonlySet<ActionVerb> = new Set<ActionVerb>(['damage']);
+/**
+ * Verbs that belong to the card rather than whoever clicks it; every other verb targets the clicking
+ * player's own character. `harm` and `retarget` rewrite the card they sit in, so they are the card's
+ * too — whether the clicker may spend the target's Health is a second question, asked at the target.
+ */
+const CARD_OWNED: ReadonlySet<ActionVerb> = new Set<ActionVerb>(['damage', 'harm', 'retarget']);
 
 /** Disables the button rather than relying on the click handler alone — a pressable button that does nothing reads as broken. */
 export function guardCardActions(root: ParentNode, owns: boolean): void {

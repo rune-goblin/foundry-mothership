@@ -196,6 +196,55 @@ export function installPacks(packs: Record<string, readonly object[]>): void {
   };
 }
 
+export interface WorldItems {
+  /** What `Item.create` was called with, in order. */
+  readonly created: Record<string, unknown>[];
+  /** The uuid of every document whose sheet was rendered. */
+  readonly rendered: string[];
+}
+
+/**
+ * `game.items` as the picker reads it — an iterable collection with a `documentClass` — plus the
+ * `Hooks` bus it listens on. `create` files the document and fires `createItem`, the way Foundry
+ * does, so a test can assert the row arrives without reaching into the component.
+ */
+export function installWorldItems(initial: readonly Record<string, unknown>[] = []): WorldItems {
+  const log: WorldItems = { created: [], rendered: [] };
+  const docs = [...initial];
+  const listeners = new Map<number, { hook: string; fn: (...args: unknown[]) => void }>();
+  let nextId = 1;
+
+  const collection = docs as unknown as Record<string, unknown> & typeof docs;
+  collection.documentClass = {
+    create: async (data: Record<string, unknown>) => {
+      log.created.push(data);
+      const doc = {
+        id: `world-${docs.length}`,
+        uuid: `Item.world-${docs.length}`,
+        name: data.name,
+        type: data.type,
+        system: {},
+        toObject: () => ({ name: data.name, type: data.type, system: {} }),
+        sheet: { render: () => log.rendered.push(`Item.world-${docs.length - 1}`) },
+      };
+      docs.push(doc as unknown as Record<string, unknown>);
+      for (const { hook, fn } of listeners.values()) if (hook === 'createItem') fn(doc);
+      return doc;
+    },
+  };
+
+  gameStub().items = collection;
+  (globalThis as Globals).Hooks = {
+    on: (hook: string, fn: (...args: unknown[]) => void) => {
+      listeners.set(nextId, { hook, fn });
+      return nextId++;
+    },
+    off: (_hook: string, id: number) => listeners.delete(id),
+  };
+
+  return log;
+}
+
 export interface Notifications {
   readonly errors: string[];
   readonly warnings: string[];
@@ -219,4 +268,5 @@ export function clearFoundryStubs(): void {
   delete (globalThis as Globals).ChatMessage;
   delete (globalThis as Globals).foundry;
   delete (globalThis as Globals).CONFIG;
+  delete (globalThis as Globals).Hooks;
 }

@@ -10,6 +10,7 @@ import {
   enrichAction,
   formatAction,
   gainAddress,
+  harmAmount,
   parseAction,
   registerEnrichers,
   type ChatAction,
@@ -129,6 +130,42 @@ describe('parsing', () => {
   // must name that same key space.
   it('names checks with the schema’s own scope vocabulary', () => {
     expect([...CHECK_SCOPES]).toEqual(ROLL_SCOPES);
+  });
+});
+
+describe('harming the target', () => {
+  it('reads an amount, and half of one', () => {
+    expect(parsed('@Harm[7]')).toEqual({ verb: 'harm', amount: 7, half: false });
+    expect(parsed('@Harm[7 half]')).toEqual({ verb: 'harm', amount: 7, half: true });
+  });
+
+  it('round-trips through the grammar', () => {
+    expect(formatAction({ verb: 'harm', amount: 7, half: false })).toBe('@Harm[7]');
+    expect(formatAction({ verb: 'harm', amount: 7, half: true })).toBe('@Harm[7 half]');
+    expect(formatAction({ verb: 'retarget' })).toBe('@Retarget[]');
+    expect(parsed('@Retarget[]')).toEqual({ verb: 'retarget' });
+  });
+
+  it('rounds half down, the way every other quotient in the book does', () => {
+    expect(harmAmount({ verb: 'harm', amount: 7, half: true })).toBe(3);
+    expect(harmAmount({ verb: 'harm', amount: 7, half: false })).toBe(7);
+    expect(harmAmount({ verb: 'harm', amount: 1, half: true })).toBe(0);
+  });
+
+  it('refuses an amount that is not one, and a modifier that is not half', () => {
+    expect(parseAction('@Harm[1d10]').ok).toBe(false);
+    expect(parseAction('@Harm[]').ok).toBe(false);
+    expect(parseAction('@Harm[7 double]').ok).toBe(false);
+  });
+
+  it('says how much each button spends', () => {
+    installI18n({
+      'Mothership.Chat.HarmLabel': 'Apply {amount}',
+      'Mothership.Chat.HarmHalfLabel': 'Half ({amount})',
+    });
+
+    expect(actionLabel({ verb: 'harm', amount: 7, half: false })).toBe('Apply 7');
+    expect(actionLabel({ verb: 'harm', amount: 7, half: true })).toBe('Half (3)');
   });
 });
 

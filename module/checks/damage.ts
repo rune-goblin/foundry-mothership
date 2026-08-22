@@ -6,20 +6,26 @@ import {
   checkCard,
   ownsCard,
   postCard,
+  rememberedCard,
   renderCard,
+  rollHtml,
   SYSTEM_ID,
   type Card,
   type CardMessage,
+  type CardTarget,
   type CardWeapon,
+  type PostableRoll,
 } from '../chat/cards.ts';
 import { formatAction } from '../chat/enrichers.ts';
 import { format, localize } from '../i18n.ts';
-import { parseRollSpec, themed } from '../rolls/parse.ts';
-import { resolveOutcome } from '../rolls/resolve.ts';
-import { CHECK_SEMANTICS, type Advantage } from '../rolls/spec.ts';
+import { parseRollSpec } from '../rolls/parse.ts';
+import type { Outcome } from '../rolls/resolve.ts';
+import { CHECK_SEMANTICS, type Advantage, type RollSpec } from '../rolls/spec.ts';
 import { STR_CAPACITY_DIVISOR } from '../rules.ts';
 import type { TableKey } from '../tables/tables.ts';
 import { cardSource, speakerOf, statOf, type CheckActor, type CheckItem } from './actor.ts';
+import { evaluateRoll } from './roll.ts';
+import { currentTargets } from './targets.ts';
 import { critDamage, damageTheme, type CritDamage } from './settings.ts';
 
 /** The stored damage of a weapon whose damage is the wielder's Strength (PSG 2). */
@@ -145,25 +151,66 @@ function offerHtml(
 }
 
 /**
- * Unarmed damage is stated as arithmetic (Strength/10, rounded down), not dice. With auto-rolling
- * off, offers every mode instead of stating one — this function doesn't know the range.
+ * What a damage roll actually evaluates: the chosen mode, `Str/10` resolved to dice Foundry can
+ * roll, and the crit rule applied on top.
  */
-export function damageFlavor(actor: CheckActor, item: CheckItem, options: DamageOptions = {}): string {
-  const modes = damageModes(item, options.override ?? null);
+export function damageFormula(actor: CheckActor, item: CheckItem, options: DamageOptions = {}): string {
+  const base = rollable(actor, damageModes(item, options.override ?? null)[0].formula);
+  return options.critical === true ? critFormula(base, critDamage(), weaponText(item, 'critDmg')) : base;
+}
 
-  if (options.offer === true) return offerHtml(actor, item, modes, options.critical === true);
+export interface DamageRoll {
+  readonly formula: string;
+  readonly total: number;
+  readonly spec: RollSpec;
+  readonly outcome: Outcome;
+  /** Whether the damage rolled was the book's `Str/10`, which the card has its own sentence for. */
+  readonly unarmed: boolean;
+  /** Handed to `postCard` so the dice animate and the message keeps them. */
+  readonly roll: PostableRoll;
+}
 
-  const damage = modes[0].formula;
-  const strength = statOf(actor.system, 'strength');
+/**
+ * Evaluated here rather than left as an `[[inline]]` roll. Foundry enriches a message's content on
+ * every client that renders it, and an inline roll is evaluated during that enrichment — so an
+ * inline damage roll shows each viewer a different number, and none of them is one this system
+ * could apply to anybody.
+ */
+export async function rollDamageFormula(
+  actor: CheckActor,
+  item: CheckItem,
+  options: DamageOptions = {},
+): Promise<DamageRoll> {
+  const chosen = damageModes(item, options.override ?? null)[0].formula;
+  const formula = damageFormula(actor, item, options);
+  const spec = parseRollSpec(formula, CHECK_SEMANTICS['weapon-damage'].aim);
+  const { roll, outcome } = await evaluateRoll({ spec, kind: 'weapon-damage', colorset: damageTheme() });
 
-  if (damage === UNARMED && strength !== null) {
-    return format('Mothership.Chat.UnarmedDamage', {
-      damage: `<strong>[[floor(${strength.value}/${STR_CAPACITY_DIVISOR})]]</strong>`,
-    });
-  }
+  // Foundry's own arithmetic, not the die `resolveOutcome` kept: keeping one of the pool is a rule
+  // about checks, and it would read `2d10` as one d10. `mutate.ts`'s `changeAmount` draws the same line.
+  const total = Number(roll.total) || 0;
 
-  const rolled = options.critical === true ? critFormula(damage, critDamage(), weaponText(item, 'critDmg')) : damage;
-  return format('Mothership.Chat.DamageDealt', { damage: `[[${themed(rolled, damageTheme())}]]` });
+  return {
+    formula,
+    total,
+    spec,
+    outcome: { ...outcome, total },
+    unarmed: chosen === UNARMED && statOf(actor.system, 'strength') !== null,
+    roll,
+  };
+}
+
+/** With auto-rolling off, offers every mode instead of stating one — this function doesn't know the range. */
+export function damageOffer(actor: CheckActor, item: CheckItem, options: DamageOptions = {}): string {
+  return offerHtml(actor, item, damageModes(item, options.override ?? null), options.critical === true);
+}
+
+export function damageFlavor(damage: DamageRoll): string {
+  const key = damage.unarmed ? 'Mothership.Chat.UnarmedDamage' : 'Mothership.Chat.DamageDealt';
+  return (
+    format(key, { damage: `<strong>${damage.total}</strong>` }) +
+    rollHtml(damage.outcome, { spec: damage.spec, comparison: null })
+  );
 }
 
 /** The wound tables a weapon can name, as its `woundEffect` field spells them. */
@@ -192,52 +239,27 @@ export function woundEffectOf(item: CheckItem): string {
   return woundEffectActions(weaponText(item, 'woundEffect'));
 }
 
-/** A damage card is judged against nothing, so its outcome is a record with no verdict to give. */
-function noOutcome() {
-  const spec = parseRollSpec('', CHECK_SEMANTICS['weapon-damage'].aim);
-  const semantics = CHECK_SEMANTICS['weapon-damage'];
-  return {
-    spec,
-    outcome: resolveOutcome(
-      { total: 0, dice: [] },
-      {
-        spec,
-        kind: 'weapon-damage' as const,
-        target: null,
-        comparison: semantics.comparison,
-        crits: semantics.crits,
-        zeroBased: semantics.zeroBased,
-        autoFail: semantics.autoFail,
-      },
-    ),
-  };
-}
-
-export function damageCard(actor: CheckActor, item: CheckItem, options: DamageOptions = {}): Card {
-  const { spec, outcome } = noOutcome();
-
+export function damageCard(
+  actor: CheckActor,
+  item: CheckItem,
+  damage: DamageRoll,
+  targets: readonly CardTarget[] = [],
+): Card {
   return checkCard({
     source: cardSource(actor),
-    outcome,
-    spec,
+    outcome: damage.outcome,
+    spec: damage.spec,
     comparison: CHECK_SEMANTICS['weapon-damage'].comparison,
     header: item.name,
     image: item.img || asset('images/icons/ui/attributes/combat.png'),
     attribute: '',
-    flavor: damageFlavor(actor, item, options),
+    flavor: damageFlavor(damage),
     weapon: cardWeapon(item),
     woundEffect: woundEffectOf(item),
     damage: true,
+    targets,
+    damageTotal: damage.total,
   });
-}
-
-function rememberedCard(message: CardMessage): Card<Record<string, unknown>> | null {
-  const stored = message.getFlag(SYSTEM_ID, CARD_FLAG);
-  if (typeof stored !== 'object' || stored === null) return null;
-  const card = stored as { kind?: unknown; data?: unknown };
-  return card.kind === 'check' && typeof card.data === 'object' && card.data !== null
-    ? (card as Card<Record<string, unknown>>)
-    : null;
 }
 
 /**
@@ -261,21 +283,28 @@ export async function rollDamageInCard(
   if (card === null) return 'unrecorded';
 
   // No `critical`: the button was written carrying the crit rule already applied.
-  const flavorText = damageFlavor(actor, item, { override: formula });
-  const content = await renderCard({ kind: card.kind, data: { ...card.data, flavorText } });
+  const damage = await rollDamageFormula(actor, item, { override: formula });
+  const flavorText = damageFlavor(damage);
+  const data = { ...card.data, flavorText, damageTotal: damage.total };
+  const content = await renderCard({ kind: card.kind, data });
   if (content === null) return 'unrecorded';
 
-  await message.update({ content, [`flags.${SYSTEM_ID}.${CARD_FLAG}.data.flavorText`]: flavorText });
+  await message.update({
+    content,
+    [`flags.${SYSTEM_ID}.${CARD_FLAG}.data.flavorText`]: flavorText,
+    [`flags.${SYSTEM_ID}.${CARD_FLAG}.data.damageTotal`]: damage.total,
+  });
   return 'rewritten';
 }
 
-/** The whole damage flow: a card, posted. No roll is evaluated and no document is written. */
+/** The whole damage flow: a roll, and the card it earns. No document is written. */
 export async function rollDamage(
   actor: CheckActor,
   item: CheckItem,
   options: DamageOptions = {},
 ): Promise<Card> {
-  const card = damageCard(actor, item, options);
-  await postCard(card, { speaker: speakerOf(actor) });
+  const damage = await rollDamageFormula(actor, item, options);
+  const card = damageCard(actor, item, damage, currentTargets());
+  await postCard(card, { speaker: speakerOf(actor), roll: damage.roll });
   return card;
 }

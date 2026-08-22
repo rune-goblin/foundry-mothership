@@ -448,10 +448,11 @@ describe('an attack', () => {
 
     expect(cardData()).toMatchObject({
       msgHeader: 'Revolver',
-      flavorText: 'You inflict [[1d10]] points of damage.',
       woundEffect: '@Table[gunshot]',
       needsDesc: true,
     });
+    expect(cardData().flavorText).toContain('You inflict <strong>20</strong> points of damage.');
+    expect(rolls.formulas).toEqual(['1d100', '1d10']);
   });
 
   it('does not roll when the magazine is empty, and reloads if asked to', async () => {
@@ -501,7 +502,7 @@ describe('an attack', () => {
     await runCheck(creature([weapon()]), { kind: 'weapon-attack', itemId: 'wpn1' });
 
     expect(cardData(0).flavorText).toBe('Roll the damage you deal: @Damage[1d10]');
-    expect(cardData(1).flavorText).toBe('You inflict [[1d10]] points of damage.');
+    expect(cardData(1).flavorText).toContain('You inflict <strong>20</strong> points of damage.');
   });
 
   // No field records the range a shot was taken at, so auto-rolling one of two has to ask which.
@@ -526,7 +527,7 @@ describe('an attack', () => {
       { label: 'Close', formula: '4d10' },
       { label: 'Long Range', formula: '1d10' },
     ]);
-    expect(cardData().flavorText).toBe('You inflict [[1d10]] points of damage.');
+    expect(rolls.formulas).toContain('1d10');
   });
 
   it('offers every damage rather than losing one when that question is dismissed', async () => {
@@ -550,7 +551,7 @@ describe('an attack', () => {
     await runCheck(character([shotgun()]), { kind: 'weapon-attack', itemId: 'wpn1' }, { damage: '8d10' });
 
     expect(prompts.chooseDamageMode).not.toHaveBeenCalled();
-    expect(cardData().flavorText).toBe('You inflict [[8d10]] points of damage.');
+    expect(rolls.formulas).toContain('8d10');
   });
 
   it('asks on a damage roll too, and posts nothing when the question is dismissed', async () => {

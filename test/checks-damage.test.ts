@@ -7,8 +7,11 @@ import type { CheckActor, CheckItem, ItemCollection } from '../module/checks/act
 import {
   critFormula,
   damageFlavor,
+  damageFormula,
   damageModes,
+  damageOffer,
   rollDamage,
+  rollDamageFormula,
   weaponDamage,
   woundEffectActions,
 } from '../module/checks/damage.ts';
@@ -60,7 +63,7 @@ function actor(strength = 40, items: readonly CheckItem[] = []): CheckActor & { 
   };
 }
 
-function stubs(settings: Record<string, unknown> = {}) {
+function stubs(settings: Record<string, unknown> = {}, dice: readonly { faces: number; result: number }[] = []) {
   installI18n({
     'Mothership.Chat.DamageDealt': 'You inflict {damage} points of damage.',
     'Mothership.Chat.UnarmedDamage': 'You strike your target for {damage} damage.',
@@ -70,8 +73,8 @@ function stubs(settings: Record<string, unknown> = {}) {
     'Mothership.RangeBand.adjacent': 'Adjacent',
   });
   installSettings({ critDamage: 'advantage', damageDiceTheme: '', ...settings });
-  installRoll([]);
-  return installChat();
+  const rolls = installRoll(dice);
+  return { chat: installChat(), rolls };
 }
 
 describe('the damage a weapon deals', () => {
@@ -81,16 +84,55 @@ describe('the damage a weapon deals', () => {
     expect(weaponDamage(weapon(), '')).toBe('1d10');
   });
 
-  it('is stated as arithmetic when it is the wielder’s Strength', () => {
-    stubs();
-    expect(damageFlavor(actor(45), weapon({ damage: 'Str/10' }))).toBe(
-      'You strike your target for <strong>[[floor(45/10)]]</strong> damage.',
-    );
+  it('is stated as arithmetic when it is the wielder’s Strength', async () => {
+    const { rolls } = stubs({}, [{ faces: 10, result: 4 }]);
+    const damage = await rollDamageFormula(actor(45), weapon({ damage: 'Str/10' }));
+
+    expect(rolls.formulas).toEqual(['floor(45/10)']);
+    expect(damageFlavor(damage)).toContain('You strike your target for <strong>4</strong> damage.');
   });
 
-  it('wears the colorset the GM chose for damage dice', () => {
-    stubs({ damageDiceTheme: 'damage' });
-    expect(damageFlavor(actor(), weapon())).toBe('You inflict [[1d10[damage]]] points of damage.');
+  it('wears the colorset the GM chose for damage dice', async () => {
+    const { rolls } = stubs({ damageDiceTheme: 'damage' }, [{ faces: 10, result: 7 }]);
+    const damage = await rollDamageFormula(actor(), weapon());
+
+    expect(rolls.formulas).toEqual(['1d10[damage]']);
+    expect(damageFlavor(damage)).toContain('You inflict <strong>7</strong> points of damage.');
+  });
+
+  // resolveOutcome keeps one die of a pool, which is a rule about checks: it read 2d10 as one d10
+  // and every applied number was short. The stubs used one die, so the unit tier could not see it.
+  it('sums the whole pool, rather than the one die a check would keep', async () => {
+    stubs({}, [
+      { faces: 10, result: 5 },
+      { faces: 10, result: 6 },
+    ]);
+    const damage = await rollDamageFormula(actor(), weapon({ damage: '2d10' }));
+
+    expect(damage.total).toBe(11);
+    expect(damageFlavor(damage)).toContain('<strong>11</strong>');
+  });
+
+  // A critical keeps one of the pool — but by Foundry's `kh`, which is in the formula, not by us.
+  it('lets the crit rule’s own keep decide, and reports what it kept', async () => {
+    stubs({ critDamage: 'advantage' }, [
+      { faces: 10, result: 5 },
+      { faces: 10, result: 6 },
+    ]);
+    const damage = await rollDamageFormula(actor(), weapon(), { critical: true });
+
+    expect(damage.formula).toBe('{1d10,1d10}kh');
+    expect(damage.total).toBe(6);
+  });
+
+  // An inline roll is re-evaluated by every client that renders the message, so it could never be
+  // the number this system applies to anybody.
+  it('is a real roll, not an inline one the card re-rolls per viewer', async () => {
+    stubs({}, [{ faces: 10, result: 7 }]);
+    const damage = await rollDamageFormula(actor(), weapon());
+
+    expect(damage.total).toBe(7);
+    expect(damageFlavor(damage)).not.toContain('[[');
   });
 });
 
@@ -129,7 +171,7 @@ describe('the damages a weapon deals', () => {
 
   it('become one button each when the GM rolls damage by hand', () => {
     stubs();
-    expect(damageFlavor(actor(), shotgun(), { offer: true })).toBe(
+    expect(damageOffer(actor(), shotgun())).toBe(
       'Roll the damage you deal: @Damage[4d10]{Roll 4d10 · Close} @Damage[1d10]{Roll 1d10 · Long Range}',
     );
   });
@@ -137,14 +179,14 @@ describe('the damages a weapon deals', () => {
   // The crit rule is not re-read at the click, so the button keeps rolling what its attack earned.
   it('carry the critical rule into the button', () => {
     stubs({ critDamage: 'doubleDamage' });
-    expect(damageFlavor(actor(), weapon({ range: 'none' }), { offer: true, critical: true })).toBe(
+    expect(damageOffer(actor(), weapon({ range: 'none' }), { critical: true })).toBe(
       'Roll the damage you deal: @Damage[1d10 * 2]',
     );
   });
 
   it('resolve the book’s Str/10 shorthand, which no button could roll', () => {
     stubs();
-    expect(damageFlavor(actor(45), weapon({ damage: 'Str/10', range: 'adjacent' }), { offer: true })).toBe(
+    expect(damageOffer(actor(45), weapon({ damage: 'Str/10', range: 'adjacent' }))).toBe(
       'Roll the damage you deal: @Damage[floor(45/10)]{Roll floor(45/10) · Adjacent}',
     );
   });
@@ -170,10 +212,10 @@ describe('what a critical hit does to it', () => {
     expect(critFormula('1d10', 'weaponValue', '')).toBe('1d10');
   });
 
-  it('reaches the card only on a critical', () => {
+  it('reaches the roll only on a critical', () => {
     stubs({ critDamage: 'doubleDamage' });
-    expect(damageFlavor(actor(), weapon(), { critical: true })).toContain('[[1d10 * 2]]');
-    expect(damageFlavor(actor(), weapon(), { critical: false })).toContain('[[1d10]]');
+    expect(damageFormula(actor(), weapon(), { critical: true })).toBe('1d10 * 2');
+    expect(damageFormula(actor(), weapon(), { critical: false })).toBe('1d10');
   });
 });
 
@@ -194,7 +236,7 @@ describe('the wound a weapon names', () => {
 
 describe('the damage card', () => {
   it('is posted as a damage card, with the weapon and its wound', async () => {
-    const chat = stubs();
+    const { chat } = stubs({}, [{ faces: 10, result: 6 }]);
     const gun = weapon({ woundEffect: 'Gunshot' });
 
     await rollDamage(actor(40, [gun]), gun);
@@ -205,17 +247,17 @@ describe('the damage card', () => {
       showCheck: false,
       msgHeader: 'Revolver',
       woundEffect: '@Table[gunshot]',
-      flavorText: 'You inflict [[1d10]] points of damage.',
     });
+    expect(chat.cards[0].data.flavorText).toContain('You inflict <strong>6</strong> points of damage.');
   });
 
   it('takes the caller’s damage when it has one — a swarm’s scaled dice', async () => {
-    const chat = stubs();
+    const { rolls } = stubs({}, [{ faces: 10, result: 6 }]);
     const gun = weapon();
 
     await rollDamage(actor(40, [gun]), gun, { override: '4d10' });
 
-    expect(chat.cards[0].data).toMatchObject({ flavorText: 'You inflict [[4d10]] points of damage.' });
+    expect(rolls.formulas).toEqual(['4d10']);
   });
 });
 

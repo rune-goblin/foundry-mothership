@@ -9,6 +9,7 @@ import {
   installI18n,
   installNotifications,
   installPacks,
+  installWorldItems,
   type Notifications,
   type OpenDialog,
 } from './foundry-stubs.ts';
@@ -171,9 +172,13 @@ describe('promptAddItem', () => {
   // The dialog opens only after the pack answers, one microtask later than a sync opener.
   const settle = () => new Promise((resolve) => setTimeout(resolve));
 
+  // Rows are keyed by uuid; the fixtures' ids are its last segment.
+  const uuidOf = (id: string) => `Compendium.mothershiprpg.test.Item.${id}`;
+  const at = (id: string) => `[data-choice="${uuidOf(id)}"]`;
+
   const radios = (): string[] =>
     [...only().element.querySelectorAll<HTMLElement>('[data-choice]')].map(
-      (node) => node.dataset.choice!,
+      (node) => node.dataset.choice!.split('.').pop()!,
     );
 
   it('orders skills weakest rank first, alphabetically inside a rank', async () => {
@@ -194,7 +199,7 @@ describe('promptAddItem', () => {
     await settle();
 
     const radio = (id: string) =>
-      only().element.querySelector<HTMLInputElement>(`[data-choice="${id}"] .choice-input`)!;
+      only().element.querySelector<HTMLInputElement>(`${at(id)} .choice-input`)!;
     expect(radio('sk-x').disabled).toBe(true);
     expect(radio('sk-b').disabled).toBe(false);
 
@@ -202,7 +207,7 @@ describe('promptAddItem', () => {
     await settle();
     expect(radio('sk-x').disabled).toBe(false);
 
-    check('[data-choice="sk-x"]');
+    check(at('sk-x'));
     await only().press('add');
     await done;
 
@@ -219,9 +224,9 @@ describe('promptAddItem', () => {
       const done = promptAddItem(actor, 'skill');
       await settle();
 
-      expect(
-        only().element.querySelector<HTMLInputElement>('[data-choice="sk-x"] .choice-input')!.disabled,
-      ).toBe(false);
+      expect(only().element.querySelector<HTMLInputElement>(`${at('sk-x')} .choice-input`)!.disabled).toBe(
+        false,
+      );
 
       only().dismiss();
       await done;
@@ -236,7 +241,7 @@ describe('promptAddItem', () => {
 
     check('#pick-enforce');
     await settle();
-    check('[data-choice="sk-x"]');
+    check(at('sk-x'));
     check('#pick-enforce');
     await settle();
 
@@ -268,7 +273,7 @@ describe('promptAddItem', () => {
     const done = promptAddItem(actor, 'weapon');
     await settle();
 
-    check('[data-choice="wp-r"]');
+    check(at('wp-r'));
     await only().press('add');
     await done;
 
@@ -308,7 +313,7 @@ describe('promptAddItem', () => {
     expect(created).toEqual([]);
   });
 
-  it('lists a name-only table for conditions, and offers no Custom button', async () => {
+  it('lists a name-only table for conditions, and answers from the footer alone', async () => {
     installPacks({
       'mothershiprpg.conditions_1e': [
         packDoc('cn-b', 'Bleeding', 'condition', {}),
@@ -322,11 +327,99 @@ describe('promptAddItem', () => {
     expect(radios()).toEqual(['cn-a', 'cn-b']);
     expect(only().buttons.map((button) => button.action)).toEqual(['add', 'cancel']);
 
-    check('[data-choice="cn-b"]');
+    check(at('cn-b'));
     await only().press('add');
     await done;
 
     expect(created).toEqual([[packDoc('cn-b', 'Bleeding', 'condition', {}).toObject()]]);
+  });
+
+  it('lists the world’s own documents under a heading of their own, beneath the pack’s', async () => {
+    installPacks({ 'mothershiprpg.weapons_1e': weaponDocs });
+    installWorldItems([
+      {
+        id: 'w1',
+        uuid: 'Item.w1',
+        name: 'Bolt Thrower',
+        type: 'weapon',
+        system: { damage: '2d10', range: 'long' },
+        toObject: () => ({ name: 'Bolt Thrower', type: 'weapon', system: {} }),
+      },
+    ]);
+    const done = promptAddItem(actorOf().actor, 'weapon');
+    await settle();
+
+    expect(radios()).toEqual(['wp-l', 'wp-r', 'w1']);
+    expect(
+      [...only().element.querySelectorAll('.choice-group')].map((row) => row.textContent?.trim()),
+    ).toEqual(['Mothership.FromThisWorld']);
+
+    only().dismiss();
+    await done;
+  });
+
+  it('adds a copy of a world document, not the pack document beside it', async () => {
+    installPacks({ 'mothershiprpg.weapons_1e': weaponDocs });
+    installWorldItems([
+      {
+        id: 'w1',
+        uuid: 'Item.w1',
+        name: 'Bolt Thrower',
+        type: 'weapon',
+        system: { damage: '2d10', range: 'long' },
+        toObject: () => ({ name: 'Bolt Thrower', type: 'weapon', system: { damage: '2d10' } }),
+      },
+    ]);
+    const { actor, created } = actorOf();
+    const done = promptAddItem(actor, 'weapon');
+    await settle();
+
+    check('[data-choice="Item.w1"]');
+    await only().press('add');
+    await done;
+
+    expect(created).toEqual([[{ name: 'Bolt Thrower', type: 'weapon', system: { damage: '2d10' } }]]);
+  });
+
+  // Create is a body control, not a footer button: the dialog stays open so the new document can
+  // then be picked out of the list it just joined.
+  it('creates a world document of the picker’s type, opens its sheet, and lists it', async () => {
+    installPacks({ 'mothershiprpg.armor_1e': [packDoc('ar-v', 'Vaccsuit', 'armor', {})] });
+    const world = installWorldItems();
+    const done = promptAddItem(actorOf().actor, 'armor');
+    await settle();
+
+    check('#pick-create');
+    await settle();
+
+    expect(world.created).toEqual([{ name: 'Mothership.NewArmor', type: 'armor' }]);
+    expect(world.rendered).toHaveLength(1);
+    expect(only().buttons.map((button) => button.action)).toEqual(['add', 'cancel']);
+    expect(radios()).toEqual(['ar-v', 'world-0']);
+
+    only().dismiss();
+    await done;
+  });
+
+  it('opens the picker on the world alone when the pack ships nothing', async () => {
+    installPacks({});
+    installWorldItems([
+      {
+        id: 'w1',
+        uuid: 'Item.w1',
+        name: 'Bolt Thrower',
+        type: 'weapon',
+        system: { damage: '2d10', range: 'long' },
+        toObject: () => ({ name: 'Bolt Thrower', type: 'weapon', system: {} }),
+      },
+    ]);
+    const done = promptAddItem(actorOf().actor, 'weapon');
+    await settle();
+
+    expect(radios()).toEqual(['w1']);
+
+    only().dismiss();
+    await done;
   });
 
   it('falls straight back to the blank flow when the pack is missing', async () => {

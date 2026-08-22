@@ -61,6 +61,8 @@ pill — leaving one call site, the shared stat vocabulary.
 | **The character generator, on a draft store** — no `FormApplication` left | |
 | **Conditions preselect the roll they name** | |
 | **The runtime core remade — `actor.js`/`mosh.js` gone for typed services, sheets adopted them (R7)** | |
+| **Damage rolled for real, and applied to the targeted actor** | |
+| **A socket action dispatcher — players apply through the Warden's client** | |
 
 ## Hard rules (override defaults)
 
@@ -113,6 +115,15 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   rejected; and `LICENSE.txt`'s 2021 copyright line. The one content-baked survivor,
   `data-mosh-voice` in the Panic table, was regenerated as `data-mothership-voice`. Never name
   anything new `mosh` or `ms`.
+- **`module/dispatch/` is the one socket pipeline.** `dispatch(action, data)` runs the handler
+  here when this client is the Warden and otherwise asks the Warden's client to, awaiting a
+  correlated reply. It answers `no-gm`/`timeout`/`failed` as *values*, the way `lookup.ts` does, so
+  a caller that can do the work itself falls back instead of catching. Modelled on
+  pf2e-reignmaker's ActionDispatcher. **The dispatcher authorizes nothing** — a handler runs with
+  the Warden's permissions, so it must authorize its own sender. `checks/harm.ts`'s `harmFromCard`
+  is the worked example: it re-reads the amount off the card rather than believing the request,
+  requires the sender to own that card, and requires the target to be one the card recorded.
+  **A new action that trusts a number off the wire is a hole.**
 - **`game.mothershiprpg` is the public API.** The verb surface — `rollStat`, `rollSkill`,
   `rollWeapon`, `rollTable`, `modify`, `applyItem`, `promptStress`/`promptSave`/`promptWound`,
   `rollItem`, … (`module/api/api.ts`) — is what shipped macros and new content call.
@@ -148,7 +159,12 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   selection is one native radio group, which is where the arrow keys and `Enter` come from. The
   radio itself is visually hidden and a span draws the mark — Foundry's core theme reaches
   `input[type="radio"]` from outside every layer, so styling it would take `!important`.
-  Build a conversion out of these before
+  **The compendium picker lists the world as well as the pack** — `PickFromPack` shows
+  `game.items` of the type beneath the pack rows under a group heading, keyed by uuid because the
+  two halves are separate id spaces, and its **Create** writes a world document and opens its
+  sheet. Create is a body control, not a footer button: a footer button answers the dialog, and
+  the point is that it stays open so the new row can be picked out of the list it just joined.
+  The world half is live off the `createItem`/`updateItem`/`deleteItem` hooks. Build a conversion out of these before
   writing bespoke markup. Most own their styles in scoped `<style>` blocks; classes still
   served by `css/mothership.css`'s shared tier keep their pins in `test/ui-parts.test.ts`,
   because that half of the contract still has no compiler.
@@ -215,8 +231,31 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   here appeared to fail. `start-test-env.sh` now clears a stale lock itself (port free ⇒ stale),
   so prefer `npm run test:e2e` over a hand-started server, and kill with **`kill`** rather than
   `kill -9` so Foundry unlocks on its way out.
+- **An `[[inline]]` roll in card content is rolled again by every client.** Foundry enriches a
+  message's content in `ChatMessage#renderHTML`, per viewer, and an inline roll with no command is
+  evaluated during that enrichment — so the Warden and each player saw a *different* damage number,
+  and none of them was a number the system could apply. Damage is now a real `evaluateRoll`, printed
+  through `rollHtml` and carried on the message's `rolls`. **Never state a number in card content as
+  `[[…]]`.**
+- **`resolveOutcome` reports the die it *kept*, which is a rule about checks.** A damage roll is
+  Foundry's own arithmetic: `2d10` sums, `{d,d}kh` keeps by the formula's own modifier. Read
+  `roll.total`, not `outcome.total` — `mutate.ts`'s `changeAmount` draws the same line, and a
+  one-die test stub hides the difference.
 - **`prepareDerivedData` mutates `this.system` in place.** Assert stored data with
-  `doc.toObject().system`, never `doc.system`.
+  `doc.toObject().system`, never `doc.system`. **The exception is anything only the derivation
+  knows** — `stats.armor.damageReduction` sums worn suits and cover, so `checks/harm.ts` reads it
+  off `system` deliberately.
+- **A token is unlinked unless it says so, and its `actor` is the synthetic one.** Writing to it
+  lands in the token's delta, not on the base actor — which is what a hit should do. An e2e test
+  that creates a token and then asserts against the *base* actor watches a number that never moves.
+- **A package's socket channel is dead unless the manifest says `"socket": true`.** Foundry's
+  `Package#registerCustomSocket` returns early without it, so the server never relays
+  `system.mothershiprpg` and every request just times out — no error, anywhere.
+  `test/dispatch.test.ts` pins the flag, because nothing in the code can notice its absence.
+- **Only `game.users.activeGM` may execute a relayed action.** Every GM client receives the
+  request; without that gate a table with two Wardens applies all damage twice. Replies are
+  broadcast too — Foundry sockets have no point-to-point send — so a reply carries `targetId` and
+  every other client drops it.
 - **`Actor.create` returns `undefined` on a validation failure** — it does not throw.
 - **Update paths are `system.*`.** The `data.` alias was removed in v10; six updates were
   still using it and silently doing nothing.

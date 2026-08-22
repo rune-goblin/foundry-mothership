@@ -3,6 +3,10 @@
 import { registerChatAction } from '../chat/actions.ts';
 import { registerCheckActions } from '../checks/actions.ts';
 import { rollDamageInCard } from '../checks/damage.ts';
+import { harmActor, harmFromCard, harmTargets, isHarmRequest, retargetCard, type HarmOutcome } from '../checks/harm.ts';
+import { dispatch, initDispatch, registerDispatch } from '../dispatch/dispatch.ts';
+import { currentTargets } from '../checks/targets.ts';
+import { harmAmount } from '../chat/enrichers.ts';
 import { type CheckOptions, type CheckOutcome } from '../checks/checks.ts';
 import { type TableOptions, type TableResult } from '../checks/tables.ts';
 import { SYSTEM_ID, type CardMessage } from '../chat/cards.ts';
@@ -29,6 +33,7 @@ declare const game:
   | {
       readonly settings?: { get(namespace: string, key: string): unknown };
       readonly user?: { readonly character?: unknown };
+      readonly users?: { get(id: string): unknown };
       readonly actors?: { get(id: string): unknown };
       readonly messages?: { get(id: string): CardMessage | undefined };
     }
@@ -207,8 +212,80 @@ export function cardOrigin(button: Element | null): CardOrigin {
   };
 }
 
+/** The row a card button sits in, when it sits in one — a hand-typed `@Harm` has no row. */
+function rowTarget(button: Element | null): string | null {
+  return button?.closest<HTMLElement>('[data-target-uuid]')?.dataset.targetUuid ?? null;
+}
+
+function warn(key: string): void {
+  if (typeof ui !== 'undefined') ui?.notifications?.warn(localize(key));
+}
+
+function cardMessage(button: Element | null): CardMessage | undefined {
+  const { messageId } = cardOrigin(button);
+  return messageId === null ? undefined : game?.messages?.get(messageId);
+}
+
+/** This client's own hands: whatever it may write to, it writes to directly. */
+async function harmHere(amount: number, uuid: string | null): Promise<void> {
+  const actors = await harmTargets(uuid, currentTargets());
+  if (actors.length === 0) return warn('Mothership.Errors.NoHarmTarget');
+
+  for (const actor of actors) {
+    const outcome = await harmActor(actor, amount);
+    if (outcome.kind === 'forbidden') warn('Mothership.Errors.NotYourTarget');
+  }
+}
+
 export function registerActions(): void {
+  initDispatch();
   registerCheckActions(targetActors);
+
+  // Runs on the Warden's client, for a player who may not write to what they hit.
+  registerDispatch('harm', async (data, senderId) => {
+    if (!isHarmRequest(data)) throw new Error('not a harm request');
+    const message = game?.messages?.get(data.messageId);
+    if (message === undefined) throw new Error('no such card');
+    return await harmFromCard({ message, sender: game?.users?.get(senderId) }, data);
+  });
+
+  registerChatAction('harm', async (action, context) => {
+    debug('action', `harm ${harmAmount(action)}`);
+
+    const uuid = rowTarget(context.button);
+    const messageId = cardOrigin(context.button).messageId;
+
+    // Only card-backed damage goes to the Warden: there the amount can be re-read from the card
+    // rather than believed. A hand-typed `@Harm` names its own number, so it stays this client's
+    // to apply, under this client's permissions.
+    if (uuid === null || messageId === null) return await harmHere(harmAmount(action), uuid);
+
+    const request = { messageId, uuid, half: action.half };
+    const sent = await dispatch<HarmOutcome>('harm', request);
+
+    // Nobody to ask: run the same verified path here, which succeeds only if this client owns
+    // both the card and what it was aimed at.
+    if (sent.kind === 'no-gm') {
+      const message = cardMessage(context.button);
+      if (message === undefined) return warn('Mothership.Errors.NoDamageSource');
+      const outcome = await harmFromCard({ message, sender: game?.user }, request);
+      if (outcome.kind === 'forbidden') warn('Mothership.Errors.NotYourTarget');
+      return;
+    }
+
+    if (sent.kind === 'timeout') return warn('Mothership.Errors.WardenDidNotAnswer');
+    if (sent.kind === 'failed' || sent.result?.kind === 'forbidden') {
+      return warn('Mothership.Errors.NotYourTarget');
+    }
+  });
+
+  registerChatAction('retarget', async (_action, context) => {
+    const message = cardMessage(context.button);
+    if (message === undefined) return warn('Mothership.Errors.NoDamageSource');
+
+    const outcome = await retargetCard(message, game?.user, currentTargets());
+    if (outcome === 'forbidden') warn('Mothership.Errors.NotYourCard');
+  });
   registerChatAction('apply', async (action) => {
     debug('action', `apply ${action.condition} ×${action.count}`);
     await applyCondition(action.condition, action.count);

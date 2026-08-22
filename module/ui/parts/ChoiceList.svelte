@@ -44,6 +44,11 @@
       : options.reduce((most, option) => Math.max(most, option.cells?.length ?? 0), 0),
   );
   const cellIndexes = $derived([...Array(cellCount).keys()]);
+  const columnCount = $derived(2 + (icons ? 1 : 0) + cellCount + (trailing ? 1 : 0));
+
+  /** A group is named once, above the first of its rows that survived the filter. */
+  const opensGroup = (option, at) =>
+    (option.group ?? '') !== '' && (at === 0 || visible[at - 1].group !== option.group);
 
   /** A cell is its own text, unless it is the `{ text, boxed }` form the prompts use. */
   const wrapped = (cell) => cell !== null && typeof cell === 'object';
@@ -98,7 +103,12 @@
       {/if}
 
       <tbody>
-        {#each visible as option (option.key)}
+        {#each visible as option, at (option.key)}
+          {#if opensGroup(option, at)}
+            <tr class="choice-group">
+              <td colspan={columnCount}>{option.group}</td>
+            </tr>
+          {/if}
           <tr
             class="choice"
             class:is-selected={option.key === value}
@@ -314,6 +324,25 @@
     }
 
     tbody .choice:first-child {
+      border-top-color: var(--color-transparent);
+    }
+
+    /* Names where the rows beneath it came from — the pack the book ships, or this world. */
+    .choice-group td {
+      --choice-list-group-font-size: var(--font-size-sm);
+      --choice-list-group-text: var(--text-tertiary);
+      --choice-list-group-rule-color: var(--border-neutral-medium);
+
+      padding-top: var(--space-16);
+      padding-bottom: var(--space-4);
+      font-size: var(--choice-list-group-font-size);
+      font-weight: var(--font-weight-semibold);
+      color: var(--choice-list-group-text);
+      border-bottom: var(--border-width-1) solid var(--choice-list-group-rule-color);
+    }
+
+    /* The group's own rule already separates it from the row above. */
+    .choice-group + .choice {
       border-top-color: var(--color-transparent);
     }
 

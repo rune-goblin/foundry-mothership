@@ -763,6 +763,44 @@
     margin-top: var(--space-4);
   }
 
+  .mothership .card-target {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    margin-top: var(--space-4);
+  }
+
+  .mothership .card-target-image {
+    flex: 0 0 var(--space-24);
+    height: var(--space-24);
+    border: none;
+    object-fit: cover;
+  }
+
+  /* Takes the slack so the buttons and the taken-damage note both sit hard right. */
+  .mothership .card-target-name {
+    flex: 1;
+    font-size: var(--font-size-sm);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mothership .card-target-actions {
+    flex: 0 0 auto;
+  }
+
+  .mothership .card-target-taken {
+    flex: 0 0 auto;
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+  }
+
+  .mothership .card-target-retarget {
+    margin-top: var(--space-8);
+    text-align: right;
+  }
+
   /* content-links Foundry already styles; this adds room to sit several in a row. */
   .mothership .mothership-action {
     margin: var(--space-2) var(--space-2) var(--space-2) var(--space-0);

@@ -1,4 +1,5 @@
 import type { ItemCard } from '../documents/item.ts';
+import { formatAction } from './enrichers.ts';
 import { format, has, localize } from '../i18n.ts';
 import type { ReloadOutcome } from '../inventory/ammo.ts';
 import type { MutationResult } from '../mutation/mutate.ts';
@@ -145,6 +146,48 @@ function rolled(outcome: Outcome, options: RollHtmlOptions): object {
   };
 }
 
+/** What a card remembers about who was aimed at: enough to draw the row and find the actor again. */
+export interface CardTarget {
+  readonly uuid: string;
+  readonly name: string;
+  readonly img: string;
+}
+
+/** A target row as the template draws it — the damage already taken, or the buttons to take it. */
+export interface CardTargetRow extends CardTarget {
+  /** Its own flag, because damage an armoured target absorbed entirely is `0` — taken, not pending. */
+  readonly taken: boolean;
+  readonly applied: number;
+  /** `@Harm[…]` actions the enricher turns into buttons, blank once the damage is taken. */
+  readonly actions: string;
+}
+
+function harmActions(total: number): string {
+  const full = { verb: 'harm' as const, amount: total, half: false };
+  const half = { verb: 'harm' as const, amount: total, half: true };
+  return `${formatAction(full)} ${formatAction(half)}`;
+}
+
+/**
+ * Targets are recorded when the attack rolls, not read when a button is clicked — the card is a
+ * record of who was aimed at, and it has to survive the shooter targeting somebody else next.
+ */
+export function targetRows(
+  targets: readonly CardTarget[],
+  total: number | null,
+  applied: Readonly<Record<string, number>> = {},
+): CardTargetRow[] {
+  return targets.map((target) => {
+    const taken = Object.hasOwn(applied, target.uuid);
+    return {
+      ...target,
+      taken,
+      applied: taken ? applied[target.uuid] : 0,
+      actions: !taken && total !== null ? harmActions(total) : '',
+    };
+  });
+}
+
 export interface CardWeapon {
   readonly _id: string | null;
   readonly name: string;
@@ -171,6 +214,10 @@ export interface CheckCardInput {
   /** A damage-only card: the check half of the template is skipped. */
   readonly damage?: boolean;
   readonly critFail?: boolean;
+  /** Who was targeted when this was rolled. */
+  readonly targets?: readonly CardTarget[];
+  /** The damage rolled, when one was — what a target row's buttons spend. */
+  readonly damageTotal?: number | null;
 }
 
 /** A title this long no longer fits the header pill at its own size. */
@@ -216,6 +263,10 @@ export function checkCard(input: CheckCardInput): Card<object> {
       needsDesc,
       woundEffect,
       critFail: input.critFail === true,
+      damageTotal: input.damageTotal ?? null,
+      showTargets: input.damageTotal !== null && input.damageTotal !== undefined,
+      targets: targetRows(input.targets ?? [], input.damageTotal ?? null),
+      retarget: formatAction({ verb: 'retarget' }),
     },
   };
 }
@@ -470,6 +521,8 @@ export interface PostOptions {
   readonly speaker: Speaker;
   /** The evaluated roll to post with, so the dice animate and the message keeps its numbers. */
   readonly roll?: PostableRoll | null;
+  /** Every roll the card shows, when it shows more than one — an attack and the damage it earned. */
+  readonly rolls?: readonly PostableRoll[] | null;
 }
 
 declare const game: { readonly user?: { readonly id: string } } | undefined;
@@ -500,6 +553,16 @@ export interface CardMessage {
   update(data: object): Promise<unknown>;
 }
 
+/** The card behind a message, when this system put one there — the data a button needs to rebuild it. */
+export function rememberedCard(message: CardMessage): Card<Record<string, unknown>> | null {
+  const stored = message.getFlag(SYSTEM_ID, CARD_FLAG);
+  if (typeof stored !== 'object' || stored === null) return null;
+  const card = stored as { kind?: unknown; data?: unknown };
+  return card.kind === 'check' && typeof card.data === 'object' && card.data !== null
+    ? (card as Card<Record<string, unknown>>)
+    : null;
+}
+
 /** A player may act on their own card, the Warden on any — `canUserModify` already grants every GM OWNER on any message. */
 export function ownsCard(message: CardMessage, user: unknown): boolean {
   return message.canUserModify(user, 'update');
@@ -510,7 +573,10 @@ function remembered<D extends object>(card: Card<D>): object {
   return card.kind === 'check' ? { flags: { [SYSTEM_ID]: { [CARD_FLAG]: card } } } : {};
 }
 
-/** A card built from a roll posts through the roll so Foundry keeps the dice; anything else goes through `ChatMessage`. */
+/**
+ * A card built from one roll posts through that roll so Foundry keeps the dice; several rolls go on
+ * the message together, because `toMessage` only ever carries the roll it was called on.
+ */
 export async function postCard<D extends object>(card: Card<D>, options: PostOptions): Promise<unknown> {
   if (typeof foundry === 'undefined' || typeof ChatMessage === 'undefined') return null;
 
@@ -522,5 +588,9 @@ export async function postCard<D extends object>(card: Card<D>, options: PostOpt
     ...remembered(card),
   };
 
-  return options.roll ? options.roll.toMessage(message) : ChatMessage.create(ChatMessage.applyMode(message));
+  const rolls = options.rolls ?? (options.roll ? [options.roll] : []);
+  if (rolls.length > 1) return ChatMessage.create(ChatMessage.applyMode({ ...message, rolls }));
+  return rolls.length === 1
+    ? rolls[0].toMessage(message)
+    : ChatMessage.create(ChatMessage.applyMode(message));
 }

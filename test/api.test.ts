@@ -8,6 +8,7 @@ import {
   installChat,
   installI18n,
   installNotifications,
+  installRoll,
   installSettings,
   type Notifications,
 } from './foundry-stubs.ts';
@@ -413,6 +414,7 @@ describe('registerActions', () => {
       globals.game = { ...(globals.game as Globals), actors: { get: () => sarah } };
       withMessage(message);
       installI18n({ 'Mothership.Chat.DamageDealt': 'You inflict {damage} points of damage.' });
+      const rolls = installRoll([{ faces: 10, result: 9 }]);
       api.registerActions();
 
       await runChatAction(action('@Damage[4d10]'), {
@@ -420,11 +422,14 @@ describe('registerActions', () => {
         button: card({ 'data-actor-id': 'actor1', 'data-item-id': 'wpn1' }, 'msg1'),
       });
 
-      expect(message.update).toHaveBeenCalledWith({
-        content: '<div>rolled</div>',
-        // Wearing the GM's damage colorset, exactly as the auto-rolled line does.
-        'flags.mothershiprpg.card.data.flavorText': 'You inflict [[4d10[damage]]] points of damage.',
-      });
+      // Wearing the GM's damage colorset, exactly as the auto-rolled line does.
+      expect(rolls.formulas).toEqual(['4d10[damage]']);
+      const [update] = message.update.mock.lastCall as unknown as [Record<string, unknown>];
+      expect(update.content).toBe('<div>rolled</div>');
+      expect(update['flags.mothershiprpg.card.data.damageTotal']).toBe(9);
+      expect(update['flags.mothershiprpg.card.data.flavorText']).toContain(
+        'You inflict <strong>9</strong> points of damage.',
+      );
       expect(sarah.rollWeapon).not.toHaveBeenCalled();
     });
 

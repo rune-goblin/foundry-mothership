@@ -19,7 +19,7 @@ export const CHECK_SCOPES = [
 
 export type CheckScope = (typeof CHECK_SCOPES)[number];
 
-export type ActionVerb = 'check' | 'table' | 'gain' | 'apply' | 'damage';
+export type ActionVerb = 'check' | 'table' | 'gain' | 'apply' | 'damage' | 'harm' | 'retarget';
 
 export type GainAmount =
   | { readonly kind: 'amount'; readonly amount: number }
@@ -36,7 +36,9 @@ export type ChatAction =
       readonly amount: GainAmount;
     }
   | { readonly verb: 'apply'; readonly condition: string; readonly count: number }
-  | { readonly verb: 'damage'; readonly formula: string };
+  | { readonly verb: 'damage'; readonly formula: string }
+  | { readonly verb: 'harm'; readonly amount: number; readonly half: boolean }
+  | { readonly verb: 'retarget' };
 
 export type ActionFault = 'syntax' | 'verb' | 'argument';
 
@@ -50,6 +52,8 @@ const VERBS: Readonly<Record<string, ActionVerb>> = {
   Gain: 'gain',
   Apply: 'apply',
   Damage: 'damage',
+  Harm: 'harm',
+  Retarget: 'retarget',
 };
 
 const SPELLING: Readonly<Record<ActionVerb, string>> = {
@@ -58,17 +62,20 @@ const SPELLING: Readonly<Record<ActionVerb, string>> = {
   gain: 'Gain',
   apply: 'Apply',
   damage: 'Damage',
+  harm: 'Harm',
+  retarget: 'Retarget',
 };
 
 /**
  * What content authors type by hand:
  * `@Check[fear -]` Fear Save at disadvantage · `@Table[gunshot]` roll the Gunshot Wound table ·
  * `@Gain[stress 1d5]` gain 1d5 Stress · `@Gain[health -bleeding]` take damage equal to Bleeding ·
- * `@Apply[coward]` gain the Coward condition. A trailing `{…}` overrides the generated label, as
+ * `@Apply[coward]` gain the Coward condition · `@Harm[7]` spend 7 of the *target's* Health, minus
+ * their Damage Reduction (`@Harm[7 half]` halves it first). A trailing `{…}` overrides the label, as
  * `@UUID[…]{…}` does. A Panic Check is judged against Stress, so it is `@Check[panicCheck]`, not a
  * `@Table`.
  */
-const SYNTAX = '@(Check|Table|Gain|Apply|Damage)\\[([^\\]]*)\\](?:\\{([^}]*)\\})?';
+const SYNTAX = '@(Check|Table|Gain|Apply|Damage|Harm|Retarget)\\[([^\\]]*)\\](?:\\{([^}]*)\\})?';
 
 /** `parseAction` uses its own anchored copy, so neither this nor that carries the other's `lastIndex`. */
 export const ACTION_PATTERN = new RegExp(SYNTAX, 'g');
@@ -144,6 +151,18 @@ function parseApply(args: readonly string[]): ActionParse {
   return { ok: true, action: { verb: 'apply', condition, count: Number(count) }, label: null };
 }
 
+/** Half is rounded down, the way every other quotient in the book is. */
+export function harmAmount(action: Extract<ChatAction, { verb: 'harm' }>): number {
+  return action.half ? Math.floor(action.amount / 2) : action.amount;
+}
+
+function parseHarm(args: readonly string[]): ActionParse {
+  const [amount, modifier, ...rest] = args;
+  if (rest.length > 0 || !NUMBER.test(amount ?? '')) return bad('argument', `@Harm[${args.join(' ')}]`);
+  if (modifier !== undefined && modifier !== 'half') return bad('argument', `${modifier} is not half`);
+  return { ok: true, action: { verb: 'harm', amount: Number(amount), half: modifier === 'half' }, label: null };
+}
+
 /** A damage formula like `1d10 * 2` or `{1d10,1d10}kh` keeps its spaces, so the whole bracket is one argument. */
 const DAMAGE_FORMULA = /\d/;
 
@@ -170,7 +189,11 @@ export function parseAction(text: string): ActionParse {
           ? parseGain(args)
           : verb === 'damage'
             ? parseDamage(match[2].trim())
-            : parseApply(args);
+            : verb === 'harm'
+              ? parseHarm(args)
+              : verb === 'retarget'
+                ? { ok: true as const, action: { verb: 'retarget' as const }, label: null }
+                : parseApply(args);
 
   return parsed.ok && match[3] !== undefined ? { ...parsed, label: match[3] } : parsed;
 }
@@ -199,6 +222,10 @@ export function formatAction(action: ChatAction): string {
         return `${action.condition}${action.count === 1 ? '' : ` ${action.count}`}`;
       case 'damage':
         return action.formula;
+      case 'harm':
+        return `${action.amount}${action.half ? ' half' : ''}`;
+      case 'retarget':
+        return '';
     }
   })();
   return `@${SPELLING[action.verb]}[${args}]`;
@@ -272,6 +299,12 @@ export function actionLabel(action: ChatAction): string {
       });
     case 'damage':
       return format('Mothership.Chat.DamageLabel', { damage: action.formula });
+    case 'harm':
+      return action.half
+        ? format('Mothership.Chat.HarmHalfLabel', { amount: String(harmAmount(action)) })
+        : format('Mothership.Chat.HarmLabel', { amount: String(action.amount) });
+    case 'retarget':
+      return localize('Mothership.Chat.RetargetLabel');
   }
 }
 
@@ -281,6 +314,8 @@ const ICONS: Readonly<Record<ActionVerb, string>> = {
   gain: 'fa-solid fa-plus-minus',
   apply: 'fa-solid fa-notes-medical',
   damage: 'fa-solid fa-burst',
+  harm: 'fa-solid fa-heart-crack',
+  retarget: 'fa-solid fa-bullseye',
 };
 
 /** The routing key the delegated listener matches, namespaced so no window claims it by accident. */

@@ -1,19 +1,50 @@
 <script>
   import ChoiceList from '../parts/ChoiceList.svelte';
 
-  let { filterLabel, headers, rows, enforceLabel = '', value, onchange } = $props();
+  let {
+    filterLabel,
+    headers,
+    rows,
+    enforceLabel = '',
+    createLabel = '',
+    /** Writes a new world document of this type and opens its sheet. Null draws no Create. */
+    oncreate = null,
+    /** Rebuilds the rows from the world. Null leaves the list as it was handed over. */
+    reload = null,
+    value,
+    onchange,
+  } = $props();
 
-  // Where the toggle starts, not a channel it listens on: from here the reader owns it.
+  // svelte-ignore state_referenced_locally
+  let live = $state(rows);
   // svelte-ignore state_referenced_locally
   let enforce = $state(enforceLabel !== '');
+
+  // The world half of the list is live: Create opens the new document's sheet, and its row has to
+  // follow whatever name is typed in there — and disappear if the document is deleted.
+  $effect(() => {
+    const hooks = globalThis.Hooks;
+    if (reload === null || hooks === undefined) return;
+    const refresh = () => {
+      live = reload();
+    };
+    const listeners = ['createItem', 'updateItem', 'deleteItem'].map((hook) => [
+      hook,
+      hooks.on(hook, refresh),
+    ]);
+    return () => {
+      for (const [hook, id] of listeners) hooks.off(hook, id);
+    };
+  });
 
   const barred = (row) => enforce && row.unmet === true;
 
   const options = $derived(
-    rows.map((row) => ({
+    live.map((row) => ({
       key: row.id,
       label: row.name,
       cells: row.cells,
+      group: row.group,
       disabled: barred(row),
     })),
   );
@@ -22,16 +53,30 @@
   // the dialog's answer.
   const toggleEnforce = (event) => {
     enforce = event.currentTarget.checked;
-    const current = rows.find((row) => row.id === value);
+    const current = live.find((row) => row.id === value);
     if (current !== undefined && barred(current)) onchange(null);
   };
 </script>
 
-{#snippet enforceToggle()}
-  <label class="pick-enforce">
-    <input type="checkbox" id="pick-enforce" checked={enforce} onchange={toggleEnforce} />
-    {enforceLabel}
-  </label>
+{#snippet controls()}
+  {#if enforceLabel !== ''}
+    <label class="pick-enforce">
+      <input type="checkbox" id="pick-enforce" checked={enforce} onchange={toggleEnforce} />
+      {enforceLabel}
+    </label>
+  {/if}
+  {#if oncreate !== null}
+    <!-- `type="button"`, or it submits the dialog's form and answers it. The frame goes with the
+         call so the sheet it opens can stand beside this window rather than on top of it. -->
+    <button
+      type="button"
+      id="pick-create"
+      class="pick-create"
+      onclick={(event) => oncreate(event.currentTarget.closest('dialog'))}
+    >
+      <i class="fas fa-plus" aria-hidden="true"></i>{createLabel}
+    </button>
+  {/if}
 {/snippet}
 
 <ChoiceList
@@ -41,7 +86,7 @@
   {value}
   {onchange}
   label={headers[0]}
-  aside={enforceLabel === '' ? null : enforceToggle}
+  aside={enforceLabel === '' && oncreate === null ? null : controls}
 />
 
 <style>
@@ -58,6 +103,35 @@
       font-size: var(--pick-from-pack-enforce-font-size);
       color: var(--pick-from-pack-enforce-text);
       white-space: nowrap;
+    }
+
+    .pick-create {
+      --pick-from-pack-create-font-size: var(--font-size-md);
+      --pick-from-pack-create-surface: var(--surface-neutral-paper);
+      --pick-from-pack-create-border-color: var(--border-neutral-ink);
+      --pick-from-pack-create-text: var(--text-primary);
+
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: var(--space-6);
+      width: auto;
+      height: auto;
+      margin: var(--space-0);
+      padding: var(--space-6) var(--space-12);
+      font-family: var(--font-sans-mothership);
+      font-size: var(--pick-from-pack-create-font-size);
+      font-weight: var(--font-weight-semibold);
+      white-space: nowrap;
+      color: var(--pick-from-pack-create-text);
+      background: var(--pick-from-pack-create-surface);
+      border: var(--border-width-1) solid var(--pick-from-pack-create-border-color);
+      border-radius: var(--radius-sm);
+    }
+
+    .pick-create:hover {
+      --pick-from-pack-create-surface: var(--surface-neutral-lower);
+      --pick-from-pack-create-text: var(--text-inverted);
     }
   }
 </style>

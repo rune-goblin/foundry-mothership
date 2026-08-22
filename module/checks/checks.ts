@@ -6,6 +6,7 @@ import {
   postCard,
   reloadCard,
   type Card,
+  type CardTarget,
 } from '../chat/cards.ts';
 import { CHECK_SCOPES, type CheckScope } from '../chat/enrichers.ts';
 import {
@@ -39,8 +40,18 @@ import {
   type StatValue,
 } from './actor.ts';
 import { conditionModifier, conditionNote, conditionPreselect } from './conditions.ts';
-import { cardWeapon, damageFlavor, damageModes, rollDamage, woundEffectOf } from './damage.ts';
+import {
+  cardWeapon,
+  damageFlavor,
+  damageModes,
+  damageOffer,
+  rollDamage,
+  rollDamageFormula,
+  woundEffectOf,
+  type DamageRoll,
+} from './damage.ts';
 import { evaluateRoll } from './roll.ts';
+import { currentTargets } from './targets.ts';
 import { autoRollDamage, autoStress } from './settings.ts';
 import { runTable, type TableResult } from './tables.ts';
 
@@ -258,14 +269,15 @@ async function damageLine(
   actor: CheckActor,
   weapon: CheckItem,
   options: { readonly override: string | null; readonly critical: boolean },
-): Promise<string> {
-  const offer = { ...options, offer: true };
-  if (!autoRollDamage(isCharacter(actor))) return damageFlavor(actor, weapon, offer);
+): Promise<{ readonly text: string; readonly damage: DamageRoll | null }> {
+  const offered = { text: damageOffer(actor, weapon, options), damage: null };
+  if (!autoRollDamage(isCharacter(actor))) return offered;
 
   const chosen = await settleDamage(weapon, options.override);
-  return chosen === null
-    ? damageFlavor(actor, weapon, offer)
-    : damageFlavor(actor, weapon, { ...options, override: chosen });
+  if (chosen === null) return offered;
+
+  const damage = await rollDamageFormula(actor, weapon, { ...options, override: chosen });
+  return { text: damageFlavor(damage), damage };
 }
 
 /** PSG 22 — a successful Rest Save relieves Stress equal to the ones digit of the roll. */
@@ -301,6 +313,8 @@ async function d100Check(
 
   let stress: MutationResult | null = null;
   let flavorText = '';
+  let damage: DamageRoll | null = null;
+  let targets: readonly CardTarget[] = [];
 
   if (!outcome.success) {
     // PSG 20 — a failure is a Stress, when the GM leaves that to the system.
@@ -309,10 +323,13 @@ async function d100Check(
       flavorText = mutationOutcome({ source, result: stress, voice });
     }
   } else if (weapon !== null) {
-    flavorText = await damageLine(actor, weapon, {
+    const line = await damageLine(actor, weapon, {
       override: options.damage ?? null,
       critical: outcome.critical,
     });
+    flavorText = line.text;
+    damage = line.damage;
+    targets = currentTargets();
   } else if (character && check.kind === 'rest-save') {
     stress = await mutate(actor, STRESS, { kind: 'amount', amount: restRelief(outcome.total) });
     flavorText = mutationOutcome({ source, result: stress, voice });
@@ -336,8 +353,13 @@ async function d100Check(
     woundEffect: weapon === null ? '' : woundEffectOf(weapon),
     // A critical failure is where a Panic Check comes from, and the card is where it is offered.
     critFail: character && !outcome.success && outcome.critical,
+    targets,
+    damageTotal: damage?.total ?? null,
   });
-  await postCard(card, { speaker: speakerOf(actor), roll });
+  await postCard(card, {
+    speaker: speakerOf(actor),
+    rolls: damage === null ? [roll] : [roll, damage.roll],
+  });
 
   return { kind: 'check', check, spec, outcome, stat, skill: chosen.skill, target, stress, card };
 }

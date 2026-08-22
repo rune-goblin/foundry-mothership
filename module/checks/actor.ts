@@ -30,6 +30,8 @@ export interface CheckActor extends MutableDocument {
   readonly system: unknown;
   readonly items: ItemCollection;
   readonly token?: { readonly id?: string | null } | null;
+  /** Whether this client may write to the document — a player cannot spend a creature's Health. */
+  readonly isOwner?: boolean;
 }
 
 export const CHARACTER = 'character';

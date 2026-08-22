@@ -34,6 +34,25 @@
             {{/if}}
             {{/if}}
 
+            {{#if showTargets}}
+            <div class="card-rule"><span class="card-rule-label">{{ localize 'Mothership.Targets' }}</span></div>
+            {{#each targets}}
+            <div class="card-target" data-target-uuid="{{uuid}}">
+                <img class="card-target-image" src="{{img}}" />
+                <span class="card-target-name">{{name}}</span>
+                {{#if taken}}
+                <span class="card-target-taken">{{ localize 'Mothership.Chat.HarmTaken' }} {{applied}}</span>
+                {{else}}
+                <span class="card-target-actions">{{{actions}}}</span>
+                {{/if}}
+            </div>
+            {{/each}}
+            {{/if}}
+
+            {{#if showTargets}}
+            <div class="card-target-retarget">{{retarget}}</div>
+            {{/if}}
+
             {{#if critFail}}
             <div class="card-note">@UUID[Compendium.mothershiprpg.macros_hotbar_1e.IgWvaabVqzKDzLL4]{Make a Panic Check}</div>
             {{/if}}
