@@ -14,6 +14,8 @@ import {
   rollDamageFormula,
   weaponDamage,
   woundEffectActions,
+  woundOffer,
+  woundRollOf,
 } from '../module/checks/damage.ts';
 import { CRIT_DAMAGE_CHOICES } from '../module/checks/settings.ts';
 import { clearFoundryStubs, installChat, installI18n, installRoll, installSettings } from './foundry-stubs.ts';
@@ -180,7 +182,7 @@ describe('the damages a weapon deals', () => {
   it('carry the critical rule into the button', () => {
     stubs({ critDamage: 'doubleDamage' });
     expect(damageOffer(actor(), weapon({ range: 'none' }), { critical: true })).toBe(
-      'Roll the damage you deal: @Damage[1d10 * 2]',
+      'Roll the damage you deal: @Damage[(1d10) * 2]',
     );
   });
 
@@ -195,13 +197,29 @@ describe('the damages a weapon deals', () => {
 describe('what a critical hit does to it', () => {
   it.each([
     ['advantage', '{1d10,1d10}kh'],
-    ['doubleDamage', '1d10 * 2'],
+    ['doubleDamage', '(1d10) * 2'],
     ['doubleDice', '1d10 + 1d10'],
     ['maxDamage', '1 * 10'],
     ['weaponValue', '1d10 + 10'],
     ['none', '1d10'],
   ] as const)('%s', (mode, expected) => {
     expect(critFormula('1d10', mode, '10')).toBe(expected);
+  });
+
+  /**
+   * Damage that carries a modifier is where each rule shows its arithmetic. `1d10+1 * 2` is
+   * Foundry's spelling of `1d10 + 2`: it doubled nothing, and a d10's worth of damage went missing
+   * on every crit with a modifier behind it.
+   */
+  it.each([
+    ['advantage', '{1d10+1,1d10+1}kh'],
+    ['doubleDamage', '(1d10+1) * 2'],
+    ['doubleDice', '1d10+1 + 1d10+1'],
+    ['maxDamage', '1 * 10+1'],
+    ['weaponValue', '1d10+1 + 10'],
+    ['none', '1d10+1'],
+  ] as const)('%s, on damage that carries a modifier', (mode, expected) => {
+    expect(critFormula('1d10+1', mode, '10')).toBe(expected);
   });
 
   it('covers every choice the setting offers', () => {
@@ -214,8 +232,44 @@ describe('what a critical hit does to it', () => {
 
   it('reaches the roll only on a critical', () => {
     stubs({ critDamage: 'doubleDamage' });
-    expect(damageFormula(actor(), weapon(), { critical: true })).toBe('1d10 * 2');
+    expect(damageFormula(actor(), weapon(), { critical: true })).toBe('(1d10) * 2');
     expect(damageFormula(actor(), weapon(), { critical: false })).toBe('1d10');
+  });
+});
+
+/**
+ * The same prose read as a roll rather than as a link: which table a Wound from this weapon lands
+ * on, and how to roll it. A critical is one step worse, which is the book's own cancelling rule.
+ */
+describe('the wound roll a hit leads to', () => {
+  const armed = (effect: string) => weapon({ woundEffect: effect });
+
+  it('reads the table and the weapon’s own modifier', () => {
+    expect(woundRollOf(armed('Gunshot'))).toEqual({ table: 'gunshot', advantage: 'none' });
+    expect(woundRollOf(armed('Bleeding [+]'))).toEqual({ table: 'bleeding', advantage: 'advantage' });
+    expect(woundRollOf(armed('Blunt Force [-]'))).toEqual({ table: 'blunt-force', advantage: 'disadvantage' });
+  });
+
+  it('has nothing to roll when the weapon names no wound this system knows', () => {
+    expect(woundRollOf(armed(''))).toBe(null);
+    expect(woundRollOf(armed('Existential Dread'))).toBe(null);
+  });
+
+  // PSG 19 — [+] and [-] cancel, so a crit worsens the weapon's own advantage rather than losing to it.
+  it('is one step worse on a critical', () => {
+    expect(woundRollOf(armed('Gunshot'), true)).toEqual({ table: 'gunshot', advantage: 'disadvantage' });
+    expect(woundRollOf(armed('Gunshot [+]'), true)).toEqual({ table: 'gunshot', advantage: 'none' });
+    expect(woundRollOf(armed('Gunshot [-]'), true)).toEqual({ table: 'gunshot', advantage: 'disadvantage' });
+  });
+
+  // Three buttons across a card: the roll the rules call for, with the other two beside it.
+  it('offers the roll with a [-] and a [+] either side of it', () => {
+    expect(woundOffer({ table: 'gunshot', advantage: 'none' })).toBe(
+      '@Wound[gunshot -]{[-]} @Wound[gunshot] @Wound[gunshot +]{[+]}',
+    );
+    expect(woundOffer({ table: 'gunshot', advantage: 'disadvantage' })).toBe(
+      '@Wound[gunshot -]{[-]} @Wound[gunshot -] @Wound[gunshot +]{[+]}',
+    );
   });
 });
 

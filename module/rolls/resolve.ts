@@ -37,6 +37,8 @@ export interface Outcome {
   /** Which of `dice` was kept, or -1 when the formula rolled none. */
   readonly keptIndex: number;
   readonly total: number;
+  /** Foundry's own arithmetic for the whole formula — what the modifiers behind the dice add up to. */
+  readonly rollTotal: number;
   readonly dice: readonly DieOutcome[];
   readonly success: boolean;
   readonly critical: boolean;
@@ -124,6 +126,7 @@ export function resolveOutcome(roll: EvaluatedRoll, options: ResolveOptions): Ou
     kept,
     keptIndex,
     total,
+    rollTotal: Number(roll.total) || 0,
     dice,
     success: target !== null && !autoFailed && beats(total, comparison, target),
     critical: crits && CRIT_DOUBLES.has(total),

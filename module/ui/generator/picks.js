@@ -38,8 +38,9 @@ export function expandSlots(picks, source) {
   const slots = [];
   for (const kind of PICK_KINDS) {
     for (let index = 0; index < (picks?.[kind] ?? 0); index += 1) {
+      const set = `${source}:${kind}:${index}`;
       for (const { rank, gated } of SETS[kind]) {
-        slots.push({ key: `${source}:${kind}:${index}:${rank}`, rank, gated });
+        slots.push({ key: `${set}:${rank}`, set, rank, gated });
       }
     }
   }

@@ -17,7 +17,12 @@ import {
   type CardTarget,
 } from '../chat/cards.ts';
 import { mutate, type MutationResult } from '../mutation/mutate.ts';
-import { cardSource, speakerOf, voiceOfActor, type CheckActor } from './actor.ts';
+import { isAdvantage } from '../rolls/spec.ts';
+import { isWoundTable } from '../tables/tables.ts';
+import { cardSource, isCharacter, speakerOf, voiceOfActor, type CheckActor } from './actor.ts';
+import { woundOffer, type WoundRoll } from './damage.ts';
+import { autoRollWounds } from './settings.ts';
+import { runTable } from './tables.ts';
 import { targetActor } from './targets.ts';
 
 const HEALTH = 'system.health.value';
@@ -47,17 +52,36 @@ export type HarmOutcome =
   | { readonly kind: 'forbidden' };
 
 /** A player may hold a card without holding what it was aimed at, so the target decides, not the card. */
-export async function harmActor(actor: CheckActor, amount: number): Promise<HarmOutcome> {
+export async function harmActor(
+  actor: CheckActor,
+  amount: number,
+  wound: WoundRoll | null = null,
+): Promise<HarmOutcome> {
   if (actor.isOwner === false) return { kind: 'forbidden' };
 
   const taken = harmAfterArmor(actor, amount);
   if (taken === 0) return { kind: 'absorbed', amount: 0 };
 
   const result = await mutate(actor, HEALTH, { kind: 'amount', amount: -taken });
+
+  // A Wound with no weapon behind it names no table, and a dead actor has run out of them.
+  const wounded = result.wounds !== null && !result.dead && wound !== null;
+  const rolls = wounded && autoRollWounds(isCharacter(actor));
+
   await postCard(
-    mutationCard({ source: cardSource(actor), result, voice: voiceOfActor(actor) }),
+    mutationCard({
+      source: cardSource(actor),
+      result,
+      voice: voiceOfActor(actor),
+      wound: wounded && !rolls ? woundOffer(wound) : '',
+    }),
     { speaker: speakerOf(actor) },
   );
+
+  // PSG 29.1 — rolling the table is what taking a Wound means, but the Wound itself was already
+  // spent by the hit, so this roll charges nothing.
+  if (rolls) await runTable(actor, wound.table, { advantage: wound.advantage, costsWound: false });
+
   return { kind: 'applied', amount: taken, result };
 }
 
@@ -86,7 +110,7 @@ function storedTargets(data: Record<string, unknown>): CardTarget[] {
   });
 }
 
-export type CardRewrite = 'rewritten' | 'forbidden' | 'unrecorded';
+export type CardRewrite = 'rewritten' | 'forbidden' | 'unrecorded' | 'unaimed';
 
 async function rewriteTargets(
   message: CardMessage,
@@ -128,11 +152,21 @@ export async function retargetCard(
   user: unknown,
   targets: readonly CardTarget[],
 ): Promise<CardRewrite> {
+  // Aiming at nothing is a mis-click, not an instruction: rewriting the card here would empty it,
+  // and a card with no rows is one nobody can ever spend its damage from.
+  if (targets.length === 0) return 'unaimed';
+
   const card = rememberedCard(message);
   if (card === null) return 'unrecorded';
 
-  // Damage already taken is kept — retargeting is for the rows that were missing, not an undo.
-  return await rewriteTargets(message, user, targets, appliedSoFar(card.data));
+  // Damage already taken is kept — retargeting is for the rows that were missing, not an undo. A
+  // row that has paid keeps its place on the card whatever the crosshairs say now: it is the record
+  // that stops the same damage being spent twice, and dropping it would hand its buttons back.
+  const applied = appliedSoFar(card.data);
+  const paid = storedTargets(card.data).filter((target) => Object.hasOwn(applied, target.uuid));
+  const fresh = targets.filter((target) => !paid.some((row) => row.uuid === target.uuid));
+
+  return await rewriteTargets(message, user, [...paid, ...fresh], applied);
 }
 
 /**
@@ -163,6 +197,16 @@ function requested(total: number, half: boolean): number {
   return half ? Math.floor(total / 2) : total;
 }
 
+/** The wound the card recorded, read back the way every other field off the wire is: checked, not believed. */
+function cardWound(data: Record<string, unknown>): WoundRoll | null {
+  const wound = fields(data.wound);
+  const table = typeof wound.table === 'string' ? wound.table : '';
+  const advantage = typeof wound.advantage === 'string' ? wound.advantage : 'none';
+
+  if (!isWoundTable(table) || !isAdvantage(advantage)) return null;
+  return { table, advantage };
+}
+
 export interface HarmCard {
   readonly message: CardMessage;
   readonly sender: unknown;
@@ -185,7 +229,7 @@ export async function harmFromCard(card: HarmCard, request: HarmRequest): Promis
   const actor = await targetActor(request.uuid);
   if (actor === null) return { kind: 'forbidden' };
 
-  const outcome = await harmActor(actor, requested(total, request.half));
+  const outcome = await harmActor(actor, requested(total, request.half), cardWound(remembered.data));
   if (outcome.kind === 'forbidden') return outcome;
 
   await recordHarm(card.message, card.sender, request.uuid, outcome.amount);

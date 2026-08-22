@@ -313,7 +313,7 @@ test.describe('character generator', () => {
     await expect(gmPage.locator('button[data-action="next"]')).toBeEnabled();
   });
 
-  test('generates a Marine, and its three-item loadout row becomes three items plus Unarmed', async ({ gmPage }) => {
+  test('generates a Marine, whose three-item loadout row arrives with an unlisted Unarmed', async ({ gmPage }) => {
     // Stress starts pre-drifted here so the test can tell whether the generator writes it or leaves the schema default.
     const uuid = await openGenerator(
       gmPage,
@@ -341,6 +341,15 @@ test.describe('character generator', () => {
     // Trained has no prerequisites, so every unowned skill in that column is available.
     await expect(trainedColumn.locator('[data-state="unavailable"]')).toHaveCount(0);
     await expect(picker.locator('svg')).toHaveCount(0);
+
+    // The description travels with the row rather than sitting in a header the list scrolls away
+    // from: hovering one opens the card, which names what it needs and what it opens.
+    const hovered = trainedColumn.locator('[data-state="available"]').first();
+    await hovered.hover();
+    const detail = gmPage.locator('.skill-selector-card.is-open');
+    await expect(detail).toBeVisible();
+    await expect(detail).not.toContainText(await hovered.locator('.skill-selector-name').innerText());
+    await expect(detail.locator('.skill-selector-chip')).not.toHaveCount(0);
 
     // The whole catalog stands in three columns at once, not one slot opened at a time.
     const columnCount = await picker.locator('.skill-selector-columns').evaluate(
@@ -387,9 +396,10 @@ test.describe('character generator', () => {
     await goTo(gmPage, 'gear');
     await gmPage.click('button[data-roll="all"]');
     await expect(gmPage.locator('input[data-value="loadout"]')).toHaveValue('0');
-    // The row's three items, and the Unarmed the draw adds to every loadout.
+    // The row's three items and nothing else: Unarmed is granted at the finish, not drawn, so no
+    // list prints it back as if the table had rolled it.
     await expect(gmPage.locator('ul[data-list="loadout"] li')).toHaveText([
-      /Tank Top and Camo Pants/, /Combat Knife/, /Stimpak/, 'Unarmed',
+      /Tank Top and Camo Pants/, /Combat Knife/, /Stimpak/,
     ]);
 
     await goTo(gmPage, 'finish');
@@ -430,7 +440,7 @@ test.describe('character generator', () => {
     expect(carried.filter((i) => i.type === 'class').map((i) => i.name)).toEqual(['Marine']);
 
     // The row links armour, a weapon and equipment under the book's names; all three must arrive as
-    // resolved documents, and Unarmed rides in with them.
+    // resolved documents, and the unlisted Unarmed with them.
     const gear = carried
       .filter((i) => i.type !== 'skill' && i.type !== 'class')
       .map((i) => i.name)
@@ -509,6 +519,16 @@ test.describe('character generator', () => {
     const picker = gmPage.locator('.skill-selector');
     const column = (rank: string) => picker.locator(`.skill-selector-column[data-rank="${rank}"]`);
 
+    // The class's demands stand above the columns before anything is picked: the Master set as the
+    // chain it is, then the loose Trained pick.
+    const chips = picker.locator('.skill-selector-pick');
+    await expect(chips.locator('.skill-selector-pick-rank')).toHaveText([
+      'Trained', 'Expert', 'Master', 'Trained',
+    ]);
+    await expect(chips.locator('.skill-selector-pick-name')).toHaveText([
+      'Choose one', 'Choose one', 'Choose one', 'Choose one',
+    ]);
+
     // The Scientist starts with no skills at all, so only the base of the set is open.
     await expect(column('Trained').locator('[data-state="available"]')).not.toHaveCount(0);
     await expect(column('Expert').locator('[data-state="available"]')).toHaveCount(0);
@@ -535,6 +555,11 @@ test.describe('character generator', () => {
     ]);
 
     await column('Master').locator('[data-skill]:has-text("Cybernetics")').click();
+    // Each chip now names what took it, so the class's demands read the same answered as asked.
+    await expect(chips.locator('.skill-selector-pick-name')).toHaveText([
+      'Chemistry', 'Mechanical Repair', 'Cybernetics', 'Industrial Equipment',
+    ]);
+
     await pickEverySkill(gmPage);
     await expect(gmPage.locator('ul[data-list="skills"] li')).toHaveCount(4);
 

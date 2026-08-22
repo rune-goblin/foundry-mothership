@@ -465,12 +465,12 @@ describe('the portrait and the two longform fields', () => {
     expect(written).not.toHaveProperty('img');
   });
 
-  it('hands out the loadout the draw brought, Unarmed included', async () => {
+  it('hands out the loadout the draw brought, and the Unarmed no row names', async () => {
     const { granted } = await applied((draft) => {
       (draft as unknown as { loadout: unknown }).loadout = {
         roll: 0,
         text: 'Scalpel',
-        entries: [{ uuid: 'Compendium.mothershiprpg.weapons_1e.Item.scalpel', name: 'Scalpel' }, UNARMED],
+        entries: [{ uuid: 'Compendium.mothershiprpg.weapons_1e.Item.scalpel', name: 'Scalpel' }],
       };
     });
 
@@ -478,6 +478,15 @@ describe('the portrait and the two longform fields', () => {
       ['Compendium.mothershiprpg.weapons_1e.Item.scalpel', 1],
       [UNARMED.uuid, 1],
     ]);
+  });
+
+  // A loadout that does name it takes the row's own count rather than one more on top.
+  it('grants one Unarmed, whatever the row says', async () => {
+    const { granted } = await applied((draft) => {
+      (draft as unknown as { loadout: unknown }).loadout = { roll: 0, text: 'Unarmed', entries: [UNARMED] };
+    });
+
+    expect(granted).toEqual([[UNARMED.uuid, 1]]);
   });
 
   // The wizard names the document rather than scanning the compendium for it, so both halves have
@@ -528,8 +537,10 @@ describe('the gear the loadout draw brings', () => {
     return (draft[kind] as unknown as { entries: { name: string }[] }).entries.map((entry) => entry.name);
   };
 
-  it('rolls Unarmed in with the loadout, so the pane lists everything the character will carry', async () => {
-    expect(await drawn('loadout')).toEqual(['Scalpel', 'Unarmed']);
+  // Unarmed is granted at the end rather than drawn: the pane lists what the table rolled, and no
+  // loadout row names a fist.
+  it('leaves the loadout draw as the table wrote it', async () => {
+    expect(await drawn('loadout')).toEqual(['Scalpel']);
   });
 
   it('leaves the other draws as the table wrote them', async () => {

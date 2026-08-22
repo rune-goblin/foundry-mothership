@@ -38,6 +38,27 @@ function outcome(spec: string, results: number[], target: number | null, kind: '
   );
 }
 
+/**
+ * Damage-shaped: real faces, and Foundry's own total for the formula. The total is put back over
+ * the kept die the way `rollDamageFormula` does — damage is arithmetic, not a die a rule chose.
+ */
+function damageOutcome(spec: string, results: number[], total: number, faces = 10): Outcome {
+  const semantics = CHECK_SEMANTICS['weapon-damage'];
+  const parsed = parseRollSpec(spec, semantics.aim);
+  const resolved = resolveOutcome(
+    { total, dice: results.map((result) => ({ faces, results: [{ result }] })) },
+    {
+      spec: parsed,
+      kind: 'weapon-damage',
+      target: null,
+      comparison: semantics.comparison,
+      crits: semantics.crits,
+      zeroBased: semantics.zeroBased,
+    },
+  );
+  return { ...resolved, total };
+}
+
 describe('asset paths', () => {
   it('name the system this system actually is', () => {
     expect(SYSTEM_ID).toBe('mothershiprpg');
@@ -83,9 +104,41 @@ describe('the dice block', () => {
     expect(rollHtml(outcome('1d100 [+]', [33, 70], 40), { spec, comparison: '<' })).toContain(
       '<li class="roll die d10 max">33</li>',
     );
+    // Ducking a critical failure is the rule that picked 70, so the 55 it left is a dropped die.
     expect(rollHtml(outcome('1d100 [+]', [55, 70], 40), { spec, comparison: '<' })).toContain(
-      '<li class="roll die d10 min">55</li>',
+      '<li class="roll die d10 min discarded">55</li>',
     );
+  });
+
+  // Two dice and a total that sums to neither reads as broken arithmetic; the dropped one says why.
+  it('drops every branch the pool did not keep, and totals the one it did', () => {
+    const spec = parseRollSpec('{1d10+1,1d10+1}kh', 'high');
+    const html = rollHtml(damageOutcome('{1d10+1,1d10+1}kh', [6, 9], 10), { spec, comparison: null });
+
+    expect(html).toContain('<div class="dice-formula">1d10+1 [+]</div>');
+    expect(html).toContain('<span class="part-formula">1d10+1</span><span class="part-total">7</span>');
+    expect(html).toContain('<span class="part-formula">1d10+1</span><span class="part-total">10</span>');
+    expect(html).toContain('<li class="roll die d10 discarded">6</li>');
+    expect(html).toContain('<li class="roll die d10">9</li>');
+    expect(html).toContain('<h4 class="dice-total">10</h4>');
+  });
+
+  // An 8 under a total of 9 reads as arithmetic gone wrong; the branch is where the +1 shows up.
+  it('breaks a total down into the expression that earned it', () => {
+    const spec = parseRollSpec('1d10+1', 'high');
+    const html = rollHtml(damageOutcome('1d10+1', [8], 9), { spec, comparison: null });
+
+    expect(html).toContain('<span class="part-formula">1d10+1</span><span class="part-total">9</span>');
+    expect(html).toContain('<li class="roll die d10">8</li>');
+    expect(html).toContain('<h4 class="dice-total">9</h4>');
+    expect(html).not.toContain('discarded');
+  });
+
+  // A single-die roll keeps everything it rolled — nothing to drop, and no pool to imply one.
+  it('drops nothing when the formula keeps every die', () => {
+    const spec = parseRollSpec('2d10', 'high');
+
+    expect(rollHtml(damageOutcome('2d10', [6, 9], 15), { spec, comparison: null })).not.toContain('discarded');
   });
 });
 

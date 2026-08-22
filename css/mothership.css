@@ -191,6 +191,17 @@
     filter: sepia(0.5) hue-rotate(340deg);
   }
 
+  /* After the two above on purpose: a die the pool dropped reads as dropped even when it is the
+     critical one, which those rules would otherwise keep in full colour. */
+  .mothership .dice-tooltip .dice-rolls .roll.discarded {
+    color: var(--text-tertiary);
+    filter: contrast(0.75) opacity(0.4);
+  }
+
+  .mothership .tooltip-part.discarded .part-header {
+    opacity: 0.5;
+  }
+
   /* :where() keeps this at (0,2,0): with a plain prefix it outweighs the later `.mothership X`
      colour rules and flips four hover labels from white to black on dark ground. */
   :where(.mothership) .list-roll:hover,
@@ -794,6 +805,16 @@
     flex: 0 0 auto;
     font-size: var(--font-size-sm);
     color: var(--text-tertiary);
+  }
+
+  /* The three buttons a Wound offers: roll it, or roll it at [-] or [+]. One row, hard right. */
+  .mothership .card-wound-roll {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
   }
 
   .mothership .card-target-retarget {

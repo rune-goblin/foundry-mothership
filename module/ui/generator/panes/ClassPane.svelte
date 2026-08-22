@@ -31,40 +31,45 @@
 {#if selectedClass}
   <section class="wizard-class-detail" data-class-detail={selectedClass.name} aria-live="polite">
     <p class="wizard-class-description" data-class-description>{selectedClass.description}</p>
-    <ul class="wizard-modifiers" data-list="adjustments">
-      {#each adjustments as adjustment (adjustment.key)}
-        <li data-choice-detail={adjustment.position}>
-          <span data-bonus={adjustment.key}>{signed(adjustment.value)}</span>
-          {localize(adjustment.label)}
-        </li>
-      {/each}
-    </ul>
-    <dl class="wizard-class-facts">
-      {#if selectedClass.skills.granted.length > 0}
-        <div>
-          <dt>{localize('Mothership.Skills')}</dt>
-          <dd data-skills="granted">{selectedClass.skills.granted.join(', ')}</dd>
-        </div>
-      {/if}
-      {#if selectedClass.skills.picks.length > 0 || selectedClass.skills.groups.length > 0}
-        <div>
-          <dt>{localize('Mothership.CharacterGenerator.Wizard.ClassSkillPicks')}</dt>
-          {#each selectedClass.skills.picks as pick (pick.label)}
-            <dd data-skills="pick">{format(pick.label, { count: pick.count })}</dd>
+    <div class="wizard-class-columns">
+      <div class="wizard-class-adjustments">
+        <h3>{localize('Mothership.CharacterGenerator.Wizard.Adjustments.Title')}</h3>
+        <ul class="wizard-modifiers" data-list="adjustments">
+          {#each adjustments as adjustment (adjustment.key)}
+            <li data-choice-detail={adjustment.position}>
+              <span data-bonus={adjustment.key}>{signed(adjustment.value)}</span>
+              {localize(adjustment.label)}
+            </li>
           {/each}
-          {#each selectedClass.skills.groups as group, position (position)}
-            <dd data-skills="group">
-              {group.map(packageLabel).join(` ${localize('Mothership.CharacterGenerator.Wizard.SkillOr')} `)}
-            </dd>
-          {/each}
-        </div>
-      {/if}
-      <!-- PSG step 6 asks nothing here — Trauma Response is whatever the class prints. -->
-      <div>
-        <dt>{localize('Mothership.TraumaResponse')}</dt>
-        <dd data-value="trauma">{draft.traumaResponse}</dd>
+        </ul>
       </div>
-    </dl>
+      <dl class="wizard-class-facts">
+        {#if selectedClass.skills.granted.length > 0}
+          <div>
+            <dt>{localize('Mothership.Skills')}</dt>
+            <dd data-skills="granted">{selectedClass.skills.granted.join(', ')}</dd>
+          </div>
+        {/if}
+        {#if selectedClass.skills.picks.length > 0 || selectedClass.skills.groups.length > 0}
+          <div>
+            <dt>{localize('Mothership.CharacterGenerator.Wizard.ClassSkillPicks')}</dt>
+            {#each selectedClass.skills.picks as pick (pick.label)}
+              <dd data-skills="pick">{format(pick.label, { count: pick.count })}</dd>
+            {/each}
+            {#each selectedClass.skills.groups as group, position (position)}
+              <dd data-skills="group">
+                {group.map(packageLabel).join(` ${localize('Mothership.CharacterGenerator.Wizard.SkillOr')} `)}
+              </dd>
+            {/each}
+          </div>
+        {/if}
+        <!-- PSG step 6 asks nothing here — Trauma Response is whatever the class prints. -->
+        <div>
+          <dt>{localize('Mothership.TraumaResponse')}</dt>
+          <dd data-value="trauma">{draft.traumaResponse}</dd>
+        </div>
+      </dl>
+    </div>
   </section>
 {/if}
 
@@ -119,13 +124,21 @@
     .wizard-class-detail {
       padding-top: var(--space-12);
       border-top: var(--border-width-2) solid var(--wizard-edge);
+      font-size: var(--font-size-lg);
     }
 
     .wizard-class-description {
-      margin-bottom: var(--space-8);
+      margin-bottom: var(--space-24);
       font-size: var(--font-size-xl);
       font-weight: var(--font-weight-semibold);
       line-height: var(--body-md-line-height);
+    }
+
+    .wizard-class-columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-12) var(--space-24);
+      align-items: start;
     }
 
     /* What the class hands out that isn't a number: each fact its own block, so three of them
@@ -133,13 +146,21 @@
     .wizard-class-facts {
       display: grid;
       gap: var(--space-10);
-      margin: var(--space-12) 0 0;
+      margin: 0;
+    }
+
+    .wizard-class-adjustments h3,
+    .wizard-class-facts dt {
+      margin: 0 0 var(--space-6);
+      border: 0;
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: var(--font-weight-semibold);
+      color: var(--wizard-ink);
     }
 
     .wizard-class-facts dt {
-      font-size: var(--font-size-md);
-      font-weight: var(--font-weight-semibold);
-      color: var(--wizard-ink-muted);
+      margin-bottom: 0;
     }
 
     .wizard-class-facts dd {

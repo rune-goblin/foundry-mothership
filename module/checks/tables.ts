@@ -23,6 +23,11 @@ const WOUNDS = 'system.hits.value';
 export interface TableOptions {
   /** The modifier the caller already knows; `null` or absent opens the prompt. */
   readonly advantage?: Advantage | null;
+  /**
+   * Whether this roll is what costs the Wound (PSG 29.1). Damage that emptied the Health bar has
+   * already spent it — `mutate` took it as part of the hit — so the roll it leads to charges nothing.
+   */
+  readonly costsWound?: boolean;
 }
 
 export interface TableResult {
@@ -67,7 +72,8 @@ export async function runTable(
   const voice = voiceOfActor(actor);
   const source = cardSource(actor);
 
-  const wound = TABLES[key].wound ? await mutate(actor, WOUNDS, { kind: 'amount', amount: 1 }) : null;
+  const charge = TABLES[key].wound && (options.costsWound ?? true);
+  const wound = charge ? await mutate(actor, WOUNDS, { kind: 'amount', amount: 1 }) : null;
   const spec = tableSpec(key, advantage);
   const draw = await rollOnTable(table, {
     key,

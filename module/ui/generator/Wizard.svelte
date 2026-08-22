@@ -351,18 +351,18 @@
     }
 
     /* The book's class list — read by ClassPane and AdjustmentsPane, which print the same
-       adjustments a step apart. Foundry's reset strips the marker off every `ul` in a window. */
+       adjustments a step apart. */
     .character-wizard :global(.wizard-modifiers) {
-      list-style: disc;
+      list-style: none;
       margin: 0;
-      padding: var(--space-12) var(--space-16) var(--space-12) var(--space-32);
+      padding: var(--space-12) var(--space-16);
       border: var(--border-width-2) solid var(--wizard-edge);
       border-radius: var(--radius-md);
     }
 
     .character-wizard :global(.wizard-modifiers li) {
       margin-bottom: var(--space-4);
-      font-size: var(--font-size-md);
+      font-size: var(--font-size-lg);
     }
 
     .character-wizard :global(.wizard-modifiers li:last-child) {

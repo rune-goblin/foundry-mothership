@@ -169,6 +169,44 @@ describe('harming the target', () => {
   });
 });
 
+/**
+ * A wound is rolled against the actor whose card it sits in, not whoever clicks it — which is the
+ * whole difference between `@Wound` and `@Table`, the same roll asked for by the person clicking.
+ */
+describe('the Wound a hit leads to', () => {
+  it('names a table and how to roll it', () => {
+    expect(parsed('@Wound[gunshot]')).toEqual({ verb: 'wound', table: 'gunshot', advantage: 'none' });
+    expect(parsed('@Wound[gunshot -]')).toEqual({
+      verb: 'wound',
+      table: 'gunshot',
+      advantage: 'disadvantage',
+    });
+  });
+
+  it('round-trips through the grammar', () => {
+    expect(formatAction({ verb: 'wound', table: 'bleeding', advantage: 'advantage' })).toBe(
+      '@Wound[bleeding +]',
+    );
+    expect(formatAction({ verb: 'wound', table: 'bleeding', advantage: 'none' })).toBe('@Wound[bleeding]');
+  });
+
+  // The Panic Check and the Death Save are rolls, not wounds; neither is a Wound's table.
+  it('refuses a table no Wound is rolled on', () => {
+    expect(parseAction('@Wound[panic]').ok).toBe(false);
+    expect(parseAction('@Wound[death]').ok).toBe(false);
+    expect(parseAction('@Wound[gunshot double]').ok).toBe(false);
+  });
+
+  it('says which wound it rolls, and marks the modifier rather than spelling it', () => {
+    installI18n({ 'Mothership.Chat.WoundLabel': 'Roll {wound}', 'Mothership.Table.gunshot': 'Gunshot Wound' });
+
+    expect(actionLabel({ verb: 'wound', table: 'gunshot', advantage: 'none' })).toBe('Roll Gunshot Wound');
+    expect(actionLabel({ verb: 'wound', table: 'gunshot', advantage: 'disadvantage' })).toBe(
+      'Roll Gunshot Wound [-]',
+    );
+  });
+});
+
 describe('the button', () => {
   it('carries the expression it was written as', () => {
     const button = actionButton(parsed('@Check[fear -]'));

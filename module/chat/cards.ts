@@ -4,8 +4,8 @@ import { format, has, localize } from '../i18n.ts';
 import type { ReloadOutcome } from '../inventory/ammo.ts';
 import type { MutationResult } from '../mutation/mutate.ts';
 import { toRollString } from '../rolls/parse.ts';
-import type { Outcome } from '../rolls/resolve.ts';
-import type { Comparison, RollSpec } from '../rolls/spec.ts';
+import type { DieOutcome, Outcome } from '../rolls/resolve.ts';
+import { keepOf, type Comparison, type RollSpec } from '../rolls/spec.ts';
 import type { TableDraw, TableKey } from '../tables/tables.ts';
 
 export const SYSTEM_ID = 'mothershiprpg';
@@ -103,6 +103,82 @@ export interface RollHtmlOptions {
   readonly comparison: Comparison | null;
 }
 
+/** One tooltip section: the expression that was rolled, what it came to, and the dice it rolled. */
+interface RollPart {
+  readonly formula: string;
+  readonly total: number;
+  readonly dice: readonly DieOutcome[];
+  readonly dropped: boolean;
+}
+
+function dieHtml(die: DieOutcome, dropped: boolean): string {
+  const highlight = die.critical ? (die.success ? ' max' : ' min') : '';
+  return `<li class="roll die ${dieClass(die.faces)}${highlight}${dropped ? ' discarded' : ''}">${die.result}</li>`;
+}
+
+function partHtml(part: RollPart): string {
+  return (
+    `<section class="tooltip-part${part.dropped ? ' discarded' : ''}"><div class="dice">` +
+    `<header class="part-header flexrow">` +
+    `<span class="part-formula">${part.formula}</span>` +
+    `<span class="part-total">${part.total}</span>` +
+    `</header>` +
+    `<ol class="dice-rolls">${part.dice.map((die) => dieHtml(die, part.dropped)).join('')}</ol>` +
+    `</div></section>`
+  );
+}
+
+/**
+ * A section per die, which is the whole story while the expression is bare dice.
+ *
+ * A pool keeps one die and the total is that die's, so the others have to read as dropped — else
+ * the tooltip shows two numbers and a total that sums to neither.
+ */
+function dieParts(outcome: Outcome, spec: RollSpec): RollPart[] {
+  const keeping = keepOf(spec) !== null && outcome.dice.length > 1;
+  return outcome.dice.map((die, index) => ({
+    formula: `1d${die.faces}`,
+    total: die.result,
+    dice: [die],
+    dropped: keeping && index !== outcome.keptIndex,
+  }));
+}
+
+/**
+ * A section per branch of the expression, for damage that carries more than dice. `1d10+1` rolling
+ * an 8 is a 9, and a tooltip that says 8 under a total of 9 reads as arithmetic gone wrong. The
+ * modifier is what the branch total holds and the die does not: Foundry's own total for the whole
+ * formula, less the branch it kept, is what every branch adds on top of its dice.
+ */
+function branchParts(outcome: Outcome, spec: RollSpec): RollPart[] | null {
+  const keep = keepOf(spec);
+  const branches = keep === null ? 1 : 2;
+  const per = outcome.dice.length / branches;
+  if (!Number.isInteger(per) || per === 0) return null;
+
+  const groups = Array.from({ length: branches }, (_, index) =>
+    outcome.dice.slice(index * per, (index + 1) * per),
+  );
+  const sums = groups.map((dice) => dice.reduce((total, die) => total + die.result, 0));
+
+  // Which branch Foundry kept, which is the one its total is for. Both branches are the same
+  // expression, so they carry the same modifier and comparing their dice compares their totals.
+  const foundry = sums.reduce(
+    (best, sum, index) =>
+      keep === 'kl' ? (sum < sums[best] ? index : best) : sum > sums[best] ? index : best,
+    0,
+  );
+  const modifier = outcome.rollTotal - sums[foundry];
+  const kept = Math.floor(outcome.keptIndex / per);
+
+  return groups.map((dice, index) => ({
+    formula: spec.dice,
+    total: sums[index] + modifier,
+    dice,
+    dropped: keep !== null && index !== kept,
+  }));
+}
+
 /** Foundry's own dice-tooltip markup, built from the outcome rather than the `Roll` object. */
 export function rollHtml(outcome: Outcome, options: RollHtmlOptions): string {
   const formula =
@@ -110,26 +186,14 @@ export function rollHtml(outcome: Outcome, options: RollHtmlOptions): string {
       ? toRollString(options.spec)
       : `${toRollString(options.spec)} <i class="fas ${COMPARE_ICONS[options.comparison]}"></i> ${outcome.target}`;
 
-  const parts = outcome.dice
-    .map((die) => {
-      const highlight = die.critical ? (die.success ? ' max' : ' min') : '';
-      return (
-        `<section class="tooltip-part"><div class="dice">` +
-        `<header class="part-header flexrow">` +
-        `<span class="part-formula">1d${die.faces}</span>` +
-        `<span class="part-total">${die.result}</span>` +
-        `</header>` +
-        `<ol class="dice-rolls">` +
-        `<li class="roll die ${dieClass(die.faces)}${highlight}">${die.result}</li>` +
-        `</ol></div></section>`
-      );
-    })
-    .join('');
+  // Bare dice are their own breakdown; anything else has a modifier to account for.
+  const parts = (options.spec.count === null ? branchParts(outcome, options.spec) : null) ??
+    dieParts(outcome, options.spec);
 
   return (
     `<div class="dice-roll card-dice" data-action="expandRoll"><div class="dice-result">` +
     `<div class="dice-formula">${formula}</div>` +
-    `<div class="dice-tooltip" hidden><div class="wrapper">${parts}</div></div>` +
+    `<div class="dice-tooltip" hidden><div class="wrapper">${parts.map(partHtml).join('')}</div></div>` +
     `<h4 class="dice-total">${outcome.total}</h4>` +
     `</div></div>`
   );
@@ -218,6 +282,14 @@ export interface CheckCardInput {
   readonly targets?: readonly CardTarget[];
   /** The damage rolled, when one was — what a target row's buttons spend. */
   readonly damageTotal?: number | null;
+  /** The wound table a Wound from this hit rolls on, carried so applying the damage can roll it. */
+  readonly wound?: CardWound | null;
+}
+
+/** What the card remembers of the weapon's wound effect: the table, and how this hit rolls it. */
+export interface CardWound {
+  readonly table: string;
+  readonly advantage: string;
 }
 
 /** A title this long no longer fits the header pill at its own size. */
@@ -267,6 +339,7 @@ export function checkCard(input: CheckCardInput): Card<object> {
       showTargets: input.damageTotal !== null && input.damageTotal !== undefined,
       targets: targetRows(input.targets ?? [], input.damageTotal ?? null),
       retarget: formatAction({ verb: 'retarget' }),
+      wound: input.wound ?? null,
     },
   };
 }
@@ -353,6 +426,8 @@ export interface MutationCardInput {
   /** The dice the change was rolled on, when it was rolled rather than named. */
   readonly spec?: RollSpec | null;
   readonly rollOutcome?: Outcome | null;
+  /** `@Wound[…]` actions for a Wound this change cost, when the table is not rolling itself. */
+  readonly wound?: string;
 }
 
 /**
@@ -422,6 +497,7 @@ export function mutationCard(input: MutationCardInput): Card<object> {
       modRollString: spec === null ? '' : toRollString(spec),
       parsedRollResult:
         spec === null || rollOutcome === null ? null : rolled(rollOutcome, { spec, comparison: null }),
+      woundActions: input.wound ?? '',
     },
   };
 }

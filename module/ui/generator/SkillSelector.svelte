@@ -2,7 +2,9 @@
   import { localize, format } from '../../i18n.ts';
   import { RANK_LABEL } from './picks.js';
 
-  let { skills, budget = null, onchoose } = $props();
+  let { skills, budget = null, picks = [], onchoose } = $props();
+
+  const uid = $props.id();
 
   const RANK_BONUS = { Trained: 10, Expert: 15, Master: 20 };
   const RANKS = ['Trained', 'Expert', 'Master'];
@@ -100,7 +102,57 @@
     unavailable: 'Mothership.CharacterGenerator.SkillTree.Unavailable',
   };
 
-  const hover = (uuid) => { hoveredId = uuid; };
+  // One chip per pick the class promised, the slots of a gated chain kept together so the chain
+  // reads as one.
+  const pickSets = $derived.by(() => {
+    const sets = [];
+    for (const pick of picks) {
+      const last = sets.at(-1);
+      if (last?.set === pick.set) last.picks.push(pick);
+      else sets.push({ set: pick.set, picks: [pick] });
+    }
+    return sets;
+  });
+
+  let card = $state(null);
+  let anchor = $state(null);
+  let spot = $state({ top: 0, left: 0 });
+  // Not $state: the popover API is the only reader, and the effect below both reads and writes it.
+  let shown = false;
+
+  const GAP = 8;
+
+  function place() {
+    if (!card || !anchor) return;
+    const rect = anchor.getBoundingClientRect();
+    const box = card.getBoundingClientRect();
+    const right = rect.right + GAP;
+    const left = right + box.width > window.innerWidth - GAP ? rect.left - GAP - box.width : right;
+    const top = Math.min(rect.top - GAP, window.innerHeight - GAP - box.height);
+    spot = { top: Math.max(GAP, top), left: Math.max(GAP, left) };
+  }
+
+  // A popover, so the card draws in the top layer: the pane it hangs over is the scroller, and an
+  // in-flow card would be clipped by it. It follows the anchor while that pane scrolls.
+  $effect(() => {
+    if (!hovered || !anchor) {
+      if (shown) card?.hidePopover?.();
+      shown = false;
+      return;
+    }
+    if (!shown) card?.showPopover?.();
+    shown = true;
+    place();
+    const follow = () => place();
+    window.addEventListener('scroll', follow, true);
+    window.addEventListener('resize', follow);
+    return () => {
+      window.removeEventListener('scroll', follow, true);
+      window.removeEventListener('resize', follow);
+    };
+  });
+
+  const hover = (uuid, element) => { hoveredId = uuid; anchor = element; };
   const unhover = (uuid) => { if (hoveredId === uuid) hoveredId = null; };
 
   const choosable = (skill) => skill.state === 'available' || skill.state === 'picked';
@@ -116,57 +168,41 @@
 </script>
 
 <div class="skill-selector" role="group" aria-label={localize('Mothership.CharacterGenerator.SkillTree.Label')}>
-  <div class="skill-selector-readout">
-    <div class="skill-selector-field is-entry">
-      <span class="skill-selector-label">{localize('Mothership.CharacterGenerator.SkillTree.Skill')}</span>
-      <div class="skill-selector-entry">
-        <span class="skill-selector-entry-name" class:is-blank={!hovered}>{hovered?.name ?? '—'}</span>
-        {#if hovered?.reason === 'strands'}
-          <span class="skill-selector-note">
-            {localize('Mothership.CharacterGenerator.SkillTree.WouldStrandMaster')}
-          </span>
-        {:else if hovered?.reason === 'spent'}
-          <span class="skill-selector-note">
-            {format('Mothership.CharacterGenerator.SkillTree.NoPicksLeft', { rank: localize(RANK_LABEL[hovered.rank]) })}
-          </span>
-        {/if}
-      </div>
-      <p class="skill-selector-entry-text">{hovered?.summary ?? ''}</p>
-    </div>
-
-    <div class="skill-selector-split">
-      <div class="skill-selector-field">
-        <span class="skill-selector-label">{localize('Mothership.CharacterGenerator.SkillTree.Requires')}</span>
-        <div class="skill-selector-chips">
-          {#if !hovered}
-            <span class="skill-selector-blank">—</span>
-          {:else if hovered.prerequisites.length === 0}
-            <span class="skill-selector-blank">{localize('Mothership.CharacterGenerator.SkillTree.NoPrerequisites')}</span>
-          {:else}
-            {#each hovered.prerequisites as req, index (req)}
-              {#if index > 0}<span class="skill-selector-conj">{localize('Mothership.CharacterGenerator.SkillTree.Or')}</span>{/if}
-              <span class="skill-selector-chip" class:met={held(req)} class:unmet={!held(req)}>
-                {byUuid.get(req)?.name ?? req}
-              </span>
+  {#if pickSets.length > 0}
+    <div class="skill-selector-picks">
+      <span class="skill-selector-label">{localize('Mothership.CharacterGenerator.SkillTree.YourPicks')}</span>
+      <div class="skill-selector-pick-sets">
+        {#each pickSets as group (group.set)}
+          <div class="skill-selector-pick-set">
+            {#each group.picks as pick, index (pick.key)}
+              {#if index > 0}<span class="skill-selector-pick-arrow" aria-hidden="true">&rarr;</span>{/if}
+              <button
+                type="button"
+                class="skill-selector-pick"
+                class:is-filled={pick.chosen !== null}
+                data-pick={pick.key}
+                data-rank={pick.rank}
+                aria-disabled={pick.chosen === null}
+                aria-describedby={pick.chosen && hoveredId === pick.chosen ? uid : null}
+                title={pick.chosen ? localize('Mothership.CharacterGenerator.SkillTree.ClearPick') : null}
+                onmousedown={(event) => { if (!pick.chosen) event.preventDefault(); }}
+                onmouseenter={(event) => { if (pick.chosen) hover(pick.chosen, event.currentTarget); }}
+                onfocus={(event) => { if (pick.chosen) hover(pick.chosen, event.currentTarget); }}
+                onmouseleave={() => { if (pick.chosen) unhover(pick.chosen); }}
+                onblur={() => { if (pick.chosen) unhover(pick.chosen); }}
+                onclick={() => { if (pick.chosen) onchoose(pick.chosen); }}
+              >
+                <span class="skill-selector-pick-rank">{localize(RANK_LABEL[pick.rank])}</span>
+                <span class="skill-selector-pick-name">
+                  {pick.name ?? localize('Mothership.CharacterGenerator.SkillTree.ChooseOne')}
+                </span>
+              </button>
             {/each}
-          {/if}
-        </div>
-      </div>
-
-      <div class="skill-selector-field">
-        <span class="skill-selector-label">{localize('Mothership.CharacterGenerator.SkillTree.Unlocks')}</span>
-        <div class="skill-selector-chips">
-          {#if hoveredUnlocks.length === 0}
-            <span class="skill-selector-blank">—</span>
-          {:else}
-            {#each hoveredUnlocks as dep (dep)}
-              <span class="skill-selector-chip met">{byUuid.get(dep)?.name ?? dep}</span>
-            {/each}
-          {/if}
-        </div>
+          </div>
+        {/each}
       </div>
     </div>
-  </div>
+  {/if}
 
   <div class="skill-selector-columns">
     {#each columns as column (column.rank)}
@@ -189,12 +225,13 @@
               aria-pressed={skill.state === 'granted' || skill.state === 'picked'}
               aria-disabled={!choosable(skill)}
               aria-label={`${skill.name}, ${localize(STATE_LABEL[skill.state])}`}
+              aria-describedby={hoveredId === skill.uuid ? uid : null}
               data-skill={skill.uuid}
               data-state={skill.state}
               data-reason={skill.reason ?? null}
               onmousedown={(event) => holdFocus(event, skill)}
-              onmouseenter={() => hover(skill.uuid)}
-              onfocus={() => hover(skill.uuid)}
+              onmouseenter={(event) => hover(skill.uuid, event.currentTarget)}
+              onfocus={(event) => hover(skill.uuid, event.currentTarget)}
               onmouseleave={() => unhover(skill.uuid)}
               onblur={() => unhover(skill.uuid)}
               onclick={() => choose(skill)}
@@ -212,6 +249,56 @@
       </div>
     {/each}
   </div>
+</div>
+
+<!-- The skill's own name is left to the row the card hangs off; it carries only what a column
+     has no room for. -->
+<div
+  bind:this={card}
+  id={uid}
+  class="skill-selector-card"
+  class:is-open={Boolean(hovered)}
+  role="tooltip"
+  popover="manual"
+  style="top: {spot.top}px; left: {spot.left}px"
+>
+  {#if hovered}
+    <p class="skill-selector-card-text">{hovered.summary}</p>
+    <div class="skill-selector-card-field">
+      <span class="skill-selector-label">{localize('Mothership.CharacterGenerator.SkillTree.Requires')}</span>
+      <div class="skill-selector-chips">
+        {#if hovered.prerequisites.length === 0}
+          <span class="skill-selector-blank">{localize('Mothership.CharacterGenerator.SkillTree.NoPrerequisites')}</span>
+        {:else}
+          {#each hovered.prerequisites as req, index (req)}
+            {#if index > 0}<span class="skill-selector-conj">{localize('Mothership.CharacterGenerator.SkillTree.Or')}</span>{/if}
+            <span class="skill-selector-chip" class:met={held(req)} class:unmet={!held(req)}>
+              {byUuid.get(req)?.name ?? req}
+            </span>
+          {/each}
+        {/if}
+      </div>
+    </div>
+    <div class="skill-selector-card-field">
+      <span class="skill-selector-label">{localize('Mothership.CharacterGenerator.SkillTree.Unlocks')}</span>
+      <div class="skill-selector-chips">
+        {#if hoveredUnlocks.length === 0}
+          <span class="skill-selector-blank">{localize('Mothership.CharacterGenerator.SkillTree.NothingFurther')}</span>
+        {:else}
+          {#each hoveredUnlocks as dep (dep)}
+            <span class="skill-selector-chip met">{byUuid.get(dep)?.name ?? dep}</span>
+          {/each}
+        {/if}
+      </div>
+    </div>
+    {#if hovered.reason === 'strands'}
+      <p class="skill-selector-note">{localize('Mothership.CharacterGenerator.SkillTree.WouldStrandMaster')}</p>
+    {:else if hovered.reason === 'spent'}
+      <p class="skill-selector-note">
+        {format('Mothership.CharacterGenerator.SkillTree.NoPicksLeft', { rank: localize(RANK_LABEL[hovered.rank]) })}
+      </p>
+    {/if}
+  {/if}
 </div>
 
 <style>
@@ -234,20 +321,13 @@
       font-family: var(--font-sans-mothership);
     }
 
-    .skill-selector-readout {
-      border-bottom: var(--border-width-2) solid var(--skillselector-edge);
-    }
-
-    .skill-selector-field {
+    .skill-selector-picks {
       display: flex;
-      flex-direction: column;
-      gap: var(--space-2);
-      min-width: 0;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-8) var(--space-12);
       padding: var(--space-8) var(--space-12);
-    }
-
-    .skill-selector-field.is-entry {
-      border-bottom: var(--border-width-1) solid var(--skillselector-rule);
+      border-bottom: var(--border-width-2) solid var(--skillselector-edge);
     }
 
     /* Doubled for specificity to beat the wizard's typography reset. */
@@ -258,65 +338,113 @@
       color: var(--skillselector-muted);
     }
 
-    /* Heights are fixed so the tree below doesn't shift as the hovered entry changes; text
-       clamps, chips scroll sideways. */
-    .skill-selector-entry {
+    .skill-selector-pick-sets {
       display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: var(--space-12);
-      height: 1.5rem;
-      overflow: hidden;
+      flex-wrap: wrap;
+      align-items: stretch;
+      gap: var(--space-8) var(--space-16);
     }
 
-    .skill-selector-entry-name {
-      min-width: 0;
-      font-family: var(--font-display);
-      font-size: var(--font-size-lg);
+    /* One set is one chain: its slots stand in the order they have to be filled in. */
+    .skill-selector-pick-set {
+      display: flex;
+      align-items: stretch;
+      gap: var(--space-6);
+    }
+
+    .skill-selector-pick-arrow {
+      align-self: center;
+      color: var(--skillselector-muted);
+      font-size: var(--font-size-md);
       font-weight: var(--font-weight-bold);
-      color: var(--text-primary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    .skill-selector-entry-name.is-blank {
+    .skill-selector-pick {
+      display: grid;
+      gap: var(--space-2);
+      padding: var(--space-4) var(--space-10);
+      border: var(--border-width-2) dotted var(--skillselector-rule);
+      border-radius: var(--radius-md);
+      background: var(--surface-neutral-paper);
+      color: var(--skillselector-muted);
+      height: auto;
+      min-height: 0;
+      text-align: left;
+      cursor: default;
+    }
+
+    .skill-selector-pick.is-filled {
+      border-style: solid;
+      border-color: var(--skillselector-edge);
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .skill-selector-pick.is-filled:hover,
+    .skill-selector-pick.is-filled:focus-visible {
+      background: var(--skillselector-hover-surface);
+    }
+
+    .skill-selector-pick-rank {
+      font-family: var(--font-display);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-bold);
       color: var(--skillselector-muted);
     }
 
-    .skill-selector-note {
+    .skill-selector-pick-name {
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-medium);
+    }
+
+    /* A popover, so it draws in the top layer and the scrolling pane cannot clip it. The UA
+       centres popovers in the viewport; `inset: auto` hands placement back to the script. */
+    .skill-selector-card {
+      position: fixed;
+      inset: auto;
+      display: none;
+      width: min(22rem, calc(100vw - 2 * var(--space-16)));
+      margin: 0;
+      padding: var(--space-10) var(--space-12);
+      border: var(--border-width-2) solid var(--skillselector-edge);
+      border-radius: var(--radius-md);
+      background: var(--surface-neutral-paper);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-glow-soft);
+      font-family: var(--font-sans-mothership);
+    }
+
+    .skill-selector-card.is-open {
+      display: grid;
+      gap: var(--space-8);
+    }
+
+    .skill-selector-card-text {
+      margin: 0;
+      font-size: var(--font-size-md);
+      line-height: var(--line-height-tight);
+    }
+
+    .skill-selector-card-field {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-8);
+      min-width: 0;
+    }
+
+    .skill-selector-card-field .skill-selector-label {
       flex: none;
+    }
+
+    .skill-selector-note {
+      margin: 0;
       font-size: var(--font-size-sm);
       font-weight: var(--font-weight-medium);
       color: var(--text-warning-muted);
-      white-space: nowrap;
     }
 
-    .skill-selector-entry-text {
-      margin: 0;
-      /* Two lines of its own text, so the clamp crops nothing the fixed height then hides. */
-      height: calc(var(--line-height-tight) * 2em);
-      font-size: var(--font-size-md);
-      line-height: var(--line-height-tight);
-      color: var(--text-primary);
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
-      overflow: hidden;
-    }
-
-    .skill-selector-split {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .skill-selector-split .skill-selector-field + .skill-selector-field {
-      border-left: var(--border-width-1) solid var(--skillselector-rule);
-    }
-
-    /* `blank` prints "No prerequisites", not only the placeholder dash — it reads as text and
-       is inked as text. */
+    /* `blank` prints "None"/"Nothing further", not a placeholder dash — it reads as text and is
+       inked as text. */
     .skill-selector-blank,
     .skill-selector-conj {
       flex: none;
@@ -327,13 +455,10 @@
 
     .skill-selector-chips {
       display: flex;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       align-items: center;
       gap: var(--space-6);
       min-width: 0;
-      height: 1.5rem;
-      overflow-x: auto;
-      scrollbar-width: thin;
     }
 
     .skill-selector-chip {

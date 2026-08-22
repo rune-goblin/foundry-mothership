@@ -29,6 +29,19 @@
   const BUDGET = { Trained: 1, Expert: 1, Master: 0 };
   let picked = $state(new Set(['sk-mathematics']));
 
+  // A Master set and a loose Trained pick: the shape a Scientist is offered, one slot of it filled.
+  const PICKS = [
+    { key: 'set:Trained', set: 'set', rank: 'Trained', gated: false },
+    { key: 'set:Expert', set: 'set', rank: 'Expert', gated: true },
+    { key: 'set:Master', set: 'set', rank: 'Master', gated: true },
+    { key: 'loose:Trained', set: 'loose', rank: 'Trained', gated: false },
+  ];
+  const chosen = { 'set:Trained': 'sk-mathematics' };
+  const picks = $derived(PICKS.map((pick) => {
+    const uuid = chosen[pick.key] ?? null;
+    return { ...pick, chosen: uuid, name: uuid ? BASE.find((skill) => skill.uuid === uuid).name : null };
+  }));
+
   const skills = $derived(BASE.map((skill) => {
     const state = GRANTED.has(skill.uuid) ? 'granted'
       : picked.has(skill.uuid) ? 'picked'
@@ -52,5 +65,5 @@
 </script>
 
 <div class="mothership">
-  <SkillSelector {skills} budget={BUDGET} {onchoose} />
+  <SkillSelector {skills} budget={BUDGET} {picks} {onchoose} />
 </div>

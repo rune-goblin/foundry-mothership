@@ -50,6 +50,16 @@ const answer = async (page: Page, action: string) => {
 
 // `DiceTerm#_roll` is the one fulfillment point every die type shares, so patching it forces every
 // die to read `n` while leaving `roll()`'s bookkeeping intact; `gmPage` is worker-scoped, so unrigDie restores rather than deletes the patch.
+/** Successive results, so the attack die and each damage die can be told apart. */
+const rigDice = (page: Page, results: readonly number[]) =>
+  page.evaluate((rolls: readonly number[]) => {
+    const w = window as any;
+    const proto = w.foundry.dice.terms.DiceTerm.prototype;
+    w.__unrigDie = proto._roll;
+    let next = 0;
+    proto._roll = async () => rolls[Math.min(next++, rolls.length - 1)];
+  }, results);
+
 const rigDie = (page: Page, n: number) =>
   page.evaluate((result: number) => {
     const w = window as any;
@@ -214,6 +224,42 @@ test.describe('the remade core, executed live', () => {
     await gmPage.evaluate(async () => {
       await (window as any).game.settings.set('mothershiprpg', 'autoRollDamagePlayers', true);
     });
+  });
+
+  /**
+   * A crit rolls the damage twice and keeps the better branch, so the card shows two dice and a
+   * total that matches only one of them. It has to say which, and in the language the check above
+   * it speaks — `{1d10+1,1d10+1}kh` is the pool Foundry rolls, not a sentence anybody reads.
+   */
+  test('a critical hit prints the damage it kept, and drops the die it did not', async ({ gmPage }) => {
+    const uuid = await create(gmPage, { stats: { combat: { value: 90 } } });
+    await gmPage.evaluate(async (u: string) => {
+      const actor = await (window as any).fromUuid(u);
+      await actor.createEmbeddedDocuments('Item', [
+        { name: '__e2e_revolver', type: 'weapon', system: { damage: '1d10+1', range: 'long', useAmmo: false } },
+      ]);
+    }, uuid);
+
+    // 11 is doubles under Combat 90: a critical hit. Then the two damage dice, 6 and 9.
+    await rigDice(gmPage, [11, 6, 9]);
+    await gmPage.evaluate(async (u: string) => {
+      const actor = await (window as any).fromUuid(u);
+      void actor.rollWeapon(actor.items.find((i: any) => i.type === 'weapon').id);
+    }, uuid);
+    await answer(gmPage, 'none');
+
+    await expect.poll(() => lastMessageText(gmPage)).toContain('points of damage');
+    const card = await lastMessageText(gmPage);
+
+    expect(card).toContain('<div class="dice-formula">1d10+1 [+]</div>');
+    expect(card).not.toContain('kh');
+    // The kept branch is 9 + 1; the 6 it beat reads as dropped rather than as arithmetic gone wrong.
+    expect(card).toContain('You inflict <strong>10</strong> points of damage.');
+    expect(card).toContain('<li class="roll die d10 discarded">6</li>');
+    expect(card).toContain('<li class="roll die d10">9</li>');
+    // Each branch totals what it was worth, so the modifier the dice do not show is accounted for.
+    expect(card).toContain('<span class="part-formula">1d10+1</span><span class="part-total">7</span>');
+    expect(card).toContain('<span class="part-formula">1d10+1</span><span class="part-total">10</span>');
   });
 
   // `preCreateActor` wrote token-bar and vision fields the schema discarded, so every created

@@ -18,7 +18,7 @@ import {
 } from '../chat/cards.ts';
 import { formatAction } from '../chat/enrichers.ts';
 import { format, localize } from '../i18n.ts';
-import { parseRollSpec } from '../rolls/parse.ts';
+import { damageString, parseRollSpec } from '../rolls/parse.ts';
 import type { Outcome } from '../rolls/resolve.ts';
 import { CHECK_SEMANTICS, type Advantage, type RollSpec } from '../rolls/spec.ts';
 import { STR_CAPACITY_DIVISOR } from '../rules.ts';
@@ -62,7 +62,8 @@ export function critFormula(damage: string, mode: CritDamage, critDamageValue: s
     case 'advantage':
       return `{${damage},${damage}}kh`;
     case 'doubleDamage':
-      return `${damage} * 2`;
+      // Parenthesised: `1d10+1 * 2` is Foundry's arithmetic for `1d10 + 2`, which doubles nothing.
+      return `(${damage}) * 2`;
     case 'doubleDice':
       return `${damage} + ${damage}`;
     case 'maxDamage':
@@ -141,7 +142,7 @@ function offerHtml(
       const action = formatAction({ verb: 'damage', formula });
       if (mode.label === '') return action;
       return `${action}{${format('Mothership.Chat.DamageModeLabel', {
-        damage: formula,
+        damage: damageString(formula),
         mode: labelText(mode.label),
       })}}`;
     })
@@ -239,11 +240,55 @@ export function woundEffectOf(item: CheckItem): string {
   return woundEffectActions(weaponText(item, 'woundEffect'));
 }
 
+/** The wound roll a hit leads to: which table, and how the weapon says to roll it. */
+export interface WoundRoll {
+  readonly table: TableKey;
+  readonly advantage: Advantage;
+}
+
+/**
+ * The row a Wound offers when it is not rolled for you: the roll the rules call for, with a `[-]`
+ * and a `[+]` beside it for whoever wants the other one. Symbols rather than sentences, so the
+ * three of them fit across a card.
+ */
+export function woundOffer(wound: WoundRoll): string {
+  const at = (advantage: Advantage): string =>
+    formatAction({ verb: 'wound', table: wound.table, advantage });
+
+  return `${at('disadvantage')}{[-]} ${at(wound.advantage)} ${at('advantage')}{[+]}`;
+}
+
+/** PSG 19 — `[+]` and `[-]` cancel, so a critical worsens a weapon's own advantage rather than losing to it. */
+function worse(advantage: Advantage): Advantage {
+  return advantage === 'advantage' ? 'none' : 'disadvantage';
+}
+
+/**
+ * A weapon names its wound effect in prose, and the first table that prose names is the one a
+ * Wound from this weapon rolls on. A critical hit rolls it twice and keeps the worse row.
+ */
+export function woundRollOf(item: CheckItem, critical = false): WoundRoll | null {
+  const effect = weaponText(item, 'woundEffect');
+
+  // The pattern is global and shared with `woundEffectActions`, so `exec` would resume from
+  // wherever the last call left off.
+  EFFECT_PATTERN.lastIndex = 0;
+  const match = EFFECT_PATTERN.exec(effect);
+  if (match === null) return null;
+
+  const table = WOUND_EFFECTS[match[1].toLowerCase()];
+  if (table === undefined) return null;
+
+  const stated = MODIFIERS[match[2] ?? ''] ?? 'none';
+  return { table, advantage: critical ? worse(stated) : stated };
+}
+
 export function damageCard(
   actor: CheckActor,
   item: CheckItem,
   damage: DamageRoll,
   targets: readonly CardTarget[] = [],
+  critical = false,
 ): Card {
   return checkCard({
     source: cardSource(actor),
@@ -259,6 +304,8 @@ export function damageCard(
     damage: true,
     targets,
     damageTotal: damage.total,
+    // A damage roll asked for on its own still names the wound its weapon deals.
+    wound: woundRollOf(item, critical),
   });
 }
 
@@ -304,7 +351,7 @@ export async function rollDamage(
   options: DamageOptions = {},
 ): Promise<Card> {
   const damage = await rollDamageFormula(actor, item, options);
-  const card = damageCard(actor, item, damage, currentTargets());
+  const card = damageCard(actor, item, damage, currentTargets(), options.critical === true);
   await postCard(card, { speaker: speakerOf(actor), roll: damage.roll });
   return card;
 }

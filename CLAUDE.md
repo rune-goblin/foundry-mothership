@@ -237,6 +237,12 @@ A fresh clone needs `npm ci && npm run build && ./scripts/packs.sh pack` — bot
   and none of them was a number the system could apply. Damage is now a real `evaluateRoll`, printed
   through `rollHtml` and carried on the message's `rolls`. **Never state a number in card content as
   `[[…]]`.**
+- **Rolling a wound table charges a Wound.** `runTable` adds one to `system.hits.value` for every
+  table whose definition says `wound: true` — PSG 29.1, where rolling *is* taking the Wound. Damage
+  that empties the bar has already spent one in `planHealthChange`, so the roll it leads to passes
+  `costsWound: false`. Anything else that rolls a wound table after damage must do the same, or one
+  hit costs two Wounds. `@Wound[…]` is that roll as a button — unlike `@Table[…]`, it rolls against
+  the actor whose card it sits in rather than whoever clicks it.
 - **`resolveOutcome` reports the die it *kept*, which is a rule about checks.** A damage roll is
   Foundry's own arithmetic: `2d10` sums, `{d,d}kh` keeps by the formula's own modifier. Read
   `roll.total`, not `outcome.total` — `mutate.ts`'s `changeAmount` draws the same line, and a

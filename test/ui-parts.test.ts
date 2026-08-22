@@ -3,6 +3,8 @@
 // The shared primitives emit global class names from the hand-authored css/mothership.css
 // rather than owning their styling, so each class asserted below is a stylesheet contract the
 // compiler cannot check — rename one in a component and the sheet silently loses its styling.
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { mount, unmount, flushSync, createRawSnippet, type Component } from 'svelte';
 
@@ -18,6 +20,7 @@ import Field from '../module/ui/parts/Field.svelte';
 import MainStat from '../module/ui/parts/MainStat.svelte';
 import MinMaxField from '../module/ui/parts/MinMaxField.svelte';
 import PipTrack from '../module/ui/parts/PipTrack.svelte';
+import Stepper from '../module/ui/parts/Stepper.svelte';
 import RollableStat from '../module/ui/parts/RollableStat.svelte';
 import RollDie from '../module/ui/parts/RollDie.svelte';
 import RollButton from '../module/ui/parts/RollButton.svelte';
@@ -29,8 +32,19 @@ import ItemPanel from '../module/ui/parts/sections/ItemPanel.svelte';
 import { onActivate } from '../module/ui/parts/activate.js';
 import { dropTarget } from '../module/ui/parts/drop-target.js';
 
-// i18n.ts reads game.i18n, which jsdom has no reason to provide -- echo the key back.
-(globalThis as any).game = { i18n: { localize: (key: string) => key } };
+// i18n.ts reads game.i18n, which jsdom has no reason to provide -- echo the key back. `format`
+// resolves the real English instead, because an echoed key carries no {placeholder} to fill.
+const en = JSON.parse(readFileSync(join(import.meta.dirname, '../lang/en.json'), 'utf8'));
+const english = (key: string): string =>
+  key.split('.').reduce((node, step) => node?.[step], en) ?? key;
+
+(globalThis as any).game = {
+  i18n: {
+    localize: (key: string) => key,
+    format: (key: string, data: Record<string, string>) =>
+      english(key).replace(/\{(\w+)\}/g, (whole, name) => data?.[name] ?? whole),
+  },
+};
 
 const mounted: Array<Record<string, unknown>> = [];
 
@@ -544,6 +558,63 @@ describe('PipTrack', () => {
       'fas fa-circle',
       'far fa-circle',
       'far fa-circle',
+    ]);
+  });
+});
+
+describe('Stepper', () => {
+  const parts = (target: Element) => [...target.querySelector('.stepper')!.children];
+
+  it('puts a minus and a plus on either side of the count', () => {
+    const target = render(Stepper, { value: 7, label: 'Clips', onstep: () => {} });
+
+    expect(parts(target).map((node) => node.tagName)).toEqual(['BUTTON', 'SPAN', 'BUTTON']);
+    expect(parts(target).map((node) => node.querySelector('i')?.className ?? node.textContent)).toEqual([
+      'fas fa-minus',
+      '7',
+      'fas fa-plus',
+    ]);
+  });
+
+  // The control has no visible words, so the title is the only thing that names what it counts.
+  it('names what it steps in both titles', () => {
+    const [less, , more] = parts(render(Stepper, { value: 7, label: 'Clips', onstep: () => {} }));
+
+    expect(less.getAttribute('title')).toBe('Decrease Clips');
+    expect(less.getAttribute('aria-label')).toBe('Decrease Clips');
+    expect(more.getAttribute('title')).toBe('Increase Clips');
+  });
+
+  it('hands the delta to onstep', () => {
+    const onstep = vi.fn();
+    const [less, , more] = parts(render(Stepper, { value: 7, label: 'Clips', onstep }));
+
+    (less as HTMLElement).click();
+    (more as HTMLElement).click();
+    expect(onstep.mock.calls).toEqual([[-1], [1]]);
+  });
+
+  // A form submit would re-render the sheet mid-step; type="button" is what stops it.
+  it('steps without submitting the sheet', () => {
+    const [less] = parts(render(Stepper, { value: 7, label: 'Clips', onstep: () => {} }));
+
+    expect(less.getAttribute('type')).toBe('button');
+  });
+
+  it('switches off the button that would pass the bound', () => {
+    const floor = parts(render(Stepper, { value: 0, label: 'Clips', min: 0, onstep: () => {} }));
+    expect([floor[0], floor[2]].map((node) => (node as HTMLButtonElement).disabled)).toEqual([true, false]);
+
+    const ceiling = parts(render(Stepper, { value: 6, label: 'Shots', max: 6, onstep: () => {} }));
+    expect([ceiling[0], ceiling[2]].map((node) => (node as HTMLButtonElement).disabled)).toEqual([false, true]);
+  });
+
+  it('steps freely when no bound is given', () => {
+    const unbounded = parts(render(Stepper, { value: 0, label: 'Clips', onstep: () => {} }));
+
+    expect([unbounded[0], unbounded[2]].map((node) => (node as HTMLButtonElement).disabled)).toEqual([
+      false,
+      false,
     ]);
   });
 });

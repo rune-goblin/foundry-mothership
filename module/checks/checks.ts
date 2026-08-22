@@ -48,6 +48,7 @@ import {
   rollDamage,
   rollDamageFormula,
   woundEffectOf,
+  woundRollOf,
   type DamageRoll,
 } from './damage.ts';
 import { evaluateRoll } from './roll.ts';
@@ -355,6 +356,9 @@ async function d100Check(
     critFail: character && !outcome.success && outcome.critical,
     targets,
     damageTotal: damage?.total ?? null,
+    // Carried on the card so applying the damage can roll it: a Wound is the target's, and by then
+    // the weapon that caused it is somebody else's document.
+    wound: weapon === null || damage === null ? null : woundRollOf(weapon, outcome.critical),
   });
   await postCard(card, {
     speaker: speakerOf(actor),

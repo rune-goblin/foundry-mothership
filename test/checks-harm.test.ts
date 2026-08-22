@@ -1,5 +1,16 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+const rolledTables = vi.hoisted(() => [] as { key: string; options: Record<string, unknown> }[]);
+
+// The table roll itself is `checks/tables.ts`'s and needs a compendium; what this file proves is
+// which roll a Wound asks for, and that it never charges the Wound the hit already spent.
+vi.mock('../module/checks/tables.ts', () => ({
+  runTable: async (_actor: unknown, key: string, options: Record<string, unknown>) => {
+    rolledTables.push({ key, options });
+    return null;
+  },
+}));
+
 import { targetRows } from '../module/chat/cards.ts';
 import type { CheckActor, ItemCollection } from '../module/checks/actor.ts';
 import {
@@ -11,9 +22,12 @@ import {
   recordHarm,
   retargetCard,
 } from '../module/checks/harm.ts';
-import { clearFoundryStubs, installChat, installI18n } from './foundry-stubs.ts';
+import { clearFoundryStubs, installChat, installI18n, installSettings } from './foundry-stubs.ts';
 
-afterEach(clearFoundryStubs);
+afterEach(() => {
+  clearFoundryStubs();
+  rolledTables.length = 0;
+});
 
 interface Wearer {
   readonly health?: number;
@@ -69,10 +83,13 @@ function message(data: Record<string, unknown>, owns = true) {
   };
 }
 
-const stubs = () => {
+const stubs = (settings: Record<string, unknown> = {}) => {
   installI18n({ 'Mothership.Chat.FieldChanged': '{field} {direction} from {from} to {to}.' });
+  installSettings(settings);
   return installChat();
 };
+
+const GUNSHOT = { table: 'gunshot', advantage: 'none' } as const;
 
 describe('what the armour keeps off', () => {
   it('is the derived reduction, which is where cover is folded in', () => {
@@ -130,6 +147,72 @@ describe('spending a target’s Health', () => {
 
     expect(await harmActor(wilson, 7)).toEqual({ kind: 'forbidden' });
     expect(wilson.updates).toEqual([]);
+  });
+});
+
+/**
+ * PSG 29.1 — rolling on the Wound table is what taking a Wound means. The hit spends the Wound, so
+ * the roll that follows must not spend a second one, and it is rolled against whoever took it.
+ */
+describe('the Wound a hit costs', () => {
+  const wounded = () => actor({ health: 4, healthMax: 10 });
+
+  it('rolls the weapon’s table for the wounded actor, charging no second Wound', async () => {
+    stubs({ autoRollWoundsCharacters: true });
+    const wilson = wounded();
+
+    await harmActor(wilson, 9, GUNSHOT);
+
+    expect(rolledTables).toEqual([{ key: 'gunshot', options: { advantage: 'none', costsWound: false } }]);
+    expect(wilson.updates).toEqual([{ 'system.health.value': 5, 'system.hits.value': 1 }]);
+  });
+
+  it('rolls it the way the hit says — a critical keeps the worse of two rows', async () => {
+    stubs({ autoRollWoundsCharacters: true });
+
+    await harmActor(wounded(), 9, { table: 'gunshot', advantage: 'disadvantage' });
+
+    expect(rolledTables[0].options).toMatchObject({ advantage: 'disadvantage' });
+  });
+
+  // Off for this actor's kind: the card offers the roll instead, so the table can roll it itself.
+  it('offers the roll instead when the setting leaves it to the players', async () => {
+    const chat = stubs({ autoRollWoundsCharacters: false });
+
+    await harmActor(wounded(), 9, GUNSHOT);
+
+    expect(rolledTables).toEqual([]);
+    expect(chat.cards.at(-1)?.data).toMatchObject({
+      woundActions: '@Wound[gunshot -]{[-]} @Wound[gunshot] @Wound[gunshot +]{[+]}',
+    });
+  });
+
+  it('says nothing about wounds when the hit cost none', async () => {
+    const chat = stubs({ autoRollWoundsCharacters: false });
+
+    await harmActor(actor({ health: 10 }), 3, GUNSHOT);
+
+    expect(rolledTables).toEqual([]);
+    expect(chat.cards.at(-1)?.data).toMatchObject({ woundActions: '' });
+  });
+
+  // A fall, a Bleeding condition, a hand-typed @Harm: damage with no weapon names no table.
+  it('rolls nothing for a Wound with no weapon behind it', async () => {
+    const chat = stubs({ autoRollWoundsCharacters: true });
+
+    await harmActor(wounded(), 9);
+
+    expect(rolledTables).toEqual([]);
+    expect(chat.cards.at(-1)?.data).toMatchObject({ woundActions: '' });
+  });
+
+  // Past the last Wound there is nothing to roll on: the card is a death, not an injury.
+  it('rolls nothing once the last Wound is spent', async () => {
+    stubs({ autoRollWoundsCharacters: true });
+
+    await harmActor(actor({ health: 4, healthMax: 10, wounds: 2, woundsMax: 2 }), 9, GUNSHOT);
+
+    expect(rolledTables).toEqual([]);
   });
 });
 
@@ -222,6 +305,37 @@ describe('aiming a card again', () => {
       { name: 'Wilson', taken: true, applied: 4 },
       { name: 'Sarah', taken: false },
     ]);
+  });
+
+  // Aiming somewhere else does not hand back the buttons the old row already paid with.
+  it('keeps a row that has paid even when the crosshairs have left it', async () => {
+    stubs();
+    const paid = { uuid: 'Scene.s1.Token.t1', name: 'Wilson', img: 'w.png' };
+    const card = message({
+      damageTotal: 7,
+      targets: targetRows([paid], 7, { 'Scene.s1.Token.t1': 4 }),
+    });
+
+    await retargetCard(card, {}, [{ uuid: 'Scene.s1.Token.t2', name: 'Sarah', img: 's.png' }]);
+
+    const [update] = card.update.mock.lastCall as unknown as [Record<string, unknown>];
+    expect(update['flags.mothershiprpg.card.data.targets']).toMatchObject([
+      { name: 'Wilson', taken: true, applied: 4, actions: '' },
+      { name: 'Sarah', taken: false, actions: '@Harm[7] @Harm[7 half]' },
+    ]);
+  });
+
+  // The crosshairs are empty far more often by accident than on purpose, and an emptied card can
+  // never be aimed again — its damage, and the record of what it already cost, are gone with it.
+  it('leaves the card alone when nothing is targeted', async () => {
+    stubs();
+    const card = message({
+      damageTotal: 7,
+      targets: targetRows([{ uuid: 'Scene.s1.Token.t1', name: 'Wilson', img: 'w.png' }], 7),
+    });
+
+    expect(await retargetCard(card, {}, [])).toBe('unaimed');
+    expect(card.update).not.toHaveBeenCalled();
   });
 });
 

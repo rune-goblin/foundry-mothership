@@ -163,8 +163,9 @@ function ownerOf(css: string, at: number): string {
 // beside it. Everything else in this window is `md` or larger. A new entry here means a new
 // small-print decision, not a formatting detail.
 const SUBTEXT = [
-  '.skill-selector-note', // the warning beside the hovered skill's name
+  '.skill-selector-note', // the warning at the foot of the hovered skill's card
   '.skill-selector-chip', // prerequisite badges
+  '.skill-selector-pick-rank', // the rank a pick wants, over the skill that took it
   '.skill-selector-bonus', // the picks-left counter beside its rank heading
   '.character-wizard :global(.wizard-reference)', // "See Loadouts on pg. 7."
   '.wizard-rail-number', // a numeral inside a 1.6rem marker

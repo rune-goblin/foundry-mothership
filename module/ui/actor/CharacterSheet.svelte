@@ -8,6 +8,7 @@
   import MinMaxField from '../parts/MinMaxField.svelte';
   import StatModifier from '../parts/StatModifier.svelte';
   import PipTrack from '../parts/PipTrack.svelte';
+  import Stepper from '../parts/Stepper.svelte';
   import TabPanel from '../parts/TabPanel.svelte';
   import Tabs from '../parts/Tabs.svelte';
   import TextareaField from '../parts/TextareaField.svelte';
@@ -311,7 +312,7 @@
       headers={[
         { label: localize('Mothership.WeaponName'), grow: 2 },
         { label: localize('Mothership.Damage') },
-        { label: localize('Mothership.Ammo') },
+        { label: localize('Mothership.Clips') },
         { label: localize('Mothership.Shots') },
         { label: localize('Mothership.Range') },
       ]}
@@ -462,8 +463,13 @@
       : ''}
   </ItemCell>
   {#if weapon.system.useAmmo}
-    <ItemCell roll onclick={step(weapon.id, 'ammo')} oncontextmenu={step(weapon.id, 'ammo', { min: 0 })}>
-      {weapon.system.ammo}
+    <ItemCell>
+      <Stepper
+        value={weapon.system.ammo}
+        label={localize('Mothership.Clips')}
+        min={0}
+        onstep={(delta) => adjust(actor, weapon.id, 'ammo', delta, { min: 0 })}
+      />
     </ItemCell>
     <ItemCell>
       <a

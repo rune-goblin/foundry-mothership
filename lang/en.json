@@ -685,7 +685,10 @@
       "SkillOption.ChoiceText": "Choose 1 from these skill bonus options",
       "SkillOption.Unpicked": "Choose a skill",
       "SkillTree.Label": "Skill prerequisite tree",
-      "SkillTree.Skill": "Skill",
+      "SkillTree.YourPicks": "Your picks",
+      "SkillTree.ChooseOne": "Choose one",
+      "SkillTree.ClearPick": "Free this pick",
+      "SkillTree.NothingFurther": "Nothing further",
       "SkillTree.Granted": "Granted by your class",
       "SkillTree.Picked": "Picked",
       "SkillTree.Available": "Available",
@@ -765,7 +768,7 @@
     "Advantage": "Advantage",
     "Adjustment": "Adjustment",
     "AllStatsAndSavesDecreasedBy": "All stats and saves decreased by",
-    "Ammo": "Ammo",
+    "Clips": "Clips",
     "Ammunition": "Ammunition",
     "AmmoType": "Ammo Type",
     "AntiArmorAcronym": "AA",
@@ -784,6 +787,8 @@
     "SanitySave": "Sanity Save",
     "MaxWounds": "Max Wounds",
     "Bonus": "Bonus",
+    "Decrease": "Decrease {label}",
+    "Increase": "Increase {label}",
     "CarryingCapacity": "Carrying Capacity",
     "CLASS": "Class",
     "classNewStatOptionEmptyError": "You must select at least two stat or saves",
@@ -1000,7 +1005,8 @@
       "NoHarmTarget": "Target a token first — nothing is being aimed at.",
       "NotYourTarget": "You do not have permission to spend that target's Health.",
       "WardenDidNotAnswer": "The Warden's client did not answer. Try again, or ask them to apply it.",
-      "NotYourCard": "Only the player who made this roll, or the Warden, can roll its damage."
+      "NotYourCard": "Only the player who made this roll, or the Warden, can roll its damage.",
+      "NoWoundTarget": "This card names no actor to roll a Wound against."
     },
     "Chat": {
       "Success": "Success!",
@@ -1029,6 +1035,7 @@
       "HarmHalfLabel": "Half ({amount})",
       "HarmTaken": "Took",
       "RetargetLabel": "Aim at what I have targeted",
+      "WoundLabel": "Roll {wound}",
       "DamageModeLabel": "Roll {damage} · {mode}",
       "RollDamageOffer": "Roll the damage you deal: {damage}",
       "CheckSentence": "You {verb} {comparison} your {attribute}.",
@@ -1097,6 +1104,14 @@
       "autoRollDamageCreatures": {
         "Name": "Roll Creature Damage Automatically",
         "Hint": "Roll a creature's damage as part of the attack. Off, the card offers a button per damage the weapon deals."
+      },
+      "autoRollWoundsCharacters": {
+        "Name": "Roll Character Wounds Automatically",
+        "Hint": "Roll the weapon's Wound table when a hit costs a character a Wound. Off, the card offers the roll as a button."
+      },
+      "autoRollWoundsCreatures": {
+        "Name": "Roll Creature Wounds Automatically",
+        "Hint": "Roll the weapon's Wound table when a hit costs a creature a Wound. Off, the card offers the roll as a button, so the player who landed the hit can roll it."
       }
     },
     "WhichDamageApplies": "Which damage does {weapon} deal?",

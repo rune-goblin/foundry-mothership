@@ -3,6 +3,13 @@ export type Advantage = 'none' | 'advantage' | 'disadvantage';
 /** Which way a check wants its result to go: stats and saves roll under, damage rolls over. */
 export type Aim = 'low' | 'high';
 
+const ADVANTAGES: readonly string[] = ['none', 'advantage', 'disadvantage'];
+
+/** For reading a modifier back off a card or the wire, where it is a string until it is checked. */
+export function isAdvantage(value: string): value is Advantage {
+  return ADVANTAGES.includes(value);
+}
+
 export type Comparison = '<' | '<=' | '>' | '>=';
 
 /** Foundry's pool suffix: keep highest, keep lowest. */

@@ -55,6 +55,11 @@ export function isTableKey(value: string): value is TableKey {
   return Object.hasOwn(TABLES, value);
 }
 
+/** The five tables a Wound is rolled on — the Panic Check and the Death Save are neither. */
+export function isWoundTable(value: string): value is TableKey {
+  return isTableKey(value) && TABLES[value].wound;
+}
+
 /** The seven hidden settings, defaults included — the shape `settings.ts` registers from. */
 export function tableSettings(): readonly { key: TableKey; setting: string; default: string }[] {
   return TABLE_KEYS.map((key) => ({ key, setting: TABLES[key].setting, default: TABLES[key].id }));

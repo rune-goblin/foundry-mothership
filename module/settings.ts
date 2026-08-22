@@ -50,6 +50,18 @@ export const SETTINGS: readonly SettingDefinition[] = [
     type: 'boolean',
     default: SETTING_DEFAULTS.autoRollDamageCreatures,
   },
+  {
+    key: 'autoRollWoundsCharacters',
+    scope: 'world',
+    type: 'boolean',
+    default: SETTING_DEFAULTS.autoRollWoundsCharacters,
+  },
+  {
+    key: 'autoRollWoundsCreatures',
+    scope: 'world',
+    type: 'boolean',
+    default: SETTING_DEFAULTS.autoRollWoundsCreatures,
+  },
 ];
 
 /** The menu that opens the rolltable chooser; the window itself is the UI layer's. */

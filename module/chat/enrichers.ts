@@ -1,7 +1,8 @@
 import { localize, format } from '../i18n.ts';
+import { damageString } from '../rolls/parse.ts';
 import { addressOf, isFieldKey, type FieldKey } from '../mutation/fields.ts';
 import type { PodLeaf } from '../mutation/address.ts';
-import { isTableKey, type TableKey } from '../tables/tables.ts';
+import { isTableKey, isWoundTable, type TableKey } from '../tables/tables.ts';
 import type { Advantage } from '../rolls/spec.ts';
 
 /** Must match `module/data/item-models.js`'s `ROLL_SCOPES`; `test/chat-enrichers.test.ts` pins the two lists together. */
@@ -19,7 +20,7 @@ export const CHECK_SCOPES = [
 
 export type CheckScope = (typeof CHECK_SCOPES)[number];
 
-export type ActionVerb = 'check' | 'table' | 'gain' | 'apply' | 'damage' | 'harm' | 'retarget';
+export type ActionVerb = 'check' | 'table' | 'gain' | 'apply' | 'damage' | 'harm' | 'retarget' | 'wound';
 
 export type GainAmount =
   | { readonly kind: 'amount'; readonly amount: number }
@@ -38,7 +39,8 @@ export type ChatAction =
   | { readonly verb: 'apply'; readonly condition: string; readonly count: number }
   | { readonly verb: 'damage'; readonly formula: string }
   | { readonly verb: 'harm'; readonly amount: number; readonly half: boolean }
-  | { readonly verb: 'retarget' };
+  | { readonly verb: 'retarget' }
+  | { readonly verb: 'wound'; readonly table: TableKey; readonly advantage: Advantage };
 
 export type ActionFault = 'syntax' | 'verb' | 'argument';
 
@@ -54,6 +56,7 @@ const VERBS: Readonly<Record<string, ActionVerb>> = {
   Damage: 'damage',
   Harm: 'harm',
   Retarget: 'retarget',
+  Wound: 'wound',
 };
 
 const SPELLING: Readonly<Record<ActionVerb, string>> = {
@@ -64,6 +67,7 @@ const SPELLING: Readonly<Record<ActionVerb, string>> = {
   damage: 'Damage',
   harm: 'Harm',
   retarget: 'Retarget',
+  wound: 'Wound',
 };
 
 /**
@@ -75,7 +79,7 @@ const SPELLING: Readonly<Record<ActionVerb, string>> = {
  * `@UUID[…]{…}` does. A Panic Check is judged against Stress, so it is `@Check[panicCheck]`, not a
  * `@Table`.
  */
-const SYNTAX = '@(Check|Table|Gain|Apply|Damage|Harm|Retarget)\\[([^\\]]*)\\](?:\\{([^}]*)\\})?';
+const SYNTAX = '@(Check|Table|Gain|Apply|Damage|Harm|Retarget|Wound)\\[([^\\]]*)\\](?:\\{([^}]*)\\})?';
 
 /** `parseAction` uses its own anchored copy, so neither this nor that carries the other's `lastIndex`. */
 export const ACTION_PATTERN = new RegExp(SYNTAX, 'g');
@@ -163,6 +167,18 @@ function parseHarm(args: readonly string[]): ActionParse {
   return { ok: true, action: { verb: 'harm', amount: Number(amount), half: modifier === 'half' }, label: null };
 }
 
+/**
+ * The wound a hit led to, rolled against the actor whose card it sits in rather than whoever clicks
+ * it — which is what separates it from `@Table`, the same roll asked for by the person clicking.
+ */
+function parseWound(args: readonly string[]): ActionParse {
+  const [key, modifier, ...rest] = args;
+  const advantage = advantageOf(modifier);
+  if (rest.length > 0 || advantage === null) return bad('argument', `@Wound[${args.join(' ')}]`);
+  if (key === undefined || !isWoundTable(key)) return bad('argument', `${key} is not a wound table`);
+  return { ok: true, action: { verb: 'wound', table: key, advantage }, label: null };
+}
+
 /** A damage formula like `1d10 * 2` or `{1d10,1d10}kh` keeps its spaces, so the whole bracket is one argument. */
 const DAMAGE_FORMULA = /\d/;
 
@@ -193,7 +209,9 @@ export function parseAction(text: string): ActionParse {
               ? parseHarm(args)
               : verb === 'retarget'
                 ? { ok: true as const, action: { verb: 'retarget' as const }, label: null }
-                : parseApply(args);
+                : verb === 'wound'
+                  ? parseWound(args)
+                  : parseApply(args);
 
   return parsed.ok && match[3] !== undefined ? { ...parsed, label: match[3] } : parsed;
 }
@@ -226,6 +244,8 @@ export function formatAction(action: ChatAction): string {
         return `${action.amount}${action.half ? ' half' : ''}`;
       case 'retarget':
         return '';
+      case 'wound':
+        return `${action.table}${SIGNS[action.advantage]}`;
     }
   })();
   return `@${SPELLING[action.verb]}[${args}]`;
@@ -298,13 +318,18 @@ export function actionLabel(action: ChatAction): string {
         condition: conditionName(action.condition),
       });
     case 'damage':
-      return format('Mothership.Chat.DamageLabel', { damage: action.formula });
+      return format('Mothership.Chat.DamageLabel', { damage: damageString(action.formula) });
     case 'harm':
       return action.half
         ? format('Mothership.Chat.HarmHalfLabel', { amount: String(harmAmount(action)) })
         : format('Mothership.Chat.HarmLabel', { amount: String(action.amount) });
     case 'retarget':
       return localize('Mothership.Chat.RetargetLabel');
+    case 'wound':
+      return (
+        format('Mothership.Chat.WoundLabel', { wound: localize(`Mothership.Table.${action.table}`) }) +
+        MODIFIER_LABELS[action.advantage]
+      );
   }
 }
 
@@ -316,6 +341,7 @@ const ICONS: Readonly<Record<ActionVerb, string>> = {
   damage: 'fa-solid fa-burst',
   harm: 'fa-solid fa-heart-crack',
   retarget: 'fa-solid fa-bullseye',
+  wound: 'fa-solid fa-user-injured',
 };
 
 /** The routing key the delegated listener matches, namespaced so no window claims it by accident. */

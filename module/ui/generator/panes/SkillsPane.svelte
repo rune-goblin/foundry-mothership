@@ -9,6 +9,7 @@
 <SkillSelector
   skills={draft.skillTree}
   budget={draft.skillBudget}
+  picks={draft.skillPicks}
   onchoose={(uuid) => draft.toggleSkill(uuid)}
 />
 

@@ -29,6 +29,8 @@ export const SETTING_DEFAULTS = {
   panicDieTheme: 'panic',
   autoRollDamagePlayers: true,
   autoRollDamageCreatures: true,
+  autoRollWoundsCharacters: true,
+  autoRollWoundsCreatures: false,
 } as const;
 
 export type SettingKey = keyof typeof SETTING_DEFAULTS;
@@ -45,6 +47,16 @@ export function autoStress(): boolean {
 /** Two answers: a table wanting players to roll their own damage rarely wants the Warden rolling every creature's too. */
 export function autoRollDamage(character: boolean): boolean {
   const key: SettingKey = character ? 'autoRollDamagePlayers' : 'autoRollDamageCreatures';
+  const value = stored(key);
+  return typeof value === 'boolean' ? value : SETTING_DEFAULTS[key];
+}
+
+/**
+ * Off by default for creatures: a Wound the players inflicted is theirs to roll, and the card
+ * offers it as a button rather than the Warden's client answering it for them.
+ */
+export function autoRollWounds(character: boolean): boolean {
+  const key: SettingKey = character ? 'autoRollWoundsCharacters' : 'autoRollWoundsCreatures';
   const value = stored(key);
   return typeof value === 'boolean' ? value : SETTING_DEFAULTS[key];
 }

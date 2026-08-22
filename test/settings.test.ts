@@ -62,6 +62,8 @@ describe('the settings the GM sees', () => {
       'autoStress',
       'autoRollDamagePlayers',
       'autoRollDamageCreatures',
+      'autoRollWoundsCharacters',
+      'autoRollWoundsCreatures',
     ]);
   });
 

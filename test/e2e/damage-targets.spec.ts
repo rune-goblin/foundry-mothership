@@ -218,6 +218,107 @@ test.describe('applying damage to the targeted actor', () => {
     expect(actor).toBeTruthy();
   });
 
+  // The crosshairs empty by accident — clicking away, or toggling the same token off — and the
+  // card must survive it: an emptied card can never be aimed again, and its record of what was
+  // already taken would go with the rows.
+  test('aiming with nothing targeted leaves the card as it stands', async ({ gmPage }) => {
+    const { shooter, victim } = await stage(gmPage, { health: { value: 20, max: 20 } });
+
+    const { message, total } = await fire(gmPage, shooter);
+    await row(gmPage, message).locator('.mothership-action').first().click();
+    await expect.poll(() => stored(gmPage, victim, 'system.health.value')).toBe(20 - total);
+
+    await gmPage.evaluate(() => {
+      const w = window as any;
+      for (const token of [...w.game.user.targets]) token.setTarget(false, { releaseOthers: false });
+    });
+    await gmPage
+      .locator(`[data-message-id="${message}"] .card-target-retarget .mothership-action`)
+      .first()
+      .click();
+
+    // Still the row it was, still paid: no button came back to spend the same damage again.
+    await expect(row(gmPage, message)).toContainText('__e2e_victim');
+    await expect(row(gmPage, message)).toContainText(String(total));
+    await expect(row(gmPage, message).locator('.mothership-action')).toHaveCount(0);
+  });
+
+  /**
+   * PSG 28-29 — the hit that empties the bar costs a Wound, and rolling on the weapon's table is
+   * what that Wound means. Both halves are one hit: the table charges no second Wound for it.
+   */
+  test('a hit that empties the bar rolls the weapon’s wound table, and costs one Wound', async ({
+    gmPage,
+  }) => {
+    const { shooter, victim } = await stage(gmPage, {
+      health: { value: 1, max: 10 },
+      hits: { value: 0, max: 2 },
+    });
+    await gmPage.evaluate(async (u: string) => {
+      const actor = await (window as any).fromUuid(u);
+      const weapon = actor.items.find((i: any) => i.type === 'weapon');
+      await weapon.update({ 'system.woundEffect': 'Gunshot' });
+    }, shooter);
+
+    const { message } = await fire(gmPage, shooter);
+    await row(gmPage, message).locator('.mothership-action').first().click();
+
+    // One Wound for the hit, and the table that follows adds none of its own.
+    await expect.poll(() => stored(gmPage, victim, 'system.hits.value')).toBe(1);
+
+    const recent = () =>
+      gmPage.evaluate(() =>
+        (window as any).game.messages.contents
+          .slice(-3)
+          .map((message: any) => String(message.content))
+          .join(''),
+      );
+    await expect.poll(recent).toContain('Gunshot');
+    expect(await stored(gmPage, victim, 'system.hits.value')).toBe(1);
+  });
+
+  /**
+   * With the roll left to the table, the card offers it — and the button rolls against the actor
+   * whose card it sits in. `@Table` would have rolled it against whoever clicked, which for a
+   * creature's Wound is the player who shot it.
+   */
+  test('a Wound the setting leaves unrolled is offered on the card, aimed at who took it', async ({
+    gmPage,
+  }) => {
+    await gmPage.evaluate(async () => {
+      await (window as any).game.settings.set('mothershiprpg', 'autoRollWoundsCharacters', false);
+    });
+    try {
+      const { shooter, victim } = await stage(gmPage, {
+        health: { value: 1, max: 10 },
+        hits: { value: 0, max: 2 },
+      });
+      await gmPage.evaluate(async (u: string) => {
+        const actor = await (window as any).fromUuid(u);
+        const weapon = actor.items.find((i: any) => i.type === 'weapon');
+        await weapon.update({ 'system.woundEffect': 'Gunshot' });
+      }, shooter);
+
+      const { message } = await fire(gmPage, shooter);
+      await row(gmPage, message).locator('.mothership-action').first().click();
+      await expect.poll(() => stored(gmPage, victim, 'system.hits.value')).toBe(1);
+
+      // [-] · Roll Gunshot Wound · [+], on the card that reports the Wound.
+      // The log copy, not the notification column's: a card that is fading out is not clickable.
+      const offer = gmPage.locator('.chat-message .card-wound-roll').first();
+      await expect(offer.locator('.mothership-action')).toHaveCount(3);
+      await offer.locator('.mothership-action').nth(1).click();
+
+      await expect(gmPage.locator('#chat-notifications .chat-message').last()).toContainText('Gunshot Wound');
+      // Rolled against the actor the card names, and still only the one Wound the hit cost.
+      expect(await stored(gmPage, victim, 'system.hits.value')).toBe(1);
+    } finally {
+      await gmPage.evaluate(async () => {
+        await (window as any).game.settings.set('mothershiprpg', 'autoRollWoundsCharacters', true);
+      });
+    }
+  });
+
   // PSG 28 — the surplus carries into the refilled bar, and the Wound is what pays for it.
   test('a hit worth more than the bar spends a Wound and refills it', async ({ gmPage }) => {
     const { shooter, victim } = await stage(gmPage, {

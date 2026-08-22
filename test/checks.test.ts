@@ -709,6 +709,19 @@ describe('a table roll', () => {
     expect(cardData().woundText).toContain('Wounds increased');
   });
 
+  // The hit that emptied the bar already spent the Wound; charging again would cost two per hit.
+  it('charges nothing when the damage that led here already spent the Wound', async () => {
+    stubs([{ faces: 10, result: 4 }]);
+    world('Gunshot Wound');
+    const actor = character();
+
+    const result = await runTable(actor, 'gunshot', { advantage: 'none', costsWound: false });
+
+    expect(actor.updates).toEqual([]);
+    expect(result?.wound).toBeNull();
+    expect(cardData().woundText).toBe('');
+  });
+
   it('charges nothing for a table that is not a Wound', async () => {
     stubs([{ faces: 10, result: 4 }]);
     world('Death Save');

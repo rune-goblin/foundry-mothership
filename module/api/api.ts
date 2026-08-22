@@ -284,8 +284,25 @@ export function registerActions(): void {
     if (message === undefined) return warn('Mothership.Errors.NoDamageSource');
 
     const outcome = await retargetCard(message, game?.user, currentTargets());
+    if (outcome === 'unaimed') warn('Mothership.Errors.NoHarmTarget');
     if (outcome === 'forbidden') warn('Mothership.Errors.NotYourCard');
   });
+
+  /**
+   * Not a `@Table`: this rolls against the actor whose card it sits in — the one that took the
+   * Wound — rather than whoever clicks it. That is the whole point of the verb, and it is what
+   * lets a player roll the wound they just dealt a creature.
+   */
+  registerChatAction('wound', async (action, context) => {
+    debug('action', `wound ${action.table}`);
+
+    const { actor } = cardOrigin(context.button);
+    if (actor === null) return warn('Mothership.Errors.NoWoundTarget');
+
+    // The Wound was spent by the hit this card reports; the roll that follows charges nothing.
+    await actor.rollTable(action.table, { advantage: action.advantage, costsWound: false });
+  });
+
   registerChatAction('apply', async (action) => {
     debug('action', `apply ${action.condition} ×${action.count}`);
     await applyCondition(action.condition, action.count);

@@ -32,9 +32,11 @@ export const STARTING_STRESS = 2;
 // Wounds are 2 plus whatever the class adds; the schema default says the same thing.
 const BASE_WOUNDS = 2;
 
-// Every character can throw a punch (PSG 2), so the loadout draw brings the weapon with it rather
-// than leaving each player to fetch it off the compendium afterwards. The id is the content
-// registry's (content/ids.json); test/generator.test.ts pins this pair against the book and it.
+// Every character can throw a punch (PSG 2), so the loadout grant brings the weapon with it rather
+// than leaving each player to fetch it off the compendium afterwards. It is granted, not listed:
+// no loadout row names it, so the pane would be printing the system's own addition back as if the
+// table had rolled it. The id is the content registry's (content/ids.json);
+// test/generator.test.ts pins this pair against the book and it.
 export const UNARMED = {
   uuid: 'Compendium.mothershiprpg.weapons_1e.Item.dceGyb1yjTLxdSSi',
   name: WEAPONS.find((weapon) => weapon.id === 'unarmed').name,
@@ -198,7 +200,6 @@ export class CharacterDraft {
     }
     const draw = await table.draw({ displayChat: true });
     this[kind] = { roll: drawnRow(draw), ...parseResults(draw.results) };
-    if (kind === 'loadout') this.loadout.entries.push(UNARMED);
   }
 
   /**
@@ -297,6 +298,23 @@ export class CharacterDraft {
     if (!slot) return;
     slot.chosen = uuid;
     this.#prune();
+  }
+
+  /**
+   * The picks the class promises, in slot order, each with whatever now fills it. The picker
+   * prints one chip per entry: a slot the player has still to answer says which rank it wants,
+   * and a filled one says what took it, so the class's demands read the same before and after.
+   * `set` groups the slots of one gated chain, which the chips draw as a chain.
+   */
+  get skillPicks() {
+    return this.skillSlots.map((slot) => ({
+      key: slot.key,
+      set: slot.set,
+      rank: slot.rank,
+      gated: slot.gated,
+      chosen: slot.chosen,
+      name: slot.chosen ? this.skillName(slot.chosen) : null,
+    }));
   }
 
   /** Unfilled slots per rank — the picker's live remaining-pick budget. */
@@ -521,8 +539,11 @@ export class CharacterDraft {
     const kept = new Map(record.skills ?? []);
     for (const slot of this.skillSlots) slot.chosen = kept.get(slot.key) ?? null;
     this.#prune();
-    // After the class: choosing one clears the loadout, that table being the class's own.
-    this.loadout = record.loadout ?? null;
+    // After the class: choosing one clears the loadout, that table being the class's own. A run
+    // saved while Unarmed was a row rather than a grant still carries it among the entries.
+    this.loadout = record.loadout
+      ? { ...record.loadout, entries: record.loadout.entries.filter((entry) => entry.uuid !== UNARMED.uuid) }
+      : null;
   }
 
   /**
@@ -595,7 +616,9 @@ export class CharacterDraft {
 
   #loadoutTally() {
     const tally = new Map();
-    for (const { uuid } of this.loadout?.entries ?? []) tally.set(uuid, (tally.get(uuid) ?? 0) + 1);
+    if (this.loadout === null) return tally;
+    for (const { uuid } of this.loadout.entries) tally.set(uuid, (tally.get(uuid) ?? 0) + 1);
+    if (!tally.has(UNARMED.uuid)) tally.set(UNARMED.uuid, 1);
     return tally;
   }
 }
