@@ -46,6 +46,9 @@ export function document({ type, name, img = 'icons/svg/item-bag.svg', system, i
 /** An embedded item as a sheet's row snippets read one. */
 export const embedded = (type, name, system, img = 'icons/svg/item-bag.svg') => ({
   ...document({ type, name, img, system }),
+  // The enriched HTML the sheet shell hands a row, not the raw field: a row's disclosure prints
+  // this, and an item with nothing to say offers no chevron.
+  description: system.description ? enriched(system.description) : '',
   getFlag: () => undefined,
 });
 
@@ -54,7 +57,7 @@ export const store = (doc, extra = {}) => createDocumentStore(doc, { items: doc.
 const enriched = (text) => `<p>${text}</p>`;
 
 export const skills = [
-  embedded('skill', 'Zero-G', itemSystem('skill', { rank: 'Trained', bonus: 10 })),
+  embedded('skill', 'Zero-G', itemSystem('skill', { rank: 'Trained', bonus: 10, description: 'Moving and working in free fall without losing your lunch.' })),
   embedded('skill', 'Piloting', itemSystem('skill', { rank: 'Expert', bonus: 15 })),
   embedded('skill', 'Hacking', itemSystem('skill', { rank: 'Master', bonus: 20 })),
 ];
@@ -107,12 +110,12 @@ export const armors = [
   embedded(
     'armor',
     'Vaccsuit',
-    itemSystem('armor', { armorPoints: 3, oxygenMax: 12, oxygenCurrent: 9, equipped: false, weight: 1, cost: 10000 }),
+    itemSystem('armor', { armorPoints: 3, oxygenMax: 12, oxygenCurrent: 9, equipped: false, weight: 1, cost: 10000, description: 'Sealed against vacuum. Twelve hours of oxygen, and no protection worth the name.' }),
   ),
 ];
 
 export const gear = [
-  embedded('item', 'Rebreather', itemSystem('item', { quantity: 1, weight: 1, cost: 500 })),
+  embedded('item', 'Rebreather', itemSystem('item', { quantity: 1, weight: 1, cost: 500, description: 'Six hours of filtered air per canister.' })),
   embedded('item', 'Cybernetic Diagnostic Scanner', itemSystem('item', { quantity: 1, weight: 1, cost: 5000 })),
 ];
 
@@ -123,6 +126,7 @@ export const conditions = [
     itemSystem('condition', {
       severity: 2,
       treatment: { value: 1 },
+      description: 'A Fear Save at Disadvantage whenever the phobia is in the room.',
       modifiers: [
         { scope: 'fear', modifier: 'disadvantage' },
         { scope: 'sanity', modifier: 'advantage' },

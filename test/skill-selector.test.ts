@@ -91,6 +91,52 @@ describe('the picks a class promised', () => {
   });
 });
 
+describe('the bonus package a class offers a choice of', () => {
+  const GROUPS = [{ chosen: 1, options: [{ name: '1 Expert Skill' }, { name: '2 Trained Skills' }] }];
+
+  it('offers the swap beside the picks it rewrites, marking the one in force', () => {
+    const el = selector({ groups: GROUPS });
+    const swap = el.querySelector<HTMLSelectElement>('.skill-selector-swap-select')!;
+
+    expect(texts(el, '.skill-selector-swap option')).toEqual(['1 Expert Skill', '2 Trained Skills']);
+    expect(swap.value).toBe('1');
+  });
+
+  it('reports the switch against the group\'s own index', () => {
+    const onswitch = vi.fn();
+    const el = selector({ groups: [{ chosen: 0, options: [{ name: 'Only one' }] }, ...GROUPS], onswitch });
+    const swap = el.querySelector<HTMLSelectElement>('.skill-selector-swap-select')!;
+
+    expect(swap.dataset.swap).toBe('1');
+    swap.value = '0';
+    swap.dispatchEvent(new window.Event('change', { bubbles: true }));
+    flushSync();
+
+    expect(onswitch).toHaveBeenCalledWith(1, 0);
+  });
+
+  it('holds a group with one package back — it is not a question', () => {
+    const el = selector({ groups: [{ chosen: 0, options: [{ name: 'Only one' }] }] });
+
+    expect(el.querySelector('.skill-selector-swap')).toBeNull();
+  });
+
+  it('offers the swap even where the packages promise no picks to sit beside', () => {
+    const el = selector({ picks: [], groups: GROUPS });
+
+    expect(el.querySelector('.skill-selector-swap-select')).not.toBeNull();
+    expect(el.querySelector('.skill-selector-pick')).toBeNull();
+  });
+
+  it('names the unanswered group rather than showing the first package as taken', () => {
+    const el = selector({ groups: [{ chosen: null, options: GROUPS[0].options }] });
+    const swap = el.querySelector<HTMLSelectElement>('.skill-selector-swap-select')!;
+
+    expect(swap.value).toBe('');
+    expect(texts(el, '.skill-selector-swap option')).toEqual(['Choose one', '1 Expert Skill', '2 Trained Skills']);
+  });
+});
+
 describe("the hovered skill's card", () => {
   it('carries the description and both routes, and leaves the name to the row', () => {
     const el = selector();

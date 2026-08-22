@@ -448,6 +448,29 @@ test.describe('character generator', () => {
     expect(gear).toEqual(['Scalpel', 'Stimpak', 'Tank Top and Camo Pants', 'Unarmed']);
   });
 
+  test('the skills pane swaps the bonus package without a trip back to adjustments', async ({ gmPage }) => {
+    await openGenerator(gmPage);
+    await freezeDice(gmPage, LOWEST_FACE);
+
+    await chooseClass(gmPage, 'Marine');
+    await takeSkillBonus(gmPage, 1);
+    await reachSkills(gmPage);
+
+    const swap = gmPage.locator('.skill-selector-swap-select');
+    await expect(swap).toHaveValue('1');
+    await expect(gmPage.locator('.skill-selector-pick-rank')).toHaveText(['Trained', 'Trained']);
+
+    await swap.selectOption('0');
+
+    // The slots the other package promises replace the ones this one left, and a pick taken under
+    // the old package goes with them.
+    await expect(gmPage.locator('.skill-selector-pick-rank')).toHaveText(['Expert']);
+
+    // Both controls read the same answer, so the pane behind it shows the swap already made.
+    await goTo(gmPage, 'adjustments');
+    await expect(gmPage.locator('button.wizard-package[aria-pressed="true"]')).toHaveText(/1 Expert Skill/);
+  });
+
   test('a class replaces the one before it rather than stacking on it', async ({ gmPage }) => {
     const uuid = await openGenerator(gmPage);
     await freezeDice(gmPage, LOWEST_FACE);
@@ -469,7 +492,7 @@ test.describe('character generator', () => {
     await goTo(gmPage, 'adjustments');
     await gmPage.selectOption('[data-choice="0"] select', 'strength');
     await expect(gmPage.locator('[data-modifier="strength"]')).toHaveText('-10');
-    await expect(gmPage.locator('[data-standing="strength"]')).toHaveText('17');
+    await expect(gmPage.locator('[data-choice="0"] option[value="strength"]')).toContainText('→ 17');
     await gmPage.selectOption('[data-choice="0"] select', 'speed');
     // The readout carries what moved and nothing else, so Strength leaves it entirely.
     await expect(gmPage.locator('[data-modifier="strength"]')).toHaveCount(0);

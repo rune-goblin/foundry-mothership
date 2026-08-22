@@ -56,6 +56,11 @@
     };
   }));
 
+  // The Marine's either/or: the same choice the adjustments pane asks, offered again here so a
+  // swap does not cost a trip back.
+  let group = $state(0);
+  const groups = $derived([{ chosen: group, options: [{ name: '1 Expert Skill' }, { name: '2 Trained Skills' }] }]);
+
   function onchoose(uuid) {
     const next = new Set(picked);
     if (next.has(uuid)) next.delete(uuid);
@@ -65,5 +70,5 @@
 </script>
 
 <div class="mothership">
-  <SkillSelector {skills} budget={BUDGET} {picks} {onchoose} />
+  <SkillSelector {skills} budget={BUDGET} {picks} {groups} {onchoose} onswitch={(_, option) => (group = option)} />
 </div>

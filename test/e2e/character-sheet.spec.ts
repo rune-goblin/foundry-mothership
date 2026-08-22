@@ -495,9 +495,9 @@ test.describe('character sheet', () => {
     );
   });
 
-  // Every skill in the book carries the same placeholder art, so the frame around it read as a
-  // control that did nothing.
-  test('the skills list has no art column', async ({ gmPage }) => {
+  // Every document in the book carries the same placeholder art, so the frame around it read as a
+  // control that did nothing. The disclosure took the column instead.
+  test('no list has an art column, and the header lines up with its rows', async ({ gmPage }) => {
     const { appId, uuid } = await open(gmPage);
     await addItem(gmPage, uuid, {
       name: '__e2e_linguistics',
@@ -510,11 +510,48 @@ test.describe('character sheet', () => {
 
     const skills = sheet.locator('.tab[data-tab="skills"]');
     await expect(skills.locator('.item-image')).toHaveCount(0);
-    // The header lost its spacer with the column, so both still start at the same edge.
+    await expect(skills.locator('.items-list li .item-disclosure')).toHaveCount(2);
     const [header, row] = await skills.locator('.items-list li').evaluateAll((rows) =>
       rows.slice(0, 2).map((entry) => entry.firstElementChild!.getBoundingClientRect().left),
     );
     expect(row).toBeCloseTo(header, 0);
+  });
+
+  test('an item opens its description under its row instead of posting it', async ({ gmPage }) => {
+    const { appId, uuid } = await open(gmPage);
+    const id = await addItem(gmPage, uuid, {
+      name: '__e2e_defibrillator',
+      type: 'item',
+      system: { quantity: 1, cost: 0, description: '<p>Restarts a stopped heart. Once.</p>' },
+    });
+    const sheet = gmPage.locator(`#${appId}`);
+    await sheet.locator('a.tab-select[data-tab="items"]').click();
+
+    const row = sheet.locator(`li.item[data-item-id="${id}"]`);
+    const before = await gmPage.evaluate(() => (window as any).game.messages.size as number);
+
+    await expect(sheet.locator('.item-description')).toHaveCount(0);
+    await row.locator('.item-disclosure a').click();
+    await expect(sheet.locator('.item-description')).toContainText('Restarts a stopped heart');
+
+    // The name opens it too — that click used to print the description to chat.
+    await row.locator('.skill-name').click();
+    await expect(sheet.locator('.item-description')).toHaveCount(0);
+
+    expect(await gmPage.evaluate(() => (window as any).game.messages.size as number)).toBe(before);
+  });
+
+  test('an item with no description offers no chevron', async ({ gmPage }) => {
+    const { appId, uuid } = await open(gmPage);
+    const id = await addItem(gmPage, uuid, {
+      name: '__e2e_flashlight',
+      type: 'item',
+      system: { quantity: 1, cost: 30 },
+    });
+    const sheet = gmPage.locator(`#${appId}`);
+    await sheet.locator('a.tab-select[data-tab="items"]').click();
+
+    await expect(sheet.locator(`li.item[data-item-id="${id}"] .item-disclosure a`)).toHaveCount(0);
   });
 
   test('a hovered roll control turns its die over', async ({ gmPage }) => {

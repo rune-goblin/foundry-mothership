@@ -34,32 +34,20 @@
 {#each draft.statChoices as choice, position (position)}
   {@const question = `${localize('Mothership.CharacterGenerator.StatOptionPopupText')} ${signed(choice.modification)}`}
   {@const picked = choice.chosen}
-  {@const standing = picked !== null && draft.rolled[picked] !== null ? draft.total(picked) : null}
   <div class="wizard-choice" data-choice={position}>
     <label class="wizard-choice-label" for="wizard-choice-{position}">{question}</label>
-    <div class="wizard-choice-row">
-      <select
-        id="wizard-choice-{position}"
-        class="wizard-choice-select"
-        data-choose={picked ?? ''}
-        value={picked ?? ''}
-        onchange={(event) => spendOn(position, event.currentTarget.value)}
-      >
-        <option value="">{DASH}</option>
-        {#each choice.stats as stat (stat)}
-          <option value={stat}>{optionLabel(choice, stat)}</option>
-        {/each}
-      </select>
-      <!-- Dash placeholders keep the row's height stable whether or not the choice is spent. -->
-      <p class="wizard-choice-readout" class:spent={picked !== null}>
-        <span class="wizard-choice-standing" data-standing={picked ?? ''}>
-          {standing ?? DASH}
-        </span>
-        <span class="wizard-choice-delta" data-delta={picked ?? ''}>
-          {picked === null ? DASH : signed(choice.modification)}
-        </span>
-      </p>
-    </div>
+    <select
+      id="wizard-choice-{position}"
+      class="wizard-choice-select"
+      data-choose={picked ?? ''}
+      value={picked ?? ''}
+      onchange={(event) => spendOn(position, event.currentTarget.value)}
+    >
+      <option value="">{DASH}</option>
+      {#each choice.stats as stat (stat)}
+        <option value={stat}>{optionLabel(choice, stat)}</option>
+      {/each}
+    </select>
   </div>
 {/each}
 
@@ -118,14 +106,7 @@
       color: var(--wizard-ink-muted);
     }
 
-    .wizard-choice-row {
-      display: flex;
-      align-items: center;
-      gap: var(--space-16);
-    }
-
     .wizard-choice-select {
-      flex: 0 0 auto;
       width: var(--wizard-choice-select-width);
       padding: var(--space-6) var(--space-12);
       border: var(--border-width-2) solid var(--wizard-edge);
@@ -138,29 +119,6 @@
       font-size: var(--font-size-md);
       font-weight: var(--font-weight-bold);
       cursor: pointer;
-    }
-
-    .wizard-choice-readout {
-      display: grid;
-      justify-items: center;
-      min-width: var(--wizard-choice-readout-width);
-      margin: 0;
-      font-family: var(--font-display);
-      font-weight: var(--font-weight-bold);
-      line-height: 1.1;
-      color: var(--wizard-ink-muted);
-    }
-
-    .wizard-choice-readout.spent {
-      color: var(--wizard-ink);
-    }
-
-    .wizard-choice-standing {
-      font-size: var(--font-size-3xl);
-    }
-
-    .wizard-choice-delta {
-      font-size: var(--font-size-sm);
     }
 
     .wizard-packages {

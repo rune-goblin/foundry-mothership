@@ -3,7 +3,6 @@
   import ItemCell from '../parts/ItemCell.svelte';
   import ItemControl from '../parts/ItemControl.svelte';
   import ItemControls from '../parts/ItemControls.svelte';
-  import ItemImage from '../parts/ItemImage.svelte';
   import MainStat from '../parts/MainStat.svelte';
   import MinMaxField from '../parts/MinMaxField.svelte';
   import StatModifier from '../parts/StatModifier.svelte';
@@ -75,8 +74,6 @@
   const at = (path) => path.split('.').reduce((node, key) => node?.[key], doc);
 
   const statRoll = (key) => () => actor.rollStat(key);
-
-  const describe = (id) => () => actor.printDescription(id);
 
   const skillRoll = (id) => () => actor.rollSkill(id);
 
@@ -287,7 +284,6 @@
       items={skills}
       create={{ title: localize('Mothership.CreateSkill'), onclick: () => promptAddItem(actor, 'skill') }}
       row={skillRow}
-      image={false}
     />
   </TabPanel>
 
@@ -323,9 +319,8 @@
   </TabPanel>
 </section>
 
-{#snippet armorRow(armor)}
-  <ItemImage src={armor.img} title={armor.name} />
-  <ItemCell variant="name" grow={2.55} roll onclick={describe(armor.id)}>{armor.name}</ItemCell>
+{#snippet armorRow(armor, disclose)}
+  <ItemCell variant="name" grow={2.55} roll={!!disclose} onclick={disclose}>{armor.name}</ItemCell>
   <ItemCell
     roll
     onclick={step(armor.id, 'armorPoints')}
@@ -373,9 +368,8 @@
   </ItemControls>
 {/snippet}
 
-{#snippet gearRow(item)}
-  <ItemImage src={item.img} title={item.name} />
-  <ItemCell variant="name" grow={doc.hideWeight ? 1.5 : 1.54} roll onclick={describe(item.id)}>
+{#snippet gearRow(item, disclose)}
+  <ItemCell variant="name" grow={doc.hideWeight ? 1.5 : 1.54} roll={!!disclose} onclick={disclose}>
     {item.name}
   </ItemCell>
   <ItemCell roll onclick={step(item.id, 'quantity')} oncontextmenu={step(item.id, 'quantity')}>
@@ -417,9 +411,8 @@
   </ItemControls>
 {/snippet}
 
-{#snippet conditionRow(condition)}
-  <ItemImage src={condition.img} title={condition.name} />
-  <ItemCell variant="name" roll onclick={describe(condition.id)}>{condition.name}</ItemCell>
+{#snippet conditionRow(condition, disclose)}
+  <ItemCell variant="name" roll={!!disclose} onclick={disclose}>{condition.name}</ItemCell>
   <ItemCell
     roll
     onclick={step(condition.id, 'severity')}
@@ -455,7 +448,6 @@
 {/snippet}
 
 {#snippet weaponRow(weapon)}
-  <ItemImage src={weapon.img} title={weapon.name} />
   <ItemCell variant="name" die grow={2.05} roll onclick={weaponRoll(weapon.id)}>{weapon.name}</ItemCell>
   <ItemCell roll onclick={damageRoll(weapon.id)}>
     {weapon.system.damage}{weapon.system.antiArmor

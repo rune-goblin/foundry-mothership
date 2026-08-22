@@ -114,13 +114,17 @@ export class MothershipCharacterSheet extends ActorSheetV2 {
         biography: await enrich(this.document.system.biography),
         notes: await enrich(this.document.system.notes),
       },
-      items: this.document.items.map((item) => ({
-        id: item.id,
-        type: item.type,
-        name: item.name,
-        img: item.img || CONST.DEFAULT_TOKEN,
-        system: item.system,
-      })),
+      // Enriched here rather than in the row: the sheet's disclosure prints it as HTML, and
+      // enrichHTML is async where a Svelte template is not.
+      items: await Promise.all(
+        this.document.items.map(async (item) => ({
+          id: item.id,
+          type: item.type,
+          name: item.name,
+          system: item.system,
+          description: await enrich(item.system.description),
+        })),
+      ),
     };
   }
 

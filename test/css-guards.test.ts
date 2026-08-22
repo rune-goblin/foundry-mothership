@@ -169,7 +169,6 @@ const SUBTEXT = [
   '.skill-selector-bonus', // the picks-left counter beside its rank heading
   '.character-wizard :global(.wizard-reference)', // "See Loadouts on pg. 7."
   '.wizard-rail-number', // a numeral inside a 1.6rem marker
-  '.wizard-choice-delta', // the delta under the standing total it explains
 ];
 
 describe("the character generator's typography", () => {

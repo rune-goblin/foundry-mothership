@@ -10,7 +10,9 @@
   skills={draft.skillTree}
   budget={draft.skillBudget}
   picks={draft.skillPicks}
+  groups={draft.skillGroups}
   onchoose={(uuid) => draft.toggleSkill(uuid)}
+  onswitch={(group, option) => draft.chooseSkillOption(group, option)}
 />
 
 <MainStat key="skills" label={localize('Mothership.Skills')} labelClass="fulllabel" wrapper={false}>

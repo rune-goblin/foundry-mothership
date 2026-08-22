@@ -2,7 +2,7 @@
   import { localize, format } from '../../i18n.ts';
   import { RANK_LABEL } from './picks.js';
 
-  let { skills, budget = null, picks = [], onchoose } = $props();
+  let { skills, budget = null, picks = [], groups = [], onchoose, onswitch = null } = $props();
 
   const uid = $props.id();
 
@@ -102,6 +102,12 @@
     unavailable: 'Mothership.CharacterGenerator.SkillTree.Unavailable',
   };
 
+  // A group offering one package is not a question, so it offers no switch either. The index is
+  // carried because `onswitch` addresses the group by its place in the class's own list.
+  const switchable = $derived(
+    groups.map((group, index) => ({ ...group, index })).filter((group) => group.options.length > 1),
+  );
+
   // One chip per pick the class promised, the slots of a gated chain kept together so the chain
   // reads as one.
   const pickSets = $derived.by(() => {
@@ -168,9 +174,11 @@
 </script>
 
 <div class="skill-selector" role="group" aria-label={localize('Mothership.CharacterGenerator.SkillTree.Label')}>
-  {#if pickSets.length > 0}
+  {#if pickSets.length > 0 || switchable.length > 0}
     <div class="skill-selector-picks">
-      <span class="skill-selector-label">{localize('Mothership.CharacterGenerator.SkillTree.YourPicks')}</span>
+      {#if pickSets.length > 0}
+        <span class="skill-selector-label">{localize('Mothership.CharacterGenerator.SkillTree.YourPicks')}</span>
+      {/if}
       <div class="skill-selector-pick-sets">
         {#each pickSets as group (group.set)}
           <div class="skill-selector-pick-set">
@@ -201,6 +209,24 @@
           </div>
         {/each}
       </div>
+      {#each switchable as group (group.index)}
+        <label class="skill-selector-swap">
+          <span class="skill-selector-label">{localize('Mothership.CharacterGenerator.SkillTree.BonusOption')}</span>
+          <select
+            class="skill-selector-swap-select"
+            data-swap={group.index}
+            value={group.chosen === null ? '' : String(group.chosen)}
+            onchange={(event) => onswitch?.(group.index, Number(event.currentTarget.value))}
+          >
+            {#if group.chosen === null}
+              <option value="" disabled>{localize('Mothership.CharacterGenerator.SkillTree.ChooseOne')}</option>
+            {/if}
+            {#each group.options as option, index (option.name)}
+              <option value={String(index)}>{option.name}</option>
+            {/each}
+          </select>
+        </label>
+      {/each}
     </div>
   {/if}
 
@@ -350,6 +376,30 @@
       display: flex;
       align-items: stretch;
       gap: var(--space-6);
+    }
+
+    /* Last in the row and pushed to its end: switching the package is a change to the slots
+       beside it, not another slot. */
+    .skill-selector-swap {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      margin-left: auto;
+    }
+
+    .skill-selector-swap-select {
+      width: auto;
+      padding: var(--space-4) var(--space-8);
+      border: var(--border-width-2) solid var(--skillselector-edge);
+      border-radius: var(--radius-md);
+      background: var(--surface-neutral-paper);
+      color: inherit;
+      height: auto;
+      min-height: 0;
+      font-family: var(--font-display);
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-bold);
+      cursor: pointer;
     }
 
     .skill-selector-pick-arrow {

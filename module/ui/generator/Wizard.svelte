@@ -204,7 +204,6 @@
       --wizard-readout-min-height: 2.5rem;
       --wizard-class-art-size: 6rem;
       --wizard-choice-select-width: 15rem;
-      --wizard-choice-readout-width: 4rem;
 
       display: grid;
       grid-template-columns: var(--wizard-rail-width) minmax(0, 1fr);

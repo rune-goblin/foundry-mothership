@@ -11,6 +11,7 @@ import { mount, unmount, flushSync, createRawSnippet, type Component } from 'sve
 import ItemList from '../module/ui/parts/ItemList.svelte';
 import ItemRow from '../module/ui/parts/ItemRow.svelte';
 import ItemImage from '../module/ui/parts/ItemImage.svelte';
+import ItemDisclosure from '../module/ui/parts/ItemDisclosure.svelte';
 import ItemCell from '../module/ui/parts/ItemCell.svelte';
 import ItemControl from '../module/ui/parts/ItemControl.svelte';
 import Tabs from '../module/ui/parts/Tabs.svelte';
@@ -292,6 +293,37 @@ describe('ItemImage', () => {
   it('stays an empty spacer cell without one', () => {
     const el = render(ItemImage, {}).firstElementChild!;
     expect(el.children).toHaveLength(0);
+  });
+});
+
+describe('ItemDisclosure', () => {
+  it('is an empty spacer without a handler, so a header still lines up with its rows', () => {
+    const el = render(ItemDisclosure, {}).firstElementChild!;
+    expect(classes(el)).toEqual(['item-disclosure']);
+    expect(el.children).toHaveLength(0);
+  });
+
+  it('is a labelled button reporting whether it is open', () => {
+    const onclick = vi.fn();
+    const el = render(ItemDisclosure, { onclick, label: 'Show Description' }).firstElementChild!;
+    const toggle = el.querySelector('a')!;
+
+    expect(classes(toggle)).toEqual(['item-disclosure-toggle']);
+    expect(toggle.getAttribute('role')).toBe('button');
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    expect(toggle.getAttribute('aria-label')).toBe('Show Description');
+    expect(classes(toggle.querySelector('i')!)).toEqual(['fas', 'fa-chevron-right']);
+
+    press(toggle, 'Enter');
+    (toggle as HTMLElement).click();
+    expect(onclick).toHaveBeenCalledTimes(2);
+  });
+
+  it('marks the open state on the toggle, which is what turns the chevron', () => {
+    const el = render(ItemDisclosure, { onclick: () => {}, open: true }).firstElementChild!;
+    const toggle = el.querySelector('a')!;
+    expect(classes(toggle)).toEqual(['item-disclosure-toggle', 'is-open']);
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
   });
 });
 
@@ -733,7 +765,7 @@ describe('CircleStats', () => {
 
 describe('ItemPanel', () => {
   const items = [
-    { id: 'aaa', name: 'Wrench' },
+    { id: 'aaa', name: 'Wrench', description: '<p>Turns things.</p>' },
     { id: 'bbb', name: 'Crowbar' },
   ];
   const row = createRawSnippet((item: () => { name: string }) => ({
@@ -761,12 +793,34 @@ describe('ItemPanel', () => {
       'Mothership.Quantity',
     ]);
     expect(header.querySelector('.skill-stat')!.getAttribute('style')).toBe('flex-grow: 1.5;');
-    // The spacer under the thumbnail column keeps the header's cells aligned with the rows'.
-    expect(header.querySelector('.item-image')!.children).toHaveLength(0);
+    // The spacer under the disclosure column keeps the header's cells aligned with the rows'.
+    expect(header.querySelector('.item-disclosure')!.children).toHaveLength(0);
 
     expect(rows.map((r) => r.getAttribute('data-item-id'))).toEqual(['aaa', 'bbb']);
     expect(rows.map((r) => r.getAttribute('draggable'))).toEqual(['true', 'true']);
     expect(rows.map((r) => r.textContent!.trim())).toEqual(['Wrench', 'Crowbar']);
+  });
+
+  it('opens one row\'s description under it and closes it again', () => {
+    const list = panel();
+    const chevron = list.querySelector<HTMLElement>('li[data-item-id="aaa"] .item-disclosure a')!;
+
+    expect(list.querySelector('.item-description')).toBeNull();
+
+    chevron.click();
+    flushSync();
+    const shown = list.querySelector('.item-description')!;
+    expect(shown.innerHTML).toBe('<p>Turns things.</p>');
+    expect(shown.previousElementSibling!.getAttribute('data-item-id')).toBe('aaa');
+
+    chevron.click();
+    flushSync();
+    expect(list.querySelector('.item-description')).toBeNull();
+  });
+
+  it('offers no chevron for an item with nothing to say', () => {
+    const list = panel();
+    expect(list.querySelector('li[data-item-id="bbb"] .item-disclosure')!.children).toHaveLength(0);
   });
 
   it('the create control is the header row\'s only item-control', () => {

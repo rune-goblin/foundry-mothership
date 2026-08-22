@@ -3,22 +3,20 @@
     group: 'Sections',
     title: 'ItemPanel',
     path: 'module/ui/parts/sections/ItemPanel.svelte',
-    note: 'One item-list block. What both actor sheets share byte for byte is the frame — the list, the header row, the create control and the row wrapper carrying the item id. What differs per taxonomy is the columns, so `headers` is data and `row` is a snippet the caller owns.',
+    note: 'One item-list block. What every tab of the character sheet shares byte for byte is the frame — the list, the header row, the create control, the row wrapper carrying the item id, and the disclosure that opens an item’s description beneath its row. What differs per taxonomy is the columns, so `headers` is data and `row` is a snippet the caller owns. The panel hands that snippet the toggle, so a name with no action of its own opens the description too.',
   };
 </script>
 
 <script>
   import ItemPanel from '../../module/ui/parts/sections/ItemPanel.svelte';
-  import ItemImage from '../../module/ui/parts/ItemImage.svelte';
   import ItemCell from '../../module/ui/parts/ItemCell.svelte';
   import ItemControls from '../../module/ui/parts/ItemControls.svelte';
   import ItemControl from '../../module/ui/parts/ItemControl.svelte';
   import { skills, say } from './fixtures.js';
 </script>
 
-{#snippet row(item)}
-  <ItemImage src={item.img} title={item.name} />
-  <ItemCell variant="name" grow={2} roll onclick={say('roll skill', item.name)}>{item.name}</ItemCell>
+{#snippet row(item, disclose)}
+  <ItemCell variant="name" grow={2} roll={!!disclose} onclick={disclose}>{item.name}</ItemCell>
   <ItemCell grow={1}>{item.system.rank}</ItemCell>
   <ItemCell grow={1}>+{item.system.bonus}</ItemCell>
   <ItemControls>
